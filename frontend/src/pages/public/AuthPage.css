@@ -1,0 +1,142 @@
+.auth-entry-card {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.auth-options-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin: 2rem 0;
+}
+
+.auth-option-card {
+  padding: 1.5rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background: #fafafa;
+}
+
+.auth-option-card:hover {
+  border-color: #0066cc;
+  background: #f0f7ff;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.1);
+}
+
+.auth-option-card h3 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.auth-option-card p {
+  margin: 0 0 1.5rem 0;
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+.auth-option-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-option-link {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  text-align: center;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.auth-option-link.primary {
+  background: #0066cc;
+  color: white;
+}
+
+.auth-option-link.primary:hover {
+  background: #0052a3;
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+}
+
+.auth-option-link.secondary {
+  background: transparent;
+  color: #0066cc;
+  border: 1px solid #0066cc;
+}
+
+.auth-option-link.secondary:hover {
+  background: #f0f7ff;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2.5rem 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e0e0e0;
+}
+
+.auth-divider span {
+  color: #999;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.auth-admin-section {
+  text-align: center;
+  padding: 1.5rem;
+  background: #fef3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+}
+
+.auth-admin-section .text-sm {
+  margin: 0 0 1rem 0;
+  color: #856404;
+  font-size: 0.9rem;
+}
+
+.auth-admin-link {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background: #ff9800;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.auth-admin-link:hover {
+  background: #e68900;
+  box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .auth-options-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .auth-entry-card {
+    padding: 1.5rem;
+  }
+
+  .auth-divider {
+    margin: 2rem 0;
+  }
+}
