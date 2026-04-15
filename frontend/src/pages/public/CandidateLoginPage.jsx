@@ -1,0 +1,52 @@
+import { useNavigate, Link } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Seo from '../../components/ui/Seo';
+import Card from '../../components/ui/Card';
+import Input from '../../components/ui/Input';
+import Button from '../../components/ui/Button';
+import BrandIdentity from '../../components/layout/BrandIdentity';
+import { loginSchema } from '../../utils/validators';
+import { useAuth } from '../../contexts/AuthContext';
+
+export default function CandidateLoginPage() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(loginSchema) });
+
+  return (
+    <>
+      <Seo title="Candidate Login | Hirexo" description="Sign in to manage applications and your profile." />
+      <section className="section-block">
+        <div className="shell">
+          <Card className="form-card">
+            <BrandIdentity className="auth-brand" subtitle="Candidate portal" />
+            <h1>Candidate sign in</h1>
+            <form className="form-grid" onSubmit={handleSubmit(async (values) => {
+              const user = await login(values);
+              navigate(user.role === 'candidate' ? '/candidate/dashboard' : '/');
+            })}>
+              <Input label="Email" type="email" placeholder="name@example.com" error={errors.email?.message} {...register('email')} />
+              <Input label="Password" type="password" placeholder="Enter password" error={errors.password?.message} {...register('password')} />
+              <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Signing in...' : 'Sign in'}</Button>
+            </form>
+            <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #eee', textAlign: 'center' }}>
+              <p className="text-sm" style={{ color: '#666', marginBottom: '0.75rem' }}>
+                Don't have an account?{' '}
+                <Link to="/candidate/register" style={{ color: '#0066cc', textDecoration: 'none', fontWeight: '600' }}>
+                  Create one
+                </Link>
+              </p>
+              <p className="text-sm" style={{ color: '#999', marginBottom: '0.75rem' }}>
+                Are you an employer? <Link to="/employer/login" style={{ color: '#0066cc', textDecoration: 'none' }}>Sign in here</Link>
+              </p>
+              <Link to="/auth" style={{ color: '#0066cc', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '500' }}>
+                ← Back to authentication
+              </Link>
+            </div>
+          </Card>
+        </div>
+      </section>
+    </>
+  );
+}

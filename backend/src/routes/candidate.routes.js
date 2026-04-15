@@ -1,0 +1,22 @@
+const router = require('express').Router();
+const candidateController = require('../controllers/candidate.controller');
+const { protect } = require('../middlewares/auth.middleware');
+const { authorizeRoles } = require('../middlewares/role.middleware');
+const { ROLES } = require('../utils/constants');
+const { resumeUpload, handleUploadErrors } = require('../middlewares/upload.middleware');
+
+router.use(protect);
+router.use(authorizeRoles(ROLES.CANDIDATE, ROLES.ADMIN));
+
+router.get('/profile', candidateController.getProfile);
+router.patch('/profile', candidateController.upsertProfile);
+router.post('/resume', resumeUpload.single('resume'), handleUploadErrors, candidateController.uploadResume);
+router.get('/resume', candidateController.getResume);
+router.get('/resume/download', candidateController.downloadResume);
+router.delete('/resume', candidateController.deleteResume);
+router.get('/applications', candidateController.listApplications);
+router.get('/saved-jobs', candidateController.listSavedJobs);
+router.post('/saved-jobs/:jobId', candidateController.saveJob);
+router.delete('/saved-jobs/:jobId', candidateController.unsaveJob);
+
+module.exports = router;
