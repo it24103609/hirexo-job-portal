@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, MessageCircle, Sparkles, Star, Briefcase, Users, Target, Globe, CheckCircle } from 'lucide-react';
+import { ArrowRight, MessageCircle, Sparkles, Star, Briefcase, Users, Target, Globe, CheckCircle, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Seo from '../../components/ui/Seo';
 import Button from '../../components/ui/Button';
@@ -16,28 +16,72 @@ import './HomePage.css';
 export default function HomePage() {
   const [jobs, setJobs] = useState(siteContent.featuredJobs);
   const [blogs, setBlogs] = useState(siteContent.mockBlogs);
-    const [activeSwitch, setActiveSwitch] = useState('local');
+  const [activeSwitch, setActiveSwitch] = useState('local');
+
+  const getLabel = (value, fallback = '') => {
+    if (!value) return fallback;
+    if (typeof value === 'string') return value;
+    return value.name || value.slug || fallback;
+  };
+
+  const getCompanyInitials = (value = '') => {
+    return String(value)
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() || '')
+      .join('') || 'HX';
+  };
+
+  const getDaysLeft = (job) => {
+    const target = job.expiresAt ? new Date(job.expiresAt) : null;
+    if (!target || Number.isNaN(target.getTime())) return 23;
+
+    const diffMs = target.getTime() - Date.now();
+    return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+  };
+
+  const getJobBadgeLabel = (job) => {
+    const jobType = getLabel(job.jobType, '').trim();
+
+    if (job.remoteFriendly) return 'Remote Job';
+    if (!jobType) return 'Job';
+
+    const normalized = jobType.toLowerCase();
+    if (normalized === 'internship') return 'Internship';
+    if (normalized.includes('full time')) return 'Full-time Job';
+    if (normalized.includes('part time')) return 'Part-time Job';
+    if (normalized.includes('contract')) return 'Contract Job';
+    if (normalized.includes('remote')) return 'Remote Job';
+
+    return jobType.toLowerCase().includes('job') ? jobType : `${jobType} Job`;
+  };
 
   // Filter jobs based on Local/Global selection
   const getFilteredJobs = () => {
+    const jobsList = Array.isArray(jobs) ? jobs : [];
+
     if (activeSwitch === 'global') {
-      return jobs;
+      return jobsList;
     }
-    // Local = Sri Lanka jobs
-    return jobs.filter(job => {
-      // Handle location as object (populated location reference)
-      let locationName = '';
-      if (typeof job.location === 'object' && job.location?.name) {
-        locationName = job.location.name.toLowerCase();
-      } else if (typeof job.location === 'string') {
-        locationName = job.location.toLowerCase();
-      }
-      
-      // Check if location contains Sri Lanka keywords or country field
-      const country = (typeof job.country === 'string' ? job.country : '').toLowerCase();
-      return locationName.includes('colombo') || locationName.includes('sri lanka') || 
-             country.includes('sri lanka') || country === 'lk' || country === 'srilanka';
+
+    // Local tab should show Sri Lanka opportunities only.
+    const localJobs = jobsList.filter((job) => {
+      const locationName = getLabel(job.location, '').toLowerCase();
+      const country = String(job.country || '').toLowerCase();
+      const searchable = `${locationName} ${country}`;
+
+      return (
+        searchable.includes('sri lanka') ||
+        searchable.includes('colombo') ||
+        searchable.includes('kandy') ||
+        searchable.includes('galle') ||
+        searchable.includes('negombo') ||
+        country === 'lk'
+      );
     });
+
+    return localJobs;
   };
 
   const filteredJobs = getFilteredJobs();
@@ -53,6 +97,23 @@ export default function HomePage() {
     { icon: '✓', value: '15k+', label: 'Candidate matches' },
     { icon: '🌍', value: '30+', label: 'Cities covered' }
   ];
+
+  const whyChooseDetails = [
+    'KPI-backed hiring sprints with transparent progress updates.',
+    'Profiles screened for both delivery ability and team chemistry.',
+    'Candidate and employer journeys designed for less friction.',
+    'Quality checks at each stage before public visibility.'
+  ];
+
+  const whyChooseIcons = [Target, Users, Briefcase, Globe];
+  const whyChooseMeta = siteContent.whyChooseUs.map((item, index) => {
+    const Icon = whyChooseIcons[index % whyChooseIcons.length];
+    return {
+      title: item,
+      detail: whyChooseDetails[index] || 'Execution-focused recruitment support from sourcing to closure.',
+      icon: Icon
+    };
+  });
 
   useEffect(() => {
     jobsApi.featured().then((res) => setJobs(res.data || siteContent.featuredJobs)).catch(() => setJobs(siteContent.featuredJobs));
@@ -129,46 +190,65 @@ export default function HomePage() {
       <section className="section-block recent-jobs-shell">
         <div className="shell">
           <SectionHeader eyebrow="Recent jobs" title="Premium Job Highlights" description="Top opportunities ready for your application or quick review." />
-          <div className="jobs-switch">
-            <span 
-              className={`jobs-switch-btn ${activeSwitch === 'local' ? 'active' : ''}`}
-              onClick={() => setActiveSwitch('local')}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => e.key === 'Enter' && setActiveSwitch('local')}
-            >
-              Local
-            </span>
-            <span 
-              className={`jobs-switch-btn ${activeSwitch === 'global' ? 'active' : ''}`}
-              onClick={() => setActiveSwitch('global')}
-              role="button"
-              tabIndex={0}
-              onKeyPress={(e) => e.key === 'Enter' && setActiveSwitch('global')}
-            >
-              Global
-            </span>
+          <div className="jobs-switch-wrap">
+            <div className="jobs-switch">
+              <span 
+                className={`jobs-switch-btn ${activeSwitch === 'local' ? 'active' : ''}`}
+                onClick={() => setActiveSwitch('local')}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 'Enter' && setActiveSwitch('local')}
+              >
+                Local
+              </span>
+              <span 
+                className={`jobs-switch-btn ${activeSwitch === 'global' ? 'active' : ''}`}
+                onClick={() => setActiveSwitch('global')}
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => e.key === 'Enter' && setActiveSwitch('global')}
+              >
+                Global
+              </span>
+            </div>
           </div>
           <div className="grid-4">
             {filteredJobs.slice(0, 4).map((job) => (
               <div key={job._id || job.slug} className="job-card-home">
-                <div className="job-card-header">
-                  <div className="job-card-title-group">
-                    <h3 className="job-card-title">{job.title}</h3>
-                    <p className="job-card-company">{job.companyName}</p>
+                <div className="job-card-top-row">
+                  <span className="job-card-days">⏱ {getDaysLeft(job)} days left</span>
+                  <span className="job-card-badge">{getJobBadgeLabel(job)}</span>
+                </div>
+
+                <div className="job-card-body">
+                  <div className="job-card-logo" aria-hidden="true">
+                    {job.image?.url ? (
+                      <img src={job.image.url} alt={job.image?.alt || `${job.companyName} logo`} loading="lazy" />
+                    ) : (
+                      <span>{getCompanyInitials(job.companyName)}</span>
+                    )}
                   </div>
-                  <span className="job-card-badge">Hiring</span>
+
+                  <p className="job-card-company">{job.companyName}</p>
+                  <h3 className="job-card-title">{job.title}</h3>
+                  <p className="job-card-location"><MapPin size={13} /> {getLabel(job.location, 'Remote / Hybrid')}</p>
                 </div>
-                <div className="job-card-meta">
-                  <span className="job-card-meta-item">📍 {job.location}</span>
-                  <span className="job-card-meta-item">💼 {job.jobType}</span>
-                </div>
-                <div className="job-card-footer">
-                  <button className="job-card-cta secondary">View details</button>
-                  <button className="job-card-cta primary">Quick apply</button>
+
+                <div className="job-card-footer single-action">
+                  <Link className="job-card-cta primary" to={`/jobs/${job.slug || job._id}`}>
+                    Apply Now
+                  </Link>
                 </div>
               </div>
             ))}
+
+            {!filteredJobs.length ? (
+              <Card>
+                <p style={{ margin: 0 }}>
+                  No Sri Lanka jobs available right now. Try Global to view all current opportunities.
+                </p>
+              </Card>
+            ) : null}
           </div>
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
             <Button as={Link} to="/jobs">Browse all jobs <ArrowRight size={16} /></Button>
@@ -186,15 +266,28 @@ export default function HomePage() {
                 <p>Designed for teams that want a clean process and less hiring noise. We deliver results with precision.</p>
               </div>
               <div className="why-choose-features">
-                {siteContent.whyChooseUs.map((item) => (
-                  <div key={item} className="why-choose-feature">
-                    <strong>{item}</strong>
+                {whyChooseMeta.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                  <div key={item.title} className="why-choose-feature">
+                    <span className="why-feature-icon" aria-hidden="true">
+                      <Icon size={18} />
+                    </span>
+                    <strong>{item.title}</strong>
+                    <p>{item.detail}</p>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
             <div className="why-choose-testimonial">
-              <p>{siteContent.testimonial}</p>
+              <div className="why-choose-visual" aria-hidden="true">
+                <span className="why-orb" />
+                <span className="why-ring" />
+                <span className="why-chip why-chip-a"><Users size={14} /> Culture match</span>
+                <span className="why-chip why-chip-b"><Target size={14} /> Role fit</span>
+              </div>
+              <p className="why-testimonial-text">{siteContent.testimonial}</p>
               <div className="testimonial-ctas">
                 <Button as={Link} to="/services" className="testimonial-cta-btn primary">
                   See core services

@@ -101,7 +101,11 @@ const createJob = asyncHandler(async (req, res) => {
   }
 
   const slug = await createUniqueSlug(Job, req.body.title, { company: employerProfile.companyName });
-  const image = normalizeJobImage(req.body, req.body.title || 'Job image');
+  const image = normalizeJobImage(req.body, req.body.title || 'Job image') || (
+    employerProfile.logoUrl
+      ? { url: employerProfile.logoUrl, alt: `${employerProfile.companyName} logo` }
+      : null
+  );
   const job = await Job.create({
     employerUser: req.user._id,
     companyName: employerProfile.companyName,

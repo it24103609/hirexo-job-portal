@@ -5,6 +5,7 @@ const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   mongoUri: process.env.MONGODB_URI,
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
+  passwordResetExpiresMinutes: Number(process.env.PASSWORD_RESET_EXPIRES_MINUTES || 60),
   uploadDir: process.env.UPLOAD_DIR || 'uploads/resumes',
   maxFileSize: Number(process.env.MAX_FILE_SIZE || 2 * 1024 * 1024),
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000),

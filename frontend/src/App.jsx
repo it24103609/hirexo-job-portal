@@ -14,6 +14,8 @@ import EmployerRegisterPage from './pages/public/EmployerRegisterPage';
 import EmployerLoginPage from './pages/public/EmployerLoginPage';
 import AdminLoginPage from './pages/public/AdminLoginPage';
 import AuthPage from './pages/public/AuthPage';
+import ForgotPasswordPage from './pages/public/ForgotPasswordPage';
+import ResetPasswordPage from './pages/public/ResetPasswordPage';
 import BlogListPage from './pages/public/BlogListPage';
 import BlogDetailsPage from './pages/public/BlogDetailsPage';
 import ContactPage from './pages/public/ContactPage';
@@ -52,6 +54,8 @@ export default function App() {
         <Route path="employer/register" element={<EmployerRegisterPage />} />
         <Route path="employer/login" element={<EmployerLoginPage />} />
         <Route path="admin/login" element={<AdminLoginPage />} />
+        <Route path="forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
         <Route path="jobs" element={<JobsPage />} />
         <Route path="jobs/:slug" element={<JobDetailsPage />} />
         <Route path="blog" element={<BlogListPage />} />

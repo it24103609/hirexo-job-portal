@@ -28,6 +28,11 @@ export default function CandidateLoginPage() {
             })}>
               <Input label="Email" type="email" placeholder="name@example.com" error={errors.email?.message} {...register('email')} />
               <Input label="Password" type="password" placeholder="Enter password" error={errors.password?.message} {...register('password')} />
+              <div style={{ textAlign: 'right', marginTop: '-0.5rem' }}>
+                <Link to="/forgot-password" style={{ color: '#0f766e', textDecoration: 'none', fontSize: '0.9rem', fontWeight: '600' }}>
+                  Forgot password?
+                </Link>
+              </div>
               <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Signing in...' : 'Sign in'}</Button>
             </form>
             <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #eee', textAlign: 'center' }}>

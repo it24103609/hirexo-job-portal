@@ -52,6 +52,7 @@ const getProfile = asyncHandler(async (req, res) => {
 const upsertProfile = asyncHandler(async (req, res) => {
   const existingProfile = await EmployerProfile.findOne({ user: req.user._id });
   const companyName = req.body.companyName || existingProfile?.companyName;
+  const logoUrl = String(req.body.logoUrl || '').trim();
 
   if (!companyName) {
     throw new AppError('Company name is required', 400);
@@ -70,7 +71,7 @@ const upsertProfile = asyncHandler(async (req, res) => {
         slug,
         website: req.body.website,
         description: req.body.description,
-        logoUrl: req.body.logoUrl,
+        logoUrl: logoUrl || undefined,
         size: req.body.size,
         contactPerson: req.body.contactPerson,
         contactPhone: req.body.contactPhone,
@@ -88,6 +89,20 @@ const upsertProfile = asyncHandler(async (req, res) => {
     const user = req.user;
     user.name = companyName;
     await user.save({ validateBeforeSave: false });
+  }
+
+  if (logoUrl) {
+    await Job.updateMany(
+      { employerUser: req.user._id },
+      {
+        $set: {
+          image: {
+            url: logoUrl,
+            alt: `${companyName} logo`
+          }
+        }
+      }
+    );
   }
 
   res.json(apiResponse({

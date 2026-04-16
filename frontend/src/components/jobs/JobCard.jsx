@@ -1,6 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, BriefcaseBusiness, BadgeIndianRupee, ArrowRight, Clock3, Heart, Download } from 'lucide-react';
+import { toast } from 'react-toastify';
 import Badge from '../ui/Badge';
+import { useAuth } from '../../contexts/AuthContext';
+import { candidateApi } from '../../services/candidate.api';
 import './JobCard.css';
 
 function getLabel(value, fallback = '') {
@@ -36,11 +40,48 @@ function getDaysLeft(job) {
 }
 
 export default function JobCard({ job, variant = 'default' }) {
+  const { isAuthenticated, user } = useAuth();
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
   const slug = job.slug || job._id;
   const jobTypeLabel = getLabel(job.jobType, job.status || 'Open');
   const locationLabel = getLabel(job.location, 'Remote / Hybrid');
   const experienceLabel = getLabel(job.experienceLevel, 'Mid-Senior');
   const imageUrl = job.image?.url || '';
+
+  const handleSaveJob = async () => {
+    if (!isAuthenticated) {
+      toast.info('Please login as a candidate to save jobs.');
+      return;
+    }
+
+    if (user?.role !== 'candidate') {
+      toast.info('Only candidate accounts can save jobs.');
+      return;
+    }
+
+    if (!job?._id) {
+      toast.error('Unable to save this job right now.');
+      return;
+    }
+
+    if (isSaved) {
+      toast.info('This job is already saved.');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      await candidateApi.saveJob(job._id);
+      setIsSaved(true);
+      toast.success('Job saved successfully');
+    } catch (error) {
+      toast.error(error.message || 'Failed to save job');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // Home variant (existing small card)
   if (variant === 'home') {
@@ -100,8 +141,13 @@ export default function JobCard({ job, variant = 'default' }) {
         </div>
 
         <div className="job-featured-actions">
-          <button className="job-featured-btn job-featured-btn-secondary">
-            <Heart size={16} /> Save
+          <button
+            className="job-featured-btn job-featured-btn-secondary"
+            onClick={handleSaveJob}
+            disabled={isSaving || isSaved}
+            type="button"
+          >
+            <Heart size={16} /> {isSaved ? 'Saved' : (isSaving ? 'Saving...' : 'Save')}
           </button>
           <button className="job-featured-btn job-featured-btn-secondary">
             <Download size={16} /> Request Brief
@@ -144,6 +190,14 @@ export default function JobCard({ job, variant = 'default' }) {
         </div>
 
         <div className="job-list-actions">
+          <button
+            className="job-list-btn job-list-btn-outline"
+            onClick={handleSaveJob}
+            disabled={isSaving || isSaved}
+            type="button"
+          >
+            <Heart size={14} /> {isSaved ? 'Saved' : (isSaving ? 'Saving...' : 'Save')}
+          </button>
           <Link to={`/jobs/${slug}`} className="job-list-btn job-list-btn-outline">
             Details
           </Link>
