@@ -3,7 +3,10 @@ const path = require('path');
 const multer = require('multer');
 const { env } = require('./env');
 
-const uploadRoot = path.resolve(process.cwd(), env.uploadDir);
+const isVercelRuntime = String(process.env.VERCEL || '').toLowerCase() === '1';
+const uploadRoot = isVercelRuntime
+  ? path.resolve('/tmp', env.uploadDir)
+  : path.resolve(process.cwd(), env.uploadDir);
 
 if (!fs.existsSync(uploadRoot)) {
   fs.mkdirSync(uploadRoot, { recursive: true });
