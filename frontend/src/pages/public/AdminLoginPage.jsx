@@ -47,6 +47,11 @@ export default function AdminLoginPage() {
                 error={errors.password?.message} 
                 {...register('password')} 
               />
+              <div style={{ textAlign: 'right', marginTop: '-0.5rem' }}>
+                <Link to="/forgot-password" style={{ color: '#0066cc', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '600' }}>
+                  Forgot password?
+                </Link>
+              </div>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Signing in...' : 'Sign in'}
               </Button>
