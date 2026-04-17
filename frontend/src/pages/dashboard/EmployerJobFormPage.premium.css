@@ -1,0 +1,116 @@
+
+.jobform-shell-premium {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 2.5rem;
+  align-items: start;
+  margin-bottom: 2.5rem;
+}
+.jobform-main-premium {
+  min-width: 0;
+}
+.jobform-heading {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.2rem;
+}
+.jobform-subtitle {
+  font-size: 1.13rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.jobform-header-actions {
+  gap: 1.1rem;
+}
+.jobform-banner-premium {
+  background: linear-gradient(135deg, #eafaf2 60%, #f6fbf7 100%);
+  border: 1.5px solid rgba(26, 138, 86, 0.13);
+  border-radius: 24px;
+  padding: 1.2rem 1.5rem 1.2rem 1.2rem;
+  margin-bottom: 2.1rem;
+  display: grid;
+  gap: 0.3rem;
+  box-shadow: 0 8px 32px rgba(26, 138, 86, 0.07);
+}
+.jobform-sectioned-form-premium {
+  display: grid;
+  gap: 2.1rem;
+}
+.jobform-section-card-premium {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(26, 138, 86, 0.07);
+  padding: 1.6rem 2.1rem 1.5rem 1.6rem;
+  display: grid;
+  gap: 1.3rem;
+}
+.jobform-section-title-premium {
+  margin: 0 0 1.1rem 0;
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+.jobform-fields-grid-premium {
+  display: grid;
+  gap: 1.2rem;
+}
+.jobform-row-premium {
+  gap: 1.1rem;
+}
+.jobform-helper-text-premium {
+  color: var(--muted);
+  font-size: 0.98rem;
+  margin-top: -0.5rem;
+  margin-bottom: 0.2rem;
+}
+.jobform-description-textarea-premium textarea {
+  min-height: 140px;
+  font-size: 1.08rem;
+  background: #f8fcf9;
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  box-shadow: 0 2px 8px rgba(26, 138, 86, 0.03);
+}
+.jobform-salary-input-premium input {
+  padding-left: 2.2rem;
+}
+.jobform-actions-bottom-premium {
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+  margin-top: 2.5rem;
+}
+.jobform-submit-btn-premium {
+  font-size: 1.13rem;
+  padding: 1.1rem 2.2rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 12px 32px rgba(26, 138, 86, 0.13);
+}
+.jobform-preview-sticky-premium {
+  position: sticky;
+  top: 1.5rem;
+  z-index: 2;
+  display: grid;
+  gap: 1.1rem;
+}
+.jobform-preview-label-premium {
+  font-size: 1.08rem;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.04em;
+}
+@media (max-width: 1200px) {
+  .jobform-shell-premium {
+    grid-template-columns: 1fr;
+  }
+  .jobform-preview-sticky-premium {
+    position: static;
+    margin-top: 2.2rem;
+  }
+}
