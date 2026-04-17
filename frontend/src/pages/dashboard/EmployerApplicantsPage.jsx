@@ -23,6 +23,11 @@ export default function EmployerApplicantsPage() {
     setState({ loading: false, job: res.data?.job || null, applications: res.data?.applications || [] });
   };
 
+  const refreshApplicants = async (nextFilters = filters) => {
+    setState((current) => ({ ...current, loading: true }));
+    await loadApplicants(nextFilters);
+  };
+
   useEffect(() => {
     loadApplicants().catch(() => setState({ loading: false, job: null, applications: [] }));
   }, [jobId]);
@@ -41,12 +46,11 @@ export default function EmployerApplicantsPage() {
           <Input label="Education keyword" value={filters.education} onChange={(e) => setFilters((current) => ({ ...current, education: e.target.value }))} placeholder="B.Tech, MBA" />
         </div>
         <div className="dashboard-actions">
-          <Button variant="secondary" onClick={async () => { setState((current) => ({ ...current, loading: true })); await loadApplicants(filters); }}>Apply filters</Button>
+          <Button variant="secondary" onClick={async () => { await refreshApplicants(filters); }}>Apply filters</Button>
           <Button variant="ghost" onClick={async () => {
             const cleared = { keyword: '', skills: '', minExperience: '', education: '' };
             setFilters(cleared);
-            setState((current) => ({ ...current, loading: true }));
-            await loadApplicants(cleared);
+            await refreshApplicants(cleared);
           }}>Clear</Button>
         </div>
       </Card>
@@ -69,7 +73,11 @@ export default function EmployerApplicantsPage() {
                   <td>{application.resumeSnapshot?.fileName || '-'}</td>
                   <td>
                     <div className="form-links">
-                      <Select defaultValue={application.status} onChange={async (e) => { await employerApi.updateApplicantStatus(application._id, { status: e.target.value }); toast.success('Status updated'); }}>
+                      <Select defaultValue={application.status} onChange={async (e) => {
+                        await employerApi.updateApplicantStatus(application._id, { status: e.target.value });
+                        toast.success('Status updated');
+                        await loadApplicants(filters);
+                      }}>
                         <option value="pending">Pending</option>
                         <option value="reviewed">Reviewed</option>
                         <option value="interview_scheduled">Interview Scheduled</option>
@@ -88,8 +96,7 @@ export default function EmployerApplicantsPage() {
                           interviewLocation: location || ''
                         });
                         toast.success('Interview scheduled');
-                        const refreshed = await employerApi.applicants(jobId, filters);
-                        setState({ loading: false, job: refreshed.data?.job || null, applications: refreshed.data?.applications || [] });
+                        await loadApplicants(filters);
                       }}>Schedule interview</Button>
                       <Button variant="secondary" size="sm" onClick={async () => {
                         const blob = await applicationsApi.downloadResume(application._id);

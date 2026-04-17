@@ -60,6 +60,33 @@ export default function HomePage() {
   // Filter jobs based on Local/Global selection
   const getFilteredJobs = () => {
     const jobsList = Array.isArray(jobs) ? jobs : [];
+    const sriLankaCities = [
+      'colombo',
+      'gampaha',
+      'kalutara',
+      'kandy',
+      'matale',
+      'nuwara eliya',
+      'galle',
+      'matara',
+      'hambantota',
+      'jaffna',
+      'kilinochchi',
+      'mannar',
+      'mullaitivu',
+      'vavuniya',
+      'trincomalee',
+      'batticaloa',
+      'ampara',
+      'anuradhapura',
+      'kurunegala',
+      'puttalam',
+      'polonnaruwa',
+      'badulla',
+      'monaragala',
+      'ratnapura',
+      'kegalle'
+    ];
 
     if (activeSwitch === 'global') {
       return jobsList;
@@ -70,14 +97,14 @@ export default function HomePage() {
       const locationName = getLabel(job.location, '').toLowerCase();
       const country = String(job.country || '').toLowerCase();
       const searchable = `${locationName} ${country}`;
+      const hasSriLankaCity = sriLankaCities.some((city) => searchable.includes(city));
 
       return (
         searchable.includes('sri lanka') ||
-        searchable.includes('colombo') ||
-        searchable.includes('kandy') ||
-        searchable.includes('galle') ||
-        searchable.includes('negombo') ||
-        country === 'lk'
+        searchable.includes('srilanka') ||
+        country === 'lk' ||
+        country === 'sl' ||
+        hasSriLankaCity
       );
     });
 
@@ -129,7 +156,7 @@ export default function HomePage() {
             <p className="section-eyebrow"><Sparkles size={14} className="eyebrow-icon" /> Recruitment partner</p>
             <h1>Hirexo Job Portal & Recruitment Partner</h1>
             <p>
-              Hirexo is a modern job portal in India focused on delivering the right talent fast and with precision.
+              Hirexo is a modern recruitment platform focused on delivering the right talent fast and with precision.
               We connect businesses with people who drive real impact and long-term success.
             </p>
             <div className="hero-actions">
@@ -192,24 +219,20 @@ export default function HomePage() {
           <SectionHeader eyebrow="Recent jobs" title="Premium Job Highlights" description="Top opportunities ready for your application or quick review." />
           <div className="jobs-switch-wrap">
             <div className="jobs-switch">
-              <span 
+              <button
+                type="button"
                 className={`jobs-switch-btn ${activeSwitch === 'local' ? 'active' : ''}`}
                 onClick={() => setActiveSwitch('local')}
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e) => e.key === 'Enter' && setActiveSwitch('local')}
               >
                 Local
-              </span>
-              <span 
+              </button>
+              <button
+                type="button"
                 className={`jobs-switch-btn ${activeSwitch === 'global' ? 'active' : ''}`}
                 onClick={() => setActiveSwitch('global')}
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e) => e.key === 'Enter' && setActiveSwitch('global')}
               >
                 Global
-              </span>
+              </button>
             </div>
           </div>
           <div className="grid-4">

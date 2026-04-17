@@ -12,7 +12,7 @@ import { formatDate, formatDateTime } from '../../utils/formatters';
 function getStatusMeta(status = '') {
   const key = String(status).toLowerCase();
   if (key === 'shortlisted') return { label: 'Shortlisted', tone: 'success' };
-  if (key === 'interview') return { label: 'Interview', tone: 'success' };
+  if (key === 'interview' || key === 'interview_scheduled') return { label: 'Interview scheduled', tone: 'success' };
   if (key === 'rejected') return { label: 'Rejected', tone: 'danger' };
   return { label: 'Applied', tone: 'neutral' };
 }
@@ -28,7 +28,7 @@ export default function CandidateApplicationsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const shortlistedCount = applications.filter((item) => ['shortlisted', 'interview'].includes(String(item.status || '').toLowerCase())).length;
+  const shortlistedCount = applications.filter((item) => ['shortlisted', 'interview', 'interview_scheduled'].includes(String(item.status || '').toLowerCase())).length;
 
   return (
     <>

@@ -377,7 +377,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: #5d7869;
-  background: none;
+  background: transparent;
   border: none;
   border-bottom: 3px solid transparent;
   cursor: pointer;
@@ -651,29 +651,9 @@
 .why-choose-feature p {
   margin: 0;
   color: #5a7467;
-  .why-choose-visual {
-    height: 128px;
-  }
-  .why-chip {
-    font-size: 0.68rem;
-    padding: 0.32rem 0.55rem;
-  }
-  .testimonial-ctas {
-    flex-direction: column;
-  }
-  .testimonial-cta-btn {
-    width: 100%;
-  }
   font-size: 0.84rem;
   line-height: 1.5;
 }
-  .why-choose-visual {
-    height: 116px;
-  }
-  .why-chip {
-    font-size: 0.64rem;
-    padding: 0.28rem 0.48rem;
-  }
 
 .why-choose-testimonial {
   position: relative;
@@ -1205,6 +1185,23 @@ footer {
     padding: 1.25rem;
   }
 
+  .why-choose-visual {
+    height: 128px;
+  }
+
+  .why-chip {
+    font-size: 0.68rem;
+    padding: 0.32rem 0.55rem;
+  }
+
+  .testimonial-ctas {
+    flex-direction: column;
+  }
+
+  .testimonial-cta-btn {
+    width: 100%;
+  }
+
   .blog-section {
     padding: 3.5rem 1.5rem;
   }
@@ -1358,6 +1355,15 @@ footer {
 
   .why-choose-us-content p {
     font-size: 1rem;
+  }
+
+  .why-choose-visual {
+    height: 116px;
+  }
+
+  .why-chip {
+    font-size: 0.64rem;
+    padding: 0.28rem 0.48rem;
   }
 
   .grid-3 {

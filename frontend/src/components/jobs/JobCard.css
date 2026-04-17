@@ -333,27 +333,36 @@
 
 @media (max-width: 768px) {
   .job-card-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: 64px 1fr;
     gap: 0.95rem;
+    align-items: start;
   }
 
   .job-list-logo {
-    width: 100%;
-    height: 150px;
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
   }
 
   .job-list-title {
-    font-size: 1.25rem;
+    font-size: 1.12rem;
+    line-height: 1.25;
   }
 
   .job-list-actions {
     width: 100%;
-    flex-direction: column;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.55rem;
   }
 
   .job-list-btn {
     justify-content: center;
     width: 100%;
+    min-height: 44px;
+    padding: 0.68rem 0.75rem;
+    font-size: 0.84rem;
   }
 
   .job-card-featured {
@@ -392,19 +401,27 @@
 @media (max-width: 560px) {
   .job-card-list {
     padding: 0.9rem;
+    grid-template-columns: 56px 1fr;
   }
 
   .job-list-title {
-    font-size: 1.15rem;
+    font-size: 1.02rem;
   }
 
   .job-list-logo {
-    height: 120px;
+    width: 56px;
+    height: 56px;
   }
 
   .job-list-meta {
-    gap: 1rem;
+    gap: 0.55rem;
     margin-top: 0.25rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .job-list-actions {
+    grid-template-columns: 1fr;
   }
 
   .job-card-featured {

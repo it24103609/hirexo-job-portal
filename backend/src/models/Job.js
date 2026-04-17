@@ -27,20 +27,24 @@ const jobSchema = new mongoose.Schema(
       index: true
     },
     category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category'
+      type: String,
+      trim: true,
+      index: true
     },
     industry: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Industry'
+      type: String,
+      trim: true,
+      index: true
     },
     location: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Location'
+      type: String,
+      trim: true,
+      index: true
     },
     jobType: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'JobType'
+      type: String,
+      trim: true,
+      index: true
     },
     description: {
       type: String,

@@ -27,7 +27,7 @@ function getProfileCompletion(profile) {
 
 function getAppTone(status = '') {
   const key = String(status).toLowerCase();
-  if (key === 'shortlisted' || key === 'interview') return 'success';
+  if (key === 'shortlisted' || key === 'interview' || key === 'interview_scheduled') return 'success';
   if (key === 'rejected') return 'danger';
   return 'neutral';
 }
