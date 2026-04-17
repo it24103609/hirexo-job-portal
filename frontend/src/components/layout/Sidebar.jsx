@@ -16,7 +16,8 @@ import {
   Database,
   PencilLine,
   Mail,
-  BarChart3
+  BarChart3,
+  Sparkles
 } from 'lucide-react';
 import { siteContent } from '../../data/siteContent';
 import { useAuth } from '../../contexts/AuthContext';
@@ -79,12 +80,47 @@ export default function Sidebar({ role }) {
     const parts = name.split(/\s+/).slice(0, 2);
     return parts.map((part) => part[0]?.toUpperCase() || '').join('') || 'CA';
   }, [user]);
+  const adminGroups = useMemo(() => {
+    if (role !== 'admin') return [];
+
+    return [
+      {
+        label: 'Overview',
+        links: links.filter((link) => ['/admin/dashboard', '/admin/reports', '/admin/notifications'].includes(link.to))
+      },
+      {
+        label: 'Operations',
+        links: links.filter((link) => ['/admin/users', '/admin/jobs', '/admin/inquiries'].includes(link.to))
+      },
+      {
+        label: 'Content & Setup',
+        links: links.filter((link) => ['/admin/blogs', '/admin/master-data'].includes(link.to))
+      }
+    ].filter((group) => group.links.length);
+  }, [links, role]);
 
   return (
     <aside className={`dashboard-sidebar dashboard-sidebar-${role}`} aria-label={`${role} dashboard navigation`}>
       <div className="sidebar-brand">
         <BrandIdentity subtitle={`${role} dashboard`} />
       </div>
+
+      {role === 'admin' ? (
+        <div className="admin-sidebar-identity">
+          <div className="admin-sidebar-top">
+            <div className="candidate-avatar admin-sidebar-avatar" aria-hidden="true">{initials}</div>
+            <div>
+              <span className="admin-sidebar-badge"><Sparkles size={12} /> Admin Control</span>
+              <strong>{user?.name || 'Hirexo Admin'}</strong>
+              <p>{user?.email || 'admin@hirexo.com'}</p>
+            </div>
+          </div>
+          <div className="admin-sidebar-meta">
+            <span>Secure moderation workspace</span>
+            <span>Live platform oversight</span>
+          </div>
+        </div>
+      ) : null}
 
       {role === 'candidate' ? (
         <div className="candidate-mini-card">
@@ -108,22 +144,48 @@ export default function Sidebar({ role }) {
         </div>
       ) : null}
 
-      <nav className="sidebar-nav">
-        {links.map((link) => (
-          <NavLink
-            key={link.to}
-            to={link.to}
-            end={link.to === `/${role}/dashboard`}
-            className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
-          >
-            {(() => {
-              const Icon = iconByPath[link.to] || LayoutDashboard;
-              return <Icon size={18} className="sidebar-link-icon" aria-hidden="true" />;
-            })()}
-            <span>{link.label}</span>
-          </NavLink>
-        ))}
-      </nav>
+      {role === 'admin' ? (
+        <div className="sidebar-group-stack">
+          {adminGroups.map((group) => (
+            <div key={group.label} className="sidebar-group">
+              <p className="sidebar-group-label">{group.label}</p>
+              <nav className="sidebar-nav" aria-label={group.label}>
+                {group.links.map((link) => (
+                  <NavLink
+                    key={link.to}
+                    to={link.to}
+                    end={link.to === `/${role}/dashboard`}
+                    className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                  >
+                    {(() => {
+                      const Icon = iconByPath[link.to] || LayoutDashboard;
+                      return <Icon size={18} className="sidebar-link-icon" aria-hidden="true" />;
+                    })()}
+                    <span>{link.label}</span>
+                  </NavLink>
+                ))}
+              </nav>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <nav className="sidebar-nav">
+          {links.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              end={link.to === `/${role}/dashboard`}
+              className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+            >
+              {(() => {
+                const Icon = iconByPath[link.to] || LayoutDashboard;
+                return <Icon size={18} className="sidebar-link-icon" aria-hidden="true" />;
+              })()}
+              <span>{link.label}</span>
+            </NavLink>
+          ))}
+        </nav>
+      )}
 
       {role === 'candidate' ? (
         <div className="sidebar-help-card">

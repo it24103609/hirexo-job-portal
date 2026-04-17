@@ -7,9 +7,13 @@ import Input from '../../components/ui/Input';
 import Textarea from '../../components/ui/Textarea';
 import Loader from '../../components/ui/Loader';
 import Badge from '../../components/ui/Badge';
+import StatCard from '../../components/ui/StatCard';
+import EmptyState from '../../components/ui/EmptyState';
+import SectionHeader from '../../components/ui/SectionHeader';
 import { blogApi } from '../../services/blog.api';
 import { toast } from 'react-toastify';
 import { formatDate } from '../../utils/formatters';
+import { FileText, CheckCircle, Edit, Eye, Layers, Star, ListChecks, FilePlus2 } from 'lucide-react';
 
 const emptyForm = {
   id: '',
@@ -153,61 +157,112 @@ export default function AdminBlogsPage() {
     }
   };
 
+  // Stat cards for summary
+  const publishedCount = blogs.filter(b => b.published).length;
+  const draftCount = blogs.filter(b => !b.published).length;
+  const featuredCount = blogs.filter(b => b.featured).length;
+  const statCards = [
+    { label: 'Total Posts', value: blogs.length, icon: FileText, tone: 'default' },
+    { label: 'Published', value: publishedCount, icon: CheckCircle, tone: 'success' },
+    { label: 'Drafts', value: draftCount, icon: Edit, tone: 'neutral' },
+    { label: 'Featured', value: featuredCount, icon: Star, tone: 'primary' },
+  ];
+
   return (
     <>
       <Seo title="Blogs | Hirexo" description="Admin content management for blog posts." />
       <DashboardHeader
         title="Blog Management"
-        description="Create, edit, publish, and remove blog posts for the public site."
-        actions={<Button variant="secondary" onClick={resetForm}>New blog post</Button>}
+        description="Create, edit, publish, and manage blog posts for the public site."
+        actions={
+          <div style={{ display: 'flex', gap: 10 }}>
+            <Button variant="secondary" onClick={resetForm}><FilePlus2 size={16} style={{marginRight: 6}} /> New Post</Button>
+            <Button variant="ghost"><Eye size={16} style={{marginRight: 6}} /> View All</Button>
+          </div>
+        }
       />
 
-      <Card>
-        <form className="form-grid" onSubmit={onSubmit}>
-          <Input label="Title" value={form.title} onChange={(e) => setForm((current) => ({ ...current, title: e.target.value }))} required />
-          <Textarea label="Excerpt" value={form.excerpt} onChange={(e) => setForm((current) => ({ ...current, excerpt: e.target.value }))} rows={3} />
-          <Textarea label="Content" value={form.content} onChange={(e) => setForm((current) => ({ ...current, content: e.target.value }))} rows={10} required />
-          <Input label="Tags (comma separated)" value={form.tags} onChange={(e) => setForm((current) => ({ ...current, tags: e.target.value }))} placeholder="hiring, careers, interview" />
+      {/* Stat cards row */}
+      <div className="form-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '1.1rem', marginBottom: '1.5rem' }}>
+        {statCards.map((card) => (
+          <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={card.tone} />
+        ))}
+      </div>
 
-          <div className="grid-2">
-            <Input label="Image URL" value={form.imageUrl} onChange={(e) => setForm((current) => ({ ...current, imageUrl: e.target.value }))} />
-            <Input label="Image alt text" value={form.imageAlt} onChange={(e) => setForm((current) => ({ ...current, imageAlt: e.target.value }))} />
-          </div>
-
-          <div className="grid-2">
-            <label className="field checkbox-row">
-              <input type="checkbox" checked={form.featured} onChange={(e) => setForm((current) => ({ ...current, featured: e.target.checked }))} />
-              <span>Featured post</span>
+      {/* Blog Management Workspace */}
+      <div className="form-grid" style={{ gridTemplateColumns: '2.1fr 1.1fr', gap: '2.2rem', alignItems: 'start', marginBottom: '2.2rem' }}>
+        {/* Main Editor Area */}
+        <Card style={{ padding: 0, overflow: 'visible' }}>
+          <form className="form-grid" style={{ padding: '1.5rem 1.2rem', gap: '1.3rem' }} onSubmit={onSubmit}>
+            <SectionHeader eyebrow={editing ? 'Edit Blog Post' : 'New Blog Post'} title={editing ? 'Edit Content' : 'Create Content'} align="left" />
+            {/* Basic Info */}
+            <div>
+              <Input label="Title" value={form.title} onChange={e => setForm(current => ({ ...current, title: e.target.value }))} required />
+              <Input label="Tags (comma separated)" value={form.tags} onChange={e => setForm(current => ({ ...current, tags: e.target.value }))} placeholder="hiring, careers, interview" />
+            </div>
+            {/* Excerpt */}
+            <div>
+              <Textarea label="Excerpt" value={form.excerpt} onChange={e => setForm(current => ({ ...current, excerpt: e.target.value }))} rows={3} />
+              <div style={{ color: 'var(--muted)', fontSize: 13, marginTop: 2 }}>Short summary, max 200 characters.</div>
+            </div>
+            {/* Content Editor */}
+            <div>
+              <label className="field">
+                <span className="field-label">Content</span>
+                <textarea
+                  className="input textarea"
+                  style={{ minHeight: 220, fontFamily: 'inherit', fontSize: 16, background: '#f8fcf9', border: '1.5px solid var(--border)', boxShadow: '0 2px 8px rgba(26,138,86,0.04)' }}
+                  value={form.content}
+                  onChange={e => setForm(current => ({ ...current, content: e.target.value }))}
+                  required
+                />
+              </label>
+              <div style={{ color: 'var(--muted)', fontSize: 13, marginTop: 2 }}>Write the full blog content here. Minimum 100 characters.</div>
+            </div>
+            {/* Media */}
+            <div className="grid-2" style={{ gap: '1.1rem' }}>
+              <Input label="Image URL" value={form.imageUrl} onChange={e => setForm(current => ({ ...current, imageUrl: e.target.value }))} />
+              <Input label="Image alt text" value={form.imageAlt} onChange={e => setForm(current => ({ ...current, imageAlt: e.target.value }))} />
+            </div>
+            {/* Editor Actions */}
+            <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+              <Button type="submit" disabled={submitting} variant="primary">{submitting ? 'Saving...' : editing ? 'Update Blog' : 'Create Blog'}</Button>
+              {editing ? <Button type="button" variant="secondary" onClick={resetForm}>Cancel Edit</Button> : null}
+              <Button type="button" variant="ghost"><Eye size={15} style={{marginRight: 5}} /> Preview</Button>
+            </div>
+          </form>
+        </Card>
+        {/* Publish/Settings Panel */}
+        <Card style={{ padding: '1.2rem 1.1rem', minWidth: 0 }}>
+          <SectionHeader eyebrow="Publish Settings" title="Post Settings" align="left" />
+          <div style={{ display: 'grid', gap: 18, marginTop: 10 }}>
+            <label className="field checkbox-row" style={{ fontWeight: 600, fontSize: 15 }}>
+              <input type="checkbox" checked={form.featured} onChange={e => setForm(current => ({ ...current, featured: e.target.checked }))} />
+              <span>Featured Post</span>
             </label>
-            <label className="field checkbox-row">
-              <input type="checkbox" checked={form.published} onChange={(e) => setForm((current) => ({ ...current, published: e.target.checked }))} />
-              <span>Publish immediately</span>
+            <label className="field checkbox-row" style={{ fontWeight: 600, fontSize: 15 }}>
+              <input type="checkbox" checked={form.published} onChange={e => setForm(current => ({ ...current, published: e.target.checked }))} />
+              <span>Publish Immediately</span>
             </label>
+            <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
+              <Button type="submit" disabled={submitting} variant="primary" style={{ flex: 1 }}>{submitting ? 'Saving...' : editing ? 'Update' : 'Create'}</Button>
+              <Button type="button" variant="ghost" style={{ flex: 1 }}><Eye size={15} style={{marginRight: 5}} /> Preview</Button>
+            </div>
           </div>
+        </Card>
+      </div>
 
-          <div className="dashboard-actions">
-            <Button type="submit" disabled={submitting}>{submitting ? 'Saving...' : editing ? 'Update blog' : 'Create blog'}</Button>
-            {editing ? <Button type="button" variant="secondary" onClick={resetForm}>Cancel edit</Button> : null}
-          </div>
-        </form>
-      </Card>
-
+      {/* Blog Posts Management Table */}
       <Card>
+        <SectionHeader eyebrow="Manage Posts" title="All Blog Posts" align="left" />
         {loading ? <Loader label="Loading blogs..." /> : null}
 
         {!loading && error ? (
-          <div className="empty-state">
-            <h3>Could not load blog posts</h3>
-            <p>{error}</p>
-            <Button onClick={loadBlogs}>Retry</Button>
-          </div>
+          <EmptyState title="Could not load blog posts" description={error} actionLabel="Retry" onAction={loadBlogs} />
         ) : null}
 
         {!loading && !error && !blogs.length ? (
-          <div className="empty-state">
-            <h3>No blog posts yet</h3>
-            <p>Create your first post using the form above.</p>
-          </div>
+          <EmptyState title="No blog posts yet" description="Create your first post using the form above." actionLabel={null} />
         ) : null}
 
         {!loading && !error && blogs.length ? (
@@ -232,20 +287,20 @@ export default function AdminBlogsPage() {
                       <small>{blog.slug}</small>
                     </td>
                     <td>
-                      <Badge tone="neutral">{blog.published ? 'Published' : 'Draft'}</Badge>
+                      <Badge tone={blog.published ? 'success' : 'neutral'}>{blog.published ? 'Published' : 'Draft'}</Badge>
                     </td>
-                    <td>{blog.featured ? 'Yes' : 'No'}</td>
+                    <td>{blog.featured ? <Badge tone="primary">Featured</Badge> : <span style={{ color: 'var(--muted)' }}>No</span>}</td>
                     <td>{blog.viewCount || 0}</td>
                     <td>{formatDate(blog.publishedAt || blog.createdAt)}</td>
                     <td>
                       <div className="form-links">
-                        <Button size="sm" variant="secondary" onClick={() => onEdit(blog)}>Edit</Button>
+                        <Button size="sm" variant="secondary" onClick={() => onEdit(blog)}><Edit size={14} style={{marginRight: 4}} /> Edit</Button>
                         {!blog.published ? (
-                          <Button size="sm" variant="secondary" disabled={publishingId === blog._id} onClick={() => onPublish(blog._id)}>
-                            {publishingId === blog._id ? 'Publishing...' : 'Publish'}
+                          <Button size="sm" variant="primary" disabled={publishingId === blog._id} onClick={() => onPublish(blog._id)}>
+                            {publishingId === blog._id ? 'Publishing...' : <><CheckCircle size={14} style={{marginRight: 4}} /> Publish</>}
                           </Button>
                         ) : null}
-                        <Button size="sm" variant="secondary" disabled={deletingId === blog._id} onClick={() => onDelete(blog._id)}>
+                        <Button size="sm" variant="danger" disabled={deletingId === blog._id} onClick={() => onDelete(blog._id)}>
                           {deletingId === blog._id ? 'Deleting...' : 'Delete'}
                         </Button>
                       </div>
