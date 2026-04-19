@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,10 +10,39 @@ import '../styles/candidate-portal.css';
 export default function DashboardLayout({ role }) {
   const { loading, isAuthenticated, user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     document.body.classList.toggle('dashboard-nav-open', sidebarOpen);
     return () => document.body.classList.remove('dashboard-nav-open');
+  }, [sidebarOpen]);
+
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 1024) {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!sidebarOpen) return;
+
+    const onEscape = (event) => {
+      if (event.key === 'Escape') {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', onEscape);
+    return () => window.removeEventListener('keydown', onEscape);
   }, [sidebarOpen]);
 
   if (loading) return <Loader label="Loading dashboard..." />;
@@ -28,6 +57,7 @@ export default function DashboardLayout({ role }) {
           onClick={() => setSidebarOpen((current) => !current)}
           aria-expanded={sidebarOpen}
           aria-controls="dashboard-sidebar"
+          aria-label={`${sidebarOpen ? 'Close' : 'Open'} ${role} dashboard menu`}
         >
           {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
           <span>{sidebarOpen ? 'Close menu' : 'Open menu'}</span>

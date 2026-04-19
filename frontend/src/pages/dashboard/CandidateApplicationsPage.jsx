@@ -20,6 +20,8 @@ function getStatusMeta(status = '') {
 export default function CandidateApplicationsPage() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [messagePanels, setMessagePanels] = useState({});
+  const [messagesByApplication, setMessagesByApplication] = useState({});
 
   useEffect(() => {
     applicationsApi.mine()
@@ -29,6 +31,47 @@ export default function CandidateApplicationsPage() {
   }, []);
 
   const shortlistedCount = applications.filter((item) => ['shortlisted', 'interview', 'interview_scheduled'].includes(String(item.status || '').toLowerCase())).length;
+
+  const toggleMessages = async (applicationId) => {
+    const isOpen = Boolean(messagePanels[applicationId]?.open);
+    if (isOpen) {
+      setMessagePanels((current) => ({
+        ...current,
+        [applicationId]: { ...(current[applicationId] || {}), open: false }
+      }));
+      return;
+    }
+
+    setMessagePanels((current) => ({
+      ...current,
+      [applicationId]: { ...(current[applicationId] || {}), open: true, text: current[applicationId]?.text || '' }
+    }));
+
+    if (!messagesByApplication[applicationId]) {
+      const res = await applicationsApi.messages(applicationId);
+      setMessagesByApplication((current) => ({ ...current, [applicationId]: res.data?.messages || [] }));
+    }
+  };
+
+  const setMessageText = (applicationId, text) => {
+    setMessagePanels((current) => ({
+      ...current,
+      [applicationId]: { ...(current[applicationId] || {}), open: true, text }
+    }));
+  };
+
+  const sendMessage = async (applicationId) => {
+    const text = String(messagePanels[applicationId]?.text || '').trim();
+    if (!text) return;
+
+    await applicationsApi.sendMessage(applicationId, { message: text });
+    const refreshed = await applicationsApi.messages(applicationId);
+    setMessagesByApplication((current) => ({ ...current, [applicationId]: refreshed.data?.messages || [] }));
+    setMessagePanels((current) => ({
+      ...current,
+      [applicationId]: { ...(current[applicationId] || {}), text: '', open: true }
+    }));
+  };
 
   return (
     <>
@@ -61,7 +104,7 @@ export default function CandidateApplicationsPage() {
             <div className="table-wrap">
               <table className="table candidate-table">
                 <thead>
-                  <tr><th>Job</th><th>Company</th><th>Status</th><th>Interview</th><th>Applied</th></tr>
+                  <tr><th>Job</th><th>Company</th><th>Status</th><th>Interview</th><th>Applied</th><th>Communication</th></tr>
                 </thead>
                 <tbody>
                   {applications.map((item) => {
@@ -75,6 +118,32 @@ export default function CandidateApplicationsPage() {
                         <td><Badge tone={status.tone}>{status.label}</Badge></td>
                         <td>{item.interviewScheduledAt ? formatDateTime(item.interviewScheduledAt) : '-'}</td>
                         <td>{formatDate(item.createdAt)}</td>
+                        <td>
+                          <Button size="sm" variant="secondary" onClick={async () => { await toggleMessages(item._id); }}>
+                            {messagePanels[item._id]?.open ? 'Hide' : 'Messages'}
+                          </Button>
+                          {messagePanels[item._id]?.open ? (
+                            <div className="mt-1" style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 10, minWidth: 240 }}>
+                              <div style={{ maxHeight: 160, overflow: 'auto', display: 'grid', gap: 6, marginBottom: 8 }}>
+                                {(messagesByApplication[item._id] || []).length ? (messagesByApplication[item._id] || []).map((message) => (
+                                  <div key={message._id} style={{ background: 'rgba(26,138,86,0.06)', borderRadius: 8, padding: '6px 8px' }}>
+                                    <strong>{message.senderUser?.name || 'User'}</strong>
+                                    <div>{message.message}</div>
+                                  </div>
+                                )) : <small>No messages yet.</small>}
+                              </div>
+                              <input
+                                className="input"
+                                value={messagePanels[item._id]?.text || ''}
+                                onChange={(event) => setMessageText(item._id, event.target.value)}
+                                placeholder="Type a message"
+                              />
+                              <div className="dashboard-actions">
+                                <Button size="sm" variant="secondary" onClick={async () => { await sendMessage(item._id); }}>Send</Button>
+                              </div>
+                            </div>
+                          ) : null}
+                        </td>
                       </tr>
                     );
                   })}

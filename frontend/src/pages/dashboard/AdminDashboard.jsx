@@ -221,7 +221,7 @@ export default function AdminDashboard() {
     { label: 'Manage Users', to: '/admin/users', icon: Users, description: 'Review employers, candidates, and account access.' },
     { label: 'Add Job', to: '/admin/jobs', icon: BriefcaseBusiness, description: 'Open job moderation and queue review tasks.' },
     { label: 'Review Inquiries', to: '/admin/inquiries', icon: Mail, description: 'Reply to leads and clear new contact requests.' },
-    { label: 'Publish Blog', to: '/admin/blogs', icon: PencilLine, description: 'Create or publish editorial updates.' },
+    { label: 'Publish Blog', to: '/admin/blogs/new', icon: PencilLine, description: 'Create or publish editorial updates.' },
     { label: 'View Reports', to: '/admin/reports', icon: FileDown, description: 'Inspect platform analytics and reporting views.' }
   ];
 
@@ -308,7 +308,7 @@ export default function AdminDashboard() {
               <BriefcaseBusiness size={16} />
               Add Job
             </Button>
-            <Button as={Link} to="/admin/blogs" size="sm" variant="secondary">
+            <Button as={Link} to="/admin/blogs/new" size="sm" variant="secondary">
               <PencilLine size={16} />
               Add Blog
             </Button>

@@ -4,8 +4,10 @@ const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 const apiResponse = require('../utils/apiResponse');
 const Application = require('../models/Application');
+const ApplicationMessage = require('../models/ApplicationMessage');
 const Job = require('../models/Job');
 const CandidateProfile = require('../models/CandidateProfile');
+const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
 const { JOB_REVIEW_STATUS, JOB_STATUS, APPLICATION_STATUS, NOTIFICATION_TYPES } = require('../utils/constants');
 const { createNotification } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
@@ -37,6 +39,12 @@ function buildStatusEmail(status, interviewAt) {
     subject: 'Application status updated',
     text: `Your application status changed to ${status}.`
   };
+}
+
+function userCanAccessApplication(application, user) {
+  const isCandidate = String(application.candidateUser?._id || application.candidateUser) === String(user._id);
+  const isEmployer = String(application.employerUser?._id || application.employerUser) === String(user._id);
+  return isCandidate || isEmployer || user.role === 'admin';
 }
 
 const applyForJob = asyncHandler(async (req, res) => {
@@ -214,10 +222,31 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
   }
 
   const statusEmail = buildStatusEmail(req.body.status, application.interviewScheduledAt);
+  const job = await Job.findById(application.job).select('title companyName').lean();
+
+  const attachments = [];
+  if (req.body.status === APPLICATION_STATUS.INTERVIEW_SCHEDULED && application.interviewScheduledAt) {
+    attachments.push({
+      filename: 'hirexo-interview-invite.ics',
+      content: buildInterviewCalendarInvite({
+        candidateName: application.candidateUser?.name,
+        companyName: job?.companyName,
+        jobTitle: job?.title,
+        scheduledAt: application.interviewScheduledAt,
+        interviewMode: application.interviewMode,
+        interviewLocation: application.interviewLocation,
+        interviewMeetingLink: application.interviewMeetingLink,
+        interviewNotes: application.interviewNotes
+      }),
+      contentType: 'text/calendar; method=REQUEST; charset=UTF-8'
+    });
+  }
+
   await sendEmail({
     to: application.candidateUser.email,
     subject: statusEmail.subject,
-    text: statusEmail.text
+    text: statusEmail.text,
+    attachments
   });
 
   res.json(apiResponse({
@@ -226,10 +255,105 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
   }));
 });
 
+const getApplicationMessages = asyncHandler(async (req, res) => {
+  const application = await Application.findById(req.params.id)
+    .populate('candidateUser', 'name email')
+    .populate('employerUser', 'name email')
+    .populate('job', 'title companyName');
+
+  if (!application) {
+    throw new AppError('Application not found', 404);
+  }
+
+  if (!userCanAccessApplication(application, req.user)) {
+    throw new AppError('You cannot access messages for this application', 403);
+  }
+
+  const messages = await ApplicationMessage.find({ application: application._id })
+    .populate('senderUser', 'name role')
+    .sort({ createdAt: 1 })
+    .limit(200);
+
+  res.json(apiResponse({
+    message: 'Application messages fetched successfully',
+    data: {
+      applicationId: application._id,
+      jobTitle: application.job?.title,
+      companyName: application.job?.companyName,
+      messages
+    }
+  }));
+});
+
+const sendApplicationMessage = asyncHandler(async (req, res) => {
+  const text = String(req.body.message || '').trim();
+  if (!text) {
+    throw new AppError('Message is required', 400);
+  }
+
+  const application = await Application.findById(req.params.id)
+    .populate('candidateUser', 'name email')
+    .populate('employerUser', 'name email')
+    .populate('job', 'title companyName');
+
+  if (!application) {
+    throw new AppError('Application not found', 404);
+  }
+
+  if (!userCanAccessApplication(application, req.user)) {
+    throw new AppError('You cannot send a message for this application', 403);
+  }
+
+  const senderIsCandidate = String(application.candidateUser?._id) === String(req.user._id);
+  const senderIsEmployer = String(application.employerUser?._id) === String(req.user._id);
+
+  if (!senderIsCandidate && !senderIsEmployer) {
+    throw new AppError('Only candidate or employer can send messages', 403);
+  }
+
+  const recipient = senderIsCandidate ? application.employerUser : application.candidateUser;
+  const senderName = req.user.name || (senderIsCandidate ? application.candidateUser?.name : application.employerUser?.name) || 'User';
+
+  const message = await ApplicationMessage.create({
+    application: application._id,
+    senderUser: req.user._id,
+    recipientUser: recipient._id,
+    message: text
+  });
+
+  await createNotification({
+    userId: recipient._id,
+    type: NOTIFICATION_TYPES.MESSAGE,
+    title: 'New application message',
+    message: `${senderName}: ${text.slice(0, 120)}`,
+    metadata: {
+      applicationId: application._id,
+      jobId: application.job?._id
+    }
+  });
+
+  if (recipient.email) {
+    await sendEmail({
+      to: recipient.email,
+      subject: `New message about ${application.job?.title || 'your application'}`,
+      text: `${senderName} sent you a message:\n\n${text}`
+    });
+  }
+
+  const populated = await ApplicationMessage.findById(message._id).populate('senderUser', 'name role');
+
+  res.status(201).json(apiResponse({
+    message: 'Message sent successfully',
+    data: populated
+  }));
+});
+
 module.exports = {
   applyForJob,
   getMyApplications,
   getApplicationsByJob,
   downloadApplicationResume,
-  updateApplicationStatus
+  updateApplicationStatus,
+  getApplicationMessages,
+  sendApplicationMessage
 };

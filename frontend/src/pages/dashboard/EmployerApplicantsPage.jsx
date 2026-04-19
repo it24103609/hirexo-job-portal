@@ -8,6 +8,7 @@ import Select from '../../components/ui/Select';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Loader from '../../components/ui/Loader';
+import Textarea from '../../components/ui/Textarea';
 import { employerApi } from '../../services/employer.api';
 import { applicationsApi } from '../../services/applications.api';
 import { toast } from 'react-toastify';
@@ -16,7 +17,87 @@ import { formatDateTime } from '../../utils/formatters';
 export default function EmployerApplicantsPage() {
   const { jobId } = useParams();
   const [state, setState] = useState({ loading: true, job: null, applications: [] });
-  const [filters, setFilters] = useState({ keyword: '', skills: '', minExperience: '', education: '' });
+  const [filters, setFilters] = useState({ keyword: '', skills: '', minExperience: '', education: '', sortBy: 'ai' });
+  const [scheduleForms, setScheduleForms] = useState({});
+  const [messagePanels, setMessagePanels] = useState({});
+  const [messagesByApplication, setMessagesByApplication] = useState({});
+
+  const toggleScheduleForm = (applicationId) => {
+    setScheduleForms((current) => {
+      const existing = current[applicationId];
+      if (existing?.open) {
+        return { ...current, [applicationId]: { ...existing, open: false } };
+      }
+
+      return {
+        ...current,
+        [applicationId]: {
+          open: true,
+          interviewScheduledAt: existing?.interviewScheduledAt || '',
+          interviewMode: existing?.interviewMode || 'video',
+          interviewLocation: existing?.interviewLocation || '',
+          interviewMeetingLink: existing?.interviewMeetingLink || '',
+          interviewNotes: existing?.interviewNotes || ''
+        }
+      };
+    });
+  };
+
+  const updateScheduleField = (applicationId, key, value) => {
+    setScheduleForms((current) => ({
+      ...current,
+      [applicationId]: {
+        ...(current[applicationId] || {}),
+        open: true,
+        [key]: value
+      }
+    }));
+  };
+
+  const toggleMessagePanel = async (applicationId) => {
+    const isOpen = Boolean(messagePanels[applicationId]?.open);
+    if (isOpen) {
+      setMessagePanels((current) => ({
+        ...current,
+        [applicationId]: { ...(current[applicationId] || {}), open: false }
+      }));
+      return;
+    }
+
+    setMessagePanels((current) => ({
+      ...current,
+      [applicationId]: { ...(current[applicationId] || {}), open: true, text: current[applicationId]?.text || '' }
+    }));
+
+    if (!messagesByApplication[applicationId]) {
+      const res = await applicationsApi.messages(applicationId);
+      setMessagesByApplication((current) => ({ ...current, [applicationId]: res.data?.messages || [] }));
+    }
+  };
+
+  const setMessageText = (applicationId, value) => {
+    setMessagePanels((current) => ({
+      ...current,
+      [applicationId]: { ...(current[applicationId] || {}), open: true, text: value }
+    }));
+  };
+
+  const sendMessage = async (applicationId) => {
+    const text = String(messagePanels[applicationId]?.text || '').trim();
+    if (!text) {
+      toast.error('Message cannot be empty');
+      return;
+    }
+
+    await applicationsApi.sendMessage(applicationId, { message: text });
+    const refreshed = await applicationsApi.messages(applicationId);
+    setMessagesByApplication((current) => ({ ...current, [applicationId]: refreshed.data?.messages || [] }));
+    setMessagePanels((current) => ({
+      ...current,
+      [applicationId]: { ...(current[applicationId] || {}), open: true, text: '' }
+    }));
+    toast.success('Message sent to candidate');
+  };
 
   const loadApplicants = async (nextFilters = filters) => {
     const res = await employerApi.applicants(jobId, nextFilters);
@@ -45,10 +126,16 @@ export default function EmployerApplicantsPage() {
           <Input label="Min experience" type="number" value={filters.minExperience} onChange={(e) => setFilters((current) => ({ ...current, minExperience: e.target.value }))} placeholder="2" />
           <Input label="Education keyword" value={filters.education} onChange={(e) => setFilters((current) => ({ ...current, education: e.target.value }))} placeholder="B.Tech, MBA" />
         </div>
+        <div className="grid-4">
+          <Select label="Sort by" value={filters.sortBy} onChange={(e) => setFilters((current) => ({ ...current, sortBy: e.target.value }))}>
+            <option value="ai">AI match score</option>
+            <option value="recent">Most recent</option>
+          </Select>
+        </div>
         <div className="dashboard-actions">
           <Button variant="secondary" onClick={async () => { await refreshApplicants(filters); }}>Apply filters</Button>
           <Button variant="ghost" onClick={async () => {
-            const cleared = { keyword: '', skills: '', minExperience: '', education: '' };
+            const cleared = { keyword: '', skills: '', minExperience: '', education: '', sortBy: 'ai' };
             setFilters(cleared);
             await refreshApplicants(cleared);
           }}>Clear</Button>
@@ -57,7 +144,7 @@ export default function EmployerApplicantsPage() {
       <Card>
         <div className="table-wrap">
           <table className="table">
-            <thead><tr><th>Candidate</th><th>Profile</th><th>Status</th><th>Resume</th><th>Action</th></tr></thead>
+            <thead><tr><th>Candidate</th><th>Profile</th><th>AI Match</th><th>Status</th><th>Resume</th><th>Action</th></tr></thead>
             <tbody>
               {state.applications.length ? state.applications.map((application) => (
                 <tr key={application._id}>
@@ -68,6 +155,12 @@ export default function EmployerApplicantsPage() {
                       <br />
                       Experience: {application.candidateProfile?.experienceYears ?? 0} years
                     </small>
+                  </td>
+                  <td>
+                    <Badge tone={application.aiMatchScore >= 80 ? 'success' : application.aiMatchScore >= 60 ? 'neutral' : 'danger'}>
+                      {application.aiMatchScore ?? 0}%
+                    </Badge>
+                    <div><small>{application.aiMatchLabel || 'Fit unknown'}</small></div>
                   </td>
                   <td><Badge tone={application.status === 'shortlisted' ? 'success' : 'neutral'}>{application.status}</Badge></td>
                   <td>{application.resumeSnapshot?.fileName || '-'}</td>
@@ -84,20 +177,8 @@ export default function EmployerApplicantsPage() {
                         <option value="shortlisted">Shortlisted</option>
                         <option value="rejected">Rejected</option>
                       </Select>
-                      <Button variant="secondary" size="sm" onClick={async () => {
-                        const input = window.prompt('Interview date/time (YYYY-MM-DDTHH:mm), e.g. 2026-04-20T14:30');
-                        if (!input) return;
-                        const mode = window.prompt('Interview mode: phone | video | onsite', 'video') || 'video';
-                        const location = window.prompt('Interview location / meeting details', 'Google Meet');
-                        await employerApi.updateApplicantStatus(application._id, {
-                          status: 'interview_scheduled',
-                          interviewScheduledAt: input,
-                          interviewMode: mode,
-                          interviewLocation: location || ''
-                        });
-                        toast.success('Interview scheduled');
-                        await loadApplicants(filters);
-                      }}>Schedule interview</Button>
+                      <Button variant="secondary" size="sm" onClick={() => toggleScheduleForm(application._id)}>Schedule interview</Button>
+                      <Button variant="secondary" size="sm" onClick={async () => { await toggleMessagePanel(application._id); }}>Message</Button>
                       <Button variant="secondary" size="sm" onClick={async () => {
                         const blob = await applicationsApi.downloadResume(application._id);
                         const url = URL.createObjectURL(blob);
@@ -105,10 +186,93 @@ export default function EmployerApplicantsPage() {
                         setTimeout(() => URL.revokeObjectURL(url), 1000);
                       }}>Resume</Button>
                     </div>
+                    {scheduleForms[application._id]?.open ? (
+                      <div className="mt-1" style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 12 }}>
+                        <div className="grid-4">
+                          <Input
+                            label="Date & time"
+                            type="datetime-local"
+                            value={scheduleForms[application._id]?.interviewScheduledAt || ''}
+                            onChange={(e) => updateScheduleField(application._id, 'interviewScheduledAt', e.target.value)}
+                          />
+                          <Select
+                            label="Mode"
+                            value={scheduleForms[application._id]?.interviewMode || 'video'}
+                            onChange={(e) => updateScheduleField(application._id, 'interviewMode', e.target.value)}
+                          >
+                            <option value="phone">Phone</option>
+                            <option value="video">Video</option>
+                            <option value="onsite">Onsite</option>
+                          </Select>
+                          <Input
+                            label="Location / platform"
+                            value={scheduleForms[application._id]?.interviewLocation || ''}
+                            onChange={(e) => updateScheduleField(application._id, 'interviewLocation', e.target.value)}
+                            placeholder="Google Meet / Office address"
+                          />
+                          <Input
+                            label="Meeting link"
+                            value={scheduleForms[application._id]?.interviewMeetingLink || ''}
+                            onChange={(e) => updateScheduleField(application._id, 'interviewMeetingLink', e.target.value)}
+                            placeholder="https://..."
+                          />
+                        </div>
+                        <Textarea
+                          label="Interview notes"
+                          value={scheduleForms[application._id]?.interviewNotes || ''}
+                          onChange={(e) => updateScheduleField(application._id, 'interviewNotes', e.target.value)}
+                          placeholder="Agenda, panel members, preparation notes"
+                        />
+                        <div className="dashboard-actions">
+                          <Button variant="secondary" size="sm" onClick={async () => {
+                            const schedule = scheduleForms[application._id] || {};
+                            if (!schedule.interviewScheduledAt) {
+                              toast.error('Interview date and time is required');
+                              return;
+                            }
+
+                            await employerApi.updateApplicantStatus(application._id, {
+                              status: 'interview_scheduled',
+                              interviewScheduledAt: schedule.interviewScheduledAt,
+                              interviewMode: schedule.interviewMode || 'video',
+                              interviewLocation: schedule.interviewLocation || '',
+                              interviewMeetingLink: schedule.interviewMeetingLink || '',
+                              interviewNotes: schedule.interviewNotes || ''
+                            });
+                            toast.success('Interview scheduled');
+                            await loadApplicants(filters);
+                            toggleScheduleForm(application._id);
+                          }}>Save interview</Button>
+                          <Button variant="ghost" size="sm" onClick={() => toggleScheduleForm(application._id)}>Cancel</Button>
+                        </div>
+                      </div>
+                    ) : null}
+                    {messagePanels[application._id]?.open ? (
+                      <div className="mt-1" style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 12 }}>
+                        <div style={{ maxHeight: 180, overflow: 'auto', marginBottom: 10, display: 'grid', gap: 8 }}>
+                          {(messagesByApplication[application._id] || []).length ? (messagesByApplication[application._id] || []).map((item) => (
+                            <div key={item._id} style={{ background: 'rgba(26,138,86,0.06)', borderRadius: 10, padding: '8px 10px' }}>
+                              <strong>{item.senderUser?.name || 'User'}</strong>
+                              <div>{item.message}</div>
+                            </div>
+                          )) : <small>No messages yet.</small>}
+                        </div>
+                        <Textarea
+                          label="Message to candidate"
+                          value={messagePanels[application._id]?.text || ''}
+                          onChange={(e) => setMessageText(application._id, e.target.value)}
+                          placeholder="Share next steps or ask for details"
+                        />
+                        <div className="dashboard-actions">
+                          <Button variant="secondary" size="sm" onClick={async () => { await sendMessage(application._id); }}>Send message</Button>
+                          <Button variant="ghost" size="sm" onClick={async () => { await toggleMessagePanel(application._id); }}>Close</Button>
+                        </div>
+                      </div>
+                    ) : null}
                     {application.interviewScheduledAt ? <small>Interview: {formatDateTime(application.interviewScheduledAt)}</small> : null}
                   </td>
                 </tr>
-              )) : <tr><td colSpan="5">No applicants found for current filters.</td></tr>}
+              )) : <tr><td colSpan="6">No applicants found for current filters.</td></tr>}
             </tbody>
           </table>
         </div>

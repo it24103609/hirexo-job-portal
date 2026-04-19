@@ -13,6 +13,8 @@ router.use(authorizeRoles(ROLES.ADMIN));
 
 router.get('/dashboard', adminController.dashboard);
 router.get('/reports', adminController.reports);
+router.get('/settings', adminController.getSettings);
+router.patch('/settings', adminController.updateSettings);
 router.get('/users', adminController.listUsers);
 router.patch('/users/:id/block', adminController.blockUser);
 router.patch('/users/:id/unblock', adminController.unblockUser);

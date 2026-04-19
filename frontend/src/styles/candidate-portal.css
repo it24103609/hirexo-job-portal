@@ -1908,7 +1908,7 @@
   }
 
   .dashboard-sidebar-candidate .sidebar-link {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .candidate-dashboard-grid {
@@ -1925,12 +1925,22 @@
   }
 
   .dashboard-sidebar-admin .sidebar-link {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .admin-dashboard-layout,
   .admin-hero-strip {
     grid-template-columns: 1fr;
+  }
+
+  .admin-hero-strip,
+  .employer-hero-strip {
+    padding: 1rem;
+  }
+
+  .admin-hero-pills,
+  .employer-hero-pills {
+    justify-content: flex-start;
   }
 
   .admin-panel-wide {
@@ -1947,9 +1957,26 @@
   .employer-panel-wide {
     grid-column: auto;
   }
+
+  .admin-workspace-header .dashboard-actions,
+  .employer-workspace-header .dashboard-actions,
+  .candidate-portal-main .dashboard-actions {
+    width: 100%;
+  }
 }
 
 @media (max-width: 820px) {
+  .dashboard-sidebar .sidebar-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .dashboard-sidebar .sidebar-nav a {
+    flex: initial;
+    text-align: left;
+  }
+
   .candidate-portal-main {
     padding: 0.95rem;
   }
@@ -2040,6 +2067,16 @@
   .admin-mini-meta {
     justify-content: flex-start;
     justify-items: start;
+  }
+
+  .admin-workspace-header,
+  .employer-workspace-header {
+    align-items: flex-start;
+  }
+
+  .admin-workspace-header .dashboard-actions .btn,
+  .employer-workspace-header .dashboard-actions .btn {
+    flex: 1 1 100%;
   }
 }
 

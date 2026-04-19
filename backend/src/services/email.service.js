@@ -1,7 +1,7 @@
 const getTransporter = require('../config/email');
 const EmailLog = require('../models/EmailLog');
 
-async function sendEmail({ to, subject, html, text }) {
+async function sendEmail({ to, subject, html, text, attachments = [] }) {
   const transporter = getTransporter();
 
   if (!transporter) {
@@ -10,6 +10,7 @@ async function sendEmail({ to, subject, html, text }) {
       subject,
       html,
       text,
+      attachmentNames: attachments.map((item) => item.filename).filter(Boolean),
       status: 'skipped',
       skipped: true,
       error: 'SMTP not configured'
@@ -23,7 +24,8 @@ async function sendEmail({ to, subject, html, text }) {
       to,
       subject,
       html,
-      text
+      text,
+      attachments
     });
 
     await EmailLog.create({
@@ -31,6 +33,7 @@ async function sendEmail({ to, subject, html, text }) {
       subject,
       html,
       text,
+      attachmentNames: attachments.map((item) => item.filename).filter(Boolean),
       status: 'sent',
       skipped: false,
       messageId: info?.messageId,
@@ -47,6 +50,7 @@ async function sendEmail({ to, subject, html, text }) {
       subject,
       html,
       text,
+      attachmentNames: attachments.map((item) => item.filename).filter(Boolean),
       status: 'failed',
       skipped: false,
       error: error.message
