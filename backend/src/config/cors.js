@@ -21,12 +21,19 @@ function getAllowedOrigins() {
 }
 
 function corsMiddleware() {
-  const allowedOrigins = getAllowedOrigins();
+  let allowedOrigins = getAllowedOrigins();
   const allowVercelPreviews = String(process.env.ALLOW_VERCEL_PREVIEWS || 'false').toLowerCase() === 'true';
   const isDevelopment = env.nodeEnv === 'development';
 
+  // Fallback: if allowedOrigins empty, add default frontend
+  if (!allowedOrigins.size) {
+    allowedOrigins = new Set(['https://frontend-murex-two-67.vercel.app']);
+  }
+
   return cors({
     origin(origin, callback) {
+      // Debug print
+      console.log('[CORS] Incoming origin:', origin, '| Allowed:', Array.from(allowedOrigins));
       // Allow non-browser clients (server-to-server, curl, etc.)
       if (!origin) {
         return callback(null, true);
