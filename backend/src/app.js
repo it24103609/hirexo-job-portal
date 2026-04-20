@@ -43,6 +43,13 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/health', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Recruitment API is healthy'
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/candidates', candidateRoutes);
 app.use('/api/employers', employerRoutes);
@@ -53,6 +60,17 @@ app.use('/api/master-data', masterDataRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/notifications', notificationRoutes);
+
+app.use('/auth', authRoutes);
+app.use('/candidates', candidateRoutes);
+app.use('/employers', employerRoutes);
+app.use('/jobs', jobRoutes);
+app.use('/applications', applicationRoutes);
+app.use('/admin', adminRoutes);
+app.use('/master-data', masterDataRoutes);
+app.use('/blogs', blogRoutes);
+app.use('/contacts', contactRoutes);
+app.use('/notifications', notificationRoutes);
 
 app.use((req, res) => {
   res.status(404).json({
