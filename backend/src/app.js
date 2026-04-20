@@ -18,7 +18,10 @@ const blogRoutes = require('./routes/blog.routes');
 const contactRoutes = require('./routes/contact.routes');
 const notificationRoutes = require('./routes/notification.routes');
 
+
 const app = express();
+// Fix for Vercel/Cloud: trust proxy for correct client IP and rate-limit
+app.set('trust proxy', 1);
 
 app.use(helmet());
 app.use(corsMiddleware());
