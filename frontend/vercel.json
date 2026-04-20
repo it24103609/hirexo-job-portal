@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "https://backend-81me9mj41-it24103609s-projects.vercel.app/api/$1"
+      "destination": "https://backend-ten-swart-53.vercel.app/api/$1"
     },
     {
       "source": "/(.*)",
