@@ -7,7 +7,6 @@ import Loader from '../../components/ui/Loader';
 import EmptyState from '../../components/ui/EmptyState';
 import Pagination from '../../components/ui/Pagination';
 import { jobsApi } from '../../services/jobs.api';
-import { siteContent } from '../../data/siteContent';
 import './JobsPage.css';
 
 const defaultFilters = { keyword: '', category: '', location: '', jobType: '' };
@@ -33,12 +32,11 @@ export default function JobsPage() {
     setLoading(true);
     jobsApi.list({ ...filters, page, limit: 9 })
       .then((res) => {
-        const list = res.data?.length ? res.data : siteContent.mockJobs;
-        setJobs(list);
+        setJobs(res.data || []);
         setMeta(res.meta || { totalPages: 1 });
       })
       .catch(() => {
-        setJobs(siteContent.mockJobs);
+        setJobs([]);
         setMeta({ totalPages: 1 });
       })
       .finally(() => setLoading(false));

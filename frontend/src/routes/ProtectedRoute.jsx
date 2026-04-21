@@ -1,3 +1,4 @@
+import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import Loader from '../components/ui/Loader';
 import { useAuth } from '../contexts/AuthContext';

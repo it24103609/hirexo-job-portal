@@ -1241,6 +1241,10 @@ main { min-height: 60vh; }
 
 @media (max-width: 560px) {
   .shell { width: 100%; }
+  .blog-list-page .section-header,
+  .blog-list-page .blog-list-subtitle {
+    text-align: center;
+  }
   .hero { padding-top: 2.25rem; }
   .hero-copy h1 { font-size: 2.35rem; }
   .navbar { padding: 0.85rem 0.9rem; }

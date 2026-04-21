@@ -4,7 +4,6 @@ import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Loader from '../../components/ui/Loader';
-import Input from '../../components/ui/Input';
 import Textarea from '../../components/ui/Textarea';
 import Select from '../../components/ui/Select';
 import Badge from '../../components/ui/Badge';
@@ -13,7 +12,7 @@ import EmptyState from '../../components/ui/EmptyState';
 import { contactApi } from '../../services/contact.api';
 import { toast } from 'react-toastify';
 import { formatDate } from '../../utils/formatters';
-import { Mail, MailOpen, Reply, Users, Search, Archive, Inbox, UserCheck, UserX, Clock, RefreshCw } from 'lucide-react';
+import { Mail, MailOpen, Reply, Users, Search, Archive, Inbox, Clock, RefreshCw } from 'lucide-react';
 
 export default function AdminInquiriesPage() {
   const [contacts, setContacts] = useState([]);
@@ -24,6 +23,7 @@ export default function AdminInquiriesPage() {
   const [replyMessage, setReplyMessage] = useState('');
   const [replying, setReplying] = useState(false);
   const [deletingId, setDeletingId] = useState('');
+  const [statusUpdatingId, setStatusUpdatingId] = useState('');
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('latest');
   const [dateFilter, setDateFilter] = useState('');
@@ -38,6 +38,9 @@ export default function AdminInquiriesPage() {
         const refreshed = (res.data || []).find((item) => item._id === selectedContact._id);
         if (refreshed) {
           setSelectedContact(refreshed);
+        } else {
+          setSelectedContact(null);
+          setReplyMessage('');
         }
       }
     } catch (err) {
@@ -98,12 +101,68 @@ export default function AdminInquiriesPage() {
     try {
       const res = await contactApi.getById(contact._id);
       setSelectedContact(res.data);
+      setReplyMessage(res.data?.reply?.message || '');
     } catch (err) {
       toast.error('Failed to load inquiry details.');
     }
   };
 
-  // Add onStatusChange and onDelete handlers as needed
+  const updateSelectedContact = (nextContact) => {
+    setSelectedContact(nextContact);
+    setContacts((current) => current.map((item) => (item._id === nextContact._id ? nextContact : item)));
+  };
+
+  const handleReply = async () => {
+    if (!selectedContact?._id || !replyMessage.trim()) return;
+
+    try {
+      setReplying(true);
+      const res = await contactApi.reply(selectedContact._id, { message: replyMessage.trim() });
+      updateSelectedContact(res.data);
+      setReplyMessage(res.data?.reply?.message || '');
+      toast.success(res.message || 'Reply sent successfully');
+    } catch (err) {
+      toast.error(err.message || 'Failed to send reply');
+    } finally {
+      setReplying(false);
+    }
+  };
+
+  const handleStatusChange = async (contactId, nextStatus) => {
+    try {
+      setStatusUpdatingId(contactId);
+      const res = await contactApi.updateStatus(contactId, { status: nextStatus });
+      setContacts((current) => current.map((item) => (item._id === contactId ? res.data : item)));
+      if (selectedContact?._id === contactId) {
+        setSelectedContact(res.data);
+      }
+      toast.success(res.message || 'Inquiry status updated');
+    } catch (err) {
+      toast.error(err.message || 'Failed to update inquiry status');
+    } finally {
+      setStatusUpdatingId('');
+    }
+  };
+
+  const handleDelete = async (contact) => {
+    const confirmed = window.confirm(`Delete inquiry from ${contact.name}?`);
+    if (!confirmed) return;
+
+    try {
+      setDeletingId(contact._id);
+      const res = await contactApi.remove(contact._id);
+      setContacts((current) => current.filter((item) => item._id !== contact._id));
+      if (selectedContact?._id === contact._id) {
+        setSelectedContact(null);
+        setReplyMessage('');
+      }
+      toast.success(res.message || 'Inquiry deleted successfully');
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete inquiry');
+    } finally {
+      setDeletingId('');
+    }
+  };
 
   return (
     <>
@@ -178,7 +237,25 @@ export default function AdminInquiriesPage() {
                       <td>
                         <div className="form-links">
                           <Button size="sm" variant="primary" onClick={() => openContact(contact)}><MailOpen size={13} style={{marginRight: 4}} /> View</Button>
-                          {/* Add onStatusChange and onDelete handlers as needed */}
+                          <Select
+                            label={null}
+                            value={contact.status || 'new'}
+                            onChange={async (event) => { await handleStatusChange(contact._id, event.target.value); }}
+                            disabled={statusUpdatingId === contact._id}
+                            style={{ minWidth: 110 }}
+                          >
+                            <option value="new">New</option>
+                            <option value="read">Read</option>
+                            <option value="replied">Replied</option>
+                          </Select>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            disabled={deletingId === contact._id}
+                            onClick={async () => { await handleDelete(contact); }}
+                          >
+                            {deletingId === contact._id ? 'Deleting...' : 'Delete'}
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -202,6 +279,18 @@ export default function AdminInquiriesPage() {
             <div style={{ marginBottom: 8 }}><strong>Message:</strong> <pre className="pre-wrap-text" style={{ background: '#f8fcf9', borderRadius: 10, padding: 10, fontSize: 15 }}>{selectedContact.message}</pre></div>
             <div style={{ marginBottom: 8 }}><strong>Status:</strong> <Badge tone={getStatusTone(selectedContact.status)}>{selectedContact.status}</Badge></div>
             <div style={{ marginBottom: 8 }}><strong>Received:</strong> {formatDate(selectedContact.createdAt)}</div>
+            <div style={{ marginBottom: 8 }}>
+              <Select
+                label="Update status"
+                value={selectedContact.status || 'new'}
+                onChange={async (event) => { await handleStatusChange(selectedContact._id, event.target.value); }}
+                disabled={statusUpdatingId === selectedContact._id}
+              >
+                <option value="new">New</option>
+                <option value="read">Read</option>
+                <option value="replied">Replied</option>
+              </Select>
+            </div>
             <div className="form-links mt-1" style={{ marginTop: 18, display: 'flex', flexDirection: 'column', gap: 10 }}>
               <Textarea
                 label="Reply"
@@ -209,7 +298,18 @@ export default function AdminInquiriesPage() {
                 onChange={e => setReplyMessage(e.target.value)}
                 rows={3}
               />
-              <Button onClick={() => {}} disabled={replying || !replyMessage.trim()} variant="primary">{replying ? 'Sending...' : <><Reply size={15} style={{marginRight: 5}} /> Send Reply</>}</Button>
+              <div className="form-links" style={{ gap: 10 }}>
+                <Button onClick={handleReply} disabled={replying || !replyMessage.trim()} variant="primary">
+                  {replying ? 'Sending...' : <><Reply size={15} style={{marginRight: 5}} /> Send Reply</>}
+                </Button>
+                <Button
+                  variant="ghost"
+                  disabled={deletingId === selectedContact._id}
+                  onClick={async () => { await handleDelete(selectedContact); }}
+                >
+                  {deletingId === selectedContact._id ? 'Deleting...' : 'Delete Inquiry'}
+                </Button>
+              </div>
             </div>
           </Card>
         ) : null}

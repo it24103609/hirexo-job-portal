@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -18,6 +18,9 @@ export default function EmployerJobFormPage({ mode }) {
   const navigate = useNavigate();
   const { id } = useParams();
   const [form, setForm] = useState(empty);
+  const [submitMode, setSubmitMode] = useState('review');
+  const [isSaving, setIsSaving] = useState(false);
+  const previewRef = useRef(null);
 
   useEffect(() => {
     if (mode !== 'edit' || !id) return;
@@ -42,6 +45,10 @@ export default function EmployerJobFormPage({ mode }) {
     });
   }, [mode, id]);
 
+  const scrollToPreview = () => {
+    previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
   return (
     <>
       <Seo title={`${mode === 'edit' ? 'Edit' : 'Create'} Job | Hirexo`} description="Create or edit a job post." />
@@ -50,9 +57,9 @@ export default function EmployerJobFormPage({ mode }) {
         description={<span className="jobform-subtitle">Post a new opening. Jobs are reviewed by admin before publishing.</span>}
         actions={
           <div className="jobform-actions-row jobform-header-actions">
-            <Button variant="ghost" type="button">Save Draft</Button>
-            <Button variant="secondary" type="button">Preview Job</Button>
-            <Button variant="primary" type="submit" form="jobform-main">Submit for Review</Button>
+            <Button variant="secondary" type="button" onClick={scrollToPreview}>Preview Job</Button>
+            <Button variant="ghost" type="submit" form="jobform-main" formNoValidate onClick={() => setSubmitMode('draft')} disabled={isSaving}>Save Draft</Button>
+            <Button variant="primary" type="submit" form="jobform-main" onClick={() => setSubmitMode('review')} disabled={isSaving}>Submit for Review</Button>
           </div>
         }
       />
@@ -69,18 +76,29 @@ export default function EmployerJobFormPage({ mode }) {
             const industry = String(form.industry || '').trim();
             const jobType = String(form.jobType || '').trim();
             const location = String(form.location || '').trim();
+            const title = String(form.title || '').trim();
+            const description = String(form.description || '').trim();
+            const isDraft = submitMode === 'draft';
 
-            if (!category || !industry || !jobType || !location) {
+            if (!title || !description) {
+              toast.error('Job title and description are required.');
+              return;
+            }
+
+            if (!isDraft && (!category || !industry || !jobType || !location)) {
               toast.error('Category, Industry, Job Type, and Location are required.');
               return;
             }
 
             const payload = {
               ...form,
+              title,
+              description,
               category,
               industry,
               jobType,
               location,
+              saveAsDraft: isDraft,
               image: form.imageUrl.trim() ? {
                 url: form.imageUrl.trim(),
                 alt: form.imageAlt.trim() || form.title || 'Job image'
@@ -89,14 +107,20 @@ export default function EmployerJobFormPage({ mode }) {
               salaryMax: Number(form.salaryMax || 0),
               vacancies: Number(form.vacancies || 1)
             };
-            if (mode === 'edit' && id) {
-              await jobsApi.update(id, payload);
-              toast.success('Job updated');
-            } else {
-              await jobsApi.create(payload);
-              toast.success('Job submitted for review');
+
+            try {
+              setIsSaving(true);
+              if (mode === 'edit' && id) {
+                await jobsApi.update(id, payload);
+                toast.success(isDraft ? 'Draft saved' : 'Job updated');
+              } else {
+                await jobsApi.create(payload);
+                toast.success(isDraft ? 'Draft saved' : 'Job submitted for review');
+              }
+              navigate('/employer/jobs');
+            } finally {
+              setIsSaving(false);
             }
-            navigate('/employer/jobs');
           }}>
             {/* Job Basics */}
             <Card className="jobform-section-card jobform-section-card-premium">
@@ -104,12 +128,12 @@ export default function EmployerJobFormPage({ mode }) {
               <div className="jobform-fields-grid jobform-fields-grid-premium">
                 <Input label="Job title" value={form.title} onChange={(e) => setForm((c) => ({ ...c, title: e.target.value }))} placeholder="e.g. Senior Software Engineer" required />
                 <div className="jobform-row jobform-row-2 jobform-row-premium">
-                  <Input label="Category" value={form.category} onChange={(e) => setForm((c) => ({ ...c, category: e.target.value }))} placeholder="e.g. Engineering" required />
-                  <Input label="Industry" value={form.industry} onChange={(e) => setForm((c) => ({ ...c, industry: e.target.value }))} placeholder="e.g. Information Technology" required />
+                  <Input label="Category" value={form.category} onChange={(e) => setForm((c) => ({ ...c, category: e.target.value }))} placeholder="e.g. Engineering" />
+                  <Input label="Industry" value={form.industry} onChange={(e) => setForm((c) => ({ ...c, industry: e.target.value }))} placeholder="e.g. Information Technology" />
                 </div>
                 <div className="jobform-row jobform-row-2 jobform-row-premium">
-                  <Input label="Job type" value={form.jobType} onChange={(e) => setForm((c) => ({ ...c, jobType: e.target.value }))} placeholder="e.g. Full-time" required />
-                  <Input label="Location" value={form.location} onChange={(e) => setForm((c) => ({ ...c, location: e.target.value }))} placeholder="e.g. Colombo" required />
+                  <Input label="Job type" value={form.jobType} onChange={(e) => setForm((c) => ({ ...c, jobType: e.target.value }))} placeholder="e.g. Full-time" />
+                  <Input label="Location" value={form.location} onChange={(e) => setForm((c) => ({ ...c, location: e.target.value }))} placeholder="e.g. Colombo" />
                 </div>
               </div>
             </Card>
@@ -127,8 +151,8 @@ export default function EmployerJobFormPage({ mode }) {
                 />
                 <div className="jobform-helper-text jobform-helper-text-premium">Write a clear, engaging job description. Highlight key responsibilities, required skills, and what makes your company unique.</div>
                 <div className="jobform-row jobform-row-2 jobform-row-premium">
-                  <Input label="Experience level" value={form.experienceLevel} onChange={(e) => setForm((c) => ({ ...c, experienceLevel: e.target.value }))} placeholder="e.g. 3+ years, Mid-Senior" required />
-                  <Input label="Vacancies" type="number" min={1} value={form.vacancies} onChange={(e) => setForm((c) => ({ ...c, vacancies: e.target.value }))} placeholder="Number of openings" required />
+                  <Input label="Experience level" value={form.experienceLevel} onChange={(e) => setForm((c) => ({ ...c, experienceLevel: e.target.value }))} placeholder="e.g. 3+ years, Mid-Senior" />
+                  <Input label="Vacancies" type="number" min={1} value={form.vacancies} onChange={(e) => setForm((c) => ({ ...c, vacancies: e.target.value }))} placeholder="Number of openings" />
                 </div>
               </div>
             </Card>
@@ -145,7 +169,6 @@ export default function EmployerJobFormPage({ mode }) {
                   placeholder="Minimum salary"
                   prefix="Rs"
                   className="jobform-salary-input jobform-salary-input-premium"
-                  required
                 />
                 <Input
                   label="Salary max"
@@ -156,7 +179,6 @@ export default function EmployerJobFormPage({ mode }) {
                   placeholder="Maximum salary"
                   prefix="Rs"
                   className="jobform-salary-input jobform-salary-input-premium"
-                  required
                 />
               </div>
               <div className="jobform-helper-text jobform-helper-text-premium">Enter the salary range for this role. Use LKR or Rs as appropriate.</div>
@@ -173,13 +195,16 @@ export default function EmployerJobFormPage({ mode }) {
             {/* Bottom Actions */}
             <div className="jobform-actions-row jobform-actions-bottom jobform-actions-bottom-premium">
               <Button variant="ghost" type="button" onClick={() => navigate('/employer/jobs')}>Cancel</Button>
-              <Button variant="ghost" type="button">Save Draft</Button>
-              <Button variant="primary" type="submit" className="jobform-submit-btn-premium">{mode === 'edit' ? 'Update job' : 'Submit for Review'}</Button>
+              <Button variant="secondary" type="button" onClick={scrollToPreview}>Preview Job</Button>
+              <Button variant="ghost" type="submit" formNoValidate onClick={() => setSubmitMode('draft')} disabled={isSaving}>Save Draft</Button>
+              <Button variant="primary" type="submit" className="jobform-submit-btn-premium" onClick={() => setSubmitMode('review')} disabled={isSaving}>
+                {isSaving ? 'Saving...' : mode === 'edit' ? 'Update job' : 'Submit for Review'}
+              </Button>
             </div>
           </form>
         </div>
         {/* Sticky Preview */}
-        <aside className="jobform-preview-sticky jobform-preview-sticky-premium">
+        <aside ref={previewRef} className="jobform-preview-sticky jobform-preview-sticky-premium">
           <div className="jobform-preview-label jobform-preview-label-premium">Live Preview</div>
           <JobCard
             job={{

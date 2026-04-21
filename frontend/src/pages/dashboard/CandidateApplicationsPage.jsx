@@ -5,8 +5,10 @@ import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
+import Button from '../../components/ui/Button';
 import Loader from '../../components/ui/Loader';
 import { applicationsApi } from '../../services/applications.api';
+import { toast } from 'react-toastify';
 import { formatDate, formatDateTime } from '../../utils/formatters';
 
 function getStatusMeta(status = '') {
@@ -62,7 +64,10 @@ export default function CandidateApplicationsPage() {
 
   const sendMessage = async (applicationId) => {
     const text = String(messagePanels[applicationId]?.text || '').trim();
-    if (!text) return;
+    if (!text) {
+      toast.error('Message cannot be empty');
+      return;
+    }
 
     await applicationsApi.sendMessage(applicationId, { message: text });
     const refreshed = await applicationsApi.messages(applicationId);
@@ -71,6 +76,7 @@ export default function CandidateApplicationsPage() {
       ...current,
       [applicationId]: { ...(current[applicationId] || {}), text: '', open: true }
     }));
+    toast.success('Reply sent to employer');
   };
 
   return (
@@ -126,9 +132,25 @@ export default function CandidateApplicationsPage() {
                             <div className="mt-1" style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 10, minWidth: 240 }}>
                               <div style={{ maxHeight: 160, overflow: 'auto', display: 'grid', gap: 6, marginBottom: 8 }}>
                                 {(messagesByApplication[item._id] || []).length ? (messagesByApplication[item._id] || []).map((message) => (
-                                  <div key={message._id} style={{ background: 'rgba(26,138,86,0.06)', borderRadius: 8, padding: '6px 8px' }}>
-                                    <strong>{message.senderUser?.name || 'User'}</strong>
-                                    <div>{message.message}</div>
+                                  <div
+                                    key={message._id}
+                                    style={{
+                                      display: 'flex',
+                                      justifyContent: message.senderUser?.role === 'candidate' ? 'flex-end' : 'flex-start'
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        background: message.senderUser?.role === 'candidate' ? 'rgba(15,118,110,0.14)' : 'rgba(26,138,86,0.06)',
+                                        borderRadius: 8,
+                                        padding: '6px 8px',
+                                        maxWidth: '85%',
+                                        width: 'fit-content'
+                                      }}
+                                    >
+                                      <strong>{message.senderUser?.role === 'candidate' ? 'You' : (message.senderUser?.name || 'Employer')}</strong>
+                                      <div>{message.message}</div>
+                                    </div>
                                   </div>
                                 )) : <small>No messages yet.</small>}
                               </div>
@@ -136,10 +158,23 @@ export default function CandidateApplicationsPage() {
                                 className="input"
                                 value={messagePanels[item._id]?.text || ''}
                                 onChange={(event) => setMessageText(item._id, event.target.value)}
+                                onKeyDown={async (event) => {
+                                  if (event.key === 'Enter') {
+                                    event.preventDefault();
+                                    await sendMessage(item._id);
+                                  }
+                                }}
                                 placeholder="Type a message"
                               />
                               <div className="dashboard-actions">
-                                <Button size="sm" variant="secondary" onClick={async () => { await sendMessage(item._id); }}>Send</Button>
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  disabled={!String(messagePanels[item._id]?.text || '').trim()}
+                                  onClick={async () => { await sendMessage(item._id); }}
+                                >
+                                  Send
+                                </Button>
                               </div>
                             </div>
                           ) : null}

@@ -11,7 +11,6 @@ import Button from '../../components/ui/Button';
 import { jobsApi } from '../../services/jobs.api';
 import { applicationsApi } from '../../services/applications.api';
 import { candidateApi } from '../../services/candidate.api';
-import { siteContent } from '../../data/siteContent';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
 
@@ -27,21 +26,26 @@ export default function JobDetailsPage() {
   const { isAuthenticated, user, profile } = useAuth();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [alreadyApplied, setAlreadyApplied] = useState(false);
   const [resumeReady, setResumeReady] = useState(Boolean(profile?.resume?.filePath));
   const [resumeChecked, setResumeChecked] = useState(false);
-  const isPreviewJob = String(job?._id || '').startsWith('mock-');
   const imageUrl = job?.image?.url || 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1200&h=700&fit=crop';
 
   useEffect(() => {
+    setLoading(true);
+    setLoadError('');
     jobsApi.getBySlug(slug)
-      .then((res) => setJob(res.data || siteContent.mockJobs.find((item) => item.slug === slug)))
-      .catch(() => setJob(siteContent.mockJobs.find((item) => item.slug === slug) || siteContent.mockJobs[0]))
+      .then((res) => setJob(res.data || null))
+      .catch((error) => {
+        setJob(null);
+        setLoadError(error.message || 'The requested job could not be loaded.');
+      })
       .finally(() => setLoading(false));
   }, [slug]);
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'candidate' || !job?._id || isPreviewJob) return;
+    if (!isAuthenticated || user?.role !== 'candidate' || !job?._id) return;
 
     applicationsApi.mine()
       .then((res) => {
@@ -50,10 +54,10 @@ export default function JobDetailsPage() {
         setAlreadyApplied(matched);
       })
       .catch(() => setAlreadyApplied(false));
-  }, [isAuthenticated, user?.role, job?._id, isPreviewJob]);
+  }, [isAuthenticated, user?.role, job?._id]);
 
   useEffect(() => {
-    if (!isAuthenticated || user?.role !== 'candidate' || isPreviewJob) return;
+    if (!isAuthenticated || user?.role !== 'candidate') return;
 
     if (profile?.resume?.filePath) {
       setResumeReady(true);
@@ -69,12 +73,12 @@ export default function JobDetailsPage() {
         setResumeReady(false);
       })
       .finally(() => setResumeChecked(true));
-  }, [isAuthenticated, user?.role, isPreviewJob, profile?.resume?.filePath]);
+  }, [isAuthenticated, user?.role, profile?.resume?.filePath]);
 
   if (loading) return <Loader label="Loading job details..." />;
-  if (!job) return <EmptyState title="Job not found" description="The requested job is unavailable." actionLabel="Back to jobs" actionTo="/jobs" />;
+  if (!job) return <EmptyState title="Job not found" description={loadError || 'The requested job is unavailable.'} actionLabel="Back to jobs" actionTo="/jobs" />;
 
-  const canApply = isAuthenticated && user?.role === 'candidate' && !isPreviewJob && !alreadyApplied && resumeReady;
+  const canApply = isAuthenticated && user?.role === 'candidate' && !alreadyApplied && resumeReady;
 
   return (
     <>
@@ -91,7 +95,7 @@ export default function JobDetailsPage() {
           datePosted: job.createdAt,
           hiringOrganization: {
             '@type': 'Organization',
-            name: job.companyName || siteContent.brandName
+            name: job.companyName || 'Hirexo'
           },
           employmentType: getLabel(job.jobType, 'Full-time'),
           jobLocation: {
@@ -129,9 +133,7 @@ export default function JobDetailsPage() {
               <Badge>{job.salary || 'Competitive salary'}</Badge>
             </div>
             <p>{job.description || 'This role focuses on building a strong and scalable recruitment workflow.'}</p>
-            {isPreviewJob ? (
-              <p>This is a preview listing. Create a real job in the employer dashboard to enable applications.</p>
-            ) : alreadyApplied ? (
+            {alreadyApplied ? (
               <Badge tone="success">You have already applied for this job</Badge>
             ) : isAuthenticated && user?.role === 'candidate' && !resumeChecked ? (
               <p>Checking your resume status...</p>

@@ -14,8 +14,8 @@ import BrandIdentity from '../../components/layout/BrandIdentity';
 import './HomePage.css';
 
 export default function HomePage() {
-  const [jobs, setJobs] = useState(siteContent.featuredJobs);
-  const [blogs, setBlogs] = useState(siteContent.mockBlogs);
+  const [jobs, setJobs] = useState([]);
+  const [blogs, setBlogs] = useState([]);
   const [activeSwitch, setActiveSwitch] = useState('local');
 
   const getLabel = (value, fallback = '') => {
@@ -143,8 +143,8 @@ export default function HomePage() {
   });
 
   useEffect(() => {
-    jobsApi.featured().then((res) => setJobs(res.data || siteContent.featuredJobs)).catch(() => setJobs(siteContent.featuredJobs));
-    blogApi.list().then((res) => setBlogs(res.data || siteContent.mockBlogs)).catch(() => setBlogs(siteContent.mockBlogs));
+    jobsApi.featured().then((res) => setJobs(res.data || [])).catch(() => setJobs([]));
+    blogApi.list().then((res) => setBlogs(res.data || [])).catch(() => setBlogs([]));
   }, []);
 
   return (
@@ -330,9 +330,15 @@ export default function HomePage() {
       <section className="section-block blog-section">
         <div className="shell">
           <SectionHeader eyebrow="Blog" title="Latest blog posts" description="Content blocks for SEO, employer branding, and career advice." />
-          <div className="grid-3">
-            {blogs.map((blog) => <BlogCard key={blog.slug} post={blog} />)}
-          </div>
+          {blogs.length ? (
+            <div className="grid-3">
+              {blogs.map((blog) => <BlogCard key={blog.slug || blog._id} post={blog} />)}
+            </div>
+          ) : (
+            <Card>
+              <p style={{ margin: 0 }}>No blog posts available right now. Please check back soon.</p>
+            </Card>
+          )}
         </div>
       </section>
 

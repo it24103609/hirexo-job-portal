@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';

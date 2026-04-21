@@ -9,9 +9,13 @@ import Loader from '../../components/ui/Loader';
 import StatCard from '../../components/ui/StatCard';
 import Select from '../../components/ui/Select';
 import EmptyState from '../../components/ui/EmptyState';
+import Input from '../../components/ui/Input';
+import Textarea from '../../components/ui/Textarea';
 import { adminApi } from '../../services/admin.api';
+import { applicationsApi } from '../../services/applications.api';
 import { toast } from 'react-toastify';
 import { Search, Briefcase, CheckCircle, XCircle, Clock, Users, ListChecks, FileText, History } from 'lucide-react';
+import { formatDateTime } from '../../utils/formatters';
 
 export default function AdminJobsModerationPage() {
   const [jobs, setJobs] = useState([]);
@@ -31,6 +35,19 @@ export default function AdminJobsModerationPage() {
     rejected: 0,
     interview_scheduled: 0,
     all: 0
+  });
+  const [selectedApplicationId, setSelectedApplicationId] = useState('');
+  const [selectedApplication, setSelectedApplication] = useState(null);
+  const [applicationDetailLoading, setApplicationDetailLoading] = useState(false);
+  const [applicationActionLoading, setApplicationActionLoading] = useState(false);
+  const [applicationForm, setApplicationForm] = useState({
+    status: 'pending',
+    notes: '',
+    interviewScheduledAt: '',
+    interviewMode: 'video',
+    interviewLocation: '',
+    interviewMeetingLink: '',
+    interviewNotes: ''
   });
 
   const loadJobs = async () => {
@@ -80,6 +97,43 @@ export default function AdminJobsModerationPage() {
     loadApplications();
   }, [applicationStatusFilter]);
 
+  const loadApplicationDetail = async (applicationId) => {
+    try {
+      setApplicationDetailLoading(true);
+      const res = await applicationsApi.getById(applicationId);
+      const detail = res.data || null;
+      setSelectedApplication(detail);
+      setSelectedApplicationId(applicationId);
+      setApplicationForm({
+        status: detail?.status || 'pending',
+        notes: detail?.notes || '',
+        interviewScheduledAt: detail?.interviewScheduledAt ? new Date(detail.interviewScheduledAt).toISOString().slice(0, 16) : '',
+        interviewMode: detail?.interviewMode || 'video',
+        interviewLocation: detail?.interviewLocation || '',
+        interviewMeetingLink: detail?.interviewMeetingLink || '',
+        interviewNotes: detail?.interviewNotes || ''
+      });
+    } catch (error) {
+      toast.error(error.message || 'Failed to load application details');
+    } finally {
+      setApplicationDetailLoading(false);
+    }
+  };
+
+  const clearSelectedApplication = () => {
+    setSelectedApplicationId('');
+    setSelectedApplication(null);
+    setApplicationForm({
+      status: 'pending',
+      notes: '',
+      interviewScheduledAt: '',
+      interviewMode: 'video',
+      interviewLocation: '',
+      interviewMeetingLink: '',
+      interviewNotes: ''
+    });
+  };
+
   if (loading) return <Loader label="Loading moderation console..." />;
 
   // Status badge tone helper
@@ -94,6 +148,43 @@ export default function AdminJobsModerationPage() {
     }
   };
 
+  const updateApplicationField = (key, value) => {
+    setApplicationForm((current) => ({ ...current, [key]: value }));
+  };
+
+  const submitApplicationUpdate = async () => {
+    if (!selectedApplicationId) return;
+
+    if (applicationForm.status === 'interview_scheduled' && !applicationForm.interviewScheduledAt) {
+      toast.error('Interview date and time is required');
+      return;
+    }
+
+    try {
+      setApplicationActionLoading(true);
+      const payload = {
+        status: applicationForm.status,
+        notes: applicationForm.notes
+      };
+
+      if (applicationForm.status === 'interview_scheduled') {
+        payload.interviewScheduledAt = applicationForm.interviewScheduledAt;
+        payload.interviewMode = applicationForm.interviewMode;
+        payload.interviewLocation = applicationForm.interviewLocation;
+        payload.interviewMeetingLink = applicationForm.interviewMeetingLink;
+        payload.interviewNotes = applicationForm.interviewNotes;
+      }
+
+      await applicationsApi.updateStatus(selectedApplicationId, payload);
+      toast.success('Application updated successfully');
+      await Promise.all([loadApplications(), loadApplicationDetail(selectedApplicationId)]);
+    } catch (error) {
+      toast.error(error.message || 'Failed to update application');
+    } finally {
+      setApplicationActionLoading(false);
+    }
+  };
+
   // Stat cards data
   const statCards = [
     { label: 'Pending Jobs', value: statusCounts.pending, icon: Briefcase, tone: 'default' },
@@ -104,7 +195,7 @@ export default function AdminJobsModerationPage() {
     { label: 'Total Queue', value: statusCounts.all + applicationCounts.all, icon: Clock, tone: 'default' },
   ];
 
-  // Recent moderation activity (mocked for now)
+  // Recent moderation activity based on the latest fetched queue data.
   const recentActivity = [
     ...jobs.slice(0, 3).map(j => ({
       type: 'Job',
@@ -326,8 +417,15 @@ export default function AdminJobsModerationPage() {
                       <td>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '-'}</td>
                       <td>
                         <div className="form-links" style={{ gap: 6 }}>
-                          <Button size="sm" variant="primary" onClick={() => {}}><FileText size={15} /> View</Button>
-                          {/* Add more actions as needed */}
+                          <Button
+                            size="sm"
+                            variant="primary"
+                            onClick={async () => {
+                              await loadApplicationDetail(item._id);
+                            }}
+                          >
+                            <FileText size={15} /> View
+                          </Button>
                         </div>
                       </td>
                     </tr>
@@ -342,6 +440,148 @@ export default function AdminJobsModerationPage() {
               />
             )}
           </div>
+        )}
+      </Card>
+
+      <Card className="mt-1">
+        <div className="panel-head" style={{ marginBottom: '1.2rem' }}>
+          <h3 style={{ margin: 0, fontWeight: 800, fontSize: '1.13rem' }}><FileText size={17} style={{ marginRight: 8 }} /> Application Review Detail</h3>
+          {selectedApplication ? (
+            <Button size="sm" variant="ghost" onClick={clearSelectedApplication}>Close</Button>
+          ) : null}
+        </div>
+
+        {applicationDetailLoading ? (
+          <Loader label="Loading application detail..." />
+        ) : selectedApplication ? (
+          <div style={{ display: 'grid', gap: '1rem' }}>
+            <div className="dashboard-surface-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+              <div>
+                <strong>Candidate</strong>
+                <div>{selectedApplication.candidateUser?.name || '-'}</div>
+                <small>{selectedApplication.candidateUser?.email || '-'}</small>
+              </div>
+              <div>
+                <strong>Job</strong>
+                <div>{selectedApplication.job?.title || '-'}</div>
+                <small>{selectedApplication.job?.companyName || '-'}</small>
+              </div>
+              <div>
+                <strong>Current status</strong>
+                <div><Badge tone={getStatusTone(selectedApplication.status)}>{selectedApplication.status}</Badge></div>
+                <small>Applied {selectedApplication.createdAt ? formatDateTime(selectedApplication.createdAt) : '-'}</small>
+              </div>
+              <div>
+                <strong>Interview</strong>
+                <div>{selectedApplication.interviewScheduledAt ? formatDateTime(selectedApplication.interviewScheduledAt) : 'Not scheduled'}</div>
+                <small>{selectedApplication.interviewMode || 'Mode not set'}</small>
+              </div>
+            </div>
+
+            {selectedApplication.candidateProfile ? (
+              <div className="dashboard-surface-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+                <div>
+                  <strong>Headline</strong>
+                  <div>{selectedApplication.candidateProfile.headline || '-'}</div>
+                </div>
+                <div>
+                  <strong>Experience</strong>
+                  <div>{selectedApplication.candidateProfile.experienceYears ?? 0} years</div>
+                </div>
+                <div>
+                  <strong>Location</strong>
+                  <div>{selectedApplication.candidateProfile.location || '-'}</div>
+                </div>
+                <div>
+                  <strong>Skills</strong>
+                  <div>{(selectedApplication.candidateProfile.skills || []).join(', ') || '-'}</div>
+                </div>
+              </div>
+            ) : null}
+
+            {selectedApplication.coverLetter ? (
+              <div>
+                <strong>Cover letter</strong>
+                <p style={{ marginTop: 8 }}>{selectedApplication.coverLetter}</p>
+              </div>
+            ) : null}
+
+            <div className="dashboard-surface-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+              <Select label="Next status" value={applicationForm.status} onChange={(event) => updateApplicationField('status', event.target.value)}>
+                <option value="pending">Pending</option>
+                <option value="reviewed">Reviewed</option>
+                <option value="shortlisted">Shortlisted</option>
+                <option value="interview_scheduled">Interview Scheduled</option>
+                <option value="rejected">Rejected</option>
+              </Select>
+              <Input
+                label="Interview date & time"
+                type="datetime-local"
+                value={applicationForm.interviewScheduledAt}
+                onChange={(event) => updateApplicationField('interviewScheduledAt', event.target.value)}
+              />
+              <Select label="Interview mode" value={applicationForm.interviewMode} onChange={(event) => updateApplicationField('interviewMode', event.target.value)}>
+                <option value="phone">Phone</option>
+                <option value="video">Video</option>
+                <option value="onsite">Onsite</option>
+              </Select>
+              <Input
+                label="Location / platform"
+                value={applicationForm.interviewLocation}
+                onChange={(event) => updateApplicationField('interviewLocation', event.target.value)}
+                placeholder="Office address or Google Meet"
+              />
+            </div>
+
+            <div className="dashboard-surface-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+              <Input
+                label="Meeting link"
+                value={applicationForm.interviewMeetingLink}
+                onChange={(event) => updateApplicationField('interviewMeetingLink', event.target.value)}
+                placeholder="https://..."
+              />
+              <Textarea
+                label="Internal notes"
+                value={applicationForm.notes}
+                onChange={(event) => updateApplicationField('notes', event.target.value)}
+                placeholder="Review summary or moderation notes"
+              />
+              <Textarea
+                label="Interview notes"
+                value={applicationForm.interviewNotes}
+                onChange={(event) => updateApplicationField('interviewNotes', event.target.value)}
+                placeholder="Panel, agenda, preparation notes"
+              />
+            </div>
+
+            <div className="form-links" style={{ gap: 8 }}>
+              <Button size="sm" disabled={applicationActionLoading} onClick={submitApplicationUpdate}>
+                {applicationActionLoading ? 'Saving...' : 'Save application update'}
+              </Button>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={async () => {
+                  try {
+                    const blob = await applicationsApi.downloadResume(selectedApplicationId);
+                    const url = URL.createObjectURL(blob);
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                    setTimeout(() => URL.revokeObjectURL(url), 1000);
+                  } catch (error) {
+                    toast.error(error.message || 'Failed to open resume');
+                  }
+                }}
+              >
+                Open resume
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <EmptyState
+            title="Select an application"
+            description="Open any application from the moderation table to review the profile, update status, and schedule interviews as admin."
+            actionLabel={null}
+          />
         )}
       </Card>
 

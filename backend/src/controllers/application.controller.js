@@ -9,7 +9,7 @@ const Job = require('../models/Job');
 const CandidateProfile = require('../models/CandidateProfile');
 const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
 const { JOB_REVIEW_STATUS, JOB_STATUS, APPLICATION_STATUS, NOTIFICATION_TYPES } = require('../utils/constants');
-const { createNotification } = require('../services/notification.service');
+const { createNotification, notifyAdmins } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
 
 function buildStatusEmail(status, interviewAt) {
@@ -92,6 +92,25 @@ const applyForJob = asyncHandler(async (req, res) => {
     metadata: { jobId: job._id, applicationId: application._id, candidateId: req.user._id }
   });
 
+  await notifyAdmins({
+    type: NOTIFICATION_TYPES.APPLICATION,
+    title: 'New application submitted',
+    message: `${req.user.name} applied for ${job.title} at ${job.companyName || 'an employer'}.`,
+    metadata: {
+      jobId: job._id,
+      jobTitle: job.title,
+      companyName: job.companyName,
+      applicationId: application._id,
+      candidateId: req.user._id,
+      candidateName: req.user.name,
+      employerId: job.employerUser,
+      event: 'application_submitted',
+      actorUserId: req.user._id,
+      actorRole: req.user.role,
+      adminPath: `/admin/jobs?applicationId=${application._id}`
+    }
+  });
+
   await sendEmail({
     to: req.user.email,
     subject: 'Application confirmation',
@@ -128,6 +147,36 @@ const getApplicationsByJob = asyncHandler(async (req, res) => {
   res.json(apiResponse({
     message: 'Job applications fetched successfully',
     data: applications
+  }));
+});
+
+const getApplicationById = asyncHandler(async (req, res) => {
+  const application = await Application.findById(req.params.id)
+    .populate('candidateUser', 'name email role status')
+    .populate('employerUser', 'name email role status')
+    .populate('job', 'title slug companyName location jobType status reviewStatus description')
+    .lean();
+
+  if (!application) {
+    throw new AppError('Application not found', 404);
+  }
+
+  if (!userCanAccessApplication(application, req.user)) {
+    throw new AppError('You cannot access this application', 403);
+  }
+
+  const candidateProfile = application.candidateUser?._id
+    ? await CandidateProfile.findOne({ user: application.candidateUser._id })
+        .select('headline summary skills experienceYears education currentCompany location phone resume socialLinks')
+        .lean()
+    : null;
+
+  res.json(apiResponse({
+    message: 'Application fetched successfully',
+    data: {
+      ...application,
+      candidateProfile
+    }
   }));
 });
 
@@ -223,6 +272,34 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
 
   const statusEmail = buildStatusEmail(req.body.status, application.interviewScheduledAt);
   const job = await Job.findById(application.job).select('title companyName').lean();
+
+  await notifyAdmins({
+    type: req.body.status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? NOTIFICATION_TYPES.INTERVIEW : NOTIFICATION_TYPES.STATUS_UPDATE,
+    title: req.body.status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? 'Interview scheduled for application' : 'Application status changed',
+    message: req.body.status === APPLICATION_STATUS.INTERVIEW_SCHEDULED
+      ? `${application.candidateUser?.name || 'Candidate'} interview scheduled for ${job?.title || 'job'} at ${job?.companyName || 'an employer'}.`
+      : `${application.candidateUser?.name || 'Candidate'} application moved to ${req.body.status} for ${job?.title || 'job'}.`,
+    metadata: {
+      applicationId: application._id,
+      jobId: application.job,
+      jobTitle: job?.title,
+      companyName: job?.companyName,
+      candidateId: application.candidateUser._id,
+      candidateName: application.candidateUser?.name,
+      employerId: application.employerUser,
+      status: req.body.status,
+      interviewScheduledAt: application.interviewScheduledAt,
+      interviewMode: application.interviewMode,
+      interviewLocation: application.interviewLocation,
+      interviewMeetingLink: application.interviewMeetingLink,
+      updatedByUserId: req.user._id,
+      actorUserId: req.user._id,
+      actorRole: req.user.role,
+      event: req.body.status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? 'interview_scheduled' : 'application_status_changed',
+      adminPath: `/admin/jobs?applicationId=${application._id}`
+    },
+    excludeUserId: req.user.role === 'admin' ? req.user._id : undefined
+  });
 
   const attachments = [];
   if (req.body.status === APPLICATION_STATUS.INTERVIEW_SCHEDULED && application.interviewScheduledAt) {
@@ -352,6 +429,7 @@ module.exports = {
   applyForJob,
   getMyApplications,
   getApplicationsByJob,
+  getApplicationById,
   downloadApplicationResume,
   updateApplicationStatus,
   getApplicationMessages,

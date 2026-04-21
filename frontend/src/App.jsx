@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import PublicLayout from './components/layout/PublicLayout';
 import DashboardLayout from './layouts/DashboardLayout';
@@ -74,6 +74,7 @@ export default function App() {
               <Route path="candidate/profile" element={<CandidateProfilePage />} />
               <Route path="candidate/resume" element={<CandidateResumePage />} />
               <Route path="candidate/applications" element={<CandidateApplicationsPage />} />
+              <Route path="candidate/messages" element={<CandidateApplicationsPage />} />
               <Route path="candidate/saved-jobs" element={<CandidateSavedJobsPage />} />
               <Route path="candidate/notifications" element={<NotificationsPage />} />
             </Route>

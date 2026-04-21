@@ -47,27 +47,13 @@ export const siteContent = {
     'Practical workflows for candidates and employers',
     'Structured review and moderation for quality control'
   ],
-  featuredJobs: [
-    { _id: 'mock-1', slug: 'senior-software-engineer', title: 'Senior Software Engineer', companyName: 'TechCorp Solutions', location: 'Bangalore', jobType: 'Full-time', salary: '₹12L - ₹18L' },
-    { _id: 'mock-2', slug: 'devops-engineer', title: 'DevOps Engineer', companyName: 'CloudPro Inc', location: 'Hyderabad', jobType: 'Full-time', salary: '₹10L - ₹16L' },
-    { _id: 'mock-3', slug: 'data-scientist', title: 'Data Scientist', companyName: 'DataDriven Analytics', location: 'Pune', jobType: 'Hybrid', salary: '₹11L - ₹17L' }
-  ],
-  mockJobs: [
-    { _id: 'mock-1', slug: 'senior-software-engineer', title: 'Senior Software Engineer', companyName: 'TechCorp Solutions', location: 'Bangalore', jobType: 'Full-time', salaryMin: 1200000, salaryMax: 1800000, reviewStatus: 'approved', status: 'active', description: 'Build scalable backend systems and strong API integrations.' },
-    { _id: 'mock-2', slug: 'devops-engineer', title: 'DevOps Engineer', companyName: 'CloudPro Inc', location: 'Hyderabad', jobType: 'Full-time', salaryMin: 1000000, salaryMax: 1600000, reviewStatus: 'approved', status: 'active', description: 'Own CI/CD, cloud automation, and deployment reliability.' },
-    { _id: 'mock-3', slug: 'frontend-developer', title: 'Frontend Developer', companyName: 'DesignHub', location: 'Chennai', jobType: 'Hybrid', salaryMin: 850000, salaryMax: 1400000, reviewStatus: 'approved', status: 'active', description: 'Create polished, responsive user experiences.' }
-  ],
-  mockBlogs: [
-    { slug: 'how-to-build-a-strong-resume', title: 'How to Build a Strong Resume', excerpt: 'A practical guide to writing resumes that get shortlisted.', category: 'Career Tips', publishedAt: '2026-03-20' },
-    { slug: 'hiring-trends-2026', title: 'Hiring Trends to Watch in 2026', excerpt: 'What employers are prioritizing this year and how candidates can adapt.', category: 'Blog', publishedAt: '2026-03-22' },
-    { slug: 'writing-better-job-descriptions', title: 'Writing Better Job Descriptions', excerpt: 'How employers can attract the right applicants faster.', category: 'Employer Branding', publishedAt: '2026-03-24' }
-  ],
   dashboardLinks: {
     candidate: [
       { label: 'Dashboard', to: '/candidate/dashboard' },
       { label: 'My Profile', to: '/candidate/profile' },
       { label: 'My Resume', to: '/candidate/resume' },
       { label: 'Applied Jobs', to: '/candidate/applications' },
+      { label: 'Messages', to: '/candidate/messages' },
       { label: 'Saved Jobs', to: '/candidate/saved-jobs' },
       { label: 'Notifications', to: '/candidate/notifications' }
     ],
@@ -90,5 +76,3 @@ export const siteContent = {
     ]
   }
 };
-
-export const mockBlogs = siteContent.mockBlogs;

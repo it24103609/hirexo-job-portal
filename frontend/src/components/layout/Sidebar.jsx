@@ -30,6 +30,7 @@ const iconByPath = {
   '/candidate/profile': User,
   '/candidate/resume': FileText,
   '/candidate/applications': BriefcaseBusiness,
+  '/candidate/messages': Mail,
   '/candidate/saved-jobs': Bookmark,
   '/candidate/notifications': Bell,
   '/employer/dashboard': LayoutDashboard,

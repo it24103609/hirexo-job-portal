@@ -9,7 +9,7 @@ const CandidateProfile = require('../models/CandidateProfile');
 const PlatformSetting = require('../models/PlatformSetting');
 const { createUniqueSlug } = require('../utils/slug');
 const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
-const { createNotification } = require('../services/notification.service');
+const { createNotification, notifyAdmins } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
 const { NOTIFICATION_TYPES, APPLICATION_STATUS } = require('../utils/constants');
 
@@ -414,6 +414,33 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
 
   const statusEmail = buildStatusEmail(status, application.interviewScheduledAt);
   const job = await Job.findById(application.job).select('title companyName').lean();
+
+  await notifyAdmins({
+    type: status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? NOTIFICATION_TYPES.INTERVIEW : NOTIFICATION_TYPES.STATUS_UPDATE,
+    title: status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? 'Interview scheduled for application' : 'Application status changed',
+    message: status === APPLICATION_STATUS.INTERVIEW_SCHEDULED
+      ? `${application.candidateUser?.name || 'Candidate'} interview scheduled for ${job?.title || 'job'} at ${job?.companyName || 'an employer'}.`
+      : `${application.candidateUser?.name || 'Candidate'} application moved to ${status} for ${job?.title || 'job'}.`,
+    metadata: {
+      applicationId: application._id,
+      jobId: application.job,
+      jobTitle: job?.title,
+      companyName: job?.companyName,
+      candidateId: application.candidateUser._id,
+      candidateName: application.candidateUser?.name,
+      employerId: application.employerUser,
+      status,
+      interviewScheduledAt: application.interviewScheduledAt,
+      interviewMode: application.interviewMode,
+      interviewLocation: application.interviewLocation,
+      interviewMeetingLink: application.interviewMeetingLink,
+      updatedByUserId: req.user._id,
+      actorUserId: req.user._id,
+      actorRole: req.user.role,
+      event: status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? 'interview_scheduled' : 'application_status_changed',
+      adminPath: `/admin/jobs?applicationId=${application._id}`
+    }
+  });
 
   const attachments = [];
   if (status === APPLICATION_STATUS.INTERVIEW_SCHEDULED && application.interviewScheduledAt) {

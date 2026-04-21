@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
@@ -167,18 +167,25 @@ export default function EmployerApplicantsPage() {
                   <td>
                     <div className="form-links">
                       <Select defaultValue={application.status} onChange={async (e) => {
-                        await employerApi.updateApplicantStatus(application._id, { status: e.target.value });
+                        const nextStatus = e.target.value;
+                        if (nextStatus === 'interview_scheduled') {
+                          toast.info('Use the schedule interview form to set date and time.');
+                          toggleScheduleForm(application._id);
+                          return;
+                        }
+
+                        await employerApi.updateApplicantStatus(application._id, { status: nextStatus });
                         toast.success('Status updated');
                         await loadApplicants(filters);
                       }}>
                         <option value="pending">Pending</option>
                         <option value="reviewed">Reviewed</option>
-                        <option value="interview_scheduled">Interview Scheduled</option>
                         <option value="shortlisted">Shortlisted</option>
                         <option value="rejected">Rejected</option>
                       </Select>
                       <Button variant="secondary" size="sm" onClick={() => toggleScheduleForm(application._id)}>Schedule interview</Button>
                       <Button variant="secondary" size="sm" onClick={async () => { await toggleMessagePanel(application._id); }}>Message</Button>
+                      <Button as={Link} to={`/employer/applicants/${application._id}`} variant="secondary" size="sm">Details</Button>
                       <Button variant="secondary" size="sm" onClick={async () => {
                         const blob = await applicationsApi.downloadResume(application._id);
                         const url = URL.createObjectURL(blob);
@@ -251,9 +258,25 @@ export default function EmployerApplicantsPage() {
                       <div className="mt-1" style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 12 }}>
                         <div style={{ maxHeight: 180, overflow: 'auto', marginBottom: 10, display: 'grid', gap: 8 }}>
                           {(messagesByApplication[application._id] || []).length ? (messagesByApplication[application._id] || []).map((item) => (
-                            <div key={item._id} style={{ background: 'rgba(26,138,86,0.06)', borderRadius: 10, padding: '8px 10px' }}>
-                              <strong>{item.senderUser?.name || 'User'}</strong>
-                              <div>{item.message}</div>
+                            <div
+                              key={item._id}
+                              style={{
+                                display: 'flex',
+                                justifyContent: item.senderUser?.role === 'employer' ? 'flex-end' : 'flex-start'
+                              }}
+                            >
+                              <div
+                                style={{
+                                  background: item.senderUser?.role === 'employer' ? 'rgba(15,118,110,0.14)' : 'rgba(26,138,86,0.06)',
+                                  borderRadius: 10,
+                                  padding: '8px 10px',
+                                  maxWidth: '85%',
+                                  width: 'fit-content'
+                                }}
+                              >
+                                <strong>{item.senderUser?.role === 'employer' ? 'You' : (item.senderUser?.name || 'Candidate')}</strong>
+                                <div>{item.message}</div>
+                              </div>
                             </div>
                           )) : <small>No messages yet.</small>}
                         </div>

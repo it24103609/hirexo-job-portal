@@ -112,6 +112,8 @@ const createJob = asyncHandler(async (req, res) => {
     throw new AppError('Complete your employer profile before posting jobs', 400);
   }
 
+  const saveAsDraft = Boolean(req.body.saveAsDraft);
+
   const slug = await createUniqueSlug(Job, req.body.title, { company: employerProfile.companyName });
   const image = normalizeJobImage(req.body, req.body.title || 'Job image') || (
     employerProfile.logoUrl
@@ -140,12 +142,12 @@ const createJob = asyncHandler(async (req, res) => {
     expiresAt: req.body.expiresAt,
     tags: req.body.tags || [],
     image: image || undefined,
-    reviewStatus: JOB_REVIEW_STATUS.PENDING,
-    status: JOB_STATUS.ACTIVE
+    reviewStatus: saveAsDraft ? JOB_REVIEW_STATUS.DRAFT : JOB_REVIEW_STATUS.PENDING,
+    status: saveAsDraft ? JOB_STATUS.DRAFT : JOB_STATUS.ACTIVE
   });
 
   res.status(201).json(apiResponse({
-    message: 'Job submitted for admin review',
+    message: saveAsDraft ? 'Job saved as draft' : 'Job submitted for admin review',
     data: job
   }));
 });
@@ -161,6 +163,19 @@ const updateJob = asyncHandler(async (req, res) => {
   if (!targetJob) {
     throw new AppError('Job not found', 404);
   }
+
+  const previousTitle = targetJob.title;
+  const saveAsDraft = Boolean(req.body.saveAsDraft);
+  const nextReviewStatus = req.user.role === ROLES.ADMIN
+    ? targetJob.reviewStatus
+    : saveAsDraft
+      ? JOB_REVIEW_STATUS.DRAFT
+      : JOB_REVIEW_STATUS.PENDING;
+  const nextStatus = req.user.role === ROLES.ADMIN
+    ? targetJob.status
+    : saveAsDraft
+      ? JOB_STATUS.DRAFT
+      : JOB_STATUS.ACTIVE;
 
   Object.assign(targetJob, {
     title: req.body.title ?? targetJob.title,
@@ -180,8 +195,9 @@ const updateJob = asyncHandler(async (req, res) => {
     remoteFriendly: req.body.remoteFriendly ?? targetJob.remoteFriendly,
     expiresAt: req.body.expiresAt ?? targetJob.expiresAt,
     tags: req.body.tags ?? targetJob.tags,
-    reviewStatus: req.user.role === ROLES.ADMIN ? targetJob.reviewStatus : JOB_REVIEW_STATUS.PENDING,
-    publishedAt: req.user.role === ROLES.ADMIN ? targetJob.publishedAt : undefined,
+    reviewStatus: nextReviewStatus,
+    status: nextStatus,
+    publishedAt: req.user.role === ROLES.ADMIN || saveAsDraft ? targetJob.publishedAt : undefined,
     reviewedBy: req.user.role === ROLES.ADMIN ? targetJob.reviewedBy : undefined,
     reviewedAt: req.user.role === ROLES.ADMIN ? targetJob.reviewedAt : undefined
   });
@@ -191,14 +207,14 @@ const updateJob = asyncHandler(async (req, res) => {
     targetJob.image = normalizedImage || undefined;
   }
 
-  if (req.body.title && req.body.title !== targetJob.title) {
+  if (req.body.title && req.body.title !== previousTitle) {
     targetJob.slug = await createUniqueSlug(Job, req.body.title, { company: targetJob.companyName });
   }
 
   await targetJob.save();
 
   res.json(apiResponse({
-    message: 'Job updated successfully',
+    message: saveAsDraft ? 'Job draft saved successfully' : 'Job updated successfully',
     data: targetJob
   }));
 });
