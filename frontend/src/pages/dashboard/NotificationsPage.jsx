@@ -8,22 +8,28 @@ import Badge from '../../components/ui/Badge';
 import Loader from '../../components/ui/Loader';
 import { notificationsApi } from '../../services/notifications.api';
 import { formatDateTime } from '../../utils/formatters';
+import { toast } from 'react-toastify';
 
 export default function NotificationsPage() {
   const [state, setState] = useState({ loading: true, notifications: [], unreadCount: 0 });
   const [filter, setFilter] = useState('all');
 
   const loadNotifications = async () => {
-    const res = await notificationsApi.mine({ limit: 100 });
-    setState({
-      loading: false,
-      notifications: res.data || [],
-      unreadCount: res.meta?.unreadCount || 0
-    });
+    try {
+      const res = await notificationsApi.mine({ limit: 100 });
+      setState({
+        loading: false,
+        notifications: res.data || [],
+        unreadCount: res.meta?.unreadCount || 0
+      });
+    } catch (error) {
+      setState({ loading: false, notifications: [], unreadCount: 0 });
+      toast.error(error.message || 'Failed to load notifications');
+    }
   };
 
   useEffect(() => {
-    loadNotifications().catch(() => setState({ loading: false, notifications: [], unreadCount: 0 }));
+    loadNotifications();
   }, []);
 
   if (state.loading) return <Loader label="Loading notifications..." />;
@@ -46,7 +52,21 @@ export default function NotificationsPage() {
       <DashboardHeader
         title="Notifications"
         description="Job approval alerts, application updates, and interview schedules."
-        actions={<Button variant="secondary" onClick={async () => { await notificationsApi.markAllRead(); loadNotifications(); }}>Mark all as read</Button>}
+        actions={(
+          <Button
+            variant="secondary"
+            onClick={async () => {
+              try {
+                await notificationsApi.markAllRead();
+                await loadNotifications();
+              } catch (error) {
+                toast.error(error.message || 'Failed to mark notifications as read');
+              }
+            }}
+          >
+            Mark all as read
+          </Button>
+        )}
       />
 
       <Card className="candidate-notification-wrap">
@@ -91,8 +111,12 @@ export default function NotificationsPage() {
                     size="sm"
                     variant="secondary"
                     onClick={async () => {
-                      await notificationsApi.markRead(item._id);
-                      loadNotifications();
+                      try {
+                        await notificationsApi.markRead(item._id);
+                        await loadNotifications();
+                      } catch (error) {
+                        toast.error(error.message || 'Failed to mark notification as read');
+                      }
                     }}
                   >
                     Mark read

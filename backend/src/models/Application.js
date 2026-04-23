@@ -27,6 +27,15 @@ const applicationSchema = new mongoose.Schema(
       default: APPLICATION_STATUS.PENDING,
       index: true
     },
+    candidateSource: {
+      type: String,
+      trim: true,
+      default: 'Hirexo Portal'
+    },
+    rejectionReason: {
+      type: String,
+      trim: true
+    },
     coverLetter: String,
     resumeSnapshot: {
       fileName: String,

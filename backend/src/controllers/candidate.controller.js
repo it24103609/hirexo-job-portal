@@ -177,6 +177,83 @@ const unsaveJob = asyncHandler(async (req, res) => {
   }));
 });
 
+const uploadProfilePicture = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    throw new AppError('Profile picture file is required', 400);
+  }
+
+  const profile = await CandidateProfile.findOneAndUpdate(
+    { user: req.user._id },
+    { $setOnInsert: { user: req.user._id, savedJobs: [] } },
+    { new: true, upsert: true }
+  );
+
+  if (profile.profilePicture?.filePath && fs.existsSync(profile.profilePicture.filePath)) {
+    fs.unlinkSync(profile.profilePicture.filePath);
+  }
+
+  profile.profilePicture = {
+    fileName: req.file.originalname,
+    filePath: req.file.path,
+    mimeType: req.file.mimetype,
+    size: req.file.size,
+    uploadedAt: new Date()
+  };
+
+  await profile.save();
+
+  res.status(201).json(apiResponse({
+    message: 'Profile picture uploaded successfully',
+    data: profile.profilePicture
+  }));
+});
+
+const getProfilePicture = asyncHandler(async (req, res) => {
+  const profile = await CandidateProfile.findOne({ user: req.user._id }).select('profilePicture');
+
+  res.json(apiResponse({
+    message: 'Profile picture fetched successfully',
+    data: profile?.profilePicture || null
+  }));
+});
+
+const downloadProfilePicture = asyncHandler(async (req, res) => {
+  const profile = await CandidateProfile.findOne({ user: req.user._id }).select('profilePicture');
+  if (!profile?.profilePicture?.filePath || !fs.existsSync(profile.profilePicture.filePath)) {
+    throw new AppError('Profile picture not found', 404);
+  }
+
+  res.download(path.resolve(profile.profilePicture.filePath), profile.profilePicture.fileName);
+});
+
+const deleteProfilePicture = asyncHandler(async (req, res) => {
+  const profile = await CandidateProfile.findOne({ user: req.user._id });
+  if (!profile || !profile.profilePicture) {
+    throw new AppError('Profile picture not found', 404);
+  }
+
+  if (profile.profilePicture.filePath && fs.existsSync(profile.profilePicture.filePath)) {
+    fs.unlinkSync(profile.profilePicture.filePath);
+  }
+
+  profile.profilePicture = undefined;
+  await profile.save();
+
+  res.json(apiResponse({
+    message: 'Profile picture deleted successfully'
+  }));
+});
+
+const viewProfilePicture = asyncHandler(async (req, res) => {
+  const profile = await CandidateProfile.findOne({ user: req.user._id }).select('profilePicture');
+  if (!profile?.profilePicture?.filePath || !fs.existsSync(profile.profilePicture.filePath)) {
+    throw new AppError('Profile picture not found', 404);
+  }
+
+  res.setHeader('Content-Type', profile.profilePicture.mimeType);
+  res.sendFile(path.resolve(profile.profilePicture.filePath));
+});
+
 module.exports = {
   getProfile,
   upsertProfile,
@@ -184,6 +261,11 @@ module.exports = {
   getResume,
   downloadResume,
   deleteResume,
+  uploadProfilePicture,
+  getProfilePicture,
+  viewProfilePicture,
+  downloadProfilePicture,
+  deleteProfilePicture,
   listApplications,
   listSavedJobs,
   saveJob,

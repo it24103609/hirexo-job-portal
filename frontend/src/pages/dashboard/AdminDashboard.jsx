@@ -220,6 +220,7 @@ export default function AdminDashboard() {
   const quickActions = [
     { label: 'Manage Users', to: '/admin/users', icon: Users, description: 'Review employers, candidates, and account access.' },
     { label: 'Add Job', to: '/admin/jobs', icon: BriefcaseBusiness, description: 'Open job moderation and queue review tasks.' },
+    { label: 'New Chat', to: '/admin/messages', icon: Mail, description: 'Start a direct chat with a candidate or employer.' },
     { label: 'Review Inquiries', to: '/admin/inquiries', icon: Mail, description: 'Reply to leads and clear new contact requests.' },
     { label: 'Publish Blog', to: '/admin/blogs/new', icon: PencilLine, description: 'Create or publish editorial updates.' },
     { label: 'View Reports', to: '/admin/reports', icon: FileDown, description: 'Inspect platform analytics and reporting views.' }
@@ -315,6 +316,10 @@ export default function AdminDashboard() {
             <Button as={Link} to="/admin/reports" size="sm" variant="ghost">
               <FileDown size={16} />
               Export Report
+            </Button>
+            <Button as={Link} to="/admin/messages" size="sm" variant="ghost">
+              <Mail size={16} />
+              New Chat
             </Button>
             <Button as={Link} to="/admin/notifications" size="sm">
               <Bell size={16} />
@@ -493,6 +498,9 @@ export default function AdminDashboard() {
                 <div className="admin-mini-meta">
                   <Badge tone={getBadgeTone(application.status)}>{application.status || 'pending'}</Badge>
                   <small>{formatDate(application.createdAt)}</small>
+                  <Link to={`/admin/messages?applicationId=${application._id}&recipientRole=candidate`} className="link-button">
+                    Chat <ArrowRight size={14} />
+                  </Link>
                 </div>
               </article>
             )) : (

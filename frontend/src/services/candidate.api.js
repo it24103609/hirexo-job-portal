@@ -3,6 +3,13 @@ import api from '../api/axios';
 export const candidateApi = {
   profile: () => api.get('/candidates/profile').then((res) => res.data),
   saveProfile: (payload) => api.patch('/candidates/profile', payload).then((res) => res.data),
+  uploadProfilePicture: (formData) => api.post('/candidates/profile-picture', formData).then((res) => res.data),
+  downloadProfilePicture: async () => {
+    const response = await api.get('/candidates/profile-picture/download', { responseType: 'blob' });
+    return response.data;
+  },
+  getProfilePicture: () => api.get('/candidates/profile-picture').then((res) => res.data),
+  deleteProfilePicture: () => api.delete('/candidates/profile-picture').then((res) => res.data),
   uploadResume: (formData) => api.post('/candidates/resume', formData).then((res) => res.data),
   downloadResume: async () => {
     const response = await api.get('/candidates/resume/download', { responseType: 'blob' });

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { BriefcaseBusiness, CalendarClock, CircleCheckBig } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -7,9 +7,11 @@ import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import Loader from '../../components/ui/Loader';
+import Select from '../../components/ui/Select';
 import { applicationsApi } from '../../services/applications.api';
 import { toast } from 'react-toastify';
 import { formatDate, formatDateTime } from '../../utils/formatters';
+import { ROLES } from '../../utils/constants';
 
 function getStatusMeta(status = '') {
   const key = String(status).toLowerCase();
@@ -20,10 +22,12 @@ function getStatusMeta(status = '') {
 }
 
 export default function CandidateApplicationsPage() {
+  const [searchParams] = useSearchParams();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [messagePanels, setMessagePanels] = useState({});
   const [messagesByApplication, setMessagesByApplication] = useState({});
+  const [messageMetaByApplication, setMessageMetaByApplication] = useState({});
 
   useEffect(() => {
     applicationsApi.mine()
@@ -31,6 +35,42 @@ export default function CandidateApplicationsPage() {
       .catch(() => setApplications([]))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    const requestedApplicationId = searchParams.get('applicationId');
+    const requestedRecipientRole = searchParams.get('recipientRole');
+
+    if (!requestedApplicationId || !applications.some((item) => item._id === requestedApplicationId)) return;
+
+    setMessagePanels((current) => ({
+      ...current,
+      [requestedApplicationId]: {
+        ...(current[requestedApplicationId] || {}),
+        open: true,
+        text: current[requestedApplicationId]?.text || ''
+      }
+    }));
+
+    if (!messagesByApplication[requestedApplicationId]) {
+      applicationsApi.messages(requestedApplicationId)
+        .then((res) => {
+          setMessagesByApplication((current) => ({ ...current, [requestedApplicationId]: res.data?.messages || [] }));
+          setMessageMetaByApplication((current) => ({ ...current, [requestedApplicationId]: res.meta?.permissions || {} }));
+          setMessagePanels((current) => ({
+            ...current,
+            [requestedApplicationId]: {
+              ...(current[requestedApplicationId] || {}),
+              open: true,
+              text: current[requestedApplicationId]?.text || '',
+              recipientRole: [ROLES.EMPLOYER, ROLES.ADMIN].includes(requestedRecipientRole)
+                ? requestedRecipientRole
+                : current[requestedApplicationId]?.recipientRole || res.meta?.permissions?.defaultRecipientRole || ROLES.EMPLOYER
+            }
+          }));
+        })
+        .catch(() => {});
+    }
+  }, [applications, messagesByApplication, searchParams]);
 
   const shortlistedCount = applications.filter((item) => ['shortlisted', 'interview', 'interview_scheduled'].includes(String(item.status || '').toLowerCase())).length;
 
@@ -52,6 +92,16 @@ export default function CandidateApplicationsPage() {
     if (!messagesByApplication[applicationId]) {
       const res = await applicationsApi.messages(applicationId);
       setMessagesByApplication((current) => ({ ...current, [applicationId]: res.data?.messages || [] }));
+      setMessageMetaByApplication((current) => ({ ...current, [applicationId]: res.meta?.permissions || {} }));
+      setMessagePanels((current) => ({
+        ...current,
+        [applicationId]: {
+          ...(current[applicationId] || {}),
+          open: true,
+          text: current[applicationId]?.text || '',
+          recipientRole: current[applicationId]?.recipientRole || res.meta?.permissions?.defaultRecipientRole || ROLES.EMPLOYER
+        }
+      }));
     }
   };
 
@@ -62,21 +112,40 @@ export default function CandidateApplicationsPage() {
     }));
   };
 
+  const setRecipientRole = (applicationId, recipientRole) => {
+    setMessagePanels((current) => ({
+      ...current,
+      [applicationId]: { ...(current[applicationId] || {}), open: true, recipientRole }
+    }));
+  };
+
   const sendMessage = async (applicationId) => {
     const text = String(messagePanels[applicationId]?.text || '').trim();
+    const permissions = messageMetaByApplication[applicationId] || {};
+    const recipientRole = messagePanels[applicationId]?.recipientRole || permissions.defaultRecipientRole || ROLES.EMPLOYER;
     if (!text) {
       toast.error('Message cannot be empty');
       return;
     }
 
-    await applicationsApi.sendMessage(applicationId, { message: text });
+    await applicationsApi.sendMessage(applicationId, {
+      message: text,
+      recipientRole,
+      recipientUserId: recipientRole === ROLES.ADMIN ? permissions.adminReplyUserId : undefined
+    });
     const refreshed = await applicationsApi.messages(applicationId);
     setMessagesByApplication((current) => ({ ...current, [applicationId]: refreshed.data?.messages || [] }));
+    setMessageMetaByApplication((current) => ({ ...current, [applicationId]: refreshed.meta?.permissions || {} }));
     setMessagePanels((current) => ({
       ...current,
-      [applicationId]: { ...(current[applicationId] || {}), text: '', open: true }
+      [applicationId]: {
+        ...(current[applicationId] || {}),
+        text: '',
+        open: true,
+        recipientRole: current[applicationId]?.recipientRole || refreshed.meta?.permissions?.defaultRecipientRole || ROLES.EMPLOYER
+      }
     }));
-    toast.success('Reply sent to employer');
+    toast.success(recipientRole === ROLES.ADMIN ? 'Reply sent to admin' : 'Reply sent to employer');
   };
 
   return (
@@ -148,12 +217,31 @@ export default function CandidateApplicationsPage() {
                                         width: 'fit-content'
                                       }}
                                     >
-                                      <strong>{message.senderUser?.role === 'candidate' ? 'You' : (message.senderUser?.name || 'Employer')}</strong>
+                                      <strong>
+                                        {message.senderUser?.role === 'candidate'
+                                          ? 'You'
+                                          : message.senderUser?.role === 'admin'
+                                            ? 'Admin'
+                                            : (message.senderUser?.name || 'Employer')}
+                                      </strong>
                                       <div>{message.message}</div>
                                     </div>
                                   </div>
                                 )) : <small>No messages yet.</small>}
                               </div>
+                              {(messageMetaByApplication[item._id]?.allowedRecipientRoles || []).length > 1 ? (
+                                <Select
+                                  label="Send to"
+                                  value={messagePanels[item._id]?.recipientRole || messageMetaByApplication[item._id]?.defaultRecipientRole || ROLES.EMPLOYER}
+                                  onChange={(event) => setRecipientRole(item._id, event.target.value)}
+                                >
+                                  {(messageMetaByApplication[item._id]?.allowedRecipientRoles || []).map((role) => (
+                                    <option key={role} value={role}>
+                                      {role === ROLES.ADMIN ? 'Admin' : 'Employer'}
+                                    </option>
+                                  ))}
+                                </Select>
+                              ) : null}
                               <input
                                 className="input"
                                 value={messagePanels[item._id]?.text || ''}
@@ -164,7 +252,7 @@ export default function CandidateApplicationsPage() {
                                     await sendMessage(item._id);
                                   }
                                 }}
-                                placeholder="Type a message"
+                                placeholder={(messagePanels[item._id]?.recipientRole || messageMetaByApplication[item._id]?.defaultRecipientRole) === ROLES.ADMIN ? 'Type a message to admin' : 'Type a message to employer'}
                               />
                               <div className="dashboard-actions">
                                 <Button

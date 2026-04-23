@@ -318,8 +318,8 @@ export default function EmployerDashboard() {
     },
     {
       title: 'Candidate communication',
-      description: 'Message applicants directly from the applicant workspace.',
-      to: applicantsRoute,
+      description: 'Open one-to-one message threads with candidates or reply to admin.',
+      to: '/employer/messages',
       icon: Mail,
       cta: 'Open messages'
     }
@@ -347,6 +347,10 @@ export default function EmployerDashboard() {
             <Button as={Link} to={applicantsRoute} size="sm" variant="ghost">
               <UserCheck size={16} />
               View Applicants
+            </Button>
+            <Button as={Link} to="/employer/messages" size="sm" variant="ghost">
+              <Mail size={16} />
+              New Chat
             </Button>
           </>
         )}
@@ -470,9 +474,9 @@ export default function EmployerDashboard() {
             </article>
             <article className="employer-quick-action-card">
               <span className="employer-quick-action-icon"><Mail size={18} /></span>
-              <strong>Send candidate messages</strong>
-              <p>Use the in-app thread to clarify next steps, questions, and interview details.</p>
-              <Link to={applicantsRoute} className="employer-quick-action-link">Open messages <ArrowRight size={14} /></Link>
+              <strong>Start a new chat</strong>
+              <p>Open one-to-one message threads with candidates or continue admin conversations from your inbox.</p>
+              <Link to="/employer/messages" className="employer-quick-action-link">Open messages <ArrowRight size={14} /></Link>
             </article>
             <article className="employer-quick-action-card">
               <span className="employer-quick-action-icon"><Bell size={18} /></span>

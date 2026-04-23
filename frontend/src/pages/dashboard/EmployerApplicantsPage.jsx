@@ -13,6 +13,7 @@ import { employerApi } from '../../services/employer.api';
 import { applicationsApi } from '../../services/applications.api';
 import { toast } from 'react-toastify';
 import { formatDateTime } from '../../utils/formatters';
+import { REJECTION_REASON_OPTIONS } from '../../utils/applicationMeta';
 
 export default function EmployerApplicantsPage() {
   const { jobId } = useParams();
@@ -21,6 +22,7 @@ export default function EmployerApplicantsPage() {
   const [scheduleForms, setScheduleForms] = useState({});
   const [messagePanels, setMessagePanels] = useState({});
   const [messagesByApplication, setMessagesByApplication] = useState({});
+  const [rejectionModal, setRejectionModal] = useState({ open: false, applicationId: '', reason: 'Skills mismatch', notes: '' });
 
   const toggleScheduleForm = (applicationId) => {
     setScheduleForms((current) => {
@@ -115,6 +117,10 @@ export default function EmployerApplicantsPage() {
 
   if (state.loading) return <Loader label="Loading applicants..." />;
 
+  const selectedRejectionApplication = rejectionModal.open
+    ? state.applications.find((item) => item._id === rejectionModal.applicationId)
+    : null;
+
   return (
     <>
       <Seo title="Applicants | Hirexo" description="Review applicants for your job." />
@@ -171,6 +177,16 @@ export default function EmployerApplicantsPage() {
                         if (nextStatus === 'interview_scheduled') {
                           toast.info('Use the schedule interview form to set date and time.');
                           toggleScheduleForm(application._id);
+                          return;
+                        }
+
+                        if (nextStatus === 'rejected') {
+                          setRejectionModal({
+                            open: true,
+                            applicationId: application._id,
+                            reason: REJECTION_REASON_OPTIONS.includes(application.rejectionReason) ? application.rejectionReason : 'Skills mismatch',
+                            notes: application.rejectionReason && !REJECTION_REASON_OPTIONS.includes(application.rejectionReason) ? application.rejectionReason : ''
+                          });
                           return;
                         }
 
@@ -300,6 +316,56 @@ export default function EmployerApplicantsPage() {
           </table>
         </div>
       </Card>
+      {rejectionModal.open ? (
+        <div className="app-modal-backdrop" role="presentation" onClick={() => setRejectionModal({ open: false, applicationId: '', reason: 'Skills mismatch', notes: '' })}>
+          <div className="app-modal-card" role="dialog" aria-modal="true" aria-label="Set rejection reason" onClick={(e) => e.stopPropagation()}>
+            <div className="panel-head">
+              <div>
+                <p className="section-eyebrow">Candidate decision</p>
+                <h3 style={{ margin: 0 }}>Set rejection reason</h3>
+              </div>
+              <Badge tone="danger">Required</Badge>
+            </div>
+            <p style={{ marginTop: 0 }}>
+              {selectedRejectionApplication?.candidateUser?.name || 'Candidate'} for {selectedRejectionApplication?.jobTitle || state.job?.title || 'this role'}
+            </p>
+            <Select
+              label="Reason"
+              value={rejectionModal.reason}
+              onChange={(e) => setRejectionModal((current) => ({ ...current, reason: e.target.value }))}
+            >
+              {REJECTION_REASON_OPTIONS.map((option) => <option key={option} value={option}>{option}</option>)}
+            </Select>
+            <Textarea
+              label="Additional notes"
+              value={rejectionModal.notes}
+              onChange={(e) => setRejectionModal((current) => ({ ...current, notes: e.target.value }))}
+              placeholder="Optional extra detail for reporting clarity"
+            />
+            <div className="dashboard-actions">
+              <Button
+                onClick={async () => {
+                  const finalReason = rejectionModal.reason === 'Other'
+                    ? (rejectionModal.notes.trim() || 'Other')
+                    : rejectionModal.reason;
+                  await employerApi.updateApplicantStatus(rejectionModal.applicationId, {
+                    status: 'rejected',
+                    rejectionReason: finalReason
+                  });
+                  toast.success('Candidate rejected');
+                  setRejectionModal({ open: false, applicationId: '', reason: 'Skills mismatch', notes: '' });
+                  await loadApplicants(filters);
+                }}
+              >
+                Save rejection
+              </Button>
+              <Button variant="ghost" onClick={() => setRejectionModal({ open: false, applicationId: '', reason: 'Skills mismatch', notes: '' })}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }

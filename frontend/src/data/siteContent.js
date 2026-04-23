@@ -58,16 +58,20 @@ export const siteContent = {
       { label: 'Notifications', to: '/candidate/notifications' }
     ],
     employer: [
+      { label: 'Overview', to: '/employer/overview' },
       { label: 'Dashboard', to: '/employer/dashboard' },
       { label: 'Company Profile', to: '/employer/company-profile' },
       { label: 'Manage Jobs', to: '/employer/jobs' },
       { label: 'Post Job', to: '/employer/jobs/new' },
+      { label: 'Messages', to: '/employer/messages' },
       { label: 'Notifications', to: '/employer/notifications' }
     ],
     admin: [
+      { label: 'Overview', to: '/admin/overview' },
       { label: 'Dashboard', to: '/admin/dashboard' },
       { label: 'Users', to: '/admin/users' },
       { label: 'Jobs', to: '/admin/jobs' },
+      { label: 'Messages', to: '/admin/messages' },
       { label: 'Master Data', to: '/admin/master-data' },
       { label: 'Blogs', to: '/admin/blogs' },
       { label: 'Inquiries', to: '/admin/inquiries' },

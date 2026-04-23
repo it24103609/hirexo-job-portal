@@ -20,6 +20,17 @@ const resumeSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const profilePictureSchema = new mongoose.Schema(
+  {
+    fileName: String,
+    filePath: String,
+    mimeType: String,
+    size: Number,
+    uploadedAt: Date
+  },
+  { _id: false }
+);
+
 const candidateProfileSchema = new mongoose.Schema(
   {
     user: {
@@ -56,6 +67,7 @@ const candidateProfileSchema = new mongoose.Schema(
       portfolio: String,
       github: String
     },
+    profilePicture: profilePictureSchema,
     resume: resumeSchema,
     savedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }]
   },

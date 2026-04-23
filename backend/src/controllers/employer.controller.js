@@ -384,6 +384,9 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
 
   if (status === APPLICATION_STATUS.REJECTED) {
     application.rejectedAt = new Date();
+    application.rejectionReason = String(req.body.rejectionReason || application.rejectionReason || 'Not specified').trim();
+  } else {
+    application.rejectionReason = undefined;
   }
 
   await application.save();

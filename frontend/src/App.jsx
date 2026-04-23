@@ -29,18 +29,22 @@ const CandidateResumePage = lazy(() => import('./pages/dashboard/CandidateResume
 const CandidateApplicationsPage = lazy(() => import('./pages/dashboard/CandidateApplicationsPage'));
 const CandidateSavedJobsPage = lazy(() => import('./pages/dashboard/CandidateSavedJobsPage'));
 const EmployerDashboard = lazy(() => import('./pages/dashboard/EmployerDashboard'));
+const EmployerOverviewPage = lazy(() => import('./pages/dashboard/EmployerOverviewPage'));
 const EmployerCompanyProfilePage = lazy(() => import('./pages/dashboard/EmployerCompanyProfilePage'));
 const EmployerJobsPage = lazy(() => import('./pages/dashboard/EmployerJobsPage'));
 const EmployerJobFormPage = lazy(() => import('./pages/dashboard/EmployerJobFormPage'));
 const EmployerApplicantsPage = lazy(() => import('./pages/dashboard/EmployerApplicantsPage'));
 const EmployerCandidateDetailPage = lazy(() => import('./pages/dashboard/EmployerCandidateDetailPage'));
+const EmployerMessagesPage = lazy(() => import('./pages/dashboard/EmployerMessagesPage'));
 const AdminDashboard = lazy(() => import('./pages/dashboard/AdminDashboard'));
+const AdminOverviewPage = lazy(() => import('./pages/dashboard/AdminOverviewPage'));
 const AdminUsersPage = lazy(() => import('./pages/dashboard/AdminUsersPage'));
 const AdminJobsModerationPage = lazy(() => import('./pages/dashboard/AdminJobsModerationPage'));
 const AdminMasterDataPage = lazy(() => import('./pages/dashboard/AdminMasterDataPage'));
 const AdminBlogsPage = lazy(() => import('./pages/dashboard/AdminBlogsPage'));
 const AdminInquiriesPage = lazy(() => import('./pages/dashboard/AdminInquiriesPage'));
 const AdminReportsPage = lazy(() => import('./pages/dashboard/AdminReportsPage'));
+const AdminMessagesPage = lazy(() => import('./pages/dashboard/AdminMessagesPage'));
 const NotificationsPage = lazy(() => import('./pages/dashboard/NotificationsPage'));
 const NotFoundPage = lazy(() => import('./pages/public/NotFoundPage'));
 
@@ -82,6 +86,7 @@ export default function App() {
 
           <Route element={<RoleRoute allowedRoles={[ROLES.EMPLOYER]} />}>
             <Route element={<DashboardLayout role="employer" />}>
+              <Route path="employer/overview" element={<EmployerOverviewPage />} />
               <Route path="employer/dashboard" element={<EmployerDashboard />} />
               <Route path="employer/company-profile" element={<EmployerCompanyProfilePage />} />
               <Route path="employer/jobs" element={<EmployerJobsPage />} />
@@ -89,12 +94,14 @@ export default function App() {
               <Route path="employer/jobs/:id/edit" element={<EmployerJobFormPage mode="edit" />} />
               <Route path="employer/jobs/:jobId/applicants" element={<EmployerApplicantsPage />} />
               <Route path="employer/applicants/:applicationId" element={<EmployerCandidateDetailPage />} />
+              <Route path="employer/messages" element={<EmployerMessagesPage />} />
               <Route path="employer/notifications" element={<NotificationsPage />} />
             </Route>
           </Route>
 
           <Route element={<RoleRoute allowedRoles={[ROLES.ADMIN]} />}>
             <Route element={<DashboardLayout role="admin" />}>
+              <Route path="admin/overview" element={<AdminOverviewPage />} />
               <Route path="admin/dashboard" element={<AdminDashboard />} />
               <Route path="admin/users" element={<AdminUsersPage />} />
               <Route path="admin/jobs" element={<AdminJobsModerationPage />} />
@@ -102,6 +109,7 @@ export default function App() {
               <Route path="admin/blogs" element={<AdminBlogsPage />} />
               <Route path="admin/blogs/new" element={<AdminBlogsPage />} />
               <Route path="admin/inquiries" element={<AdminInquiriesPage />} />
+              <Route path="admin/messages" element={<AdminMessagesPage />} />
               <Route path="admin/reports" element={<AdminReportsPage />} />
               <Route path="admin/notifications" element={<NotificationsPage />} />
             </Route>

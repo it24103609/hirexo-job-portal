@@ -151,7 +151,11 @@ export default function JobDetailsPage() {
               <JobApplicationForm
                 onSubmit={async (values) => {
                   try {
-                    await applicationsApi.apply({ jobId: job._id || job.id || slug, coverLetter: values.coverLetter });
+                    await applicationsApi.apply({
+                      jobId: job._id || job.id || slug,
+                      coverLetter: values.coverLetter,
+                      candidateSource: values.candidateSource
+                    });
                     toast.success('Application submitted');
                     setAlreadyApplied(true);
                   } catch (error) {

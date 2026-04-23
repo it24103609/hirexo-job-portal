@@ -11,6 +11,6 @@ router.get('/:id', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLE
 router.get('/:id/resume', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.downloadApplicationResume);
 router.patch('/:id/status', protect, authorizeRoles(ROLES.EMPLOYER, ROLES.ADMIN), applicationController.updateApplicationStatus);
 router.get('/:id/messages', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.getApplicationMessages);
-router.post('/:id/messages', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER), applicationController.sendApplicationMessage);
+router.post('/:id/messages', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.sendApplicationMessage);
 
 module.exports = router;

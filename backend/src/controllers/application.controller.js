@@ -8,9 +8,14 @@ const ApplicationMessage = require('../models/ApplicationMessage');
 const Job = require('../models/Job');
 const CandidateProfile = require('../models/CandidateProfile');
 const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
-const { JOB_REVIEW_STATUS, JOB_STATUS, APPLICATION_STATUS, NOTIFICATION_TYPES } = require('../utils/constants');
+const { JOB_REVIEW_STATUS, JOB_STATUS, APPLICATION_STATUS, NOTIFICATION_TYPES, ROLES } = require('../utils/constants');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
+
+function normalizeCandidateSource(value) {
+  const allowed = ['Hirexo Portal', 'LinkedIn', 'Referral', 'Website', 'Agency'];
+  return allowed.includes(value) ? value : 'Hirexo Portal';
+}
 
 function buildStatusEmail(status, interviewAt) {
   if (status === APPLICATION_STATUS.SHORTLISTED) {
@@ -47,6 +52,52 @@ function userCanAccessApplication(application, user) {
   return isCandidate || isEmployer || user.role === 'admin';
 }
 
+function getAdminReplyThread(messages, userId, preferredAdminId) {
+  const adminThreads = messages.filter((item) =>
+    String(item.recipientUser?._id || item.recipientUser) === String(userId)
+    && item.senderUser?.role === ROLES.ADMIN
+  );
+
+  if (!adminThreads.length) return null;
+
+  if (preferredAdminId) {
+    const matchingThread = adminThreads.find(
+      (item) => String(item.senderUser?._id || item.senderUser) === String(preferredAdminId)
+    );
+    if (matchingThread) return matchingThread;
+  }
+
+  return adminThreads[adminThreads.length - 1];
+}
+
+function buildMessagePermissions(messages, user) {
+  if (user.role === ROLES.ADMIN) {
+    return {
+      allowedRecipientRoles: [ROLES.CANDIDATE, ROLES.EMPLOYER],
+      defaultRecipientRole: ROLES.CANDIDATE,
+      canMessageAdmin: false,
+      adminReplyUserId: null
+    };
+  }
+
+  const defaultRecipientRole = user.role === ROLES.CANDIDATE ? ROLES.EMPLOYER : ROLES.CANDIDATE;
+  const permissions = {
+    allowedRecipientRoles: [defaultRecipientRole],
+    defaultRecipientRole,
+    canMessageAdmin: false,
+    adminReplyUserId: null
+  };
+
+  const adminReplyThread = getAdminReplyThread(messages, user._id);
+  if (adminReplyThread) {
+    permissions.allowedRecipientRoles.push(ROLES.ADMIN);
+    permissions.canMessageAdmin = true;
+    permissions.adminReplyUserId = adminReplyThread.senderUser?._id || null;
+  }
+
+  return permissions;
+}
+
 const applyForJob = asyncHandler(async (req, res) => {
   const job = await Job.findOne({ _id: req.body.jobId, reviewStatus: JOB_REVIEW_STATUS.APPROVED, status: JOB_STATUS.ACTIVE });
   if (!job) {
@@ -67,6 +118,7 @@ const applyForJob = asyncHandler(async (req, res) => {
     job: job._id,
     candidateUser: req.user._id,
     employerUser: job.employerUser,
+    candidateSource: normalizeCandidateSource(req.body.candidateSource),
     coverLetter: req.body.coverLetter,
     resumeSnapshot: {
       fileName: profile.resume.fileName,
@@ -242,6 +294,9 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
 
   if (req.body.status === APPLICATION_STATUS.REJECTED) {
     application.rejectedAt = new Date();
+    application.rejectionReason = String(req.body.rejectionReason || application.rejectionReason || 'Not specified').trim();
+  } else {
+    application.rejectionReason = undefined;
   }
 
   await application.save();
@@ -347,7 +402,8 @@ const getApplicationMessages = asyncHandler(async (req, res) => {
   }
 
   const messages = await ApplicationMessage.find({ application: application._id })
-    .populate('senderUser', 'name role')
+    .populate('senderUser', 'name role email')
+    .populate('recipientUser', 'name role email')
     .sort({ createdAt: 1 })
     .limit(200);
 
@@ -358,6 +414,9 @@ const getApplicationMessages = asyncHandler(async (req, res) => {
       jobTitle: application.job?.title,
       companyName: application.job?.companyName,
       messages
+    },
+    meta: {
+      permissions: buildMessagePermissions(messages, req.user)
     }
   }));
 });
@@ -383,12 +442,44 @@ const sendApplicationMessage = asyncHandler(async (req, res) => {
 
   const senderIsCandidate = String(application.candidateUser?._id) === String(req.user._id);
   const senderIsEmployer = String(application.employerUser?._id) === String(req.user._id);
+  const senderIsAdmin = req.user.role === ROLES.ADMIN;
+  const requestedRecipientRole = String(req.body.recipientRole || '').trim().toLowerCase();
+  let recipient = null;
 
-  if (!senderIsCandidate && !senderIsEmployer) {
-    throw new AppError('Only candidate or employer can send messages', 403);
+  if (senderIsAdmin) {
+    if (![ROLES.CANDIDATE, ROLES.EMPLOYER].includes(requestedRecipientRole)) {
+      throw new AppError('Admin must choose candidate or employer as the recipient', 400);
+    }
+
+    recipient = requestedRecipientRole === ROLES.CANDIDATE ? application.candidateUser : application.employerUser;
+  } else if (senderIsCandidate || senderIsEmployer) {
+    const defaultRecipient = senderIsCandidate ? application.employerUser : application.candidateUser;
+    const defaultRecipientRole = senderIsCandidate ? ROLES.EMPLOYER : ROLES.CANDIDATE;
+
+    if (!requestedRecipientRole || requestedRecipientRole === defaultRecipientRole) {
+      recipient = defaultRecipient;
+    } else if (requestedRecipientRole === ROLES.ADMIN) {
+      const existingMessages = await ApplicationMessage.find({
+        application: application._id,
+        recipientUser: req.user._id
+      })
+        .populate('senderUser', 'name role email')
+        .populate('recipientUser', 'name role email')
+        .sort({ createdAt: 1 });
+
+      const adminReplyThread = getAdminReplyThread(existingMessages, req.user._id, req.body.recipientUserId);
+      if (!adminReplyThread?.senderUser?._id) {
+        throw new AppError('Admin must message first before you can reply', 403);
+      }
+
+      recipient = adminReplyThread.senderUser;
+    } else {
+      throw new AppError('Invalid message recipient', 400);
+    }
+  } else {
+    throw new AppError('You cannot send messages for this application', 403);
   }
 
-  const recipient = senderIsCandidate ? application.employerUser : application.candidateUser;
   const senderName = req.user.name || (senderIsCandidate ? application.candidateUser?.name : application.employerUser?.name) || 'User';
 
   const message = await ApplicationMessage.create({
@@ -417,7 +508,9 @@ const sendApplicationMessage = asyncHandler(async (req, res) => {
     });
   }
 
-  const populated = await ApplicationMessage.findById(message._id).populate('senderUser', 'name role');
+  const populated = await ApplicationMessage.findById(message._id)
+    .populate('senderUser', 'name role email')
+    .populate('recipientUser', 'name role email');
 
   res.status(201).json(apiResponse({
     message: 'Message sent successfully',
