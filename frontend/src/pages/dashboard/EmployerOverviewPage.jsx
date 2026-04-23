@@ -79,11 +79,12 @@ export default function EmployerOverviewPage() {
     { label: 'Reviewed', value: pipelineCounts.reviewed },
     { label: 'Shortlisted', value: pipelineCounts.shortlisted },
     { label: 'Interview', value: pipelineCounts.interview },
+    { label: 'Hired', value: pipelineCounts.hired },
     { label: 'Rejected', value: pipelineCounts.rejected }
   ];
 
   const maxVolume = Math.max(1, ...dailyPipeline.map((item) => Math.max(item.applied, item.shortlisted)));
-  const maxPipeline = Math.max(1, ...dailyPipeline.map((item) => item.reviewed + item.shortlisted + item.interview + item.rejected || item.applied));
+  const maxPipeline = Math.max(1, ...dailyPipeline.map((item) => item.reviewed + item.shortlisted + item.interview + item.hired + item.rejected || item.applied));
   const maxReason = Math.max(1, ...rejectionReasons.map((item) => item.value), 1);
   const sourceTotal = sources.reduce((sum, item) => sum + item.value, 0);
 
@@ -127,6 +128,11 @@ export default function EmployerOverviewPage() {
           <span>{pipelineCounts.interview} moved to interview</span>
         </article>
         <article className="overview-metric-card">
+          <small>Hire rate</small>
+          <strong>{percent(pipelineCounts.hired, pipelineCounts.applied)}</strong>
+          <span>{pipelineCounts.hired} converted to hired</span>
+        </article>
+        <article className="overview-metric-card">
           <small>Top source</small>
           <strong>{sources[0]?.label || 'No data'}</strong>
           <span>{sources[0]?.value || 0} applications</span>
@@ -151,14 +157,16 @@ export default function EmployerOverviewPage() {
             <span className="tone-screening">Reviewed {pipelineCounts.reviewed}</span>
             <span className="tone-shortlisted">Shortlisted {pipelineCounts.shortlisted}</span>
             <span className="tone-interview">Interviews {pipelineCounts.interview}</span>
+            <span className="tone-shortlisted">Hired {pipelineCounts.hired}</span>
             <span className="tone-rejected">Rejected {pipelineCounts.rejected}</span>
           </div>
           <div className={`overview-pipeline-chart ${timeline.granularity === 'month' ? 'is-monthly' : ''}`} role="img" aria-label={`Hiring pipeline for ${rangeMeta.label}`}>
             {dailyPipeline.map((item) => {
-              const total = item.reviewed + item.shortlisted + item.interview + item.rejected;
+              const total = item.reviewed + item.shortlisted + item.interview + item.hired + item.rejected;
               const reviewHeight = total ? `${(item.reviewed / maxPipeline) * 100}%` : '0%';
               const shortlistHeight = total ? `${(item.shortlisted / maxPipeline) * 100}%` : '0%';
               const interviewHeight = total ? `${(item.interview / maxPipeline) * 100}%` : '0%';
+              const hiredHeight = total ? `${(item.hired / maxPipeline) * 100}%` : '0%';
               const rejectHeight = total ? `${(item.rejected / maxPipeline) * 100}%` : '0%';
 
               return (
@@ -167,6 +175,7 @@ export default function EmployerOverviewPage() {
                     <span className="segment-reviewed" style={{ height: reviewHeight }} />
                     <span className="segment-shortlisted" style={{ height: shortlistHeight }} />
                     <span className="segment-interview" style={{ height: interviewHeight }} />
+                    <span className="segment-hired" style={{ height: hiredHeight }} />
                     <span className="segment-rejected" style={{ height: rejectHeight }} />
                   </div>
                   <small>{item.label}</small>
@@ -187,6 +196,7 @@ export default function EmployerOverviewPage() {
           <div className="overview-legend">
             <span className="tone-applied">Applied {pipelineCounts.applied}</span>
             <span className="tone-shortlisted">Shortlisted {pipelineCounts.shortlisted}</span>
+            <span className="tone-screening">Hired {pipelineCounts.hired}</span>
           </div>
           <div className={`overview-volume-chart ${timeline.granularity === 'month' ? 'is-monthly' : ''}`} role="img" aria-label={`Candidate volume for ${rangeMeta.label}`}>
             {dailyPipeline.map((item) => (

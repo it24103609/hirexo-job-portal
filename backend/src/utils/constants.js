@@ -28,6 +28,7 @@ const APPLICATION_STATUS = Object.freeze({
   REVIEWED: 'reviewed',
   INTERVIEW_SCHEDULED: 'interview_scheduled',
   SHORTLISTED: 'shortlisted',
+  HIRED: 'hired',
   REJECTED: 'rejected'
 });
 

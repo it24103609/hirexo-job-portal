@@ -116,6 +116,7 @@ export function filterApplicationsByRange(applications = [], range = '30d') {
       application.viewedAt,
       application.shortlistedAt,
       application.interviewScheduledAt,
+      application.hiredAt,
       application.rejectedAt
     ];
 
@@ -131,6 +132,7 @@ export function groupDailyApplications(applications = [], range = '30d') {
     reviewed: 0,
     shortlisted: 0,
     interview: 0,
+    hired: 0,
     rejected: 0
   }));
   const bucketMap = new Map(buckets.map((item) => [item.key, item]));
@@ -152,6 +154,7 @@ export function groupDailyApplications(applications = [], range = '30d') {
     place(application.viewedAt || (status === 'reviewed' ? application.createdAt : null), 'reviewed');
     place(application.shortlistedAt || (status === 'shortlisted' ? application.createdAt : null), 'shortlisted');
     place(application.interviewScheduledAt || (status === 'interview_scheduled' ? application.createdAt : null), 'interview');
+    place(application.hiredAt || (status === 'hired' ? application.createdAt : null), 'hired');
     place(application.rejectedAt || (status === 'rejected' ? application.createdAt : null), 'rejected');
   });
 
@@ -164,6 +167,7 @@ export function getPipelineCounts(applications = [], range = '30d') {
     if (isWithinRange(application.viewedAt, range) || (!application.viewedAt && String(application.status || '').toLowerCase() === 'reviewed' && isWithinRange(application.createdAt, range))) counts.reviewed += 1;
     if (isWithinRange(application.shortlistedAt, range) || (!application.shortlistedAt && String(application.status || '').toLowerCase() === 'shortlisted' && isWithinRange(application.createdAt, range))) counts.shortlisted += 1;
     if (isWithinRange(application.interviewScheduledAt, range) || (!application.interviewScheduledAt && String(application.status || '').toLowerCase() === 'interview_scheduled' && isWithinRange(application.createdAt, range))) counts.interview += 1;
+    if (isWithinRange(application.hiredAt, range) || (!application.hiredAt && String(application.status || '').toLowerCase() === 'hired' && isWithinRange(application.createdAt, range))) counts.hired += 1;
     if (isWithinRange(application.rejectedAt, range) || (!application.rejectedAt && String(application.status || '').toLowerCase() === 'rejected' && isWithinRange(application.createdAt, range))) counts.rejected += 1;
     return counts;
   }, {
@@ -171,6 +175,7 @@ export function getPipelineCounts(applications = [], range = '30d') {
     reviewed: 0,
     shortlisted: 0,
     interview: 0,
+    hired: 0,
     rejected: 0
   });
 }

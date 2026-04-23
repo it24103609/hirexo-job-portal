@@ -65,7 +65,7 @@ function getRelativeTime(value) {
 
 function getBadgeTone(status) {
   const normalized = String(status || '').toLowerCase();
-  if (['approved', 'published', 'active', 'shortlisted', 'replied', 'read'].includes(normalized)) return 'success';
+  if (['approved', 'published', 'active', 'shortlisted', 'hired', 'replied', 'read'].includes(normalized)) return 'success';
   if (['rejected', 'blocked'].includes(normalized)) return 'danger';
   return 'neutral';
 }
@@ -146,7 +146,7 @@ export default function AdminDashboard() {
     jobs: [],
     jobCounts: { pending: 0, approved: 0, rejected: 0, all: 0 },
     applications: [],
-    applicationCounts: { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, all: 0 },
+    applicationCounts: { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, hired: 0, all: 0 },
     contacts: [],
     contactStats: { new: 0, read: 0, replied: 0, total: 0 },
     notifications: [],
@@ -174,8 +174,8 @@ export default function AdminDashboard() {
       jobCounts: jobsRes.status === 'fulfilled' ? jobsRes.value.meta?.counts || { pending: 0, approved: 0, rejected: 0, all: 0 } : { pending: 0, approved: 0, rejected: 0, all: 0 },
       applications: applicationsRes.status === 'fulfilled' ? applicationsRes.value.data || [] : [],
       applicationCounts: applicationsRes.status === 'fulfilled'
-        ? applicationsRes.value.meta?.counts || { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, all: 0 }
-        : { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, all: 0 },
+        ? applicationsRes.value.meta?.counts || { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, hired: 0, all: 0 }
+        : { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, hired: 0, all: 0 },
       contacts: contactsRes.status === 'fulfilled' ? contactsRes.value.data || [] : [],
       contactStats: contactsRes.status === 'fulfilled' ? contactsRes.value.stats || { new: 0, read: 0, replied: 0, total: 0 } : { new: 0, read: 0, replied: 0, total: 0 },
       notifications: notificationsRes.status === 'fulfilled' ? notificationsRes.value.data || [] : [],
@@ -339,6 +339,7 @@ export default function AdminDashboard() {
           <span><Sparkles size={14} /> {metrics.activeJobs} live jobs</span>
           <span><CircleAlert size={14} /> {metrics.pendingJobs} pending reviews</span>
           <span><CheckCheck size={14} /> {state.applicationCounts.reviewed || 0} reviewed applications</span>
+          <span><Sparkles size={14} /> {state.applicationCounts.hired || 0} hired</span>
         </div>
       </section>
 

@@ -15,6 +15,7 @@ import { ROLES } from '../../utils/constants';
 
 function getStatusMeta(status = '') {
   const key = String(status).toLowerCase();
+  if (key === 'hired') return { label: 'Hired', tone: 'success' };
   if (key === 'shortlisted') return { label: 'Shortlisted', tone: 'success' };
   if (key === 'interview' || key === 'interview_scheduled') return { label: 'Interview scheduled', tone: 'success' };
   if (key === 'rejected') return { label: 'Rejected', tone: 'danger' };
@@ -26,6 +27,7 @@ export default function CandidateApplicationsPage() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [messagePanels, setMessagePanels] = useState({});
+  const [slotPanels, setSlotPanels] = useState({});
   const [messagesByApplication, setMessagesByApplication] = useState({});
   const [messageMetaByApplication, setMessageMetaByApplication] = useState({});
 
@@ -72,7 +74,21 @@ export default function CandidateApplicationsPage() {
     }
   }, [applications, messagesByApplication, searchParams]);
 
-  const shortlistedCount = applications.filter((item) => ['shortlisted', 'interview', 'interview_scheduled'].includes(String(item.status || '').toLowerCase())).length;
+  const shortlistedCount = applications.filter((item) => ['shortlisted', 'interview', 'interview_scheduled', 'hired'].includes(String(item.status || '').toLowerCase())).length;
+  const openSlotCount = applications.filter((item) => (item.interviewSlots || []).some((slot) => !slot.isBooked)).length;
+  const hiredCount = applications.filter((item) => String(item.status || '').toLowerCase() === 'hired').length;
+
+  const reloadApplications = async () => {
+    setLoading(true);
+    try {
+      const res = await applicationsApi.mine();
+      setApplications(res.data || []);
+    } catch {
+      setApplications([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleMessages = async (applicationId) => {
     const isOpen = Boolean(messagePanels[applicationId]?.open);
@@ -148,6 +164,19 @@ export default function CandidateApplicationsPage() {
     toast.success(recipientRole === ROLES.ADMIN ? 'Reply sent to admin' : 'Reply sent to employer');
   };
 
+  const toggleSlots = (applicationId) => {
+    setSlotPanels((current) => ({
+      ...current,
+      [applicationId]: { open: !current[applicationId]?.open }
+    }));
+  };
+
+  const bookSlot = async (applicationId, slotId) => {
+    await applicationsApi.bookInterviewSlot(applicationId, { slotId });
+    toast.success('Interview slot confirmed');
+    await reloadApplications();
+  };
+
   return (
     <>
       <Seo title="Applied Jobs | Hirexo" description="Track your submitted applications." />
@@ -170,6 +199,20 @@ export default function CandidateApplicationsPage() {
               <strong>{applications.filter((item) => item.interviewScheduledAt).length}</strong>
             </div>
           </article>
+          <article className="candidate-stat-card">
+            <span className="candidate-stat-icon"><CalendarClock size={18} /></span>
+            <div>
+              <p>Open Slots</p>
+              <strong>{openSlotCount}</strong>
+            </div>
+          </article>
+          <article className="candidate-stat-card">
+            <span className="candidate-stat-icon"><CircleCheckBig size={18} /></span>
+            <div>
+              <p>Hired</p>
+              <strong>{hiredCount}</strong>
+            </div>
+          </article>
         </div>
       ) : null}
 
@@ -179,11 +222,13 @@ export default function CandidateApplicationsPage() {
             <div className="table-wrap">
               <table className="table candidate-table">
                 <thead>
-                  <tr><th>Job</th><th>Company</th><th>Status</th><th>Interview</th><th>Applied</th><th>Communication</th></tr>
+                  <tr><th>Job</th><th>Company</th><th>Status</th><th>Interview</th><th>Applied</th><th>Actions</th></tr>
                 </thead>
                 <tbody>
                   {applications.map((item) => {
                     const status = getStatusMeta(item.status);
+                    const availableSlots = (item.interviewSlots || []).filter((slot) => !slot.isBooked);
+                    const bookedSlot = (item.interviewSlots || []).find((slot) => slot.isBooked);
                     return (
                       <tr key={item._id}>
                         <td>
@@ -194,9 +239,42 @@ export default function CandidateApplicationsPage() {
                         <td>{item.interviewScheduledAt ? formatDateTime(item.interviewScheduledAt) : '-'}</td>
                         <td>{formatDate(item.createdAt)}</td>
                         <td>
-                          <Button size="sm" variant="secondary" onClick={async () => { await toggleMessages(item._id); }}>
-                            {messagePanels[item._id]?.open ? 'Hide' : 'Messages'}
-                          </Button>
+                          <div className="candidate-quick-actions">
+                            {availableSlots.length ? (
+                              <Button size="sm" variant="secondary" onClick={() => toggleSlots(item._id)}>
+                                {slotPanels[item._id]?.open ? 'Hide slots' : `Book slot (${availableSlots.length})`}
+                              </Button>
+                            ) : null}
+                            <Button size="sm" variant="secondary" onClick={async () => { await toggleMessages(item._id); }}>
+                              {messagePanels[item._id]?.open ? 'Hide' : 'Messages'}
+                            </Button>
+                          </div>
+
+                          {bookedSlot && !availableSlots.length ? (
+                            <div className="mt-1" style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 10, minWidth: 240 }}>
+                              <small>Confirmed slot</small>
+                              <div><strong>{formatDateTime(bookedSlot.startsAt)}</strong></div>
+                              <div>{bookedSlot.mode || 'video'}{bookedSlot.location ? ` · ${bookedSlot.location}` : ''}</div>
+                            </div>
+                          ) : null}
+
+                          {slotPanels[item._id]?.open ? (
+                            <div className="mt-1" style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 10, minWidth: 260, display: 'grid', gap: 8 }}>
+                              <strong>Available interview slots</strong>
+                              {availableSlots.length ? availableSlots.map((slot) => (
+                                <button
+                                  key={slot._id}
+                                  type="button"
+                                  className="candidate-slot-option"
+                                  onClick={async () => { await bookSlot(item._id, slot._id); }}
+                                >
+                                  <span>{formatDateTime(slot.startsAt)}</span>
+                                  <small>{slot.mode || 'video'}{slot.location ? ` · ${slot.location}` : ''}</small>
+                                </button>
+                              )) : <small>No open slots right now.</small>}
+                            </div>
+                          ) : null}
+
                           {messagePanels[item._id]?.open ? (
                             <div className="mt-1" style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 10, minWidth: 240 }}>
                               <div style={{ maxHeight: 160, overflow: 'auto', display: 'grid', gap: 6, marginBottom: 8 }}>

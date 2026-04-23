@@ -32,7 +32,8 @@ const fallbackDashboard = {
   pendingJobs: 0,
   activeJobs: 0,
   totalApplications: 0,
-  shortlistedApplications: 0
+  shortlistedApplications: 0,
+  hiredApplications: 0
 };
 
 function formatStatus(status = '') {
@@ -130,6 +131,7 @@ export default function EmployerDashboard() {
       reviewed: 0,
       shortlisted: 0,
       interview: 0,
+      hired: 0,
       rejected: 0
     };
 
@@ -139,6 +141,7 @@ export default function EmployerDashboard() {
       else if (status === 'reviewed') counts.reviewed += 1;
       else if (status === 'shortlisted') counts.shortlisted += 1;
       else if (status === 'interview_scheduled') counts.interview += 1;
+      else if (status === 'hired') counts.hired += 1;
       else if (status === 'rejected') counts.rejected += 1;
     });
 
@@ -147,6 +150,7 @@ export default function EmployerDashboard() {
 
   const totalApplications = Math.max(metrics.totalApplications || 0, state.applications.length);
   const shortlistedCount = Math.max(metrics.shortlistedApplications || 0, pipelineCounts.shortlisted);
+  const hiredCount = Math.max(metrics.hiredApplications || 0, pipelineCounts.hired);
   const pipelineTotal = Object.values(pipelineCounts).reduce((sum, value) => sum + value, 0);
 
   const applicationsPerJob = useMemo(() => {
@@ -269,6 +273,13 @@ export default function EmployerDashboard() {
       hint: 'Candidates in interview stage',
       trend: `${pipelineCounts.rejected} rejected after review`,
       icon: CalendarClock
+    },
+    {
+      label: 'Hired candidates',
+      value: hiredCount,
+      hint: 'Successful hires across your roles',
+      trend: `${pipelineCounts.interview} interview-stage candidates remain active`,
+      icon: UserCheck
     }
   ];
 
@@ -277,6 +288,7 @@ export default function EmployerDashboard() {
     { key: 'reviewed', label: 'Reviewed', value: pipelineCounts.reviewed, icon: BriefcaseBusiness },
     { key: 'shortlisted', label: 'Shortlisted', value: pipelineCounts.shortlisted, icon: UserCheck },
     { key: 'interview', label: 'Interview', value: pipelineCounts.interview, icon: CalendarClock },
+    { key: 'hired', label: 'Hired', value: pipelineCounts.hired, icon: Sparkles },
     { key: 'rejected', label: 'Rejected', value: pipelineCounts.rejected, icon: Clock3 }
   ];
 
@@ -366,6 +378,7 @@ export default function EmployerDashboard() {
           <span><BriefcaseBusiness size={14} /> {metrics.activeJobs} active jobs</span>
           <span><UserCheck size={14} /> {shortlistedCount} shortlisted</span>
           <span><CalendarClock size={14} /> {pipelineCounts.interview} interviews</span>
+          <span><Sparkles size={14} /> {hiredCount} hired</span>
         </div>
       </section>
 

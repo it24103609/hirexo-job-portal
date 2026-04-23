@@ -5,6 +5,7 @@ export const applicationsApi = {
   mine: () => api.get('/applications/my').then((res) => res.data),
   byJob: (jobId) => api.get(`/applications/job/${jobId}`).then((res) => res.data),
   getById: (applicationId) => api.get(`/applications/${applicationId}`).then((res) => res.data),
+  bookInterviewSlot: (applicationId, payload) => api.post(`/applications/${applicationId}/book-slot`, payload).then((res) => res.data),
   messages: (applicationId) => api.get(`/applications/${applicationId}/messages`).then((res) => res.data),
   sendMessage: (applicationId, payload) => api.post(`/applications/${applicationId}/messages`, payload).then((res) => res.data),
   downloadResume: async (applicationId) => {

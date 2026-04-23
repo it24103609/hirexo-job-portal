@@ -73,7 +73,7 @@ export default function AdminOverviewPage() {
   const volumeSeries = dailyPipeline.map((item) => ({ ...item, registrations: registrationsMap.get(item.key) || 0 }));
 
   const maxVolume = Math.max(1, ...volumeSeries.map((item) => Math.max(item.applied, item.registrations)));
-  const maxPipeline = Math.max(1, ...dailyPipeline.map((item) => item.reviewed + item.shortlisted + item.interview + item.rejected || item.applied));
+  const maxPipeline = Math.max(1, ...dailyPipeline.map((item) => item.reviewed + item.shortlisted + item.interview + item.hired + item.rejected || item.applied));
   const maxReason = Math.max(1, ...rejectionReasons.map((item) => item.value), 1);
   const sourceTotal = sources.reduce((sum, item) => sum + item.value, 0);
 
@@ -82,6 +82,7 @@ export default function AdminOverviewPage() {
     { label: 'Reviewed', value: pipelineCounts.reviewed },
     { label: 'Shortlisted', value: pipelineCounts.shortlisted },
     { label: 'Interview', value: pipelineCounts.interview },
+    { label: 'Hired', value: pipelineCounts.hired },
     { label: 'Rejected', value: pipelineCounts.rejected }
   ];
 
@@ -149,17 +150,19 @@ export default function AdminOverviewPage() {
             <span className="tone-screening">Reviewed {pipelineCounts.reviewed}</span>
             <span className="tone-shortlisted">Shortlisted {pipelineCounts.shortlisted}</span>
             <span className="tone-interview">Interviews {pipelineCounts.interview}</span>
+            <span className="tone-shortlisted">Hired {pipelineCounts.hired}</span>
             <span className="tone-rejected">Rejected {pipelineCounts.rejected}</span>
           </div>
           <div className={`overview-pipeline-chart ${timeline.granularity === 'month' ? 'is-monthly' : ''}`} role="img" aria-label={`Admin hiring pipeline for ${rangeMeta.label}`}>
             {dailyPipeline.map((item) => {
-              const total = item.reviewed + item.shortlisted + item.interview + item.rejected;
+              const total = item.reviewed + item.shortlisted + item.interview + item.hired + item.rejected;
               return (
                 <div key={item.key} className="overview-pipeline-day">
                   <div className="overview-pipeline-stack">
                     <span className="segment-reviewed" style={{ height: total ? `${(item.reviewed / maxPipeline) * 100}%` : '0%' }} />
                     <span className="segment-shortlisted" style={{ height: total ? `${(item.shortlisted / maxPipeline) * 100}%` : '0%' }} />
                     <span className="segment-interview" style={{ height: total ? `${(item.interview / maxPipeline) * 100}%` : '0%' }} />
+                    <span className="segment-hired" style={{ height: total ? `${(item.hired / maxPipeline) * 100}%` : '0%' }} />
                     <span className="segment-rejected" style={{ height: total ? `${(item.rejected / maxPipeline) * 100}%` : '0%' }} />
                   </div>
                   <small>{item.label}</small>

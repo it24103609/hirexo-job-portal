@@ -9,99 +9,89 @@ const CandidateProfile = require('../models/CandidateProfile');
 const PlatformSetting = require('../models/PlatformSetting');
 const { createUniqueSlug } = require('../utils/slug');
 const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
+const { DEFAULT_AI_SCORING, buildAiExplanation } = require('../utils/aiScoring');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
 const { NOTIFICATION_TYPES, APPLICATION_STATUS } = require('../utils/constants');
 
-const DEFAULT_AI_SCORING = {
-  skillsWeight: 60,
-  experienceWeight: 20,
-  locationWeight: 10,
-  profileWeight: 10,
-  highFitThreshold: 80,
-  moderateFitThreshold: 60
-};
-
-function normalizeTerms(values = []) {
-  return values
-    .map((value) => String(value || '').trim().toLowerCase())
-    .filter(Boolean);
-}
-
-function resolveExperienceTarget(experienceLevel = '') {
-  const text = String(experienceLevel || '').toLowerCase();
-  const firstNumber = Number(text.match(/\d+/)?.[0]);
-  return Number.isFinite(firstNumber) ? firstNumber : null;
-}
-
-function calculateAiFit(job, profile = {}, scoringConfig = DEFAULT_AI_SCORING) {
-  const safeConfig = { ...DEFAULT_AI_SCORING, ...(scoringConfig || {}) };
-  const totalWeight = Math.max(
-    1,
-    Number(safeConfig.skillsWeight || 0)
-      + Number(safeConfig.experienceWeight || 0)
-      + Number(safeConfig.locationWeight || 0)
-      + Number(safeConfig.profileWeight || 0)
-  );
-
-  const weightedPortion = (rawScore, weight) => Math.round((Math.max(0, Math.min(100, rawScore)) * Number(weight || 0)) / totalWeight);
-
-  const jobSkills = normalizeTerms(job.skills || []);
-  const candidateSkills = normalizeTerms(profile.skills || []);
-
-  const overlappingSkills = jobSkills.filter((skill) => candidateSkills.includes(skill));
-  const skillsRaw = jobSkills.length
-    ? Math.round((overlappingSkills.length / jobSkills.length) * 100)
-    : Math.min(100, candidateSkills.length * 15);
-
-  const targetExperience = resolveExperienceTarget(job.experienceLevel);
-  const years = Number(profile.experienceYears || 0);
-  const experienceRaw = targetExperience === null
-    ? Math.min(100, years * 12)
-    : years >= targetExperience
-      ? 100
-      : Math.max(0, 100 - (targetExperience - years) * 30);
-
-  const profileLocation = String(profile.location || '').toLowerCase();
-  const jobLocation = String(job.location || '').toLowerCase();
-  const locationRaw = job.remoteFriendly
-    ? 10
-    : profileLocation && jobLocation && profileLocation.includes(jobLocation)
-      ? 10
-      : 3;
-
-  const completenessChecks = [
-    Boolean(profile.headline),
-    Boolean(profile.summary),
-    candidateSkills.length > 0,
-    years > 0,
-    Array.isArray(profile.education) && profile.education.length > 0
-  ];
-  const completenessRaw = Math.round((completenessChecks.filter(Boolean).length / completenessChecks.length) * 100);
-
-  const skillsScore = weightedPortion(skillsRaw, safeConfig.skillsWeight);
-  const experienceScore = weightedPortion(experienceRaw, safeConfig.experienceWeight);
-  const locationScore = weightedPortion(locationRaw * 10, safeConfig.locationWeight);
-  const completenessScore = weightedPortion(completenessRaw, safeConfig.profileWeight);
-
-  const score = Math.max(0, Math.min(100, skillsScore + experienceScore + locationScore + completenessScore));
-  const label = score >= safeConfig.highFitThreshold ? 'High fit' : score >= safeConfig.moderateFitThreshold ? 'Moderate fit' : 'Low fit';
-
-  return {
-    score,
-    label,
-    breakdown: {
-      skills: skillsScore,
-      experience: experienceScore,
-      location: locationScore,
-      profile: completenessScore
-    }
-  };
-}
-
 async function getAiScoringSettings() {
   const settings = await PlatformSetting.findOne({ key: 'default' }).lean();
   return { ...DEFAULT_AI_SCORING, ...(settings?.aiScoring || {}) };
+}
+
+function normalizeInterviewSlot(slot = {}) {
+  const startsAt = slot.startsAt || slot.start || slot.interviewScheduledAt;
+  const endsAt = slot.endsAt || slot.end;
+
+  if (!startsAt) {
+    throw new AppError('Interview slot start time is required', 400);
+  }
+
+  const normalizedStart = new Date(startsAt);
+  if (Number.isNaN(normalizedStart.getTime())) {
+    throw new AppError('Interview slot start time is invalid', 400);
+  }
+
+  const normalizedEnd = endsAt ? new Date(endsAt) : new Date(normalizedStart.getTime() + (45 * 60 * 1000));
+  if (Number.isNaN(normalizedEnd.getTime()) || normalizedEnd <= normalizedStart) {
+    throw new AppError('Interview slot end time must be after the start time', 400);
+  }
+
+  return {
+    startsAt: normalizedStart,
+    endsAt: normalizedEnd,
+    mode: slot.mode || 'video',
+    location: slot.location || '',
+    meetingLink: slot.meetingLink || '',
+    notes: slot.notes || '',
+    isBooked: Boolean(slot.isBooked),
+    bookedAt: slot.bookedAt || null
+  };
+}
+
+function serializeCalendarEvent(application) {
+  const candidateName = application.candidateUser?.name || 'Candidate';
+  const jobTitle = application.job?.title || 'Role';
+  const companyName = application.job?.companyName || 'Company';
+
+  const scheduledEvent = application.interviewScheduledAt
+    ? [{
+        type: 'scheduled',
+        id: `scheduled-${application._id}`,
+        applicationId: application._id,
+        jobId: application.job?._id || application.job,
+        candidateName,
+        jobTitle,
+        companyName,
+        startsAt: application.interviewScheduledAt,
+        endsAt: application.interviewSlots?.find((slot) => slot.isBooked)?.endsAt || new Date(new Date(application.interviewScheduledAt).getTime() + (45 * 60 * 1000)),
+        mode: application.interviewMode || 'video',
+        location: application.interviewLocation || '',
+        meetingLink: application.interviewMeetingLink || '',
+        notes: application.interviewNotes || '',
+        status: application.status
+      }]
+    : [];
+
+  const slotEvents = (application.interviewSlots || []).map((slot) => ({
+    type: slot.isBooked ? 'booked_slot' : 'slot',
+    id: String(slot._id),
+    applicationId: application._id,
+    jobId: application.job?._id || application.job,
+    candidateName,
+    jobTitle,
+    companyName,
+    startsAt: slot.startsAt,
+    endsAt: slot.endsAt,
+    mode: slot.mode,
+    location: slot.location || '',
+    meetingLink: slot.meetingLink || '',
+    notes: slot.notes || '',
+    status: application.status,
+    isBooked: slot.isBooked
+  }));
+
+  return [...scheduledEvent, ...slotEvents];
 }
 
 function buildStatusEmail(status, interviewAt) {
@@ -116,6 +106,13 @@ function buildStatusEmail(status, interviewAt) {
     return {
       subject: 'Application update',
       text: 'Your job application status has been updated to rejected.'
+    };
+  }
+
+  if (status === APPLICATION_STATUS.HIRED) {
+    return {
+      subject: 'Offer progression update',
+      text: 'Congratulations! Your application has been moved to hired.'
     };
   }
 
@@ -205,12 +202,13 @@ const upsertProfile = asyncHandler(async (req, res) => {
 });
 
 const dashboard = asyncHandler(async (req, res) => {
-  const [totalJobs, pendingJobs, activeJobs, totalApplications, shortlistedApplications] = await Promise.all([
+  const [totalJobs, pendingJobs, activeJobs, totalApplications, shortlistedApplications, hiredApplications] = await Promise.all([
     Job.countDocuments({ employerUser: req.user._id }),
     Job.countDocuments({ employerUser: req.user._id, reviewStatus: 'pending' }),
     Job.countDocuments({ employerUser: req.user._id, reviewStatus: 'approved', status: 'active' }),
     Application.countDocuments({ employerUser: req.user._id }),
-    Application.countDocuments({ employerUser: req.user._id, status: APPLICATION_STATUS.SHORTLISTED })
+    Application.countDocuments({ employerUser: req.user._id, status: APPLICATION_STATUS.SHORTLISTED }),
+    Application.countDocuments({ employerUser: req.user._id, status: APPLICATION_STATUS.HIRED })
   ]);
 
   res.json(apiResponse({
@@ -220,7 +218,8 @@ const dashboard = asyncHandler(async (req, res) => {
       pendingJobs,
       activeJobs,
       totalApplications,
-      shortlistedApplications
+      shortlistedApplications,
+      hiredApplications
     }
   }));
 });
@@ -319,14 +318,15 @@ const listJobApplicants = asyncHandler(async (req, res) => {
     .map((application) => {
       const asObject = application.toObject();
       const candidateProfile = profileMap.get(String(asObject.candidateUser?._id)) || null;
-      const aiFit = calculateAiFit(job, candidateProfile || {}, aiScoringSettings);
+      const aiFit = buildAiExplanation(job, candidateProfile || {}, aiScoringSettings);
 
       return {
         ...asObject,
         candidateProfile,
         aiMatchScore: aiFit.score,
         aiMatchLabel: aiFit.label,
-        aiMatchBreakdown: aiFit.breakdown
+        aiMatchBreakdown: aiFit.breakdown,
+        aiMatchExplanation: aiFit
       };
     })
     .filter(matchesFilters);
@@ -343,6 +343,154 @@ const listJobApplicants = asyncHandler(async (req, res) => {
   res.json(apiResponse({
     message: 'Job applicants fetched successfully',
     data: { job, applications: sorted }
+  }));
+});
+
+const getInterviewCalendar = asyncHandler(async (req, res) => {
+  const applications = await Application.find({ employerUser: req.user._id })
+    .populate('candidateUser', 'name email')
+    .populate('job', 'title companyName')
+    .sort({ interviewScheduledAt: 1, createdAt: -1 })
+    .lean();
+
+  const events = applications
+    .filter((application) => application.interviewScheduledAt || (application.interviewSlots || []).length)
+    .flatMap((application) => serializeCalendarEvent(application));
+
+  res.json(apiResponse({
+    message: 'Interview calendar fetched successfully',
+    data: events
+  }));
+});
+
+const saveApplicationSlots = asyncHandler(async (req, res) => {
+  const application = await Application.findOne({
+    _id: req.params.applicationId,
+    employerUser: req.user._id
+  }).populate('candidateUser', 'email name');
+
+  if (!application) {
+    throw new AppError('Application not found', 404);
+  }
+
+  const rawSlots = Array.isArray(req.body.slots) ? req.body.slots : [];
+  if (!rawSlots.length) {
+    throw new AppError('At least one interview slot is required', 400);
+  }
+
+  application.interviewSlots = rawSlots.map(normalizeInterviewSlot);
+  await application.save();
+
+  const job = await Job.findById(application.job).select('title companyName').lean();
+
+  await createNotification({
+    userId: application.candidateUser._id,
+    type: NOTIFICATION_TYPES.INTERVIEW,
+    title: 'Interview slots shared',
+    message: `New interview slots are available for ${job?.title || 'your application'}.`,
+    metadata: {
+      applicationId: application._id,
+      slotCount: application.interviewSlots.length
+    }
+  });
+
+  res.json(apiResponse({
+    message: 'Interview slots saved successfully',
+    data: application
+  }));
+});
+
+const bookApplicationSlot = asyncHandler(async (req, res) => {
+  const application = await Application.findOne({
+    _id: req.params.applicationId,
+    employerUser: req.user._id
+  }).populate('candidateUser', 'email name');
+
+  if (!application) {
+    throw new AppError('Application not found', 404);
+  }
+
+  const slotId = String(req.body.slotId || '').trim();
+  if (!slotId) {
+    throw new AppError('Slot id is required', 400);
+  }
+
+  const slot = application.interviewSlots.id(slotId);
+  if (!slot) {
+    throw new AppError('Interview slot not found', 404);
+  }
+
+  application.interviewSlots.forEach((entry) => {
+    entry.isBooked = String(entry._id) === slotId;
+    entry.bookedAt = String(entry._id) === slotId ? new Date() : null;
+  });
+
+  application.status = APPLICATION_STATUS.INTERVIEW_SCHEDULED;
+  application.interviewScheduledAt = slot.startsAt;
+  application.interviewMode = slot.mode || application.interviewMode;
+  application.interviewLocation = slot.location || application.interviewLocation;
+  application.interviewMeetingLink = slot.meetingLink || application.interviewMeetingLink;
+  application.interviewNotes = slot.notes || application.interviewNotes;
+
+  await application.save();
+
+  const job = await Job.findById(application.job).select('title companyName').lean();
+  const statusEmail = buildStatusEmail(APPLICATION_STATUS.INTERVIEW_SCHEDULED, application.interviewScheduledAt);
+
+  await createNotification({
+    userId: application.candidateUser._id,
+    type: NOTIFICATION_TYPES.INTERVIEW,
+    title: 'Interview booked',
+    message: `Interview confirmed for ${application.interviewScheduledAt?.toISOString()}.`,
+    metadata: {
+      applicationId: application._id,
+      interviewScheduledAt: application.interviewScheduledAt
+    }
+  });
+
+  await notifyAdmins({
+    type: NOTIFICATION_TYPES.INTERVIEW,
+    title: 'Interview slot booked',
+    message: `${application.candidateUser?.name || 'Candidate'} interview slot booked for ${job?.title || 'job'}.`,
+    metadata: {
+      applicationId: application._id,
+      jobId: application.job,
+      jobTitle: job?.title,
+      companyName: job?.companyName,
+      candidateId: application.candidateUser._id,
+      candidateName: application.candidateUser?.name,
+      employerId: application.employerUser,
+      interviewScheduledAt: application.interviewScheduledAt,
+      actorUserId: req.user._id,
+      actorRole: req.user.role,
+      event: 'interview_slot_booked',
+      adminPath: `/admin/jobs?applicationId=${application._id}`
+    }
+  });
+
+  await sendEmail({
+    to: application.candidateUser.email,
+    subject: statusEmail.subject,
+    text: statusEmail.text,
+    attachments: [{
+      filename: 'hirexo-interview-invite.ics',
+      content: buildInterviewCalendarInvite({
+        candidateName: application.candidateUser?.name,
+        companyName: job?.companyName,
+        jobTitle: job?.title,
+        scheduledAt: application.interviewScheduledAt,
+        interviewMode: application.interviewMode,
+        interviewLocation: application.interviewLocation,
+        interviewMeetingLink: application.interviewMeetingLink,
+        interviewNotes: application.interviewNotes
+      }),
+      contentType: 'text/calendar; method=REQUEST; charset=UTF-8'
+    }]
+  });
+
+  res.json(apiResponse({
+    message: 'Interview slot booked successfully',
+    data: application
   }));
 });
 
@@ -382,11 +530,27 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
     application.shortlistedAt = new Date();
   }
 
+  if (status === APPLICATION_STATUS.HIRED) {
+    application.hiredAt = new Date();
+  }
+
   if (status === APPLICATION_STATUS.REJECTED) {
     application.rejectedAt = new Date();
     application.rejectionReason = String(req.body.rejectionReason || application.rejectionReason || 'Not specified').trim();
   } else {
     application.rejectionReason = undefined;
+  }
+
+  if (req.body.interviewFeedback) {
+    application.interviewFeedback = {
+      communication: Number(req.body.interviewFeedback.communication || 0),
+      technicalSkills: Number(req.body.interviewFeedback.technicalSkills || 0),
+      confidence: Number(req.body.interviewFeedback.confidence || 0),
+      cultureFit: Number(req.body.interviewFeedback.cultureFit || 0),
+      recommendation: req.body.interviewFeedback.recommendation || undefined,
+      summary: String(req.body.interviewFeedback.summary || '').trim(),
+      submittedAt: new Date()
+    };
   }
 
   await application.save();
@@ -440,7 +604,7 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
       updatedByUserId: req.user._id,
       actorUserId: req.user._id,
       actorRole: req.user.role,
-      event: status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? 'interview_scheduled' : 'application_status_changed',
+      event: status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? 'interview_scheduled' : status === APPLICATION_STATUS.HIRED ? 'candidate_hired' : 'application_status_changed',
       adminPath: `/admin/jobs?applicationId=${application._id}`
     }
   });
@@ -481,6 +645,9 @@ module.exports = {
   upsertProfile,
   dashboard,
   listMyJobs,
+  getInterviewCalendar,
   listJobApplicants,
+  saveApplicationSlots,
+  bookApplicationSlot,
   updateApplicantStatus
 };

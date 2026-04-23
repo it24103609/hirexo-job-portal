@@ -34,6 +34,7 @@ export default function AdminJobsModerationPage() {
     shortlisted: 0,
     rejected: 0,
     interview_scheduled: 0,
+    hired: 0,
     all: 0
   });
   const [selectedApplicationId, setSelectedApplicationId] = useState('');
@@ -78,12 +79,13 @@ export default function AdminJobsModerationPage() {
         shortlisted: 0,
         rejected: 0,
         interview_scheduled: 0,
+        hired: 0,
         all: 0
       });
     } catch (error) {
       toast.error(error.message || 'Failed to load applications');
       setApplications([]);
-      setApplicationCounts({ pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, all: 0 });
+      setApplicationCounts({ pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, hired: 0, all: 0 });
     } finally {
       setApplicationsLoading(false);
     }
@@ -144,6 +146,7 @@ export default function AdminJobsModerationPage() {
       case 'pending': return 'neutral';
       case 'under review': return 'neutral';
       case 'shortlisted': return 'success';
+      case 'hired': return 'success';
       default: return 'neutral';
     }
   };
@@ -377,6 +380,7 @@ export default function AdminJobsModerationPage() {
               <option value="shortlisted">Shortlisted ({applicationCounts.shortlisted})</option>
               <option value="rejected">Rejected ({applicationCounts.rejected})</option>
               <option value="interview_scheduled">Interview Scheduled ({applicationCounts.interview_scheduled})</option>
+              <option value="hired">Hired ({applicationCounts.hired})</option>
               <option value="all">All ({applicationCounts.all})</option>
             </Select>
             <div className="dashboard-search-field">
@@ -512,6 +516,7 @@ export default function AdminJobsModerationPage() {
                 <option value="reviewed">Reviewed</option>
                 <option value="shortlisted">Shortlisted</option>
                 <option value="interview_scheduled">Interview Scheduled</option>
+                <option value="hired">Hired</option>
                 <option value="rejected">Rejected</option>
               </Select>
               <Input

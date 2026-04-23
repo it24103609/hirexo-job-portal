@@ -24,6 +24,10 @@ function renderList(items = []) {
   );
 }
 
+function recommendationLabel(value = '') {
+  return String(value || '').replace(/_/g, ' ') || 'Not set';
+}
+
 export default function EmployerCandidateDetailPage() {
   const { applicationId } = useParams();
   const [state, setState] = useState({ loading: true, application: null, error: '' });
@@ -46,6 +50,7 @@ export default function EmployerCandidateDetailPage() {
 
   const { application } = state;
   const profile = application.candidateProfile || {};
+  const ai = application.aiMatchExplanation || {};
   const education = Array.isArray(profile.education)
     ? profile.education
         .map((item) => [item?.degree, item?.institution, item?.year].filter(Boolean).join(' · '))
@@ -60,7 +65,7 @@ export default function EmployerCandidateDetailPage() {
         description={`${application.job?.title || 'Application'} at ${application.job?.companyName || 'Hirexo employer'}`}
         actions={(
           <>
-            <Badge tone={application.status === 'shortlisted' ? 'success' : 'neutral'}>{application.status || 'pending'}</Badge>
+            <Badge tone={['shortlisted', 'hired', 'interview_scheduled'].includes(String(application.status || '').toLowerCase()) ? 'success' : 'neutral'}>{application.status || 'pending'}</Badge>
             {application.resumeSnapshot?.fileName ? (
               <Button
                 variant="secondary"
@@ -113,6 +118,7 @@ export default function EmployerCandidateDetailPage() {
             <p><strong>Status:</strong> {application.status || '-'}</p>
             <p><strong>Applied:</strong> {formatDateTime(application.createdAt)}</p>
             <p><strong>Interview:</strong> {application.interviewScheduledAt ? formatDateTime(application.interviewScheduledAt) : 'Not scheduled'}</p>
+            <p><strong>Hired:</strong> {application.hiredAt ? formatDateTime(application.hiredAt) : 'Not hired yet'}</p>
             <p><strong>Resume:</strong> {application.resumeSnapshot?.fileName || 'Not attached'}</p>
           </div>
           {application.coverLetter ? (
@@ -135,6 +141,33 @@ export default function EmployerCandidateDetailPage() {
 
         <Card>
           <div className="panel-head">
+            <h3><FileText size={18} /> AI Match Explanation</h3>
+          </div>
+          <div className="candidate-summary-points">
+            <p><strong>Overall match:</strong> {application.aiMatchScore ?? 0}%</p>
+            <p><strong>Fit label:</strong> {application.aiMatchLabel || 'Fit unknown'}</p>
+            <p><strong>Skills score:</strong> {application.aiMatchBreakdown?.skills ?? 0}</p>
+            <p><strong>Experience score:</strong> {application.aiMatchBreakdown?.experience ?? 0}</p>
+          </div>
+          <p className="mt-1">{ai.summary || 'AI explanation unavailable.'}</p>
+          {(ai.highlights || []).length ? (
+            <>
+              <h4 className="mt-1">Highlights</h4>
+              {renderList(ai.highlights)}
+            </>
+          ) : null}
+          {(ai.concerns || []).length ? (
+            <>
+              <h4 className="mt-1">Concerns</h4>
+              {renderList(ai.concerns)}
+            </>
+          ) : null}
+        </Card>
+      </div>
+
+      <div className="grid-2 mt-1">
+        <Card>
+          <div className="panel-head">
             <h3><Mail size={18} /> Additional Details</h3>
           </div>
           <div className="candidate-summary-points">
@@ -142,6 +175,27 @@ export default function EmployerCandidateDetailPage() {
             <p><strong><Phone size={14} /> Phone:</strong> {profile.phone || '-'}</p>
             <p><strong>Notes:</strong> {application.notes || 'No recruiter notes yet.'}</p>
           </div>
+        </Card>
+
+        <Card>
+          <div className="panel-head">
+            <h3><FileText size={18} /> Interview Feedback</h3>
+          </div>
+          {application.interviewFeedback?.submittedAt ? (
+            <>
+              <div className="candidate-summary-points">
+                <p><strong>Communication:</strong> {application.interviewFeedback.communication || 0}/5</p>
+                <p><strong>Technical:</strong> {application.interviewFeedback.technicalSkills || 0}/5</p>
+                <p><strong>Confidence:</strong> {application.interviewFeedback.confidence || 0}/5</p>
+                <p><strong>Culture fit:</strong> {application.interviewFeedback.cultureFit || 0}/5</p>
+                <p><strong>Recommendation:</strong> {recommendationLabel(application.interviewFeedback.recommendation)}</p>
+                <p><strong>Submitted:</strong> {formatDateTime(application.interviewFeedback.submittedAt)}</p>
+              </div>
+              <p className="mt-1">{application.interviewFeedback.summary || 'No written summary added.'}</p>
+            </>
+          ) : (
+            <p className="m-0">Interview feedback has not been submitted yet.</p>
+          )}
         </Card>
       </div>
 

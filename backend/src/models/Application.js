@@ -1,6 +1,33 @@
 const mongoose = require('mongoose');
 const { APPLICATION_STATUS } = require('../utils/constants');
 
+const interviewSlotSchema = new mongoose.Schema(
+  {
+    startsAt: {
+      type: Date,
+      required: true
+    },
+    endsAt: {
+      type: Date,
+      required: true
+    },
+    mode: {
+      type: String,
+      enum: ['phone', 'video', 'onsite'],
+      default: 'video'
+    },
+    location: String,
+    meetingLink: String,
+    notes: String,
+    isBooked: {
+      type: Boolean,
+      default: false
+    },
+    bookedAt: Date
+  },
+  { _id: true }
+);
+
 const applicationSchema = new mongoose.Schema(
   {
     job: {
@@ -50,9 +77,23 @@ const applicationSchema = new mongoose.Schema(
     interviewLocation: String,
     interviewMeetingLink: String,
     interviewNotes: String,
+    interviewSlots: [interviewSlotSchema],
+    interviewFeedback: {
+      communication: Number,
+      technicalSkills: Number,
+      confidence: Number,
+      cultureFit: Number,
+      recommendation: {
+        type: String,
+        enum: ['strong_yes', 'yes', 'maybe', 'no']
+      },
+      summary: String,
+      submittedAt: Date
+    },
     notes: String,
     viewedAt: Date,
     shortlistedAt: Date,
+    hiredAt: Date,
     rejectedAt: Date
   },
   { timestamps: true }

@@ -7,7 +7,9 @@ const Application = require('../models/Application');
 const ApplicationMessage = require('../models/ApplicationMessage');
 const Job = require('../models/Job');
 const CandidateProfile = require('../models/CandidateProfile');
+const PlatformSetting = require('../models/PlatformSetting');
 const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
+const { DEFAULT_AI_SCORING, buildAiExplanation } = require('../utils/aiScoring');
 const { JOB_REVIEW_STATUS, JOB_STATUS, APPLICATION_STATUS, NOTIFICATION_TYPES, ROLES } = require('../utils/constants');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
@@ -29,6 +31,13 @@ function buildStatusEmail(status, interviewAt) {
     return {
       subject: 'Application update',
       text: 'Your job application status has been updated to rejected.'
+    };
+  }
+
+  if (status === APPLICATION_STATUS.HIRED) {
+    return {
+      subject: 'Offer progression update',
+      text: 'Congratulations! Your application has been moved to hired.'
     };
   }
 
@@ -96,6 +105,16 @@ function buildMessagePermissions(messages, user) {
   }
 
   return permissions;
+}
+
+async function getAiScoringSettings() {
+  const settings = await PlatformSetting.findOne({ key: 'default' }).lean();
+  return { ...DEFAULT_AI_SCORING, ...(settings?.aiScoring || {}) };
+}
+
+function findInterviewSlot(application, slotId) {
+  if (!application?.interviewSlots?.id) return null;
+  return application.interviewSlots.id(slotId);
 }
 
 const applyForJob = asyncHandler(async (req, res) => {
@@ -223,11 +242,18 @@ const getApplicationById = asyncHandler(async (req, res) => {
         .lean()
     : null;
 
+  const aiScoringSettings = await getAiScoringSettings();
+  const aiMatchExplanation = buildAiExplanation(application.job || {}, candidateProfile || {}, aiScoringSettings);
+
   res.json(apiResponse({
     message: 'Application fetched successfully',
     data: {
       ...application,
-      candidateProfile
+      candidateProfile,
+      aiMatchScore: aiMatchExplanation.score,
+      aiMatchLabel: aiMatchExplanation.label,
+      aiMatchBreakdown: aiMatchExplanation.breakdown,
+      aiMatchExplanation
     }
   }));
 });
@@ -292,11 +318,27 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
     application.shortlistedAt = new Date();
   }
 
+  if (req.body.status === APPLICATION_STATUS.HIRED) {
+    application.hiredAt = new Date();
+  }
+
   if (req.body.status === APPLICATION_STATUS.REJECTED) {
     application.rejectedAt = new Date();
     application.rejectionReason = String(req.body.rejectionReason || application.rejectionReason || 'Not specified').trim();
   } else {
     application.rejectionReason = undefined;
+  }
+
+  if (req.body.interviewFeedback) {
+    application.interviewFeedback = {
+      communication: Number(req.body.interviewFeedback.communication || 0),
+      technicalSkills: Number(req.body.interviewFeedback.technicalSkills || 0),
+      confidence: Number(req.body.interviewFeedback.confidence || 0),
+      cultureFit: Number(req.body.interviewFeedback.cultureFit || 0),
+      recommendation: req.body.interviewFeedback.recommendation || undefined,
+      summary: String(req.body.interviewFeedback.summary || '').trim(),
+      submittedAt: new Date()
+    };
   }
 
   await application.save();
@@ -350,7 +392,7 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
       updatedByUserId: req.user._id,
       actorUserId: req.user._id,
       actorRole: req.user.role,
-      event: req.body.status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? 'interview_scheduled' : 'application_status_changed',
+      event: req.body.status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? 'interview_scheduled' : req.body.status === APPLICATION_STATUS.HIRED ? 'candidate_hired' : 'application_status_changed',
       adminPath: `/admin/jobs?applicationId=${application._id}`
     },
     excludeUserId: req.user.role === 'admin' ? req.user._id : undefined
@@ -418,6 +460,111 @@ const getApplicationMessages = asyncHandler(async (req, res) => {
     meta: {
       permissions: buildMessagePermissions(messages, req.user)
     }
+  }));
+});
+
+const bookInterviewSlot = asyncHandler(async (req, res) => {
+  const application = await Application.findById(req.params.id)
+    .populate('candidateUser', 'name email')
+    .populate('job', 'title companyName');
+
+  if (!application) {
+    throw new AppError('Application not found', 404);
+  }
+
+  if (String(application.candidateUser?._id || application.candidateUser) !== String(req.user._id) && req.user.role !== ROLES.ADMIN) {
+    throw new AppError('You cannot book a slot for this application', 403);
+  }
+
+  const slotId = String(req.body.slotId || '').trim();
+  if (!slotId) {
+    throw new AppError('Slot id is required', 400);
+  }
+
+  const slot = findInterviewSlot(application, slotId);
+  if (!slot) {
+    throw new AppError('Interview slot not found', 404);
+  }
+
+  application.interviewSlots.forEach((entry) => {
+    entry.isBooked = String(entry._id) === slotId;
+    entry.bookedAt = String(entry._id) === slotId ? new Date() : null;
+  });
+
+  application.status = APPLICATION_STATUS.INTERVIEW_SCHEDULED;
+  application.interviewScheduledAt = slot.startsAt;
+  application.interviewMode = slot.mode || application.interviewMode;
+  application.interviewLocation = slot.location || application.interviewLocation;
+  application.interviewMeetingLink = slot.meetingLink || application.interviewMeetingLink;
+  application.interviewNotes = slot.notes || application.interviewNotes;
+
+  await application.save();
+
+  await createNotification({
+    userId: application.candidateUser._id,
+    type: NOTIFICATION_TYPES.INTERVIEW,
+    title: 'Interview booked',
+    message: `You confirmed an interview slot for ${application.job?.title || 'your application'}.`,
+    metadata: {
+      applicationId: application._id,
+      interviewScheduledAt: application.interviewScheduledAt
+    }
+  });
+
+  await createNotification({
+    userId: application.employerUser,
+    type: NOTIFICATION_TYPES.INTERVIEW,
+    title: 'Candidate booked an interview slot',
+    message: `${application.candidateUser?.name || 'Candidate'} selected an interview slot for ${application.job?.title || 'your role'}.`,
+    metadata: {
+      applicationId: application._id,
+      interviewScheduledAt: application.interviewScheduledAt
+    }
+  });
+
+  await notifyAdmins({
+    type: NOTIFICATION_TYPES.INTERVIEW,
+    title: 'Candidate booked interview slot',
+    message: `${application.candidateUser?.name || 'Candidate'} booked an interview slot for ${application.job?.title || 'job'} at ${application.job?.companyName || 'an employer'}.`,
+    metadata: {
+      applicationId: application._id,
+      jobId: application.job?._id || application.job,
+      jobTitle: application.job?.title,
+      companyName: application.job?.companyName,
+      candidateId: application.candidateUser._id,
+      candidateName: application.candidateUser?.name,
+      employerId: application.employerUser,
+      interviewScheduledAt: application.interviewScheduledAt,
+      actorUserId: req.user._id,
+      actorRole: req.user.role,
+      event: 'candidate_booked_interview_slot',
+      adminPath: `/admin/jobs?applicationId=${application._id}`
+    }
+  });
+
+  await sendEmail({
+    to: application.candidateUser.email,
+    subject: 'Interview slot confirmed',
+    text: `Your interview for ${application.job?.title || 'the role'} is confirmed on ${application.interviewScheduledAt?.toISOString()}.`,
+    attachments: [{
+      filename: 'hirexo-interview-invite.ics',
+      content: buildInterviewCalendarInvite({
+        candidateName: application.candidateUser?.name,
+        companyName: application.job?.companyName,
+        jobTitle: application.job?.title,
+        scheduledAt: application.interviewScheduledAt,
+        interviewMode: application.interviewMode,
+        interviewLocation: application.interviewLocation,
+        interviewMeetingLink: application.interviewMeetingLink,
+        interviewNotes: application.interviewNotes
+      }),
+      contentType: 'text/calendar; method=REQUEST; charset=UTF-8'
+    }]
+  });
+
+  res.json(apiResponse({
+    message: 'Interview slot booked successfully',
+    data: application
   }));
 });
 
@@ -526,5 +673,6 @@ module.exports = {
   downloadApplicationResume,
   updateApplicationStatus,
   getApplicationMessages,
+  bookInterviewSlot,
   sendApplicationMessage
 };
