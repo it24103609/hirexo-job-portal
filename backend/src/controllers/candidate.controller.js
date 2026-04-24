@@ -6,6 +6,9 @@ const apiResponse = require('../utils/apiResponse');
 const CandidateProfile = require('../models/CandidateProfile');
 const Application = require('../models/Application');
 const Job = require('../models/Job');
+const Offer = require('../models/Offer');
+const { createNotification } = require('../services/notification.service');
+const { ensureInterviewRounds, syncLegacyInterviewFields } = require('../utils/interviewWorkflow');
 
 function normalizeArray(value) {
   if (Array.isArray(value)) {
@@ -132,9 +135,67 @@ const listApplications = asyncHandler(async (req, res) => {
     .populate('employerUser', 'name email')
     .sort({ createdAt: -1 });
 
+  const offers = await Offer.find({ candidateUser: req.user._id })
+    .select('application title salary currency status joiningDate notes preparedByName sentAt respondedAt')
+    .lean();
+  const offerMap = new Map(offers.map((offer) => [String(offer.application), offer]));
+
+  const data = applications.map((application) => {
+    ensureInterviewRounds(application);
+    syncLegacyInterviewFields(application);
+    const item = application.toObject();
+    item.offer = offerMap.get(String(application._id)) || null;
+    return item;
+  });
+
   res.json(apiResponse({
     message: 'Candidate applications fetched successfully',
-    data: applications
+    data
+  }));
+});
+
+const listOffers = asyncHandler(async (req, res) => {
+  const offers = await Offer.find({ candidateUser: req.user._id })
+    .populate('job', 'title companyName')
+    .populate('application', 'status createdAt')
+    .sort({ updatedAt: -1, createdAt: -1 });
+
+  res.json(apiResponse({
+    message: 'Candidate offers fetched successfully',
+    data: offers
+  }));
+});
+
+const respondToOffer = asyncHandler(async (req, res) => {
+  const offer = await Offer.findOne({ _id: req.params.offerId, candidateUser: req.user._id });
+  if (!offer) {
+    throw new AppError('Offer not found', 404);
+  }
+
+  const status = String(req.body.status || '').trim().toLowerCase();
+  if (!['accepted', 'declined'].includes(status)) {
+    throw new AppError('Offer response must be accepted or declined', 400);
+  }
+
+  offer.status = status;
+  offer.respondedAt = new Date();
+  await offer.save();
+
+  await createNotification({
+    userId: offer.employerUser,
+    type: 'status_update',
+    title: 'Candidate responded to offer',
+    message: `A candidate ${status} an offer for ${offer.title || 'a role'}.`,
+    metadata: {
+      offerId: offer._id,
+      applicationId: offer.application,
+      status
+    }
+  });
+
+  res.json(apiResponse({
+    message: 'Offer response saved successfully',
+    data: offer
   }));
 });
 
@@ -267,6 +328,8 @@ module.exports = {
   downloadProfilePicture,
   deleteProfilePicture,
   listApplications,
+  listOffers,
+  respondToOffer,
   listSavedJobs,
   saveJob,
   unsaveJob

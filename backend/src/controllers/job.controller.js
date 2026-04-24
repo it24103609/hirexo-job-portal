@@ -22,6 +22,37 @@ function normalizeTextValue(value) {
   return String(value ?? '').trim();
 }
 
+function normalizeStringArray(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item || '').trim()).filter(Boolean);
+  }
+
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function normalizeObjectIdArray(value) {
+  if (!Array.isArray(value)) return [];
+  return value.map((item) => String(item || '').trim()).filter(Boolean);
+}
+
+function normalizeScreeningQuestions(value) {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((question) => ({
+      question: normalizeTextValue(question?.question),
+      type: ['text', 'textarea', 'yes_no', 'number', 'select'].includes(question?.type) ? question.type : 'text',
+      required: Boolean(question?.required),
+      options: normalizeStringArray(question?.options || []),
+      idealAnswer: normalizeTextValue(question?.idealAnswer),
+      knockout: Boolean(question?.knockout)
+    }))
+    .filter((question) => question.question);
+}
+
 function buildTextMatch(value) {
   const cleaned = normalizeTextValue(value);
   if (!cleaned) return null;
@@ -140,7 +171,11 @@ const createJob = asyncHandler(async (req, res) => {
     vacancies: req.body.vacancies || 1,
     remoteFriendly: req.body.remoteFriendly || false,
     expiresAt: req.body.expiresAt,
-    tags: req.body.tags || [],
+    tags: normalizeStringArray(req.body.tags),
+    hiringPriority: req.body.hiringPriority || 'medium',
+    screeningQuestions: normalizeScreeningQuestions(req.body.screeningQuestions),
+    hiringLeadMember: req.body.hiringLeadMember || undefined,
+    collaboratorMembers: normalizeObjectIdArray(req.body.collaboratorMembers),
     image: image || undefined,
     reviewStatus: saveAsDraft ? JOB_REVIEW_STATUS.DRAFT : JOB_REVIEW_STATUS.PENDING,
     status: saveAsDraft ? JOB_STATUS.DRAFT : JOB_STATUS.ACTIVE
@@ -184,9 +219,9 @@ const updateJob = asyncHandler(async (req, res) => {
     location: req.body.location === undefined ? targetJob.location : normalizeTextValue(req.body.location),
     jobType: req.body.jobType === undefined ? targetJob.jobType : normalizeTextValue(req.body.jobType),
     description: req.body.description ?? targetJob.description,
-    responsibilities: req.body.responsibilities ?? targetJob.responsibilities,
-    requirements: req.body.requirements ?? targetJob.requirements,
-    skills: req.body.skills ?? targetJob.skills,
+    responsibilities: req.body.responsibilities === undefined ? targetJob.responsibilities : normalizeStringArray(req.body.responsibilities),
+    requirements: req.body.requirements === undefined ? targetJob.requirements : normalizeStringArray(req.body.requirements),
+    skills: req.body.skills === undefined ? targetJob.skills : normalizeStringArray(req.body.skills),
     experienceLevel: req.body.experienceLevel ?? targetJob.experienceLevel,
     salaryMin: req.body.salaryMin ?? targetJob.salaryMin,
     salaryMax: req.body.salaryMax ?? targetJob.salaryMax,
@@ -194,7 +229,11 @@ const updateJob = asyncHandler(async (req, res) => {
     vacancies: req.body.vacancies ?? targetJob.vacancies,
     remoteFriendly: req.body.remoteFriendly ?? targetJob.remoteFriendly,
     expiresAt: req.body.expiresAt ?? targetJob.expiresAt,
-    tags: req.body.tags ?? targetJob.tags,
+    tags: req.body.tags === undefined ? targetJob.tags : normalizeStringArray(req.body.tags),
+    hiringPriority: req.body.hiringPriority ?? targetJob.hiringPriority,
+    screeningQuestions: req.body.screeningQuestions === undefined ? targetJob.screeningQuestions : normalizeScreeningQuestions(req.body.screeningQuestions),
+    hiringLeadMember: req.body.hiringLeadMember === undefined ? targetJob.hiringLeadMember : req.body.hiringLeadMember || undefined,
+    collaboratorMembers: req.body.collaboratorMembers === undefined ? targetJob.collaboratorMembers : normalizeObjectIdArray(req.body.collaboratorMembers),
     reviewStatus: nextReviewStatus,
     status: nextStatus,
     publishedAt: req.user.role === ROLES.ADMIN || saveAsDraft ? targetJob.publishedAt : undefined,

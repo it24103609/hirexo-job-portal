@@ -461,6 +461,22 @@ main { min-height: 60vh; }
   gap: 0.5rem;
 }
 
+.checkbox-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-height: 16px;
+}
+
+.jobform-multi-select {
+  min-height: 132px;
+}
+
+.jobform-question-card {
+  display: grid;
+  gap: 0.9rem;
+  background: rgba(255, 255, 255, 0.72);
+}
+
 .loader, .empty-state {
   display: grid;
   place-items: center;

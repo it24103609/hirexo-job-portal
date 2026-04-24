@@ -13,6 +13,18 @@ const notificationSchema = new mongoose.Schema(
       required: true,
       index: true
     },
+    category: {
+      type: String,
+      enum: ['applications', 'interviews', 'offers', 'approvals', 'messages', 'system'],
+      default: 'system',
+      index: true
+    },
+    priority: {
+      type: String,
+      enum: ['low', 'medium', 'high'],
+      default: 'medium',
+      index: true
+    },
     title: {
       type: String,
       required: true

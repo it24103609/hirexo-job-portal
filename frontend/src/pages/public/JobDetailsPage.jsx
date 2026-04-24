@@ -149,12 +149,14 @@ export default function JobDetailsPage() {
               </div>
             ) : (
               <JobApplicationForm
+                screeningQuestions={job.screeningQuestions || []}
                 onSubmit={async (values) => {
                   try {
                     await applicationsApi.apply({
                       jobId: job._id || job.id || slug,
                       coverLetter: values.coverLetter,
-                      candidateSource: values.candidateSource
+                      candidateSource: values.candidateSource,
+                      screeningAnswers: values.screeningAnswers || []
                     });
                     toast.success('Application submitted');
                     setAlreadyApplied(true);

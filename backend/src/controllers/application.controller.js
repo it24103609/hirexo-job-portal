@@ -9,6 +9,7 @@ const Job = require('../models/Job');
 const CandidateProfile = require('../models/CandidateProfile');
 const PlatformSetting = require('../models/PlatformSetting');
 const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
+const { ensureInterviewRounds, getInterviewRoundById, syncLegacyInterviewFields, pushInterviewTimeline } = require('../utils/interviewWorkflow');
 const { DEFAULT_AI_SCORING, buildAiExplanation } = require('../utils/aiScoring');
 const { JOB_REVIEW_STATUS, JOB_STATUS, APPLICATION_STATUS, NOTIFICATION_TYPES, ROLES } = require('../utils/constants');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
@@ -117,6 +118,22 @@ function findInterviewSlot(application, slotId) {
   return application.interviewSlots.id(slotId);
 }
 
+function normalizeScreeningAnswers(job, value) {
+  const answers = Array.isArray(value) ? value : [];
+  const questions = Array.isArray(job?.screeningQuestions) ? job.screeningQuestions : [];
+
+  return questions.map((question) => {
+    const match = answers.find((item) => String(item?.questionId) === String(question._id));
+    return {
+      questionId: question._id,
+      question: question.question,
+      answer: String(match?.answer || '').trim(),
+      type: question.type || 'text',
+      knockout: Boolean(question.knockout)
+    };
+  });
+}
+
 const applyForJob = asyncHandler(async (req, res) => {
   const job = await Job.findOne({ _id: req.body.jobId, reviewStatus: JOB_REVIEW_STATUS.APPROVED, status: JOB_STATUS.ACTIVE });
   if (!job) {
@@ -139,6 +156,7 @@ const applyForJob = asyncHandler(async (req, res) => {
     employerUser: job.employerUser,
     candidateSource: normalizeCandidateSource(req.body.candidateSource),
     coverLetter: req.body.coverLetter,
+    screeningAnswers: normalizeScreeningAnswers(job, req.body.screeningAnswers),
     resumeSnapshot: {
       fileName: profile.resume.fileName,
       filePath: profile.resume.filePath,
@@ -481,15 +499,27 @@ const bookInterviewSlot = asyncHandler(async (req, res) => {
     throw new AppError('Slot id is required', 400);
   }
 
-  const slot = findInterviewSlot(application, slotId);
+  ensureInterviewRounds(application);
+  const round = getInterviewRoundById(application, req.body.roundId);
+  const slot = round?.interviewSlots?.id ? round.interviewSlots.id(slotId) : findInterviewSlot(application, slotId);
   if (!slot) {
     throw new AppError('Interview slot not found', 404);
   }
 
-  application.interviewSlots.forEach((entry) => {
+  const targetSlots = round ? round.interviewSlots : application.interviewSlots;
+  targetSlots.forEach((entry) => {
     entry.isBooked = String(entry._id) === slotId;
     entry.bookedAt = String(entry._id) === slotId ? new Date() : null;
   });
+
+  if (round) {
+    round.status = 'scheduled';
+    round.scheduledAt = slot.startsAt;
+    round.mode = slot.mode || round.mode;
+    round.location = slot.location || round.location;
+    round.meetingLink = slot.meetingLink || round.meetingLink;
+    round.notes = slot.notes || round.notes;
+  }
 
   application.status = APPLICATION_STATUS.INTERVIEW_SCHEDULED;
   application.interviewScheduledAt = slot.startsAt;
@@ -497,6 +527,15 @@ const bookInterviewSlot = asyncHandler(async (req, res) => {
   application.interviewLocation = slot.location || application.interviewLocation;
   application.interviewMeetingLink = slot.meetingLink || application.interviewMeetingLink;
   application.interviewNotes = slot.notes || application.interviewNotes;
+  syncLegacyInterviewFields(application);
+  pushInterviewTimeline(application, {
+    action: 'slot_booked',
+    actorRole: req.user.role,
+    actorUser: req.user._id,
+    roundId: round?._id,
+    summary: `${round?.roundName || 'Interview round'} booked by candidate`,
+    metadata: { slotId }
+  });
 
   await application.save();
 
@@ -564,6 +603,57 @@ const bookInterviewSlot = asyncHandler(async (req, res) => {
 
   res.json(apiResponse({
     message: 'Interview slot booked successfully',
+    data: application
+  }));
+});
+
+const requestInterviewReschedule = asyncHandler(async (req, res) => {
+  const application = await Application.findById(req.params.id)
+    .populate('candidateUser', 'name email')
+    .populate('job', 'title companyName');
+
+  if (!application) {
+    throw new AppError('Application not found', 404);
+  }
+
+  if (String(application.candidateUser?._id || application.candidateUser) !== String(req.user._id) && req.user.role !== ROLES.ADMIN) {
+    throw new AppError('You cannot request a reschedule for this application', 403);
+  }
+
+  ensureInterviewRounds(application);
+  const round = getInterviewRoundById(application, req.body.roundId);
+  if (!round) {
+    throw new AppError('Interview round not found', 404);
+  }
+
+  round.status = 'reschedule_requested';
+  round.rescheduleRequestedAt = new Date();
+  round.rescheduleRequestReason = String(req.body.reason || 'Candidate requested a different interview time').trim();
+  syncLegacyInterviewFields(application);
+  pushInterviewTimeline(application, {
+    action: 'reschedule_requested',
+    actorRole: req.user.role,
+    actorUser: req.user._id,
+    roundId: round._id,
+    summary: `${round.roundName} reschedule requested`,
+    metadata: { reason: round.rescheduleRequestReason }
+  });
+  await application.save();
+
+  await createNotification({
+    userId: application.employerUser,
+    type: NOTIFICATION_TYPES.INTERVIEW,
+    title: `${round.roundName} reschedule requested`,
+    message: `${application.candidateUser?.name || 'Candidate'} requested to reschedule ${round.roundName}.`,
+    metadata: {
+      applicationId: application._id,
+      roundId: round._id,
+      reason: round.rescheduleRequestReason
+    }
+  });
+
+  res.json(apiResponse({
+    message: 'Reschedule request sent successfully',
     data: application
   }));
 });
@@ -674,5 +764,6 @@ module.exports = {
   updateApplicationStatus,
   getApplicationMessages,
   bookInterviewSlot,
+  requestInterviewReschedule,
   sendApplicationMessage
 };

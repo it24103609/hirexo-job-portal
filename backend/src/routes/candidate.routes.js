@@ -20,6 +20,8 @@ router.get('/resume', candidateController.getResume);
 router.get('/resume/download', candidateController.downloadResume);
 router.delete('/resume', candidateController.deleteResume);
 router.get('/applications', candidateController.listApplications);
+router.get('/offers', candidateController.listOffers);
+router.patch('/offers/:offerId/respond', candidateController.respondToOffer);
 router.get('/saved-jobs', candidateController.listSavedJobs);
 router.post('/saved-jobs/:jobId', candidateController.saveJob);
 router.delete('/saved-jobs/:jobId', candidateController.unsaveJob);

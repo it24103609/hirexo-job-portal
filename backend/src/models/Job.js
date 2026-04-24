@@ -1,6 +1,35 @@
 const mongoose = require('mongoose');
 const { JOB_REVIEW_STATUS, JOB_STATUS } = require('../utils/constants');
 
+const screeningQuestionSchema = new mongoose.Schema(
+  {
+    question: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    type: {
+      type: String,
+      enum: ['text', 'textarea', 'yes_no', 'number', 'select'],
+      default: 'text'
+    },
+    required: {
+      type: Boolean,
+      default: false
+    },
+    options: [{ type: String, trim: true }],
+    idealAnswer: {
+      type: String,
+      trim: true
+    },
+    knockout: {
+      type: Boolean,
+      default: false
+    }
+  },
+  { _id: true }
+);
+
 const jobSchema = new mongoose.Schema(
   {
     employerUser: {
@@ -92,7 +121,21 @@ const jobSchema = new mongoose.Schema(
     reviewedAt: Date,
     publishedAt: Date,
     expiresAt: Date,
-    tags: [{ type: String, trim: true }]
+    tags: [{ type: String, trim: true }],
+    hiringPriority: {
+      type: String,
+      enum: ['low', 'medium', 'high', 'urgent'],
+      default: 'medium'
+    },
+    screeningQuestions: [screeningQuestionSchema],
+    hiringLeadMember: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'HiringTeamMember'
+    },
+    collaboratorMembers: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'HiringTeamMember'
+    }]
   },
   { timestamps: true }
 );

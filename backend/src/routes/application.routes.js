@@ -10,6 +10,7 @@ router.get('/job/:jobId', protect, authorizeRoles(ROLES.EMPLOYER, ROLES.ADMIN), 
 router.get('/:id', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.getApplicationById);
 router.get('/:id/resume', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.downloadApplicationResume);
 router.post('/:id/book-slot', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.ADMIN), applicationController.bookInterviewSlot);
+router.patch('/:id/request-reschedule', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.ADMIN), applicationController.requestInterviewReschedule);
 router.patch('/:id/status', protect, authorizeRoles(ROLES.EMPLOYER, ROLES.ADMIN), applicationController.updateApplicationStatus);
 router.get('/:id/messages', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.getApplicationMessages);
 router.post('/:id/messages', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.sendApplicationMessage);

@@ -152,19 +152,21 @@ export default function AdminDashboard() {
     notifications: [],
     unreadNotifications: 0,
     blogs: [],
+    offers: [],
     reports: { candidateRegistrations: { total: 0, thisMonth: 0, last30Days: [] } }
   });
   const [actioningJobId, setActioningJobId] = useState('');
 
   const loadDashboard = async () => {
-    const [dashboardRes, jobsRes, applicationsRes, contactsRes, notificationsRes, blogsRes, reportsRes] = await Promise.allSettled([
+    const [dashboardRes, jobsRes, applicationsRes, contactsRes, notificationsRes, blogsRes, reportsRes, offersRes] = await Promise.allSettled([
       adminApi.dashboard(),
       adminApi.pendingJobs(),
       adminApi.applications({ status: 'all' }),
       contactApi.list({ limit: 5 }),
       notificationsApi.mine({ limit: 5 }),
       blogApi.listAdmin(),
-      adminApi.reports()
+      adminApi.reports(),
+      adminApi.offers()
     ]);
 
     setState({
@@ -181,6 +183,7 @@ export default function AdminDashboard() {
       notifications: notificationsRes.status === 'fulfilled' ? notificationsRes.value.data || [] : [],
       unreadNotifications: notificationsRes.status === 'fulfilled' ? notificationsRes.value.meta?.unreadCount || 0 : 0,
       blogs: blogsRes.status === 'fulfilled' ? blogsRes.value.data || [] : [],
+      offers: offersRes.status === 'fulfilled' ? offersRes.value.data || [] : [],
       reports: reportsRes.status === 'fulfilled'
         ? reportsRes.value.data || { candidateRegistrations: { total: 0, thisMonth: 0, last30Days: [] } }
         : { candidateRegistrations: { total: 0, thisMonth: 0, last30Days: [] } }
@@ -273,6 +276,13 @@ export default function AdminDashboard() {
       hint: 'Unread platform alerts',
       trend: `${notifications.length} latest updates ready to review`,
       icon: Bell
+    },
+    {
+      label: 'Offers',
+      value: state.offers.length,
+      hint: `${state.offers.filter((offer) => offer.status === 'sent').length} pending responses`,
+      trend: `${state.offers.filter((offer) => offer.status === 'accepted').length} accepted so far`,
+      icon: FileText
     }
   ];
 

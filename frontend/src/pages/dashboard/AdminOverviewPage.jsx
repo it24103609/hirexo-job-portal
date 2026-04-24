@@ -29,6 +29,7 @@ export default function AdminOverviewPage() {
   const [state, setState] = useState({
     loading: true,
     applications: [],
+    offers: [],
     dashboard: null,
     reports: { candidateRegistrations: { last30Days: [] } }
   });
@@ -36,16 +37,18 @@ export default function AdminOverviewPage() {
 
   useEffect(() => {
     const load = async () => {
-      const [dashboardRes, applicationsRes, reportsRes] = await Promise.all([
+      const [dashboardRes, applicationsRes, reportsRes, offersRes] = await Promise.all([
         adminApi.dashboard(),
         adminApi.applications({ status: 'all' }),
-        adminApi.reports()
+        adminApi.reports(),
+        adminApi.offers()
       ]);
 
       setState({
         loading: false,
         dashboard: dashboardRes.data || null,
         applications: applicationsRes.data || [],
+        offers: offersRes.data || [],
         reports: reportsRes.data || { candidateRegistrations: { last30Days: [] } }
       });
     };
@@ -54,6 +57,7 @@ export default function AdminOverviewPage() {
       setState({
         loading: false,
         applications: [],
+        offers: [],
         dashboard: null,
         reports: { candidateRegistrations: { last30Days: [] } }
       });
@@ -129,6 +133,11 @@ export default function AdminOverviewPage() {
           <small>Unread pressure</small>
           <strong>{state.dashboard?.newContacts || 0}</strong>
           <span>New inquiries awaiting action</span>
+        </article>
+        <article className="overview-metric-card">
+          <small>Offers accepted</small>
+          <strong>{state.offers.filter((offer) => offer.status === 'accepted').length}</strong>
+          <span>{state.offers.filter((offer) => offer.status === 'sent').length} still awaiting response</span>
         </article>
       </div>
 

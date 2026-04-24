@@ -322,6 +322,20 @@ export default function EmployerDashboard() {
       cta: 'View alerts'
     },
     {
+      title: 'Talent pool',
+      description: 'Save warm candidates for future openings and internal CRM follow-up.',
+      to: '/employer/talent-pool',
+      icon: Sparkles,
+      cta: 'Open talent pool'
+    },
+    {
+      title: 'Hiring team',
+      description: 'Coordinate recruiters, interviewers, and hiring leads.',
+      to: '/employer/team',
+      icon: UserCheck,
+      cta: 'Manage team'
+    },
+    {
       title: 'Interview scheduling',
       description: 'Open the applicant pool to schedule interviews and send updates.',
       to: applicantsRoute,
@@ -363,6 +377,10 @@ export default function EmployerDashboard() {
             <Button as={Link} to="/employer/messages" size="sm" variant="ghost">
               <Mail size={16} />
               New Chat
+            </Button>
+            <Button as={Link} to="/employer/talent-pool" size="sm" variant="ghost">
+              <Sparkles size={16} />
+              Talent Pool
             </Button>
           </>
         )}

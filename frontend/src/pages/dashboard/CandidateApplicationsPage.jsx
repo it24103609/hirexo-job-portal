@@ -9,6 +9,7 @@ import Button from '../../components/ui/Button';
 import Loader from '../../components/ui/Loader';
 import Select from '../../components/ui/Select';
 import { applicationsApi } from '../../services/applications.api';
+import { candidateApi } from '../../services/candidate.api';
 import { toast } from 'react-toastify';
 import { formatDate, formatDateTime } from '../../utils/formatters';
 import { ROLES } from '../../utils/constants';
@@ -77,6 +78,7 @@ export default function CandidateApplicationsPage() {
   const shortlistedCount = applications.filter((item) => ['shortlisted', 'interview', 'interview_scheduled', 'hired'].includes(String(item.status || '').toLowerCase())).length;
   const openSlotCount = applications.filter((item) => (item.interviewSlots || []).some((slot) => !slot.isBooked)).length;
   const hiredCount = applications.filter((item) => String(item.status || '').toLowerCase() === 'hired').length;
+  const offerCount = applications.filter((item) => item.offer && ['sent', 'accepted', 'declined'].includes(String(item.offer.status || '').toLowerCase())).length;
 
   const reloadApplications = async () => {
     setLoading(true);
@@ -213,6 +215,13 @@ export default function CandidateApplicationsPage() {
               <strong>{hiredCount}</strong>
             </div>
           </article>
+          <article className="candidate-stat-card">
+            <span className="candidate-stat-icon"><CircleCheckBig size={18} /></span>
+            <div>
+              <p>Offers</p>
+              <strong>{offerCount}</strong>
+            </div>
+          </article>
         </div>
       ) : null}
 
@@ -229,6 +238,7 @@ export default function CandidateApplicationsPage() {
                     const status = getStatusMeta(item.status);
                     const availableSlots = (item.interviewSlots || []).filter((slot) => !slot.isBooked);
                     const bookedSlot = (item.interviewSlots || []).find((slot) => slot.isBooked);
+                    const offer = item.offer;
                     return (
                       <tr key={item._id}>
                         <td>
@@ -255,6 +265,53 @@ export default function CandidateApplicationsPage() {
                               <small>Confirmed slot</small>
                               <div><strong>{formatDateTime(bookedSlot.startsAt)}</strong></div>
                               <div>{bookedSlot.mode || 'video'}{bookedSlot.location ? ` · ${bookedSlot.location}` : ''}</div>
+                            </div>
+                          ) : null}
+
+                          {offer ? (
+                            <div className="mt-1" style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 10, minWidth: 260, display: 'grid', gap: 6 }}>
+                              <small>Offer status</small>
+                              <div><strong>{offer.title || item.job?.title || 'Offer'}</strong></div>
+                              <div>{offer.currency || 'LKR'} {offer.salary || 0}{offer.joiningDate ? ` · Join ${formatDate(offer.joiningDate)}` : ''}</div>
+                              <Badge tone={offer.status === 'accepted' ? 'success' : offer.status === 'declined' ? 'danger' : 'neutral'}>{offer.status}</Badge>
+                              {offer.notes ? <small>{offer.notes}</small> : null}
+                              {offer.status === 'sent' ? (
+                                <div className="dashboard-actions">
+                                  <Button
+                                    size="sm"
+                                    onClick={async () => {
+                                      await candidateApi.respondToOffer(offer._id, { status: 'accepted' });
+                                      toast.success('Offer accepted');
+                                      await reloadApplications();
+                                    }}
+                                  >
+                                    Accept
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="secondary"
+                                    onClick={async () => {
+                                      await candidateApi.respondToOffer(offer._id, { status: 'declined' });
+                                      toast.info('Offer declined');
+                                      await reloadApplications();
+                                    }}
+                                  >
+                                    Decline
+                                  </Button>
+                                </div>
+                              ) : null}
+                            </div>
+                          ) : null}
+
+                          {(item.screeningAnswers || []).length ? (
+                            <div className="mt-1" style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 10, minWidth: 260, display: 'grid', gap: 6 }}>
+                              <strong>Screening answers</strong>
+                              {(item.screeningAnswers || []).slice(0, 2).map((answer, index) => (
+                                <div key={`${item._id}-${answer.questionId || index}`}>
+                                  <small>{answer.question}</small>
+                                  <div>{answer.answer || 'No answer submitted'}</div>
+                                </div>
+                              ))}
                             </div>
                           ) : null}
 

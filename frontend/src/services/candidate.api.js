@@ -17,6 +17,8 @@ export const candidateApi = {
   },
   getResume: () => api.get('/candidates/resume').then((res) => res.data),
   deleteResume: () => api.delete('/candidates/resume').then((res) => res.data),
+  offers: () => api.get('/candidates/offers').then((res) => res.data),
+  respondToOffer: (offerId, payload) => api.patch(`/candidates/offers/${offerId}/respond`, payload).then((res) => res.data),
   savedJobs: () => api.get('/candidates/saved-jobs').then((res) => res.data),
   saveJob: (jobId) => api.post(`/candidates/saved-jobs/${jobId}`).then((res) => res.data),
   unsaveJob: (jobId) => api.delete(`/candidates/saved-jobs/${jobId}`).then((res) => res.data)

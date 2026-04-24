@@ -61,6 +61,10 @@ export default function EmployerApplicantsPage() {
   const { jobId } = useParams();
   const [state, setState] = useState({ loading: true, job: null, applications: [], calendarEvents: [] });
   const [filters, setFilters] = useState({ keyword: '', skills: '', minExperience: '', education: '', sortBy: 'ai' });
+  const [savedViews, setSavedViews] = useState([]);
+  const [newViewName, setNewViewName] = useState('');
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [bulkStatus, setBulkStatus] = useState('reviewed');
   const [slotPlanners, setSlotPlanners] = useState({});
   const [messagePanels, setMessagePanels] = useState({});
   const [messagesByApplication, setMessagesByApplication] = useState({});
@@ -103,6 +107,12 @@ export default function EmployerApplicantsPage() {
     });
   }, [jobId]);
 
+  useEffect(() => {
+    employerApi.savedViews({ jobId })
+      .then((res) => setSavedViews(res.data || []))
+      .catch(() => setSavedViews([]));
+  }, [jobId]);
+
   const currentJobEvents = useMemo(() => (
     state.calendarEvents
       .filter((event) => String(event.jobId) === String(jobId))
@@ -115,6 +125,14 @@ export default function EmployerApplicantsPage() {
       [column.key]: state.applications.filter((application) => application.status === column.key)
     }), {})
   ), [state.applications]);
+
+  const toggleSelected = (applicationId) => {
+    setSelectedIds((current) => (
+      current.includes(applicationId)
+        ? current.filter((id) => id !== applicationId)
+        : [...current, applicationId]
+    ));
+  };
 
   const selectedRejectionApplication = rejectionModal.open
     ? state.applications.find((item) => item._id === rejectionModal.applicationId)
@@ -239,6 +257,20 @@ export default function EmployerApplicantsPage() {
     await refreshApplicants(filters);
   };
 
+  const runBulkAction = async (action) => {
+    if (!selectedIds.length) {
+      toast.error('Select at least one candidate first');
+      return;
+    }
+
+    const payload = { action, applicationIds: selectedIds };
+    if (action === 'move_status') payload.status = bulkStatus;
+    await employerApi.bulkApplicants(payload);
+    toast.success(action === 'add_to_talent_pool' ? 'Candidates added to talent pool' : 'Bulk action completed');
+    setSelectedIds([]);
+    await refreshApplicants(filters);
+  };
+
   const bookSlot = async (applicationId, slotId) => {
     await employerApi.bookInterviewSlot(applicationId, { slotId });
     toast.success('Interview slot booked');
@@ -334,7 +366,36 @@ export default function EmployerApplicantsPage() {
             setFilters(cleared);
             await refreshApplicants(cleared);
           }}>Clear</Button>
+          <Select value={bulkStatus} onChange={(e) => setBulkStatus(e.target.value)}>
+            {PIPELINE_COLUMNS.map((item) => <option key={item.key} value={item.key}>{item.label}</option>)}
+          </Select>
+          <Button variant="ghost" onClick={async () => { await runBulkAction('move_status'); }}>Bulk move</Button>
+          <Button variant="ghost" onClick={async () => { await runBulkAction('add_to_talent_pool'); }}>Add to talent pool</Button>
           <Button as={Link} to="/employer/messages" variant="ghost">Employer inbox</Button>
+        </div>
+        <div className="dashboard-actions">
+          <Select value="" onChange={async (e) => {
+            const selectedView = savedViews.find((item) => item._id === e.target.value);
+            if (!selectedView) return;
+            const nextFilters = { ...filters, ...(selectedView.filters || {}) };
+            setFilters(nextFilters);
+            await refreshApplicants(nextFilters);
+          }}>
+            <option value="">Open saved view</option>
+            {savedViews.map((view) => <option key={view._id} value={view._id}>{view.name}</option>)}
+          </Select>
+          <Input value={newViewName} onChange={(e) => setNewViewName(e.target.value)} placeholder="Save current filters as..." />
+          <Button variant="secondary" onClick={async () => {
+            if (!newViewName.trim()) {
+              toast.error('Enter a saved view name');
+              return;
+            }
+            await employerApi.saveView({ name: newViewName.trim(), jobId, filters });
+            const res = await employerApi.savedViews({ jobId });
+            setSavedViews(res.data || []);
+            setNewViewName('');
+            toast.success('Saved view created');
+          }}>Save view</Button>
         </div>
       </Card>
 
@@ -419,6 +480,10 @@ export default function EmployerApplicantsPage() {
                   >
                     <div className="employer-applicant-top">
                       <div>
+                        <label className="checkbox-row" style={{ marginBottom: 8 }}>
+                          <input type="checkbox" checked={selectedIds.includes(application._id)} onChange={() => toggleSelected(application._id)} />
+                          <span>Select</span>
+                        </label>
                         <strong>{application.candidateUser?.name || 'Candidate'}</strong>
                         <p>{application.candidateUser?.email || 'No email'}</p>
                       </div>
@@ -446,6 +511,16 @@ export default function EmployerApplicantsPage() {
                       <span>{application.candidateProfile?.experienceYears ?? 0} years exp</span>
                     </div>
 
+                    {(application.screeningAnswers || []).length ? (
+                      <div className="employer-ai-list">
+                        {application.screeningAnswers.slice(0, 2).map((item) => (
+                          <small key={`${application._id}-${item.questionId}`}>
+                            {item.question}: {item.answer || 'No answer'}
+                          </small>
+                        ))}
+                      </div>
+                    ) : null}
+
                     {application.interviewScheduledAt ? (
                       <div className="employer-booked-slot">
                         <Badge tone={application.status === 'hired' ? 'success' : 'success'}>{application.status === 'hired' ? 'Hired' : 'Interview booked'}</Badge>
@@ -464,6 +539,16 @@ export default function EmployerApplicantsPage() {
                       </Select>
                       <Button size="sm" variant="secondary" onClick={() => openSlotPlanner(application)}>Slots</Button>
                       <Button size="sm" variant="secondary" onClick={async () => { await toggleMessagePanel(application._id); }}>Message</Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={async () => {
+                          await employerApi.bulkApplicants({ action: 'add_to_talent_pool', applicationIds: [application._id] });
+                          toast.success('Candidate added to talent pool');
+                        }}
+                      >
+                        Talent
+                      </Button>
                       <Button as={Link} to={`/employer/applicants/${application._id}`} size="sm" variant="ghost">Details</Button>
                       <Button
                         size="sm"

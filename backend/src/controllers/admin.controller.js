@@ -8,6 +8,7 @@ const Contact = require('../models/Contact');
 const EmployerProfile = require('../models/EmployerProfile');
 const CandidateProfile = require('../models/CandidateProfile');
 const PlatformSetting = require('../models/PlatformSetting');
+const Offer = require('../models/Offer');
 const { JOB_REVIEW_STATUS, JOB_STATUS, ROLES, USER_STATUS, APPLICATION_STATUS } = require('../utils/constants');
 const { createNotification } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
@@ -266,6 +267,21 @@ const listApplications = asyncHandler(async (req, res) => {
         all: totalCount
       }
     }
+  }));
+});
+
+const listOffers = asyncHandler(async (req, res) => {
+  const offers = await Offer.find()
+    .populate('candidateUser', 'name email')
+    .populate('employerUser', 'name email')
+    .populate('job', 'title companyName')
+    .populate('application', 'status createdAt')
+    .sort({ updatedAt: -1, createdAt: -1 })
+    .limit(200);
+
+  res.json(apiResponse({
+    message: 'Offers fetched successfully',
+    data: offers
   }));
 });
 
@@ -555,6 +571,7 @@ module.exports = {
   unblockUser,
   listPendingJobs,
   listApplications,
+  listOffers,
   approveJob,
   rejectJob,
   listBlogs,

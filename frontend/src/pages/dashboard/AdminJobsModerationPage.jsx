@@ -39,6 +39,8 @@ export default function AdminJobsModerationPage() {
   });
   const [selectedApplicationId, setSelectedApplicationId] = useState('');
   const [selectedApplication, setSelectedApplication] = useState(null);
+  const [selectedJob, setSelectedJob] = useState(null);
+  const [offers, setOffers] = useState([]);
   const [applicationDetailLoading, setApplicationDetailLoading] = useState(false);
   const [applicationActionLoading, setApplicationActionLoading] = useState(false);
   const [applicationForm, setApplicationForm] = useState({
@@ -54,14 +56,18 @@ export default function AdminJobsModerationPage() {
   const loadJobs = async () => {
     try {
       setLoading(true);
-      const params = { status: statusFilter };
-      const res = await adminApi.pendingJobs(params);
+      const [res, offersRes] = await Promise.all([
+        adminApi.pendingJobs({ status: statusFilter }),
+        adminApi.offers()
+      ]);
       setJobs(res.data || []);
       setStatusCounts(res.meta?.counts || { pending: 0, approved: 0, rejected: 0, all: 0 });
+      setOffers(offersRes.data || []);
     } catch (error) {
       toast.error(error.message || 'Failed to load moderated jobs');
       setJobs([]);
       setStatusCounts({ pending: 0, approved: 0, rejected: 0, all: 0 });
+      setOffers([]);
     } finally {
       setLoading(false);
     }
@@ -305,7 +311,7 @@ export default function AdminJobsModerationPage() {
                     <td><Badge tone={getStatusTone(job.reviewStatus)}>{job.reviewStatus}</Badge></td>
                     <td>
                       <div className="form-links" style={{ gap: 6 }}>
-                        <Button size="sm" variant="primary" disabled={actioningJobId === job._id} onClick={() => {}}><FileText size={15} /> Review</Button>
+                        <Button size="sm" variant="primary" disabled={actioningJobId === job._id} onClick={() => setSelectedJob(job)}><FileText size={15} /> Review</Button>
                         {job.reviewStatus === 'pending' && (
                           <>
                             <Button
@@ -362,6 +368,58 @@ export default function AdminJobsModerationPage() {
             />
           )}
         </div>
+      </Card>
+
+      <Card className="mt-1">
+        <div className="panel-head" style={{ marginBottom: '1.2rem' }}>
+          <h3 style={{ margin: 0, fontWeight: 800, fontSize: '1.13rem' }}><FileText size={17} style={{ marginRight: 8 }} /> Job Review Detail</h3>
+          {selectedJob ? (
+            <Button size="sm" variant="ghost" onClick={() => setSelectedJob(null)}>Close</Button>
+          ) : null}
+        </div>
+
+        {selectedJob ? (
+          <div style={{ display: 'grid', gap: '1rem' }}>
+            <div className="dashboard-surface-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+              <div><strong>Title</strong><div>{selectedJob.title || '-'}</div></div>
+              <div><strong>Company</strong><div>{selectedJob.companyName || '-'}</div></div>
+              <div><strong>Priority</strong><div>{selectedJob.hiringPriority || 'medium'}</div></div>
+              <div><strong>Remote-friendly</strong><div>{selectedJob.remoteFriendly ? 'Yes' : 'No'}</div></div>
+            </div>
+            <div>
+              <strong>Description</strong>
+              <p style={{ marginTop: 8 }}>{selectedJob.description || '-'}</p>
+            </div>
+            <div className="dashboard-surface-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+              <div><strong>Skills</strong><div>{(selectedJob.skills || []).join(', ') || '-'}</div></div>
+              <div><strong>Tags</strong><div>{(selectedJob.tags || []).join(', ') || '-'}</div></div>
+              <div><strong>Requirements</strong><div>{(selectedJob.requirements || []).join(', ') || '-'}</div></div>
+              <div><strong>Responsibilities</strong><div>{(selectedJob.responsibilities || []).join(', ') || '-'}</div></div>
+            </div>
+            <div>
+              <strong>Screening questions</strong>
+              {(selectedJob.screeningQuestions || []).length ? (
+                <div style={{ display: 'grid', gap: 8, marginTop: 8 }}>
+                  {(selectedJob.screeningQuestions || []).map((question, index) => (
+                    <div key={`${selectedJob._id}-${index}`} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 10 }}>
+                      <div><strong>{question.question}</strong></div>
+                      <small>{question.type}{question.required ? ' · required' : ''}{question.knockout ? ' · knockout' : ''}</small>
+                      {question.idealAnswer ? <div>Ideal answer: {question.idealAnswer}</div> : null}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ marginTop: 8 }}>No screening questions for this job.</p>
+              )}
+            </div>
+          </div>
+        ) : (
+          <EmptyState
+            title="Select a job"
+            description="Use Review from the moderation table to inspect advanced job setup before approving or rejecting."
+            actionLabel={null}
+          />
+        )}
       </Card>
 
       {/* Application Moderation Section */}
@@ -507,6 +565,37 @@ export default function AdminJobsModerationPage() {
               <div>
                 <strong>Cover letter</strong>
                 <p style={{ marginTop: 8 }}>{selectedApplication.coverLetter}</p>
+              </div>
+            ) : null}
+
+            {(selectedApplication.screeningAnswers || []).length ? (
+              <div>
+                <strong>Screening answers</strong>
+                <div style={{ display: 'grid', gap: 8, marginTop: 8 }}>
+                  {(selectedApplication.screeningAnswers || []).map((item, index) => (
+                    <div key={`${selectedApplication._id}-screen-${index}`} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 10 }}>
+                      <small>{item.question}</small>
+                      <div>{item.answer || 'No answer submitted'}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {offers.some((offer) => String(offer.application?._id || offer.application) === String(selectedApplicationId)) ? (
+              <div>
+                <strong>Offer tracker</strong>
+                <div style={{ display: 'grid', gap: 8, marginTop: 8 }}>
+                  {offers
+                    .filter((offer) => String(offer.application?._id || offer.application) === String(selectedApplicationId))
+                    .map((offer) => (
+                      <div key={offer._id} style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 10 }}>
+                        <div><strong>{offer.title || selectedApplication.job?.title || 'Offer'}</strong></div>
+                        <div>{offer.currency || 'LKR'} {offer.salary || 0}</div>
+                        <small>Status: {offer.status}{offer.joiningDate ? ` · Joining ${new Date(offer.joiningDate).toLocaleDateString()}` : ''}</small>
+                      </div>
+                    ))}
+                </div>
               </div>
             ) : null}
 

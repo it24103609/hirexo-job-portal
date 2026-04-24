@@ -20,6 +20,7 @@ router.patch('/users/:id/block', adminController.blockUser);
 router.patch('/users/:id/unblock', adminController.unblockUser);
 router.get('/jobs/pending', adminController.listPendingJobs);
 router.get('/applications', adminController.listApplications);
+router.get('/offers', adminController.listOffers);
 router.patch('/jobs/:id/approve', adminController.approveJob);
 router.patch('/jobs/:id/reject', adminController.rejectJob);
 

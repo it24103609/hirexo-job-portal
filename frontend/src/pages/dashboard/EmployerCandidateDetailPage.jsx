@@ -205,6 +205,23 @@ export default function EmployerCandidateDetailPage() {
         </div>
         {renderList(education)}
       </Card>
+
+      <Card className="mt-1">
+        <div className="panel-head">
+          <h3>Screening Answers</h3>
+        </div>
+        {(application.screeningAnswers || []).length ? (
+          <div className="candidate-summary-points">
+            {application.screeningAnswers.map((item, index) => (
+              <p key={`${item.questionId || index}`}>
+                <strong>{item.question}:</strong> {item.answer || 'No answer submitted'}
+              </p>
+            ))}
+          </div>
+        ) : (
+          <p className="m-0">No screening answers were collected for this application.</p>
+        )}
+      </Card>
     </>
   );
 }
