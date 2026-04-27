@@ -1,4 +1,4 @@
-import { Sliders, X } from 'lucide-react';
+import { ArrowRight, BriefcaseBusiness, Building2, Crown, Laptop, MapPin, Sliders, X } from 'lucide-react';
 import './JobFilters.css';
 
 function getOptionLabel(item) {
@@ -26,7 +26,7 @@ export default function JobFilters({ filters, onChange, onClear, categories = []
       <div className="jobs-filters-groups">
         {/* Industry / Category Filter */}
         <div className="jobs-filter-group">
-          <label className="jobs-filter-label">Industry</label>
+          <label className="jobs-filter-label"><Building2 size={14} /> Industry</label>
           <div className="jobs-filter-options">
             <select
               value={filters.category || ''}
@@ -45,7 +45,7 @@ export default function JobFilters({ filters, onChange, onClear, categories = []
 
         {/* Location Filter */}
         <div className="jobs-filter-group">
-          <label className="jobs-filter-label">Location</label>
+          <label className="jobs-filter-label"><MapPin size={14} /> Location</label>
           <div className="jobs-filter-options">
             <select
               value={filters.location || ''}
@@ -64,7 +64,7 @@ export default function JobFilters({ filters, onChange, onClear, categories = []
 
         {/* Work Mode / Job Type Filter */}
         <div className="jobs-filter-group">
-          <label className="jobs-filter-label">Work Mode</label>
+          <label className="jobs-filter-label"><Laptop size={14} /> Work Mode</label>
           <div className="jobs-filter-options">
             <select
               value={filters.jobType || ''}
@@ -84,9 +84,15 @@ export default function JobFilters({ filters, onChange, onClear, categories = []
 
       {/* Featured Selection Card */}
       <div className="jobs-filters-featured">
-        <div className="jobs-filters-featured-icon">✨</div>
+        <div className="premium-role-art" aria-hidden="true">
+          <span className="premium-chair"><BriefcaseBusiness size={34} /></span>
+          <span className="premium-crown"><Crown size={18} /></span>
+        </div>
         <h4>Premium Roles</h4>
-        <p>Explore vetted leadership and specialized positions from top-tier companies.</p>
+        <p>Explore hand-picked roles and personalized positions from top-tier companies.</p>
+        <button type="button" className="premium-role-btn">
+          Explore Premium <ArrowRight size={15} />
+        </button>
       </div>
     </div>
   );
