@@ -99,8 +99,25 @@ const blogPosts = [
   }
 ];
 
+const fallbackFeaturedJobs = [
+  {
+    slug: 'software-engineer',
+    title: 'Software Engineer',
+    companyName: 'Hirexo Partner',
+    location: 'Remote / Hybrid',
+    jobType: 'Full-time',
+    remoteFriendly: true
+  }
+];
+
+function getFeaturedJobsFallback() {
+  return Array.isArray(siteContent.featuredJobs) && siteContent.featuredJobs.length
+    ? siteContent.featuredJobs
+    : fallbackFeaturedJobs;
+}
+
 export default function HomePage() {
-  const [jobs, setJobs] = useState(siteContent.featuredJobs);
+  const [jobs, setJobs] = useState(() => getFeaturedJobsFallback());
   const [activeFilter, setActiveFilter] = useState('all');
 
   const getLabel = (value, fallback = '') => {
@@ -129,13 +146,13 @@ export default function HomePage() {
     });
   }, [activeFilter, jobs]);
 
-  const highlightJob = filteredJobs[0] || siteContent.featuredJobs[0];
+  const highlightJob = filteredJobs[0] || getFeaturedJobsFallback()[0];
   const blogFallback = blogPosts;
 
   useEffect(() => {
     jobsApi.featured()
-      .then((res) => setJobs(res.data?.length ? res.data : siteContent.featuredJobs))
-      .catch(() => setJobs(siteContent.featuredJobs));
+      .then((res) => setJobs(res.data?.length ? res.data : getFeaturedJobsFallback()))
+      .catch(() => setJobs(getFeaturedJobsFallback()));
 
     blogApi.list().catch(() => null);
   }, []);
