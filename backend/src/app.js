@@ -18,7 +18,10 @@ const blogRoutes = require('./routes/blog.routes');
 const contactRoutes = require('./routes/contact.routes');
 const notificationRoutes = require('./routes/notification.routes');
 
+
 const app = express();
+// Fix for Vercel/Cloud: trust proxy for correct client IP and rate-limit
+app.set('trust proxy', 1);
 
 app.use(helmet());
 app.use(corsMiddleware());
@@ -28,7 +31,22 @@ app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(apiLimiter);
 
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Hirexo backend is running',
+    health: '/api/health'
+  });
+});
+
 app.get('/api/health', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Recruitment API is healthy'
+  });
+});
+
+app.get('/health', (req, res) => {
   res.json({
     success: true,
     message: 'Recruitment API is healthy'
@@ -45,6 +63,17 @@ app.use('/api/master-data', masterDataRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/notifications', notificationRoutes);
+
+app.use('/auth', authRoutes);
+app.use('/candidates', candidateRoutes);
+app.use('/employers', employerRoutes);
+app.use('/jobs', jobRoutes);
+app.use('/applications', applicationRoutes);
+app.use('/admin', adminRoutes);
+app.use('/master-data', masterDataRoutes);
+app.use('/blogs', blogRoutes);
+app.use('/contacts', contactRoutes);
+app.use('/notifications', notificationRoutes);
 
 app.use((req, res) => {
   res.status(404).json({

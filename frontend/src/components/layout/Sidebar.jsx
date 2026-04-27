@@ -17,7 +17,8 @@ import {
   PencilLine,
   Mail,
   BarChart3,
-  Sparkles
+  Sparkles,
+  X
 } from 'lucide-react';
 import { siteContent } from '../../data/siteContent';
 import { useAuth } from '../../contexts/AuthContext';
@@ -62,7 +63,7 @@ function computeCandidateCompletion(profile) {
   return Math.max(15, Math.round((completed / checks.length) * 100));
 }
 
-export default function Sidebar({ role }) {
+export default function Sidebar({ role, isOpen = false, onNavigate = () => {} }) {
   const links = siteContent.dashboardLinks[role] || [];
   const { user } = useAuth();
   const [candidateProfile, setCandidateProfile] = useState(null);
@@ -100,7 +101,18 @@ export default function Sidebar({ role }) {
   }, [links, role]);
 
   return (
-    <aside className={`dashboard-sidebar dashboard-sidebar-${role}`} aria-label={`${role} dashboard navigation`}>
+    <aside
+      id="dashboard-sidebar"
+      className={`dashboard-sidebar dashboard-sidebar-${role} ${isOpen ? 'is-open' : ''}`}
+      aria-label={`${role} dashboard navigation`}
+    >
+      <div className="dashboard-sidebar-mobile-head">
+        <span className="dashboard-sidebar-mobile-title">{role} menu</span>
+        <button type="button" className="dashboard-sidebar-close" onClick={onNavigate} aria-label="Close dashboard navigation">
+          <X size={18} />
+        </button>
+      </div>
+
       <div className="sidebar-brand">
         <BrandIdentity subtitle={`${role} dashboard`} />
       </div>
@@ -156,6 +168,7 @@ export default function Sidebar({ role }) {
                     to={link.to}
                     end={link.to === `/${role}/dashboard`}
                     className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+                    onClick={onNavigate}
                   >
                     {(() => {
                       const Icon = iconByPath[link.to] || LayoutDashboard;
@@ -176,6 +189,7 @@ export default function Sidebar({ role }) {
               to={link.to}
               end={link.to === `/${role}/dashboard`}
               className={({ isActive }) => `sidebar-link ${isActive ? 'active' : ''}`}
+              onClick={onNavigate}
             >
               {(() => {
                 const Icon = iconByPath[link.to] || LayoutDashboard;
@@ -193,7 +207,7 @@ export default function Sidebar({ role }) {
           <div>
             <strong>Need help?</strong>
             <p>Our support team is available for profile and application guidance.</p>
-            <Link to="/contact">Contact support</Link>
+            <Link to="/contact" onClick={onNavigate}>Contact support</Link>
           </div>
         </div>
       ) : null}

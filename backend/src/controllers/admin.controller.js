@@ -7,9 +7,48 @@ const Blog = require('../models/Blog');
 const Contact = require('../models/Contact');
 const EmployerProfile = require('../models/EmployerProfile');
 const CandidateProfile = require('../models/CandidateProfile');
+const PlatformSetting = require('../models/PlatformSetting');
 const { JOB_REVIEW_STATUS, JOB_STATUS, ROLES, USER_STATUS, APPLICATION_STATUS } = require('../utils/constants');
 const { createNotification } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
+
+const DEFAULT_AI_SCORING = {
+  skillsWeight: 60,
+  experienceWeight: 20,
+  locationWeight: 10,
+  profileWeight: 10,
+  highFitThreshold: 80,
+  moderateFitThreshold: 60
+};
+
+function normalizeAiScoring(input = {}) {
+  const base = { ...DEFAULT_AI_SCORING, ...(input || {}) };
+  const toNumber = (value, fallback) => {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+
+  const skillsWeight = Math.max(0, Math.min(100, toNumber(base.skillsWeight, DEFAULT_AI_SCORING.skillsWeight)));
+  const experienceWeight = Math.max(0, Math.min(100, toNumber(base.experienceWeight, DEFAULT_AI_SCORING.experienceWeight)));
+  const locationWeight = Math.max(0, Math.min(100, toNumber(base.locationWeight, DEFAULT_AI_SCORING.locationWeight)));
+  const profileWeight = Math.max(0, Math.min(100, toNumber(base.profileWeight, DEFAULT_AI_SCORING.profileWeight)));
+
+  let highFitThreshold = Math.max(1, Math.min(100, toNumber(base.highFitThreshold, DEFAULT_AI_SCORING.highFitThreshold)));
+  let moderateFitThreshold = Math.max(1, Math.min(100, toNumber(base.moderateFitThreshold, DEFAULT_AI_SCORING.moderateFitThreshold)));
+
+  if (moderateFitThreshold >= highFitThreshold) {
+    moderateFitThreshold = Math.max(1, highFitThreshold - 1);
+  }
+
+  return {
+    skillsWeight,
+    experienceWeight,
+    locationWeight,
+    profileWeight,
+    highFitThreshold,
+    moderateFitThreshold
+  };
+}
 
 function getPeriodStart(days) {
   const date = new Date();
@@ -468,6 +507,39 @@ const reports = asyncHandler(async (req, res) => {
   }));
 });
 
+const getSettings = asyncHandler(async (req, res) => {
+  const settings = await PlatformSetting.findOne({ key: 'default' }).lean();
+
+  res.json(apiResponse({
+    message: 'Platform settings fetched successfully',
+    data: {
+      aiScoring: normalizeAiScoring(settings?.aiScoring)
+    }
+  }));
+});
+
+const updateSettings = asyncHandler(async (req, res) => {
+  const nextAiScoring = normalizeAiScoring(req.body?.aiScoring || {});
+
+  const settings = await PlatformSetting.findOneAndUpdate(
+    { key: 'default' },
+    {
+      $set: {
+        aiScoring: nextAiScoring
+      },
+      $setOnInsert: { key: 'default' }
+    },
+    { new: true, upsert: true, runValidators: true }
+  ).lean();
+
+  res.json(apiResponse({
+    message: 'Platform settings updated successfully',
+    data: {
+      aiScoring: normalizeAiScoring(settings?.aiScoring)
+    }
+  }));
+});
+
 module.exports = {
   dashboard,
   listUsers,
@@ -481,5 +553,7 @@ module.exports = {
   deleteBlog,
   listContacts,
   deleteContact,
-  reports
+  reports,
+  getSettings,
+  updateSettings
 };

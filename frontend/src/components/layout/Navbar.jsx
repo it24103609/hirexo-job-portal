@@ -34,10 +34,6 @@ export default function Navbar() {
       <nav className="navbar shell">
         <BrandIdentity />
 
-        <button className="nav-toggle" type="button" onClick={() => setOpen((value) => !value)} aria-label="Toggle menu">
-          {open ? <X size={20} /> : <Menu size={20} />}
-        </button>
-
         <div className={`nav-panel ${open ? 'is-open' : ''}`}>
           <div className="nav-links">
             {publicLinks.map((link) => (
@@ -69,6 +65,10 @@ export default function Navbar() {
             )}
           </div>
         </div>
+
+        <button className="nav-toggle" type="button" onClick={() => setOpen((value) => !value)} aria-label="Toggle menu">
+          {open ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </nav>
     </header>
   );

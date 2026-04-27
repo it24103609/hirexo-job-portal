@@ -6,10 +6,103 @@ const EmployerProfile = require('../models/EmployerProfile');
 const Job = require('../models/Job');
 const Application = require('../models/Application');
 const CandidateProfile = require('../models/CandidateProfile');
+const PlatformSetting = require('../models/PlatformSetting');
 const { createUniqueSlug } = require('../utils/slug');
+const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
 const { createNotification } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
 const { NOTIFICATION_TYPES, APPLICATION_STATUS } = require('../utils/constants');
+
+const DEFAULT_AI_SCORING = {
+  skillsWeight: 60,
+  experienceWeight: 20,
+  locationWeight: 10,
+  profileWeight: 10,
+  highFitThreshold: 80,
+  moderateFitThreshold: 60
+};
+
+function normalizeTerms(values = []) {
+  return values
+    .map((value) => String(value || '').trim().toLowerCase())
+    .filter(Boolean);
+}
+
+function resolveExperienceTarget(experienceLevel = '') {
+  const text = String(experienceLevel || '').toLowerCase();
+  const firstNumber = Number(text.match(/\d+/)?.[0]);
+  return Number.isFinite(firstNumber) ? firstNumber : null;
+}
+
+function calculateAiFit(job, profile = {}, scoringConfig = DEFAULT_AI_SCORING) {
+  const safeConfig = { ...DEFAULT_AI_SCORING, ...(scoringConfig || {}) };
+  const totalWeight = Math.max(
+    1,
+    Number(safeConfig.skillsWeight || 0)
+      + Number(safeConfig.experienceWeight || 0)
+      + Number(safeConfig.locationWeight || 0)
+      + Number(safeConfig.profileWeight || 0)
+  );
+
+  const weightedPortion = (rawScore, weight) => Math.round((Math.max(0, Math.min(100, rawScore)) * Number(weight || 0)) / totalWeight);
+
+  const jobSkills = normalizeTerms(job.skills || []);
+  const candidateSkills = normalizeTerms(profile.skills || []);
+
+  const overlappingSkills = jobSkills.filter((skill) => candidateSkills.includes(skill));
+  const skillsRaw = jobSkills.length
+    ? Math.round((overlappingSkills.length / jobSkills.length) * 100)
+    : Math.min(100, candidateSkills.length * 15);
+
+  const targetExperience = resolveExperienceTarget(job.experienceLevel);
+  const years = Number(profile.experienceYears || 0);
+  const experienceRaw = targetExperience === null
+    ? Math.min(100, years * 12)
+    : years >= targetExperience
+      ? 100
+      : Math.max(0, 100 - (targetExperience - years) * 30);
+
+  const profileLocation = String(profile.location || '').toLowerCase();
+  const jobLocation = String(job.location || '').toLowerCase();
+  const locationRaw = job.remoteFriendly
+    ? 10
+    : profileLocation && jobLocation && profileLocation.includes(jobLocation)
+      ? 10
+      : 3;
+
+  const completenessChecks = [
+    Boolean(profile.headline),
+    Boolean(profile.summary),
+    candidateSkills.length > 0,
+    years > 0,
+    Array.isArray(profile.education) && profile.education.length > 0
+  ];
+  const completenessRaw = Math.round((completenessChecks.filter(Boolean).length / completenessChecks.length) * 100);
+
+  const skillsScore = weightedPortion(skillsRaw, safeConfig.skillsWeight);
+  const experienceScore = weightedPortion(experienceRaw, safeConfig.experienceWeight);
+  const locationScore = weightedPortion(locationRaw * 10, safeConfig.locationWeight);
+  const completenessScore = weightedPortion(completenessRaw, safeConfig.profileWeight);
+
+  const score = Math.max(0, Math.min(100, skillsScore + experienceScore + locationScore + completenessScore));
+  const label = score >= safeConfig.highFitThreshold ? 'High fit' : score >= safeConfig.moderateFitThreshold ? 'Moderate fit' : 'Low fit';
+
+  return {
+    score,
+    label,
+    breakdown: {
+      skills: skillsScore,
+      experience: experienceScore,
+      location: locationScore,
+      profile: completenessScore
+    }
+  };
+}
+
+async function getAiScoringSettings() {
+  const settings = await PlatformSetting.findOne({ key: 'default' }).lean();
+  return { ...DEFAULT_AI_SCORING, ...(settings?.aiScoring || {}) };
+}
 
 function buildStatusEmail(status, interviewAt) {
   if (status === APPLICATION_STATUS.SHORTLISTED) {
@@ -145,7 +238,8 @@ const listJobApplicants = asyncHandler(async (req, res) => {
     keyword = '',
     skills = '',
     minExperience = '',
-    education = ''
+    education = '',
+    sortBy = 'ai'
   } = req.query;
 
   const job = await Job.findOne({ _id: req.params.jobId, employerUser: req.user._id });
@@ -156,6 +250,8 @@ const listJobApplicants = asyncHandler(async (req, res) => {
   const applications = await Application.find({ job: job._id, employerUser: req.user._id })
     .populate('candidateUser', 'name email role status')
     .sort({ createdAt: -1 });
+
+  const aiScoringSettings = await getAiScoringSettings();
 
   if (!applications.length) {
     return res.json(apiResponse({
@@ -222,16 +318,31 @@ const listJobApplicants = asyncHandler(async (req, res) => {
   const enriched = applications
     .map((application) => {
       const asObject = application.toObject();
+      const candidateProfile = profileMap.get(String(asObject.candidateUser?._id)) || null;
+      const aiFit = calculateAiFit(job, candidateProfile || {}, aiScoringSettings);
+
       return {
         ...asObject,
-        candidateProfile: profileMap.get(String(asObject.candidateUser?._id)) || null
+        candidateProfile,
+        aiMatchScore: aiFit.score,
+        aiMatchLabel: aiFit.label,
+        aiMatchBreakdown: aiFit.breakdown
       };
     })
     .filter(matchesFilters);
 
+  const sorted = [...enriched].sort((left, right) => {
+    if (String(sortBy).toLowerCase() === 'recent') {
+      return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+    }
+
+    return (right.aiMatchScore || 0) - (left.aiMatchScore || 0)
+      || new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+  });
+
   res.json(apiResponse({
     message: 'Job applicants fetched successfully',
-    data: { job, applications: enriched }
+    data: { job, applications: sorted }
   }));
 });
 
@@ -302,10 +413,31 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
   }
 
   const statusEmail = buildStatusEmail(status, application.interviewScheduledAt);
+  const job = await Job.findById(application.job).select('title companyName').lean();
+
+  const attachments = [];
+  if (status === APPLICATION_STATUS.INTERVIEW_SCHEDULED && application.interviewScheduledAt) {
+    attachments.push({
+      filename: 'hirexo-interview-invite.ics',
+      content: buildInterviewCalendarInvite({
+        candidateName: application.candidateUser?.name,
+        companyName: job?.companyName,
+        jobTitle: job?.title,
+        scheduledAt: application.interviewScheduledAt,
+        interviewMode: application.interviewMode,
+        interviewLocation: application.interviewLocation,
+        interviewMeetingLink: application.interviewMeetingLink,
+        interviewNotes: application.interviewNotes
+      }),
+      contentType: 'text/calendar; method=REQUEST; charset=UTF-8'
+    });
+  }
+
   await sendEmail({
     to: application.candidateUser.email,
     subject: statusEmail.subject,
-    text: statusEmail.text
+    text: statusEmail.text,
+    attachments
   });
 
   res.json(apiResponse({

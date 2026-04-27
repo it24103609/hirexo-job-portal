@@ -34,7 +34,8 @@ const NOTIFICATION_TYPES = Object.freeze({
   APPLICATION: 'application',
   STATUS_UPDATE: 'status_update',
   JOB_REVIEW: 'job_review',
-  INTERVIEW: 'interview'
+  INTERVIEW: 'interview',
+  MESSAGE: 'message'
 });
 
 module.exports = {

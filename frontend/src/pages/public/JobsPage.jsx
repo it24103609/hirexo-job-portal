@@ -21,6 +21,7 @@ const quickCategories = [
 
 export default function JobsPage() {
   const [filters, setFilters] = useState(defaultFilters);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -87,6 +88,14 @@ export default function JobsPage() {
     setLocationInput('');
     setFilters(defaultFilters);
     setPage(1);
+    setMobileFiltersOpen(false);
+  };
+
+  const handleFilterChange = (key, value) => {
+    setFilters((current) => ({ ...current, [key]: value }));
+    if (window.innerWidth <= 768) {
+      setMobileFiltersOpen(false);
+    }
   };
 
   return (
@@ -161,10 +170,18 @@ export default function JobsPage() {
 
       <section className="jobs-listing-shell">
         <div className="shell jobs-listing-grid">
-          <aside className="jobs-sidebar">
+          <button
+            type="button"
+            className={`jobs-mobile-filter-btn ${mobileFiltersOpen ? 'is-open' : ''}`}
+            onClick={() => setMobileFiltersOpen((value) => !value)}
+          >
+            {mobileFiltersOpen ? 'Hide Filters' : 'Show Filters'}
+          </button>
+
+          <aside className={`jobs-sidebar ${mobileFiltersOpen ? 'is-open' : ''}`}>
             <JobFilters
               filters={filters}
-              onChange={(key, value) => setFilters((current) => ({ ...current, [key]: value }))}
+              onChange={handleFilterChange}
               onClear={handleClearSearch}
               categories={filterOptions.categories}
               locations={filterOptions.locations}

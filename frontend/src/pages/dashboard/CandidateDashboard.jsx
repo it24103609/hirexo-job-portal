@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { UserCheck, Bookmark, BriefcaseBusiness, FileCheck2, Sparkles, ArrowRight, Clock3 } from 'lucide-react';
+import { UserCheck, Bookmark, BriefcaseBusiness, FileCheck2, Sparkles, ArrowRight, Clock3, Mail, CalendarClock, Bell } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
@@ -27,7 +27,7 @@ function getProfileCompletion(profile) {
 
 function getAppTone(status = '') {
   const key = String(status).toLowerCase();
-  if (key === 'shortlisted' || key === 'interview') return 'success';
+  if (key === 'shortlisted' || key === 'interview' || key === 'interview_scheduled') return 'success';
   if (key === 'rejected') return 'danger';
   return 'neutral';
 }
@@ -171,6 +171,27 @@ export default function CandidateDashboard() {
           ) : (
             <p className="m-0">Recommended jobs will appear here as new opportunities are published.</p>
           )}
+        </Card>
+
+        <Card className="candidate-list-card">
+          <div className="panel-head">
+            <h3><Mail size={16} /> Communication & interview updates</h3>
+            <Link to="/candidate/notifications" className="link-button">Open alerts <ArrowRight size={14} /></Link>
+          </div>
+          <div className="candidate-quick-actions">
+            <Link className="btn btn-secondary btn-sm" to="/candidate/applications">
+              <BriefcaseBusiness size={14} /> My applications
+            </Link>
+            <Link className="btn btn-secondary btn-sm" to="/candidate/notifications">
+              <Bell size={14} /> Messages & alerts
+            </Link>
+            <Link className="btn btn-primary btn-sm" to="/jobs">
+              <CalendarClock size={14} /> Browse jobs
+            </Link>
+          </div>
+          <p className="m-0" style={{ marginTop: '0.75rem' }}>
+            Interview invites and recruiter messages will appear here through notifications and your application history.
+          </p>
         </Card>
 
         <Card className="candidate-list-card">

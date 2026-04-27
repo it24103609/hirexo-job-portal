@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
@@ -28,6 +29,7 @@ const emptyForm = {
 };
 
 export default function AdminBlogsPage() {
+  const location = useLocation();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -55,6 +57,13 @@ export default function AdminBlogsPage() {
   useEffect(() => {
     loadBlogs();
   }, []);
+
+  useEffect(() => {
+    if (location.pathname.endsWith('/new')) {
+      setForm(emptyForm);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [location.pathname]);
 
   const onEdit = (blog) => {
     setForm({

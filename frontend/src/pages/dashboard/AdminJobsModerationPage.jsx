@@ -16,11 +16,13 @@ import { Search, Briefcase, CheckCircle, XCircle, Clock, Users, ListChecks, File
 export default function AdminJobsModerationPage() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [jobSearch, setJobSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('pending');
   const [actioningJobId, setActioningJobId] = useState(null);
   const [statusCounts, setStatusCounts] = useState({ pending: 0, approved: 0, rejected: 0, all: 0 });
   const [applications, setApplications] = useState([]);
   const [applicationsLoading, setApplicationsLoading] = useState(true);
+  const [applicationSearch, setApplicationSearch] = useState('');
   const [applicationStatusFilter, setApplicationStatusFilter] = useState('pending');
   const [applicationCounts, setApplicationCounts] = useState({
     pending: 0,
@@ -86,7 +88,7 @@ export default function AdminJobsModerationPage() {
       case 'approved': return 'success';
       case 'rejected': return 'danger';
       case 'pending': return 'neutral';
-      case 'under review': return 'primary';
+      case 'under review': return 'neutral';
       case 'shortlisted': return 'success';
       default: return 'neutral';
     }
@@ -120,13 +122,39 @@ export default function AdminJobsModerationPage() {
     })),
   ];
 
+  const filteredJobs = jobs.filter((job) => {
+    const query = jobSearch.trim().toLowerCase();
+    if (!query) return true;
+
+    return [
+      job.title,
+      job.companyName,
+      job.employerUser?.name,
+      job.employerUser?.email,
+      job.submittedBy
+    ].some((value) => String(value || '').toLowerCase().includes(query));
+  });
+
+  const filteredApplications = applications.filter((item) => {
+    const query = applicationSearch.trim().toLowerCase();
+    if (!query) return true;
+
+    return [
+      item.candidateUser?.name,
+      item.candidateUser?.email,
+      item.job?.title,
+      item.job?.companyName,
+      item.status
+    ].some((value) => String(value || '').toLowerCase().includes(query));
+  });
+
   return (
     <>
       <Seo title="Job Moderation | Hirexo" description="Approve or reject submitted jobs." />
       <DashboardHeader title="Moderation Console" description="Premium admin review center for jobs and applications." />
 
       {/* Stat cards row */}
-      <div className="form-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.1rem', marginBottom: '1.5rem' }}>
+      <div className="dashboard-surface-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', marginBottom: '1.5rem' }}>
         {statCards.map((card, i) => (
           <StatCard key={card.label} label={card.label} value={card.value} icon={card.icon} tone={card.tone} />
         ))}
@@ -136,7 +164,7 @@ export default function AdminJobsModerationPage() {
       <Card>
         <div className="panel-head" style={{ marginBottom: '1.2rem' }}>
           <h3 style={{ margin: 0, fontWeight: 800, fontSize: '1.18rem' }}><Briefcase size={18} style={{marginRight: 8}} /> Job Moderation Queue</h3>
-          <div className="filters-panel" style={{ display: 'flex', gap: '0.7rem', alignItems: 'center' }}>
+          <div className="dashboard-filter-bar">
             <Select
               label="Status"
               value={statusFilter}
@@ -148,15 +176,20 @@ export default function AdminJobsModerationPage() {
               <option value="rejected">Rejected ({statusCounts.rejected})</option>
               <option value="all">All ({statusCounts.all})</option>
             </Select>
-            <div className="input" style={{ display: 'flex', alignItems: 'center', minWidth: 180, background: '#fff', border: '1px solid var(--border)', borderRadius: 14, padding: '0 0.7rem' }}>
+            <div className="dashboard-search-field">
               <Search size={16} style={{ marginRight: 6, color: 'var(--muted)' }} />
-              <input type="text" placeholder="Search job title..." style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%' }} />
+              <input
+                type="text"
+                value={jobSearch}
+                onChange={(event) => setJobSearch(event.target.value)}
+                placeholder="Search job title..."
+                className="dashboard-search-input"
+              />
             </div>
-            {/* Optional: Add company/date filters here if needed */}
           </div>
         </div>
         <div className="table-wrap">
-          {jobs.length ? (
+          {filteredJobs.length ? (
             <table className="table">
               <thead>
                 <tr>
@@ -169,7 +202,7 @@ export default function AdminJobsModerationPage() {
                 </tr>
               </thead>
               <tbody>
-                {jobs.map((job) => (
+                {filteredJobs.map((job) => (
                   <tr key={job._id}>
                     <td style={{ fontWeight: 700 }}>{job.title}</td>
                     <td>{job.companyName}</td>
@@ -183,7 +216,7 @@ export default function AdminJobsModerationPage() {
                           <>
                             <Button
                               size="sm"
-                              variant="success"
+                              variant="primary"
                               disabled={actioningJobId === job._id}
                               onClick={async () => {
                                 try {
@@ -202,7 +235,7 @@ export default function AdminJobsModerationPage() {
                             </Button>
                             <Button
                               size="sm"
-                              variant="danger"
+                              variant="ghost"
                               disabled={actioningJobId === job._id}
                               onClick={async () => {
                                 try {
@@ -230,7 +263,7 @@ export default function AdminJobsModerationPage() {
           ) : (
             <EmptyState
               title="No jobs in queue"
-              description="There are no jobs to review for the selected status."
+              description={jobSearch ? 'No jobs match the current search and status filters.' : 'There are no jobs to review for the selected status.'}
               actionLabel={null}
             />
           )}
@@ -241,7 +274,7 @@ export default function AdminJobsModerationPage() {
       <Card className="mt-1">
         <div className="panel-head" style={{ marginBottom: '1.2rem' }}>
           <h3 style={{ margin: 0, fontWeight: 800, fontSize: '1.18rem' }}><Users size={18} style={{marginRight: 8}} /> Application Moderation</h3>
-          <div className="filters-panel" style={{ display: 'flex', gap: '0.7rem', alignItems: 'center' }}>
+          <div className="dashboard-filter-bar">
             <Select
               label="Status"
               value={applicationStatusFilter}
@@ -255,9 +288,15 @@ export default function AdminJobsModerationPage() {
               <option value="interview_scheduled">Interview Scheduled ({applicationCounts.interview_scheduled})</option>
               <option value="all">All ({applicationCounts.all})</option>
             </Select>
-            <div className="input" style={{ display: 'flex', alignItems: 'center', minWidth: 180, background: '#fff', border: '1px solid var(--border)', borderRadius: 14, padding: '0 0.7rem' }}>
+            <div className="dashboard-search-field">
               <Search size={16} style={{ marginRight: 6, color: 'var(--muted)' }} />
-              <input type="text" placeholder="Search candidate..." style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%' }} />
+              <input
+                type="text"
+                value={applicationSearch}
+                onChange={(event) => setApplicationSearch(event.target.value)}
+                placeholder="Search candidate..."
+                className="dashboard-search-input"
+              />
             </div>
           </div>
         </div>
@@ -265,7 +304,7 @@ export default function AdminJobsModerationPage() {
           <Loader label="Loading applications..." />
         ) : (
           <div className="table-wrap">
-            {applications.length ? (
+            {filteredApplications.length ? (
               <table className="table">
                 <thead>
                   <tr>
@@ -278,7 +317,7 @@ export default function AdminJobsModerationPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {applications.map((item) => (
+                  {filteredApplications.map((item) => (
                     <tr key={item._id}>
                       <td style={{ fontWeight: 700 }}>{item.candidateUser?.name || '-'}</td>
                       <td>{item.job?.title || '-'}</td>
@@ -298,7 +337,7 @@ export default function AdminJobsModerationPage() {
             ) : (
               <EmptyState
                 title="No applications in queue"
-                description="There are no applications to review for the selected status."
+                description={applicationSearch ? 'No applications match the current search and status filters.' : 'There are no applications to review for the selected status.'}
                 actionLabel={null}
               />
             )}

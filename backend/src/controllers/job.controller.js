@@ -18,6 +18,16 @@ function normalizeJobImage(payload, fallbackAlt = 'Job image') {
   };
 }
 
+function normalizeTextValue(value) {
+  return String(value ?? '').trim();
+}
+
+function buildTextMatch(value) {
+  const cleaned = normalizeTextValue(value);
+  if (!cleaned) return null;
+  return { $regex: `^${cleaned}$`, $options: 'i' };
+}
+
 function buildFilter(query) {
   const filter = {
     reviewStatus: JOB_REVIEW_STATUS.APPROVED,
@@ -33,10 +43,15 @@ function buildFilter(query) {
     ];
   }
 
-  if (query.category) filter.category = query.category;
-  if (query.industry) filter.industry = query.industry;
-  if (query.location) filter.location = query.location;
-  if (query.jobType) filter.jobType = query.jobType;
+  const categoryFilter = buildTextMatch(query.category);
+  const industryFilter = buildTextMatch(query.industry);
+  const locationFilter = buildTextMatch(query.location);
+  const jobTypeFilter = buildTextMatch(query.jobType);
+
+  if (categoryFilter) filter.category = categoryFilter;
+  if (industryFilter) filter.industry = industryFilter;
+  if (locationFilter) filter.location = locationFilter;
+  if (jobTypeFilter) filter.jobType = jobTypeFilter;
 
   return filter;
 }
@@ -48,7 +63,6 @@ const listJobs = asyncHandler(async (req, res) => {
 
   const [jobs, total] = await Promise.all([
     Job.find(filter)
-      .populate('category industry location jobType')
       .sort({ publishedAt: -1, createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit),
@@ -69,7 +83,6 @@ const listJobs = asyncHandler(async (req, res) => {
 
 const getJobBySlug = asyncHandler(async (req, res) => {
   const job = await Job.findOne({ slug: req.params.slug, reviewStatus: JOB_REVIEW_STATUS.APPROVED, status: JOB_STATUS.ACTIVE })
-    .populate('category industry location jobType')
     .populate('employerUser', 'name email');
 
   if (!job) {
@@ -84,7 +97,6 @@ const getJobBySlug = asyncHandler(async (req, res) => {
 
 const featuredJobs = asyncHandler(async (req, res) => {
   const jobs = await Job.find({ reviewStatus: JOB_REVIEW_STATUS.APPROVED, status: JOB_STATUS.ACTIVE })
-    .populate('category industry location jobType')
     .sort({ publishedAt: -1 })
     .limit(6);
 
@@ -111,10 +123,10 @@ const createJob = asyncHandler(async (req, res) => {
     companyName: employerProfile.companyName,
     title: req.body.title,
     slug,
-    category: req.body.category,
-    industry: req.body.industry,
-    location: req.body.location,
-    jobType: req.body.jobType,
+    category: normalizeTextValue(req.body.category),
+    industry: normalizeTextValue(req.body.industry),
+    location: normalizeTextValue(req.body.location),
+    jobType: normalizeTextValue(req.body.jobType),
     description: req.body.description,
     responsibilities: req.body.responsibilities || [],
     requirements: req.body.requirements || [],
@@ -152,10 +164,10 @@ const updateJob = asyncHandler(async (req, res) => {
 
   Object.assign(targetJob, {
     title: req.body.title ?? targetJob.title,
-    category: req.body.category ?? targetJob.category,
-    industry: req.body.industry ?? targetJob.industry,
-    location: req.body.location ?? targetJob.location,
-    jobType: req.body.jobType ?? targetJob.jobType,
+    category: req.body.category === undefined ? targetJob.category : normalizeTextValue(req.body.category),
+    industry: req.body.industry === undefined ? targetJob.industry : normalizeTextValue(req.body.industry),
+    location: req.body.location === undefined ? targetJob.location : normalizeTextValue(req.body.location),
+    jobType: req.body.jobType === undefined ? targetJob.jobType : normalizeTextValue(req.body.jobType),
     description: req.body.description ?? targetJob.description,
     responsibilities: req.body.responsibilities ?? targetJob.responsibilities,
     requirements: req.body.requirements ?? targetJob.requirements,

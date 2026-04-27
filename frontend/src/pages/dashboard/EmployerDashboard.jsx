@@ -12,6 +12,7 @@ import {
   ListChecks,
   PieChart,
   PlusSquare,
+  Mail,
   Sparkles,
   TrendingUp,
   UserCheck
@@ -307,6 +308,20 @@ export default function EmployerDashboard() {
       to: '/employer/notifications',
       icon: Bell,
       cta: 'View alerts'
+    },
+    {
+      title: 'Interview scheduling',
+      description: 'Open the applicant pool to schedule interviews and send updates.',
+      to: applicantsRoute,
+      icon: CalendarClock,
+      cta: 'Schedule now'
+    },
+    {
+      title: 'Candidate communication',
+      description: 'Message applicants directly from the applicant workspace.',
+      to: applicantsRoute,
+      icon: Mail,
+      cta: 'Open messages'
     }
   ];
 
@@ -434,6 +449,37 @@ export default function EmployerDashboard() {
                 </article>
               );
             })}
+          </div>
+        </Card>
+
+        <Card className="employer-panel employer-panel-wide">
+          <div className="panel-head employer-panel-head">
+            <div>
+              <p className="section-eyebrow">Communication</p>
+              <h3>Interview and message hub</h3>
+            </div>
+            <Badge tone="neutral">Visible on dashboard</Badge>
+          </div>
+
+          <div className="employer-quick-actions-grid">
+            <article className="employer-quick-action-card">
+              <span className="employer-quick-action-icon"><CalendarClock size={18} /></span>
+              <strong>Schedule interviews</strong>
+              <p>Open the applicant pool and move shortlisted candidates into the interview stage.</p>
+              <Link to={applicantsRoute} className="employer-quick-action-link">Open applicant pool <ArrowRight size={14} /></Link>
+            </article>
+            <article className="employer-quick-action-card">
+              <span className="employer-quick-action-icon"><Mail size={18} /></span>
+              <strong>Send candidate messages</strong>
+              <p>Use the in-app thread to clarify next steps, questions, and interview details.</p>
+              <Link to={applicantsRoute} className="employer-quick-action-link">Open messages <ArrowRight size={14} /></Link>
+            </article>
+            <article className="employer-quick-action-card">
+              <span className="employer-quick-action-icon"><Bell size={18} /></span>
+              <strong>Monitor alerts</strong>
+              <p>Review job approval notifications, status changes, and incoming candidate updates.</p>
+              <Link to="/employer/notifications" className="employer-quick-action-link">View alerts <ArrowRight size={14} /></Link>
+            </article>
           </div>
         </Card>
       </section>

@@ -283,6 +283,24 @@
   align-items: start;
 }
 
+.jobs-mobile-filter-btn {
+  display: none;
+  width: 100%;
+  min-height: 46px;
+  border-radius: 14px;
+  border: 1px solid rgba(26, 138, 86, 0.2);
+  background: rgba(255, 255, 255, 0.94);
+  color: #17392c;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  box-shadow: 0 12px 24px rgba(12, 52, 35, 0.07);
+}
+
+.jobs-mobile-filter-btn.is-open {
+  background: linear-gradient(135deg, rgba(26, 138, 86, 0.12), rgba(108, 203, 157, 0.14));
+  border-color: rgba(26, 138, 86, 0.32);
+}
+
 .jobs-sidebar {
   position: sticky;
   top: 120px;
@@ -317,10 +335,22 @@
 @media (max-width: 1024px) {
   .jobs-listing-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .jobs-mobile-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .jobs-sidebar {
     position: static;
+    display: none;
+  }
+
+  .jobs-sidebar.is-open {
+    display: block;
   }
 }
 
@@ -335,7 +365,25 @@
 
   .jobs-search-bar {
     grid-template-columns: 1fr;
+<<<<<<< HEAD
     border-radius: 28px;
+=======
+    gap: 0.5rem;
+    border-radius: 18px;
+    padding: 0.75rem;
+  }
+
+  .jobs-search-input-group {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(26, 138, 86, 0.14);
+    border-radius: 12px;
+    min-height: 46px;
+  }
+
+  .jobs-search-btn {
+    margin-right: 0;
+    width: 100%;
+>>>>>>> 6dbca67f94fcc59399057f5222ad231126e5b1b4
   }
 
   .jobs-search-input-group,
@@ -351,7 +399,12 @@
 }
 
 @media (max-width: 560px) {
+  .jobs-hero-shell {
+    padding: 1.4rem 0 1.1rem;
+  }
+
   .jobs-hero-content h1 {
+<<<<<<< HEAD
     font-size: 2.75rem;
   }
 
@@ -362,5 +415,28 @@
   .jobs-quick-chip {
     width: 100%;
     justify-content: center;
+=======
+    font-size: 2rem;
+    max-width: 12ch;
+  }
+
+  .jobs-subtitle {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .jobs-search-input-group {
+    padding: 0 0.75rem;
+  }
+
+  .jobs-quick-chip {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .jobs-search-btn {
+    padding: 0.78rem 1.1rem;
+    font-size: 0.84rem;
+>>>>>>> 6dbca67f94fcc59399057f5222ad231126e5b1b4
   }
 }

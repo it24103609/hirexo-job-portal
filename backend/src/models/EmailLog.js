@@ -17,6 +17,10 @@ const emailLogSchema = new Schema(
     html: {
       type: String
     },
+    attachmentNames: {
+      type: [String],
+      default: []
+    },
     status: {
       type: String,
       enum: ['sent', 'failed', 'skipped'],

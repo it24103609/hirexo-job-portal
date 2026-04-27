@@ -5,57 +5,19 @@ import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import Textarea from '../../components/ui/Textarea';
-import Select from '../../components/ui/Select';
 import Button from '../../components/ui/Button';
 import { employerApi } from '../../services/employer.api';
 import { jobsApi } from '../../services/jobs.api';
-import { masterDataApi } from '../../services/masterData.api';
 import { toast } from 'react-toastify';
 import JobCard from '../../components/jobs/JobCard';
 import './EmployerJobFormPage.premium.css';
 
 const empty = { title: '', description: '', imageUrl: '', imageAlt: '', salaryMin: '', salaryMax: '', location: '', category: '', jobType: '', industry: '', experienceLevel: '', vacancies: 1 };
 
-const objectIdPattern = /^[a-f\d]{24}$/i;
-
-function resolveMasterDataId(value, items = []) {
-  const raw = String(value || '').trim();
-  if (!raw) return '';
-  if (objectIdPattern.test(raw)) return raw;
-
-  const match = items.find((item) => {
-    const id = String(item?._id || '').trim();
-    const slug = String(item?.slug || '').trim().toLowerCase();
-    const name = String(item?.name || '').trim().toLowerCase();
-    const probe = raw.toLowerCase();
-    return (id && id === raw) || slug === probe || name === probe;
-  });
-
-  return String(match?._id || '').trim();
-}
-
 export default function EmployerJobFormPage({ mode }) {
   const navigate = useNavigate();
   const { id } = useParams();
   const [form, setForm] = useState(empty);
-  const [categories, setCategories] = useState([]);
-  const [locations, setLocations] = useState([]);
-  const [jobTypes, setJobTypes] = useState([]);
-  const [industries, setIndustries] = useState([]);
-
-  useEffect(() => {
-    Promise.allSettled([
-      masterDataApi.listPublic('categories'),
-      masterDataApi.listPublic('locations'),
-      masterDataApi.listPublic('job-types'),
-      masterDataApi.listPublic('industries')
-    ]).then(([cats, locs, types, inds]) => {
-      setCategories(cats.status === 'fulfilled' ? cats.value.data || [] : []);
-      setLocations(locs.status === 'fulfilled' ? locs.value.data || [] : []);
-      setJobTypes(types.status === 'fulfilled' ? types.value.data || [] : []);
-      setIndustries(inds.status === 'fulfilled' ? inds.value.data || [] : []);
-    });
-  }, []);
 
   useEffect(() => {
     if (mode !== 'edit' || !id) return;
@@ -102,20 +64,27 @@ export default function EmployerJobFormPage({ mode }) {
           </div>
           <form id="jobform-main" className="jobform-sectioned-form jobform-sectioned-form-premium" autoComplete="off" onSubmit={async (e) => {
             e.preventDefault();
-            const locationId = resolveMasterDataId(form.location, locations);
-            const jobTypeId = resolveMasterDataId(form.jobType, jobTypes);
-            if (!locationId || !jobTypeId) {
-              toast.error('Please select valid Location and Job Type from master data.');
+
+            const category = String(form.category || '').trim();
+            const industry = String(form.industry || '').trim();
+            const jobType = String(form.jobType || '').trim();
+            const location = String(form.location || '').trim();
+
+            if (!category || !industry || !jobType || !location) {
+              toast.error('Category, Industry, Job Type, and Location are required.');
               return;
             }
+
             const payload = {
               ...form,
+              category,
+              industry,
+              jobType,
+              location,
               image: form.imageUrl.trim() ? {
                 url: form.imageUrl.trim(),
                 alt: form.imageAlt.trim() || form.title || 'Job image'
               } : undefined,
-              location: locationId,
-              jobType: jobTypeId,
               salaryMin: Number(form.salaryMin || 0),
               salaryMax: Number(form.salaryMax || 0),
               vacancies: Number(form.vacancies || 1)
@@ -135,12 +104,12 @@ export default function EmployerJobFormPage({ mode }) {
               <div className="jobform-fields-grid jobform-fields-grid-premium">
                 <Input label="Job title" value={form.title} onChange={(e) => setForm((c) => ({ ...c, title: e.target.value }))} placeholder="e.g. Senior Software Engineer" required />
                 <div className="jobform-row jobform-row-2 jobform-row-premium">
-                  <Select label="Category" value={form.category} onChange={(e) => setForm((c) => ({ ...c, category: e.target.value }))} required>{[<option key="empty" value="">Select category</option>, ...categories.map((item) => <option key={item._id || item.slug} value={item._id || item.slug}>{item.name}</option>)]}</Select>
-                  <Select label="Industry" value={form.industry} onChange={(e) => setForm((c) => ({ ...c, industry: e.target.value }))} required>{[<option key="empty" value="">Select industry</option>, ...industries.map((item) => <option key={item._id || item.slug} value={item._id || item.slug}>{item.name}</option>)]}</Select>
+                  <Input label="Category" value={form.category} onChange={(e) => setForm((c) => ({ ...c, category: e.target.value }))} placeholder="e.g. Engineering" required />
+                  <Input label="Industry" value={form.industry} onChange={(e) => setForm((c) => ({ ...c, industry: e.target.value }))} placeholder="e.g. Information Technology" required />
                 </div>
                 <div className="jobform-row jobform-row-2 jobform-row-premium">
-                  <Select label="Job type" value={form.jobType} onChange={(e) => setForm((c) => ({ ...c, jobType: e.target.value }))} required>{[<option key="empty" value="">Select job type</option>, ...jobTypes.map((item) => <option key={item._id || item.slug} value={item._id || item.slug}>{item.name}</option>)]}</Select>
-                  <Select label="Location" value={form.location} onChange={(e) => setForm((c) => ({ ...c, location: e.target.value }))} required>{[<option key="empty" value="">Select location</option>, ...locations.map((item) => <option key={item._id || item.slug} value={item._id || item.slug}>{item.name}</option>)]}</Select>
+                  <Input label="Job type" value={form.jobType} onChange={(e) => setForm((c) => ({ ...c, jobType: e.target.value }))} placeholder="e.g. Full-time" required />
+                  <Input label="Location" value={form.location} onChange={(e) => setForm((c) => ({ ...c, location: e.target.value }))} placeholder="e.g. Colombo" required />
                 </div>
               </div>
             </Card>
@@ -216,8 +185,8 @@ export default function EmployerJobFormPage({ mode }) {
             job={{
               title: form.title || 'Job Title',
               companyName: 'Your Company',
-              location: locations.find(l => l._id === form.location)?.name || 'Location',
-              jobType: jobTypes.find(j => j._id === form.jobType)?.name || 'Job Type',
+              location: form.location || 'Location',
+              jobType: form.jobType || 'Job Type',
               experienceLevel: form.experienceLevel,
               salaryMin: form.salaryMin,
               salaryMax: form.salaryMax,
