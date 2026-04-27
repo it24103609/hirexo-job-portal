@@ -56,7 +56,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Button as={Link} to="/auth" variant="secondary" size="sm">
-                  <LogIn size={16} /> Sign in
+                  <LogIn size={16} /> Login
                 </Button>
                 <Button as={Link} to="/auth" size="sm">
                   Get started

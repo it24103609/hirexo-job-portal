@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Search, MapPin } from 'lucide-react';
+import { BriefcaseBusiness, Code2, MapPin, PenTool, Search, Sparkles, TrendingUp, UsersRound } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import JobCard from '../../components/jobs/JobCard';
 import JobFilters from '../../components/jobs/JobFilters';
@@ -12,10 +12,10 @@ import './JobsPage.css';
 const defaultFilters = { keyword: '', category: '', location: '', jobType: '' };
 
 const quickCategories = [
-  { label: 'Leadership', tag: 'leadership' },
-  { label: 'Design', tag: 'design' },
-  { label: 'Product Management', tag: 'product' },
-  { label: 'Engineering', tag: 'engineering' }
+  { label: 'Leadership', tag: 'leadership', icon: Sparkles },
+  { label: 'Design', tag: 'design', icon: PenTool },
+  { label: 'Product Management', tag: 'product', icon: UsersRound },
+  { label: 'Engineering', tag: 'engineering', icon: Code2 }
 ];
 
 export default function JobsPage() {
@@ -106,8 +106,21 @@ export default function JobsPage() {
         
         <div className="shell">
           <div className="jobs-hero-content">
+            <div className="jobs-hero-visual" aria-hidden="true">
+              <img
+                src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=920&q=85"
+                alt=""
+              />
+              <span className="jobs-float-card jobs-float-stats">
+                <strong>10K+</strong>
+                <small>Jobs available</small>
+                <i />
+              </span>
+              <span className="jobs-float-card jobs-float-briefcase"><BriefcaseBusiness size={28} /></span>
+              <span className="jobs-float-card jobs-float-team"><UsersRound size={28} /></span>
+            </div>
             <p className="jobs-eyebrow">Opportunities</p>
-            <h1>Find your next opportunity</h1>
+            <h1>Find your next <span>opportunity</span></h1>
             <p className="jobs-subtitle">Discover roles that match your skills and career ambitions. Curated positions from leading companies.</p>
 
             <form className="jobs-search-bar" onSubmit={handleSearch}>
@@ -131,20 +144,23 @@ export default function JobsPage() {
                   className="jobs-search-input"
                 />
               </div>
-              <button type="submit" className="jobs-search-btn">Search</button>
+              <button type="submit" className="jobs-search-btn"><Search size={17} /> Search</button>
             </form>
 
             <div className="jobs-quick-filters">
-              {quickCategories.map((category) => (
+              {quickCategories.map((category) => {
+                const Icon = category.icon;
+                return (
                 <button
                   key={category.tag}
                   type="button"
                   onClick={() => handleQuickSearch(category.tag)}
                   className={`jobs-quick-chip ${filters.category === category.tag ? 'active' : ''}`}
                 >
-                  {category.label}
+                  <Icon size={16} /> {category.label}
                 </button>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
