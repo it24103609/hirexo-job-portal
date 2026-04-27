@@ -69,67 +69,6 @@
   box-shadow: 0 30px 70px rgba(20, 61, 46, 0.14);
 }
 
-.jobs-float-card {
-  position: absolute;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #087145;
-  border: 1px solid rgba(26, 138, 86, 0.16);
-  background: rgba(255, 255, 255, 0.84);
-  box-shadow: 0 16px 32px rgba(20, 61, 46, 0.14);
-  backdrop-filter: blur(18px);
-  animation: jobsFloat 4.8s ease-in-out infinite;
-}
-
-.jobs-float-stats {
-  left: -62px;
-  top: 78px;
-  width: 138px;
-  height: 138px;
-  display: grid;
-  align-content: center;
-  gap: 0.3rem;
-  border-radius: 22px;
-}
-
-.jobs-float-stats strong {
-  color: #062f20;
-  font-size: 1.45rem;
-}
-
-.jobs-float-stats small {
-  color: #415d50;
-  font-weight: 700;
-}
-
-.jobs-float-stats i {
-  width: 72px;
-  height: 28px;
-  margin: 0.2rem auto 0;
-  border-bottom: 3px solid #23b86e;
-  border-right: 3px solid #23b86e;
-  transform: skew(-24deg) rotate(-9deg);
-}
-
-.jobs-float-briefcase,
-.jobs-float-team {
-  width: 74px;
-  height: 74px;
-  border-radius: 20px;
-}
-
-.jobs-float-briefcase {
-  right: 16px;
-  top: 22px;
-}
-
-.jobs-float-team {
-  right: -38px;
-  bottom: -22px;
-  animation-delay: 0.8s;
-}
-
 .jobs-eyebrow {
   margin: 0 0 0.55rem;
   text-transform: uppercase;
@@ -318,11 +257,6 @@
 .jobs-list {
   display: grid;
   gap: 1rem;
-}
-
-@keyframes jobsFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
 }
 
 @media (max-width: 1180px) {

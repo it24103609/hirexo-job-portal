@@ -2,16 +2,12 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
   BadgeCheck,
-  BarChart3,
   Briefcase,
   Building2,
-  CheckCircle2,
   ChevronRight,
-  CircleUserRound,
   Clock3,
   FileCheck2,
   Globe2,
-  LineChart,
   LockKeyhole,
   MapPin,
   MessageCircle,
@@ -183,56 +179,6 @@ export default function HomePage() {
               <Button as={Link} to="/services" size="lg">Explore Services <ArrowRight size={18} /></Button>
               <Button as={Link} to="/contact" variant="ghost" size="lg">Contact Us <MessageCircle size={17} /></Button>
             </div>
-          </div>
-
-          <div className="hero-dashboard" aria-label="Hirexo recruitment dashboard preview">
-            <div className="float-card rating-card">
-              <span>4.9/5 from 2,547 users</span>
-              <div>{Array.from({ length: 5 }).map((_, index) => <Star key={index} size={16} fill="currentColor" />)}</div>
-            </div>
-
-            <div className="float-card avatar-card">
-              <span>Top Roles Hiring</span>
-              <div className="avatar-row">
-                {[media.candidate, media.employer, media.interview].map((src) => <img key={src} src={src} alt="" />)}
-                <strong>+120</strong>
-              </div>
-            </div>
-
-            <div className="dashboard-card">
-              <div className="dashboard-card-head">
-                <span><LineChart size={15} /> Dashboard</span>
-                <small>Live</small>
-              </div>
-              <div className="mini-metrics">
-                <span><strong>250+</strong> Roles</span>
-                <span><strong>15K+</strong> Matches</span>
-                <span><strong>1.2K+</strong> Interviews</span>
-              </div>
-              <div className="chart-lines" aria-hidden="true">
-                <span /><span /><span /><span /><span /><span />
-              </div>
-            </div>
-
-            <div className="profile-card">
-              <span className="profile-logo">H</span>
-              <div>
-                <strong>Hirexo</strong>
-                <small>Recruitment partner</small>
-                <p>Built for employers, candidates, and talent teams.</p>
-              </div>
-            </div>
-
-            <div className="match-card">
-              <span>Matches</span>
-              <strong>98%</strong>
-              <small>Top fit shortlist</small>
-              <CheckCircle2 size={24} />
-            </div>
-
-            <span className="hero-icon icon-user"><CircleUserRound size={28} /></span>
-            <span className="hero-icon icon-briefcase"><Briefcase size={28} /></span>
-            <span className="hero-icon icon-chart"><BarChart3 size={28} /></span>
           </div>
         </div>
       </section>

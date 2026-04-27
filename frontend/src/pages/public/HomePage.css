@@ -40,8 +40,7 @@
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
-  gap: 3.5rem;
+  grid-template-columns: minmax(0, 760px);
   align-items: center;
 }
 

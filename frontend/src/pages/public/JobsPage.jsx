@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BriefcaseBusiness, Code2, MapPin, PenTool, Search, Sparkles, TrendingUp, UsersRound } from 'lucide-react';
+import { Code2, MapPin, PenTool, Search, Sparkles, TrendingUp, UsersRound } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import JobCard from '../../components/jobs/JobCard';
 import JobFilters from '../../components/jobs/JobFilters';
@@ -111,13 +111,6 @@ export default function JobsPage() {
                 src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=920&q=85"
                 alt=""
               />
-              <span className="jobs-float-card jobs-float-stats">
-                <strong>10K+</strong>
-                <small>Jobs available</small>
-                <i />
-              </span>
-              <span className="jobs-float-card jobs-float-briefcase"><BriefcaseBusiness size={28} /></span>
-              <span className="jobs-float-card jobs-float-team"><UsersRound size={28} /></span>
             </div>
             <p className="jobs-eyebrow">Opportunities</p>
             <h1>Find your next <span>opportunity</span></h1>

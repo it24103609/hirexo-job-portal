@@ -120,14 +120,6 @@ export default function ServicesPage() {
             </div>
           </div>
 
-          <div className="services-video-card" aria-label="Hirexo recruitment services overview video">
-            <iframe
-              src="https://www.youtube.com/embed/Y7cpCDlRfV0"
-              title="Hirexo recruitment services overview"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
         </div>
       </section>
 
@@ -137,6 +129,31 @@ export default function ServicesPage() {
             <span className="services-section-badge">Our Expertise</span>
             <h2>What <span>Hirexo</span> helps businesses do</h2>
             <p>Comprehensive recruitment services tailored to your hiring needs and business goals.</p>
+          </div>
+
+          <div className="services-overview-block">
+            <div className="services-video-card services-overview-video" aria-label="Hirexo recruitment services overview video">
+              <iframe
+                src="https://www.youtube.com/embed/Y7cpCDlRfV0"
+                title="Hirexo recruitment services overview"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+
+            <div className="services-overview-copy">
+              <span>Overview</span>
+              <h3>Recruitment support that keeps hiring moving</h3>
+              <p>
+                Hirexo helps teams plan roles, screen stronger candidates, and move from shortlist
+                to onboarding with a cleaner hiring workflow.
+              </p>
+              <ul>
+                <li><CheckCircle2 size={17} /> Faster candidate shortlisting</li>
+                <li><CheckCircle2 size={17} /> Verified talent for key roles</li>
+                <li><CheckCircle2 size={17} /> Flexible support for growing teams</li>
+              </ul>
+            </div>
           </div>
 
           <div className="services-grid">
