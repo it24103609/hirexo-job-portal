@@ -122,82 +122,10 @@ export default function HomePage() {
     const list = Array.isArray(jobs) ? jobs : [];
     if (activeFilter === 'all') return list;
 
-<<<<<<< HEAD
     return list.filter((job) => {
       const location = `${getLabel(job.location)} ${job.country || ''}`.toLowerCase();
       const isLocal = ['sri lanka', 'colombo', 'kandy', 'galle', 'negombo', 'lk'].some((item) => location.includes(item));
       return activeFilter === 'local' ? isLocal : !isLocal || job.remoteFriendly;
-=======
-    const diffMs = target.getTime() - Date.now();
-    return Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
-  };
-
-  const getJobBadgeLabel = (job) => {
-    const jobType = getLabel(job.jobType, '').trim();
-
-    if (job.remoteFriendly) return 'Remote Job';
-    if (!jobType) return 'Job';
-
-    const normalized = jobType.toLowerCase();
-    if (normalized === 'internship') return 'Internship';
-    if (normalized.includes('full time')) return 'Full-time Job';
-    if (normalized.includes('part time')) return 'Part-time Job';
-    if (normalized.includes('contract')) return 'Contract Job';
-    if (normalized.includes('remote')) return 'Remote Job';
-
-    return jobType.toLowerCase().includes('job') ? jobType : `${jobType} Job`;
-  };
-
-  // Filter jobs based on Local/Global selection
-  const getFilteredJobs = () => {
-    const jobsList = Array.isArray(jobs) ? jobs : [];
-    const sriLankaCities = [
-      'colombo',
-      'gampaha',
-      'kalutara',
-      'kandy',
-      'matale',
-      'nuwara eliya',
-      'galle',
-      'matara',
-      'hambantota',
-      'jaffna',
-      'kilinochchi',
-      'mannar',
-      'mullaitivu',
-      'vavuniya',
-      'trincomalee',
-      'batticaloa',
-      'ampara',
-      'anuradhapura',
-      'kurunegala',
-      'puttalam',
-      'polonnaruwa',
-      'badulla',
-      'monaragala',
-      'ratnapura',
-      'kegalle'
-    ];
-
-    if (activeSwitch === 'global') {
-      return jobsList;
-    }
-
-    // Local tab should show Sri Lanka opportunities only.
-    const localJobs = jobsList.filter((job) => {
-      const locationName = getLabel(job.location, '').toLowerCase();
-      const country = String(job.country || '').toLowerCase();
-      const searchable = `${locationName} ${country}`;
-      const hasSriLankaCity = sriLankaCities.some((city) => searchable.includes(city));
-
-      return (
-        searchable.includes('sri lanka') ||
-        searchable.includes('srilanka') ||
-        country === 'lk' ||
-        country === 'sl' ||
-        hasSriLankaCity
-      );
->>>>>>> 6dbca67f94fcc59399057f5222ad231126e5b1b4
     });
   }, [activeFilter, jobs]);
 
@@ -231,13 +159,8 @@ export default function HomePage() {
             <p className="home-eyebrow"><Users size={16} /> Recruitment Partner</p>
             <h1>Hirexo Job Portal & Recruitment Partner</h1>
             <p>
-<<<<<<< HEAD
               Hirexo connects ambitious candidates with verified employers through fast,
               structured, and people-focused recruitment workflows.
-=======
-              Hirexo is a modern recruitment platform focused on delivering the right talent fast and with precision.
-              We connect businesses with people who drive real impact and long-term success.
->>>>>>> 6dbca67f94fcc59399057f5222ad231126e5b1b4
             </p>
             <div className="home-hero-actions">
               <Button as={Link} to="/services" size="lg">Explore Services <ArrowRight size={18} /></Button>
@@ -398,67 +321,10 @@ export default function HomePage() {
               <span className="orbit-dot dot-b" />
               <span className="orbit-dot dot-c" />
             </div>
-<<<<<<< HEAD
             <div className="ai-side-card side-left"><FileCheck2 size={20} /> Smart Screening</div>
             <div className="ai-side-card side-right"><ShieldCheck size={20} /> Better Shortlists</div>
             <div className="accuracy-card">
               <strong>98% match accuracy</strong>
-=======
-            <Card className="hero-rating-card">
-              <div className="hero-rating-stars" aria-label="Rated 4.9 out of 5">
-                <Star size={20} fill="currentColor" />
-                <Star size={20} fill="currentColor" />
-                <Star size={20} fill="currentColor" />
-                <Star size={20} fill="currentColor" />
-                <Star size={20} fill="currentColor" />
-              </div>
-              <p><strong>4.9/5</strong> from 2,847 users</p>
-            </Card>
-            <Card className="hero-feature-card">
-              <BrandIdentity className="hero-brand" subtitle="Recruitment platform" />
-              <p className="hero-brand-copy">
-                Built for candidates, employers, and admins with a practical hiring workflow.
-              </p>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust Stats Strip */}
-      <section className="trust-stats-section">
-        <div className="shell">
-          <div className="trust-stats-grid">
-            {trustStats.map((stat) => (
-              <div key={stat.label} className="trust-stat-card">
-                <span className="trust-stat-icon">{stat.icon}</span>
-                <div className="trust-stat-value">{stat.value}</div>
-                <p className="trust-stat-label">{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="section-block recent-jobs-shell">
-        <div className="shell">
-          <SectionHeader eyebrow="Recent jobs" title="Premium Job Highlights" description="Top opportunities ready for your application or quick review." />
-          <div className="jobs-switch-wrap">
-            <div className="jobs-switch">
-              <button
-                type="button"
-                className={`jobs-switch-btn ${activeSwitch === 'local' ? 'active' : ''}`}
-                onClick={() => setActiveSwitch('local')}
-              >
-                Local
-              </button>
-              <button
-                type="button"
-                className={`jobs-switch-btn ${activeSwitch === 'global' ? 'active' : ''}`}
-                onClick={() => setActiveSwitch('global')}
-              >
-                Global
-              </button>
->>>>>>> 6dbca67f94fcc59399057f5222ad231126e5b1b4
             </div>
             <div className="ai-actions">
               <Button as={Link} to="/jobs">See open positions <ArrowRight size={16} /></Button>

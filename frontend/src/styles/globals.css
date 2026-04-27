@@ -811,7 +811,6 @@ main { min-height: 60vh; }
   padding-top: 1rem;
 }
 
-<<<<<<< HEAD
 .site-footer {
   margin-top: 2rem;
   padding: 3rem 0 1.2rem;
@@ -948,7 +947,8 @@ main { min-height: 60vh; }
   background: rgba(8, 72, 52, 0.72);
   box-shadow: 0 16px 32px rgba(20, 61, 46, 0.12);
   font-weight: 750;
-=======
+}
+
 .dashboard-mobile-bar {
   display: none;
   margin: 1rem auto 0;
@@ -969,7 +969,6 @@ main { min-height: 60vh; }
   padding: 0.72rem 1rem;
   box-shadow: 0 16px 28px rgba(12, 52, 35, 0.08);
   font-weight: 800;
->>>>>>> 6dbca67f94fcc59399057f5222ad231126e5b1b4
 }
 
 .dashboard-shell {
