@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X, LayoutDashboard, LogOut, LogIn } from 'lucide-react';
+import { ArrowRight, Menu, X, LayoutDashboard, LogOut, LogIn } from 'lucide-react';
 import Button from '../ui/Button';
 import BrandIdentity from './BrandIdentity';
 import { useAuth } from '../../contexts/AuthContext';
@@ -59,7 +59,7 @@ export default function Navbar() {
                   <LogIn size={16} /> Login
                 </Button>
                 <Button as={Link} to="/auth" size="sm">
-                  Get started
+                  Get Started <ArrowRight size={16} />
                 </Button>
               </>
             )}
