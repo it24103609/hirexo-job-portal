@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { BriefcaseBusiness, Code2, MapPin, PenTool, Search, Sparkles, TrendingUp, UsersRound } from 'lucide-react';
+import { Code2, MapPin, PenTool, Search, Sparkles, TrendingUp, UsersRound } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import JobCard from '../../components/jobs/JobCard';
 import JobFilters from '../../components/jobs/JobFilters';
@@ -7,7 +7,6 @@ import Loader from '../../components/ui/Loader';
 import EmptyState from '../../components/ui/EmptyState';
 import Pagination from '../../components/ui/Pagination';
 import { jobsApi } from '../../services/jobs.api';
-import { siteContent } from '../../data/siteContent';
 import './JobsPage.css';
 
 const defaultFilters = { keyword: '', category: '', location: '', jobType: '' };
@@ -33,12 +32,11 @@ export default function JobsPage() {
     setLoading(true);
     jobsApi.list({ ...filters, page, limit: 9 })
       .then((res) => {
-        const list = res.data?.length ? res.data : siteContent.mockJobs;
-        setJobs(list);
+        setJobs(res.data || []);
         setMeta(res.meta || { totalPages: 1 });
       })
       .catch(() => {
-        setJobs(siteContent.mockJobs);
+        setJobs([]);
         setMeta({ totalPages: 1 });
       })
       .finally(() => setLoading(false));
@@ -113,13 +111,6 @@ export default function JobsPage() {
                 src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=920&q=85"
                 alt=""
               />
-              <span className="jobs-float-card jobs-float-stats">
-                <strong>10K+</strong>
-                <small>Jobs available</small>
-                <i />
-              </span>
-              <span className="jobs-float-card jobs-float-briefcase"><BriefcaseBusiness size={28} /></span>
-              <span className="jobs-float-card jobs-float-team"><UsersRound size={28} /></span>
             </div>
             <p className="jobs-eyebrow">Opportunities</p>
             <h1>Find your next <span>opportunity</span></h1>

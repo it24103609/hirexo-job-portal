@@ -22,6 +22,37 @@ function normalizeTextValue(value) {
   return String(value ?? '').trim();
 }
 
+function normalizeStringArray(value) {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item || '').trim()).filter(Boolean);
+  }
+
+  return String(value || '')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function normalizeObjectIdArray(value) {
+  if (!Array.isArray(value)) return [];
+  return value.map((item) => String(item || '').trim()).filter(Boolean);
+}
+
+function normalizeScreeningQuestions(value) {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map((question) => ({
+      question: normalizeTextValue(question?.question),
+      type: ['text', 'textarea', 'yes_no', 'number', 'select'].includes(question?.type) ? question.type : 'text',
+      required: Boolean(question?.required),
+      options: normalizeStringArray(question?.options || []),
+      idealAnswer: normalizeTextValue(question?.idealAnswer),
+      knockout: Boolean(question?.knockout)
+    }))
+    .filter((question) => question.question);
+}
+
 function buildTextMatch(value) {
   const cleaned = normalizeTextValue(value);
   if (!cleaned) return null;
@@ -112,6 +143,8 @@ const createJob = asyncHandler(async (req, res) => {
     throw new AppError('Complete your employer profile before posting jobs', 400);
   }
 
+  const saveAsDraft = Boolean(req.body.saveAsDraft);
+
   const slug = await createUniqueSlug(Job, req.body.title, { company: employerProfile.companyName });
   const image = normalizeJobImage(req.body, req.body.title || 'Job image') || (
     employerProfile.logoUrl
@@ -138,14 +171,18 @@ const createJob = asyncHandler(async (req, res) => {
     vacancies: req.body.vacancies || 1,
     remoteFriendly: req.body.remoteFriendly || false,
     expiresAt: req.body.expiresAt,
-    tags: req.body.tags || [],
+    tags: normalizeStringArray(req.body.tags),
+    hiringPriority: req.body.hiringPriority || 'medium',
+    screeningQuestions: normalizeScreeningQuestions(req.body.screeningQuestions),
+    hiringLeadMember: req.body.hiringLeadMember || undefined,
+    collaboratorMembers: normalizeObjectIdArray(req.body.collaboratorMembers),
     image: image || undefined,
-    reviewStatus: JOB_REVIEW_STATUS.PENDING,
-    status: JOB_STATUS.ACTIVE
+    reviewStatus: saveAsDraft ? JOB_REVIEW_STATUS.DRAFT : JOB_REVIEW_STATUS.PENDING,
+    status: saveAsDraft ? JOB_STATUS.DRAFT : JOB_STATUS.ACTIVE
   });
 
   res.status(201).json(apiResponse({
-    message: 'Job submitted for admin review',
+    message: saveAsDraft ? 'Job saved as draft' : 'Job submitted for admin review',
     data: job
   }));
 });
@@ -162,6 +199,19 @@ const updateJob = asyncHandler(async (req, res) => {
     throw new AppError('Job not found', 404);
   }
 
+  const previousTitle = targetJob.title;
+  const saveAsDraft = Boolean(req.body.saveAsDraft);
+  const nextReviewStatus = req.user.role === ROLES.ADMIN
+    ? targetJob.reviewStatus
+    : saveAsDraft
+      ? JOB_REVIEW_STATUS.DRAFT
+      : JOB_REVIEW_STATUS.PENDING;
+  const nextStatus = req.user.role === ROLES.ADMIN
+    ? targetJob.status
+    : saveAsDraft
+      ? JOB_STATUS.DRAFT
+      : JOB_STATUS.ACTIVE;
+
   Object.assign(targetJob, {
     title: req.body.title ?? targetJob.title,
     category: req.body.category === undefined ? targetJob.category : normalizeTextValue(req.body.category),
@@ -169,9 +219,9 @@ const updateJob = asyncHandler(async (req, res) => {
     location: req.body.location === undefined ? targetJob.location : normalizeTextValue(req.body.location),
     jobType: req.body.jobType === undefined ? targetJob.jobType : normalizeTextValue(req.body.jobType),
     description: req.body.description ?? targetJob.description,
-    responsibilities: req.body.responsibilities ?? targetJob.responsibilities,
-    requirements: req.body.requirements ?? targetJob.requirements,
-    skills: req.body.skills ?? targetJob.skills,
+    responsibilities: req.body.responsibilities === undefined ? targetJob.responsibilities : normalizeStringArray(req.body.responsibilities),
+    requirements: req.body.requirements === undefined ? targetJob.requirements : normalizeStringArray(req.body.requirements),
+    skills: req.body.skills === undefined ? targetJob.skills : normalizeStringArray(req.body.skills),
     experienceLevel: req.body.experienceLevel ?? targetJob.experienceLevel,
     salaryMin: req.body.salaryMin ?? targetJob.salaryMin,
     salaryMax: req.body.salaryMax ?? targetJob.salaryMax,
@@ -179,9 +229,14 @@ const updateJob = asyncHandler(async (req, res) => {
     vacancies: req.body.vacancies ?? targetJob.vacancies,
     remoteFriendly: req.body.remoteFriendly ?? targetJob.remoteFriendly,
     expiresAt: req.body.expiresAt ?? targetJob.expiresAt,
-    tags: req.body.tags ?? targetJob.tags,
-    reviewStatus: req.user.role === ROLES.ADMIN ? targetJob.reviewStatus : JOB_REVIEW_STATUS.PENDING,
-    publishedAt: req.user.role === ROLES.ADMIN ? targetJob.publishedAt : undefined,
+    tags: req.body.tags === undefined ? targetJob.tags : normalizeStringArray(req.body.tags),
+    hiringPriority: req.body.hiringPriority ?? targetJob.hiringPriority,
+    screeningQuestions: req.body.screeningQuestions === undefined ? targetJob.screeningQuestions : normalizeScreeningQuestions(req.body.screeningQuestions),
+    hiringLeadMember: req.body.hiringLeadMember === undefined ? targetJob.hiringLeadMember : req.body.hiringLeadMember || undefined,
+    collaboratorMembers: req.body.collaboratorMembers === undefined ? targetJob.collaboratorMembers : normalizeObjectIdArray(req.body.collaboratorMembers),
+    reviewStatus: nextReviewStatus,
+    status: nextStatus,
+    publishedAt: req.user.role === ROLES.ADMIN || saveAsDraft ? targetJob.publishedAt : undefined,
     reviewedBy: req.user.role === ROLES.ADMIN ? targetJob.reviewedBy : undefined,
     reviewedAt: req.user.role === ROLES.ADMIN ? targetJob.reviewedAt : undefined
   });
@@ -191,14 +246,14 @@ const updateJob = asyncHandler(async (req, res) => {
     targetJob.image = normalizedImage || undefined;
   }
 
-  if (req.body.title && req.body.title !== targetJob.title) {
+  if (req.body.title && req.body.title !== previousTitle) {
     targetJob.slug = await createUniqueSlug(Job, req.body.title, { company: targetJob.companyName });
   }
 
   await targetJob.save();
 
   res.json(apiResponse({
-    message: 'Job updated successfully',
+    message: saveAsDraft ? 'Job draft saved successfully' : 'Job updated successfully',
     data: targetJob
   }));
 });

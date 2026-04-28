@@ -10,12 +10,14 @@ const USER_STATUS = Object.freeze({
 });
 
 const JOB_REVIEW_STATUS = Object.freeze({
+  DRAFT: 'draft',
   PENDING: 'pending',
   APPROVED: 'approved',
   REJECTED: 'rejected'
 });
 
 const JOB_STATUS = Object.freeze({
+  DRAFT: 'draft',
   ACTIVE: 'active',
   INACTIVE: 'inactive',
   EXPIRED: 'expired'
@@ -26,6 +28,7 @@ const APPLICATION_STATUS = Object.freeze({
   REVIEWED: 'reviewed',
   INTERVIEW_SCHEDULED: 'interview_scheduled',
   SHORTLISTED: 'shortlisted',
+  HIRED: 'hired',
   REJECTED: 'rejected'
 });
 

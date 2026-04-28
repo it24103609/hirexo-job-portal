@@ -8,6 +8,7 @@ const Contact = require('../models/Contact');
 const EmployerProfile = require('../models/EmployerProfile');
 const CandidateProfile = require('../models/CandidateProfile');
 const PlatformSetting = require('../models/PlatformSetting');
+const Offer = require('../models/Offer');
 const { JOB_REVIEW_STATUS, JOB_STATUS, ROLES, USER_STATUS, APPLICATION_STATUS } = require('../utils/constants');
 const { createNotification } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
@@ -235,7 +236,7 @@ const listApplications = asyncHandler(async (req, res) => {
     filter.status = requestedStatus;
   }
 
-  const [applications, pendingCount, reviewedCount, shortlistedCount, rejectedCount, interviewCount, totalCount] = await Promise.all([
+  const [applications, pendingCount, reviewedCount, shortlistedCount, rejectedCount, interviewCount, hiredCount, totalCount] = await Promise.all([
     Application.find(filter)
       .populate('job', 'title companyName')
       .populate('candidateUser', 'name email')
@@ -247,6 +248,7 @@ const listApplications = asyncHandler(async (req, res) => {
     Application.countDocuments({ status: APPLICATION_STATUS.SHORTLISTED }),
     Application.countDocuments({ status: APPLICATION_STATUS.REJECTED }),
     Application.countDocuments({ status: APPLICATION_STATUS.INTERVIEW_SCHEDULED }),
+    Application.countDocuments({ status: APPLICATION_STATUS.HIRED }),
     Application.countDocuments()
   ]);
 
@@ -261,9 +263,25 @@ const listApplications = asyncHandler(async (req, res) => {
         shortlisted: shortlistedCount,
         rejected: rejectedCount,
         interview_scheduled: interviewCount,
+        hired: hiredCount,
         all: totalCount
       }
     }
+  }));
+});
+
+const listOffers = asyncHandler(async (req, res) => {
+  const offers = await Offer.find()
+    .populate('candidateUser', 'name email')
+    .populate('employerUser', 'name email')
+    .populate('job', 'title companyName')
+    .populate('application', 'status createdAt')
+    .sort({ updatedAt: -1, createdAt: -1 })
+    .limit(200);
+
+  res.json(apiResponse({
+    message: 'Offers fetched successfully',
+    data: offers
   }));
 });
 
@@ -352,6 +370,11 @@ const reports = asyncHandler(async (req, res) => {
               $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0]
             }
           },
+          hired: {
+            $sum: {
+              $cond: [{ $eq: ['$status', 'hired'] }, 1, 0]
+            }
+          },
           pending: {
             $sum: {
               $cond: [{ $eq: ['$status', 'pending'] }, 1, 0]
@@ -378,6 +401,7 @@ const reports = asyncHandler(async (req, res) => {
           applications: 1,
           shortlisted: 1,
           rejected: 1,
+          hired: 1,
           pending: 1
         }
       },
@@ -547,6 +571,7 @@ module.exports = {
   unblockUser,
   listPendingJobs,
   listApplications,
+  listOffers,
   approveJob,
   rejectJob,
   listBlogs,

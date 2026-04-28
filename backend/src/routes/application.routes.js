@@ -7,9 +7,12 @@ const { ROLES } = require('../utils/constants');
 router.post('/', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.ADMIN), applicationController.applyForJob);
 router.get('/my', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.ADMIN), applicationController.getMyApplications);
 router.get('/job/:jobId', protect, authorizeRoles(ROLES.EMPLOYER, ROLES.ADMIN), applicationController.getApplicationsByJob);
+router.get('/:id', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.getApplicationById);
 router.get('/:id/resume', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.downloadApplicationResume);
+router.post('/:id/book-slot', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.ADMIN), applicationController.bookInterviewSlot);
+router.patch('/:id/request-reschedule', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.ADMIN), applicationController.requestInterviewReschedule);
 router.patch('/:id/status', protect, authorizeRoles(ROLES.EMPLOYER, ROLES.ADMIN), applicationController.updateApplicationStatus);
 router.get('/:id/messages', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.getApplicationMessages);
-router.post('/:id/messages', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER), applicationController.sendApplicationMessage);
+router.post('/:id/messages', protect, authorizeRoles(ROLES.CANDIDATE, ROLES.EMPLOYER, ROLES.ADMIN), applicationController.sendApplicationMessage);
 
 module.exports = router;

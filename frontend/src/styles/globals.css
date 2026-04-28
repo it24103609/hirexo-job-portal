@@ -469,6 +469,22 @@ main { min-height: 60vh; }
   gap: 0.5rem;
 }
 
+.checkbox-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-height: 16px;
+}
+
+.jobform-multi-select {
+  min-height: 132px;
+}
+
+.jobform-question-card {
+  display: grid;
+  gap: 0.9rem;
+  background: rgba(255, 255, 255, 0.72);
+}
+
 .loader, .empty-state {
   display: grid;
   place-items: center;
@@ -1387,6 +1403,10 @@ main { min-height: 60vh; }
 
 @media (max-width: 560px) {
   .shell { width: 100%; }
+  .blog-list-page .section-header,
+  .blog-list-page .blog-list-subtitle {
+    text-align: center;
+  }
   .hero { padding-top: 2.25rem; }
   .hero-copy h1 { font-size: 2.35rem; }
   .navbar { padding: 0.85rem 0.9rem; }

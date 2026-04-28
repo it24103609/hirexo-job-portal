@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { authApi } from '../services/auth.api';
 import { setSession, clearSession, getSession } from '../services/storage';
@@ -9,8 +9,9 @@ export function AuthProvider({ children }) {
   const [state, setState] = useState({ user: null, profile: null, token: null, loading: true });
 
   const syncUser = async () => {
+    const session = getSession();
+
     try {
-      const session = getSession();
       if (!session?.token) {
         setState({ user: null, profile: null, token: null, loading: false });
         return;
@@ -19,8 +20,31 @@ export function AuthProvider({ children }) {
       const { data } = await authApi.me();
       setState({ user: data.user, profile: data.profile, token: session.token, loading: false });
     } catch {
-      clearSession();
-      setState({ user: null, profile: null, token: null, loading: false });
+      if (!session?.refreshToken) {
+        clearSession();
+        setState({ user: null, profile: null, token: null, loading: false });
+        return;
+      }
+
+      try {
+        const refreshed = await authApi.refreshToken({ refreshToken: session.refreshToken });
+        setSession({
+          token: refreshed.data.accessToken,
+          refreshToken: refreshed.data.refreshToken || session.refreshToken,
+          user: session.user
+        });
+
+        const { data } = await authApi.me();
+        setState({
+          user: data.user,
+          profile: data.profile,
+          token: refreshed.data.accessToken,
+          loading: false
+        });
+      } catch {
+        clearSession();
+        setState({ user: null, profile: null, token: null, loading: false });
+      }
     }
   };
 

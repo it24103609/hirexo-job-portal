@@ -46,7 +46,7 @@ export default function BlogListPage() {
   return (
     <>
       <Seo title="Blog | Hirexo" description="Career tips, hiring advice, and employer branding updates." />
-      <section className="section-block">
+      <section className="section-block blog-list-page">
         <div className="shell">
           <SectionHeader eyebrow="Blog" title="Articles for candidates and employers" description="Useful SEO content and hiring guidance." />
           {loading ? <Loader label="Loading blog posts..." /> : null}
@@ -63,7 +63,7 @@ export default function BlogListPage() {
             <>
               {featuredPosts.length ? (
                 <>
-                  <h3>Featured Posts</h3>
+                  <h3 className="blog-list-subtitle">Featured Posts</h3>
                   <div className="grid-3 mb-1">
                     {featuredPosts.map((post) => <BlogCard key={`featured-${post.slug || post._id}`} post={post} />)}
                   </div>

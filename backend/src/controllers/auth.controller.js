@@ -255,7 +255,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
     user.passwordResetExpiresAt = expiresAt;
     await user.save({ validateBeforeSave: false });
 
-    await sendEmail({
+    const emailResult = await sendEmail({
       to: user.email,
       subject: 'Reset your Hirexo password',
       text: `Use this link to reset your password: ${resetUrl}. This link expires in ${env.passwordResetExpiresMinutes} minutes.`,
@@ -275,6 +275,14 @@ const forgotPassword = asyncHandler(async (req, res) => {
         </div>
       `
     });
+
+    if (emailResult?.skipped) {
+      user.passwordResetTokenHash = undefined;
+      user.passwordResetExpiresAt = undefined;
+      await user.save({ validateBeforeSave: false });
+
+      throw new AppError('Password reset email could not be sent right now. Please try again later.', 503);
+    }
   }
 
   res.json(apiResponse({

@@ -6,6 +6,9 @@ const apiResponse = require('../utils/apiResponse');
 const CandidateProfile = require('../models/CandidateProfile');
 const Application = require('../models/Application');
 const Job = require('../models/Job');
+const Offer = require('../models/Offer');
+const { createNotification } = require('../services/notification.service');
+const { ensureInterviewRounds, syncLegacyInterviewFields } = require('../utils/interviewWorkflow');
 
 function normalizeArray(value) {
   if (Array.isArray(value)) {
@@ -132,9 +135,67 @@ const listApplications = asyncHandler(async (req, res) => {
     .populate('employerUser', 'name email')
     .sort({ createdAt: -1 });
 
+  const offers = await Offer.find({ candidateUser: req.user._id })
+    .select('application title salary currency status joiningDate notes preparedByName sentAt respondedAt')
+    .lean();
+  const offerMap = new Map(offers.map((offer) => [String(offer.application), offer]));
+
+  const data = applications.map((application) => {
+    ensureInterviewRounds(application);
+    syncLegacyInterviewFields(application);
+    const item = application.toObject();
+    item.offer = offerMap.get(String(application._id)) || null;
+    return item;
+  });
+
   res.json(apiResponse({
     message: 'Candidate applications fetched successfully',
-    data: applications
+    data
+  }));
+});
+
+const listOffers = asyncHandler(async (req, res) => {
+  const offers = await Offer.find({ candidateUser: req.user._id })
+    .populate('job', 'title companyName')
+    .populate('application', 'status createdAt')
+    .sort({ updatedAt: -1, createdAt: -1 });
+
+  res.json(apiResponse({
+    message: 'Candidate offers fetched successfully',
+    data: offers
+  }));
+});
+
+const respondToOffer = asyncHandler(async (req, res) => {
+  const offer = await Offer.findOne({ _id: req.params.offerId, candidateUser: req.user._id });
+  if (!offer) {
+    throw new AppError('Offer not found', 404);
+  }
+
+  const status = String(req.body.status || '').trim().toLowerCase();
+  if (!['accepted', 'declined'].includes(status)) {
+    throw new AppError('Offer response must be accepted or declined', 400);
+  }
+
+  offer.status = status;
+  offer.respondedAt = new Date();
+  await offer.save();
+
+  await createNotification({
+    userId: offer.employerUser,
+    type: 'status_update',
+    title: 'Candidate responded to offer',
+    message: `A candidate ${status} an offer for ${offer.title || 'a role'}.`,
+    metadata: {
+      offerId: offer._id,
+      applicationId: offer.application,
+      status
+    }
+  });
+
+  res.json(apiResponse({
+    message: 'Offer response saved successfully',
+    data: offer
   }));
 });
 
@@ -177,6 +238,83 @@ const unsaveJob = asyncHandler(async (req, res) => {
   }));
 });
 
+const uploadProfilePicture = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    throw new AppError('Profile picture file is required', 400);
+  }
+
+  const profile = await CandidateProfile.findOneAndUpdate(
+    { user: req.user._id },
+    { $setOnInsert: { user: req.user._id, savedJobs: [] } },
+    { new: true, upsert: true }
+  );
+
+  if (profile.profilePicture?.filePath && fs.existsSync(profile.profilePicture.filePath)) {
+    fs.unlinkSync(profile.profilePicture.filePath);
+  }
+
+  profile.profilePicture = {
+    fileName: req.file.originalname,
+    filePath: req.file.path,
+    mimeType: req.file.mimetype,
+    size: req.file.size,
+    uploadedAt: new Date()
+  };
+
+  await profile.save();
+
+  res.status(201).json(apiResponse({
+    message: 'Profile picture uploaded successfully',
+    data: profile.profilePicture
+  }));
+});
+
+const getProfilePicture = asyncHandler(async (req, res) => {
+  const profile = await CandidateProfile.findOne({ user: req.user._id }).select('profilePicture');
+
+  res.json(apiResponse({
+    message: 'Profile picture fetched successfully',
+    data: profile?.profilePicture || null
+  }));
+});
+
+const downloadProfilePicture = asyncHandler(async (req, res) => {
+  const profile = await CandidateProfile.findOne({ user: req.user._id }).select('profilePicture');
+  if (!profile?.profilePicture?.filePath || !fs.existsSync(profile.profilePicture.filePath)) {
+    throw new AppError('Profile picture not found', 404);
+  }
+
+  res.download(path.resolve(profile.profilePicture.filePath), profile.profilePicture.fileName);
+});
+
+const deleteProfilePicture = asyncHandler(async (req, res) => {
+  const profile = await CandidateProfile.findOne({ user: req.user._id });
+  if (!profile || !profile.profilePicture) {
+    throw new AppError('Profile picture not found', 404);
+  }
+
+  if (profile.profilePicture.filePath && fs.existsSync(profile.profilePicture.filePath)) {
+    fs.unlinkSync(profile.profilePicture.filePath);
+  }
+
+  profile.profilePicture = undefined;
+  await profile.save();
+
+  res.json(apiResponse({
+    message: 'Profile picture deleted successfully'
+  }));
+});
+
+const viewProfilePicture = asyncHandler(async (req, res) => {
+  const profile = await CandidateProfile.findOne({ user: req.user._id }).select('profilePicture');
+  if (!profile?.profilePicture?.filePath || !fs.existsSync(profile.profilePicture.filePath)) {
+    throw new AppError('Profile picture not found', 404);
+  }
+
+  res.setHeader('Content-Type', profile.profilePicture.mimeType);
+  res.sendFile(path.resolve(profile.profilePicture.filePath));
+});
+
 module.exports = {
   getProfile,
   upsertProfile,
@@ -184,7 +322,14 @@ module.exports = {
   getResume,
   downloadResume,
   deleteResume,
+  uploadProfilePicture,
+  getProfilePicture,
+  viewProfilePicture,
+  downloadProfilePicture,
+  deleteProfilePicture,
   listApplications,
+  listOffers,
+  respondToOffer,
   listSavedJobs,
   saveJob,
   unsaveJob

@@ -1,4 +1,4 @@
-const { resumeUpload } = require('../config/multer');
+const { resumeUpload, profilePictureUpload } = require('../config/multer');
 const AppError = require('../utils/AppError');
 
 function handleUploadErrors(err, req, res, next) {
@@ -6,7 +6,7 @@ function handleUploadErrors(err, req, res, next) {
     return next();
   }
 
-  if (err.message === 'Only PDF files are allowed') {
+  if (err.message.includes('Only PDF files are allowed') || err.message.includes('Only image files')) {
     return next(new AppError(err.message, 400));
   }
 
@@ -19,5 +19,6 @@ function handleUploadErrors(err, req, res, next) {
 
 module.exports = {
   resumeUpload,
+  profilePictureUpload,
   handleUploadErrors
 };

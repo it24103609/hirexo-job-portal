@@ -65,7 +65,7 @@ function getRelativeTime(value) {
 
 function getBadgeTone(status) {
   const normalized = String(status || '').toLowerCase();
-  if (['approved', 'published', 'active', 'shortlisted', 'replied', 'read'].includes(normalized)) return 'success';
+  if (['approved', 'published', 'active', 'shortlisted', 'hired', 'replied', 'read'].includes(normalized)) return 'success';
   if (['rejected', 'blocked'].includes(normalized)) return 'danger';
   return 'neutral';
 }
@@ -146,25 +146,27 @@ export default function AdminDashboard() {
     jobs: [],
     jobCounts: { pending: 0, approved: 0, rejected: 0, all: 0 },
     applications: [],
-    applicationCounts: { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, all: 0 },
+    applicationCounts: { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, hired: 0, all: 0 },
     contacts: [],
     contactStats: { new: 0, read: 0, replied: 0, total: 0 },
     notifications: [],
     unreadNotifications: 0,
     blogs: [],
+    offers: [],
     reports: { candidateRegistrations: { total: 0, thisMonth: 0, last30Days: [] } }
   });
   const [actioningJobId, setActioningJobId] = useState('');
 
   const loadDashboard = async () => {
-    const [dashboardRes, jobsRes, applicationsRes, contactsRes, notificationsRes, blogsRes, reportsRes] = await Promise.allSettled([
+    const [dashboardRes, jobsRes, applicationsRes, contactsRes, notificationsRes, blogsRes, reportsRes, offersRes] = await Promise.allSettled([
       adminApi.dashboard(),
       adminApi.pendingJobs(),
       adminApi.applications({ status: 'all' }),
       contactApi.list({ limit: 5 }),
       notificationsApi.mine({ limit: 5 }),
       blogApi.listAdmin(),
-      adminApi.reports()
+      adminApi.reports(),
+      adminApi.offers()
     ]);
 
     setState({
@@ -174,13 +176,14 @@ export default function AdminDashboard() {
       jobCounts: jobsRes.status === 'fulfilled' ? jobsRes.value.meta?.counts || { pending: 0, approved: 0, rejected: 0, all: 0 } : { pending: 0, approved: 0, rejected: 0, all: 0 },
       applications: applicationsRes.status === 'fulfilled' ? applicationsRes.value.data || [] : [],
       applicationCounts: applicationsRes.status === 'fulfilled'
-        ? applicationsRes.value.meta?.counts || { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, all: 0 }
-        : { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, all: 0 },
+        ? applicationsRes.value.meta?.counts || { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, hired: 0, all: 0 }
+        : { pending: 0, reviewed: 0, shortlisted: 0, rejected: 0, interview_scheduled: 0, hired: 0, all: 0 },
       contacts: contactsRes.status === 'fulfilled' ? contactsRes.value.data || [] : [],
       contactStats: contactsRes.status === 'fulfilled' ? contactsRes.value.stats || { new: 0, read: 0, replied: 0, total: 0 } : { new: 0, read: 0, replied: 0, total: 0 },
       notifications: notificationsRes.status === 'fulfilled' ? notificationsRes.value.data || [] : [],
       unreadNotifications: notificationsRes.status === 'fulfilled' ? notificationsRes.value.meta?.unreadCount || 0 : 0,
       blogs: blogsRes.status === 'fulfilled' ? blogsRes.value.data || [] : [],
+      offers: offersRes.status === 'fulfilled' ? offersRes.value.data || [] : [],
       reports: reportsRes.status === 'fulfilled'
         ? reportsRes.value.data || { candidateRegistrations: { total: 0, thisMonth: 0, last30Days: [] } }
         : { candidateRegistrations: { total: 0, thisMonth: 0, last30Days: [] } }
@@ -220,6 +223,7 @@ export default function AdminDashboard() {
   const quickActions = [
     { label: 'Manage Users', to: '/admin/users', icon: Users, description: 'Review employers, candidates, and account access.' },
     { label: 'Add Job', to: '/admin/jobs', icon: BriefcaseBusiness, description: 'Open job moderation and queue review tasks.' },
+    { label: 'New Chat', to: '/admin/messages', icon: Mail, description: 'Start a direct chat with a candidate or employer.' },
     { label: 'Review Inquiries', to: '/admin/inquiries', icon: Mail, description: 'Reply to leads and clear new contact requests.' },
     { label: 'Publish Blog', to: '/admin/blogs/new', icon: PencilLine, description: 'Create or publish editorial updates.' },
     { label: 'View Reports', to: '/admin/reports', icon: FileDown, description: 'Inspect platform analytics and reporting views.' }
@@ -272,6 +276,13 @@ export default function AdminDashboard() {
       hint: 'Unread platform alerts',
       trend: `${notifications.length} latest updates ready to review`,
       icon: Bell
+    },
+    {
+      label: 'Offers',
+      value: state.offers.length,
+      hint: `${state.offers.filter((offer) => offer.status === 'sent').length} pending responses`,
+      trend: `${state.offers.filter((offer) => offer.status === 'accepted').length} accepted so far`,
+      icon: FileText
     }
   ];
 
@@ -316,6 +327,10 @@ export default function AdminDashboard() {
               <FileDown size={16} />
               Export Report
             </Button>
+            <Button as={Link} to="/admin/messages" size="sm" variant="ghost">
+              <Mail size={16} />
+              New Chat
+            </Button>
             <Button as={Link} to="/admin/notifications" size="sm">
               <Bell size={16} />
               View Notifications
@@ -334,6 +349,7 @@ export default function AdminDashboard() {
           <span><Sparkles size={14} /> {metrics.activeJobs} live jobs</span>
           <span><CircleAlert size={14} /> {metrics.pendingJobs} pending reviews</span>
           <span><CheckCheck size={14} /> {state.applicationCounts.reviewed || 0} reviewed applications</span>
+          <span><Sparkles size={14} /> {state.applicationCounts.hired || 0} hired</span>
         </div>
       </section>
 
@@ -493,6 +509,9 @@ export default function AdminDashboard() {
                 <div className="admin-mini-meta">
                   <Badge tone={getBadgeTone(application.status)}>{application.status || 'pending'}</Badge>
                   <small>{formatDate(application.createdAt)}</small>
+                  <Link to={`/admin/messages?applicationId=${application._id}&recipientRole=candidate`} className="link-button">
+                    Chat <ArrowRight size={14} />
+                  </Link>
                 </div>
               </article>
             )) : (

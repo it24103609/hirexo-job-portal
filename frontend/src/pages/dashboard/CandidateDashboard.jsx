@@ -10,6 +10,8 @@ import { applicationsApi } from '../../services/applications.api';
 import { jobsApi } from '../../services/jobs.api';
 import Loader from '../../components/ui/Loader';
 import { formatDate } from '../../utils/formatters';
+import { useCandidateProfilePicture } from '../../hooks/useCandidateProfilePicture';
+import { useAuth } from '../../contexts/AuthContext';
 
 function getProfileCompletion(profile) {
   if (!profile) return 15;
@@ -33,6 +35,7 @@ function getAppTone(status = '') {
 }
 
 export default function CandidateDashboard() {
+  const { user } = useAuth();
   const [state, setState] = useState({
     loading: true,
     profile: null,
@@ -66,16 +69,31 @@ export default function CandidateDashboard() {
       }));
   }, []);
 
-  if (state.loading) return <Loader label="Loading candidate dashboard..." />;
-
   const completion = getProfileCompletion(state.profile);
   const recentApplications = state.applications.slice(0, 4);
   const recommendedJobs = state.recommendedJobs.slice(0, 4);
+  const profileImageUrl = useCandidateProfilePicture(state.profile?.profilePicture);
+  const displayName = user?.name || 'Candidate';
+
+  if (state.loading) return <Loader label="Loading candidate dashboard..." />;
 
   return (
     <>
       <Seo title="Candidate Dashboard | Hirexo" description="Track profile completeness, saved jobs, and applications." />
-      <DashboardHeader title="Candidate Dashboard" description="Track your progress, applications, and high-fit opportunities in one workspace." />
+      <DashboardHeader
+        title="Candidate Dashboard"
+        description="Track your progress, applications, and high-fit opportunities in one workspace."
+        actions={(
+          <>
+            <Link className="btn btn-secondary btn-sm" to="/candidate/applications">
+              <Mail size={14} /> Open Messages
+            </Link>
+            <Link className="btn btn-primary btn-sm" to="/jobs">
+              <BriefcaseBusiness size={14} /> Browse Jobs
+            </Link>
+          </>
+        )}
+      />
 
       <div className="candidate-stat-grid">
         <article className="candidate-stat-card">
@@ -109,12 +127,24 @@ export default function CandidateDashboard() {
       </div>
 
       <div className="candidate-dashboard-grid mt-1">
-        <Card className="candidate-completion-card">
+        <Card className="candidate-completion-card candidate-dashboard-profile-card">
           <div className="panel-head">
             <h3>Profile completion</h3>
             <Badge tone={completion >= 80 ? 'success' : 'neutral'}>{completion >= 80 ? 'Strong' : 'In progress'}</Badge>
           </div>
-          <p>{state.profile?.headline || 'Complete your headline, summary, and skills to increase shortlisting quality.'}</p>
+          <div className="candidate-dashboard-profile-head">
+            <div className="candidate-dashboard-profile-visual" aria-hidden="true">
+              {profileImageUrl ? (
+                <img src={profileImageUrl} alt="" />
+              ) : (
+                <span>{displayName.slice(0, 1).toUpperCase()}</span>
+              )}
+            </div>
+            <div>
+              <strong>{displayName}</strong>
+              <p>{state.profile?.headline || 'Complete your headline, summary, and skills to increase shortlisting quality.'}</p>
+            </div>
+          </div>
           <div className="candidate-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={completion}>
             <span style={{ width: `${completion}%` }} />
           </div>
@@ -141,6 +171,9 @@ export default function CandidateDashboard() {
                   <div className="candidate-mini-meta">
                     <Badge tone={getAppTone(item.status)}>{item.status || 'applied'}</Badge>
                     <small><Clock3 size={13} /> {formatDate(item.createdAt)}</small>
+                    <Link to={`/candidate/applications?applicationId=${item._id}&recipientRole=employer`} className="link-button">
+                      Message <ArrowRight size={14} />
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -181,6 +214,9 @@ export default function CandidateDashboard() {
           <div className="candidate-quick-actions">
             <Link className="btn btn-secondary btn-sm" to="/candidate/applications">
               <BriefcaseBusiness size={14} /> My applications
+            </Link>
+            <Link className="btn btn-secondary btn-sm" to="/candidate/applications">
+              <Mail size={14} /> New chat
             </Link>
             <Link className="btn btn-secondary btn-sm" to="/candidate/notifications">
               <Bell size={14} /> Messages & alerts

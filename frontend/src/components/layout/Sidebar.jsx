@@ -18,28 +18,49 @@ import {
   Mail,
   BarChart3,
   Sparkles,
-  X
+  X,
+  ListChecks,
+  CalendarDays,
+  HandCoins,
+  UserPlus
 } from 'lucide-react';
 import { siteContent } from '../../data/siteContent';
 import { useAuth } from '../../contexts/AuthContext';
 import { candidateApi } from '../../services/candidate.api';
 import BrandIdentity from './BrandIdentity';
+import { useCandidateProfilePicture } from '../../hooks/useCandidateProfilePicture';
 
 const iconByPath = {
   '/candidate/dashboard': LayoutDashboard,
   '/candidate/profile': User,
   '/candidate/resume': FileText,
   '/candidate/applications': BriefcaseBusiness,
+  '/candidate/interviews': CalendarDays,
+  '/candidate/messages': Mail,
   '/candidate/saved-jobs': Bookmark,
   '/candidate/notifications': Bell,
+  '/employer/overview': LayoutDashboard,
   '/employer/dashboard': LayoutDashboard,
   '/employer/company-profile': Building2,
   '/employer/jobs': FolderKanban,
+  '/employer/interviews': CalendarDays,
+  '/employer/activity-calendar': CalendarDays,
+  '/employer/approvals': ShieldCheck,
+  '/employer/allocations': Users,
+  '/employer/reports-center': BarChart3,
+  '/employer/policies': FileText,
+  '/employer/talent-pool': UserPlus,
+  '/employer/team': Users,
+  '/employer/offers': HandCoins,
   '/employer/jobs/new': PlusSquare,
+  '/employer/messages': Mail,
   '/employer/notifications': Bell,
+  '/admin/overview': LayoutDashboard,
   '/admin/dashboard': LayoutDashboard,
   '/admin/users': Users,
   '/admin/jobs': BriefcaseBusiness,
+  '/admin/interviews': CalendarDays,
+  '/admin/messages': Mail,
   '/admin/master-data': Database,
   '/admin/blogs': PencilLine,
   '/admin/inquiries': Mail,
@@ -67,12 +88,20 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
   const links = siteContent.dashboardLinks[role] || [];
   const { user } = useAuth();
   const [candidateProfile, setCandidateProfile] = useState(null);
+  const candidateImageUrl = useCandidateProfilePicture(candidateProfile?.profilePicture);
 
   useEffect(() => {
     if (role !== 'candidate') return;
-    candidateApi.profile()
-      .then((res) => setCandidateProfile(res.data || null))
-      .catch(() => setCandidateProfile(null));
+
+    const loadCandidateProfile = () => {
+      candidateApi.profile()
+        .then((res) => setCandidateProfile(res.data || null))
+        .catch(() => setCandidateProfile(null));
+    };
+
+    loadCandidateProfile();
+    window.addEventListener('candidate-profile-updated', loadCandidateProfile);
+    return () => window.removeEventListener('candidate-profile-updated', loadCandidateProfile);
   }, [role]);
 
   const candidateCompletion = useMemo(() => computeCandidateCompletion(candidateProfile), [candidateProfile]);
@@ -87,17 +116,57 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
     return [
       {
         label: 'Overview',
-        links: links.filter((link) => ['/admin/dashboard', '/admin/reports', '/admin/notifications'].includes(link.to))
+        links: links.filter((link) => ['/admin/overview', '/admin/dashboard', '/admin/messages', '/admin/reports', '/admin/notifications'].includes(link.to))
       },
       {
         label: 'Operations',
-        links: links.filter((link) => ['/admin/users', '/admin/jobs', '/admin/inquiries'].includes(link.to))
+        links: links.filter((link) => ['/admin/users', '/admin/jobs', '/admin/interviews', '/admin/inquiries'].includes(link.to))
       },
       {
         label: 'Content & Setup',
         links: links.filter((link) => ['/admin/blogs', '/admin/master-data'].includes(link.to))
       }
     ].filter((group) => group.links.length);
+  }, [links, role]);
+  const employerLinks = useMemo(() => {
+    if (role !== 'employer') return [];
+
+    return [
+      { label: 'Overview', to: '/employer/overview', icon: LayoutDashboard },
+      { label: 'Dashboard', to: '/employer/dashboard', icon: LayoutDashboard },
+      { label: 'Tracking', to: '/employer/jobs', icon: ListChecks },
+      { label: 'Interviews', to: '/employer/interviews', icon: CalendarDays },
+      { label: 'Calendar', to: '/employer/activity-calendar', icon: CalendarDays },
+      { label: 'Approvals', to: '/employer/approvals', icon: ShieldCheck },
+      { label: 'Allocations', to: '/employer/allocations', icon: Users },
+      { label: 'Reports', to: '/employer/reports-center', icon: BarChart3 },
+      { label: 'Policies', to: '/employer/policies', icon: FileText },
+      { label: 'Company Profile', to: '/employer/company-profile', icon: CalendarDays },
+      { label: 'Talent Pool', to: '/employer/talent-pool', icon: UserPlus },
+      { label: 'Hiring Team', to: '/employer/team', icon: Users },
+      { label: 'Offers', to: '/employer/offers', icon: HandCoins },
+      { label: 'Post Job', to: '/employer/jobs/new', icon: PlusSquare },
+      { label: 'Messages', to: '/employer/messages', icon: Mail },
+      { label: 'Notifications', to: '/employer/notifications', icon: Bell }
+    ].filter((entry) => {
+      if (entry.label === 'Tracking') return links.some((link) => link.to === '/employer/jobs');
+      if (entry.label === 'Interviews') return links.some((link) => link.to === '/employer/interviews');
+      if (entry.label === 'Calendar') return links.some((link) => link.to === '/employer/activity-calendar');
+      if (entry.label === 'Approvals') return links.some((link) => link.to === '/employer/approvals');
+      if (entry.label === 'Allocations') return links.some((link) => link.to === '/employer/allocations');
+      if (entry.label === 'Reports') return links.some((link) => link.to === '/employer/reports-center');
+      if (entry.label === 'Policies') return links.some((link) => link.to === '/employer/policies');
+      if (entry.label === 'Company Profile') return links.some((link) => link.to === '/employer/company-profile');
+      if (entry.label === 'Post Job') return links.some((link) => link.to === '/employer/jobs/new');
+      if (entry.label === 'Talent Pool') return links.some((link) => link.to === '/employer/talent-pool');
+      if (entry.label === 'Hiring Team') return links.some((link) => link.to === '/employer/team');
+      if (entry.label === 'Offers') return links.some((link) => link.to === '/employer/offers');
+      if (entry.label === 'Messages') return links.some((link) => link.to === '/employer/messages');
+      if (entry.label === 'Notifications') {
+        return links.some((link) => link.to === '/employer/notifications');
+      }
+      return links.some((link) => link.to === entry.to);
+    });
   }, [links, role]);
 
   return (
@@ -137,7 +206,9 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
       {role === 'candidate' ? (
         <div className="candidate-mini-card">
           <div className="candidate-mini-top">
-            <div className="candidate-avatar" aria-hidden="true">{initials}</div>
+            <div className="candidate-avatar" aria-hidden="true">
+              {candidateImageUrl ? <img src={candidateImageUrl} alt="" className="candidate-avatar-image" /> : initials}
+            </div>
             <div>
               <strong>{user?.name || 'Candidate'}</strong>
               <p>{user?.email || 'candidate@hirexo.com'}</p>
@@ -180,6 +251,26 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
               </nav>
             </div>
           ))}
+        </div>
+      ) : role === 'employer' ? (
+        <div className="sidebar-group-stack employer-sidebar-stack">
+          <nav className="sidebar-nav employer-sidebar-nav-flat" aria-label="Employer navigation">
+            {employerLinks.map((link) => (
+              <NavLink
+                key={`${link.label}-${link.to}`}
+                to={link.to}
+                end={link.to === `/${role}/dashboard`}
+                className={({ isActive }) => `sidebar-link employer-sidebar-link-flat ${isActive ? 'active' : ''}`}
+                onClick={onNavigate}
+              >
+                {(() => {
+                  const Icon = link.icon || iconByPath[link.to] || LayoutDashboard;
+                  return <Icon size={18} className="sidebar-link-icon" aria-hidden="true" />;
+                })()}
+                <span>{link.label}</span>
+              </NavLink>
+            ))}
+          </nav>
         </div>
       ) : (
         <nav className="sidebar-nav">

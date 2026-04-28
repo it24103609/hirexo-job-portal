@@ -1,14 +1,14 @@
 {
-  "name": "my-website",
+  "name": "hirexo-job-portal-workspace",
   "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
+  "description": "Workspace utilities for the Hirexo job portal project.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "frontend:dev": "npm --prefix frontend run dev",
+    "frontend:build": "npm --prefix frontend run build",
+    "backend:dev": "npm --prefix backend run dev",
+    "backend:start": "npm --prefix backend run start"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
   "dependencies": {
     "pdf-parse": "^2.4.5"
   }

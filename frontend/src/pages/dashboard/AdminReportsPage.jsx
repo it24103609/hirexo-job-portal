@@ -7,9 +7,10 @@ import Badge from '../../components/ui/Badge';
 import StatCard from '../../components/ui/StatCard';
 import Loader from '../../components/ui/Loader';
 import EmptyState from '../../components/ui/EmptyState';
+import { toast } from 'react-toastify';
 import { adminApi } from '../../services/admin.api';
 import { formatDate } from '../../utils/formatters';
-import { Users, UserPlus, TrendingUp, Briefcase, CheckCircle, FileText, RefreshCw, BarChart2, PieChart, Calendar, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Users, UserPlus, TrendingUp, Briefcase, FileText, RefreshCw, BarChart2 } from 'lucide-react';
 
 export default function AdminReportsPage() {
   const [loading, setLoading] = useState(true);
@@ -19,22 +20,68 @@ export default function AdminReportsPage() {
     candidateRegistrations: { total: 0, thisMonth: 0, last30Days: [] }
   });
 
+  const loadReports = async () => {
+    setLoading(true);
+    try {
+      const res = await adminApi.reports();
+      setReport(res.data || {
+        applicationsPerJob: [],
+        employerActivity: [],
+        candidateRegistrations: { total: 0, thisMonth: 0, last30Days: [] }
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    adminApi.reports()
-      .then((res) => {
-        setReport(res.data || {
-          applicationsPerJob: [],
-          employerActivity: [],
-          candidateRegistrations: { total: 0, thisMonth: 0, last30Days: [] }
-        });
-      })
-      .finally(() => setLoading(false));
+    loadReports();
   }, []);
 
   const registrationsLast30 = useMemo(
     () => (report.candidateRegistrations?.last30Days || []).reduce((sum, item) => sum + Number(item.count || 0), 0),
     [report.candidateRegistrations]
   );
+  const peakRegistrationDay = useMemo(() => {
+    return (report.candidateRegistrations?.last30Days || []).reduce((best, item) => {
+      if (!best || Number(item.count || 0) > Number(best.count || 0)) return item;
+      return best;
+    }, null);
+  }, [report.candidateRegistrations]);
+  const topJob = useMemo(() => report.applicationsPerJob?.[0] || null, [report.applicationsPerJob]);
+  const topEmployer = useMemo(() => report.employerActivity?.[0] || null, [report.employerActivity]);
+
+  const exportCsv = () => {
+    const lines = [
+      'Section,Field,Value',
+      `Summary,Total Candidates,${report.candidateRegistrations?.total || 0}`,
+      `Summary,New This Month,${report.candidateRegistrations?.thisMonth || 0}`,
+      `Summary,Registrations Last 30 Days,${registrationsLast30}`,
+      `Summary,Tracked Employers,${report.employerActivity?.length || 0}`,
+      `Summary,Tracked Jobs,${report.applicationsPerJob?.length || 0}`
+    ];
+
+    (report.applicationsPerJob || []).forEach((item) => {
+      lines.push(`Applications Per Job,${JSON.stringify(item.title || '')},${item.applications || 0}`);
+    });
+
+    (report.employerActivity || []).forEach((item) => {
+      lines.push(`Employer Activity,${JSON.stringify(item.name || '')},${item.totalApplicationsReceived || 0}`);
+    });
+
+    (report.candidateRegistrations?.last30Days || []).forEach((item) => {
+      lines.push(`Registrations,${item.date},${item.count || 0}`);
+    });
+
+    const blob = new Blob([`${lines.join('\n')}\n`], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `hirexo-reports-${new Date().toISOString().slice(0, 10)}.csv`;
+    anchor.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast.success('Report exported as CSV');
+  };
 
   if (loading) return <Loader label="Loading analytics dashboard..." />;
 
@@ -55,9 +102,10 @@ export default function AdminReportsPage() {
         description="Track applications, employer activity, and candidate registration trends."
         actions={
           <div style={{ display: 'flex', gap: 10 }}>
-            <Button variant="ghost"><Calendar size={16} style={{marginRight: 6}} /> Date Range</Button>
-            <Button variant="ghost"><RefreshCw size={16} style={{marginRight: 6}} /> Refresh</Button>
-            <Button variant="primary"><BarChart2 size={16} style={{marginRight: 6}} /> Export Report</Button>
+            <Button variant="ghost" onClick={loadReports}><RefreshCw size={16} style={{marginRight: 6}} /> Refresh</Button>
+            <Button variant="primary" onClick={exportCsv}>
+              <BarChart2 size={16} style={{marginRight: 6}} /> Export Report
+            </Button>
           </div>
         }
       />
@@ -69,26 +117,29 @@ export default function AdminReportsPage() {
         ))}
       </div>
 
-      {/* Charts section (placeholder) */}
       <div className="form-grid" style={{ gridTemplateColumns: '1.2fr 1fr', gap: '2.2rem', marginBottom: '2.2rem' }}>
-        <Card style={{ minHeight: 260, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-            <BarChart2 size={22} style={{ color: 'var(--primary)' }} />
-            <h3 style={{ margin: 0, fontWeight: 800, fontSize: '1.13rem' }}>Candidate Registrations Over Time</h3>
+        <Card style={{ minHeight: 260 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <TrendingUp size={22} style={{ color: 'var(--primary)' }} />
+            <h3 style={{ margin: 0, fontWeight: 800, fontSize: '1.13rem' }}>Registration Highlights</h3>
           </div>
-          <div style={{ width: '100%', height: 180, background: 'linear-gradient(90deg, #e8f7ee 0%, #c6f0d6 100%)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)', fontSize: 18 }}>
-            {/* Chart placeholder */}
-            <span>Chart coming soon</span>
+          <div className="candidate-summary-points">
+            <p><strong>Total candidates:</strong> {report.candidateRegistrations?.total || 0}</p>
+            <p><strong>Registered this month:</strong> {report.candidateRegistrations?.thisMonth || 0}</p>
+            <p><strong>Last 30 days total:</strong> {registrationsLast30}</p>
+            <p><strong>Peak day:</strong> {peakRegistrationDay ? `${peakRegistrationDay.date} (${peakRegistrationDay.count})` : 'No recent registrations'}</p>
           </div>
         </Card>
-        <Card style={{ minHeight: 260, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-            <PieChart size={22} style={{ color: 'var(--primary)' }} />
-            <h3 style={{ margin: 0, fontWeight: 800, fontSize: '1.13rem' }}>Application Status Distribution</h3>
+        <Card style={{ minHeight: 260 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+            <Briefcase size={22} style={{ color: 'var(--primary)' }} />
+            <h3 style={{ margin: 0, fontWeight: 800, fontSize: '1.13rem' }}>Top Performers</h3>
           </div>
-          <div style={{ width: '100%', height: 180, background: 'linear-gradient(90deg, #e8f7ee 0%, #c6f0d6 100%)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted)', fontSize: 18 }}>
-            {/* Chart placeholder */}
-            <span>Chart coming soon</span>
+          <div className="candidate-summary-points">
+            <p><strong>Top job:</strong> {topJob ? `${topJob.title} (${topJob.applications} applications)` : 'No job data yet'}</p>
+            <p><strong>Top employer:</strong> {topEmployer ? `${topEmployer.name} (${topEmployer.totalApplicationsReceived} applications)` : 'No employer data yet'}</p>
+            <p><strong>Tracked employers:</strong> {report.employerActivity?.length || 0}</p>
+            <p><strong>Tracked jobs:</strong> {report.applicationsPerJob?.length || 0}</p>
           </div>
         </Card>
       </div>
