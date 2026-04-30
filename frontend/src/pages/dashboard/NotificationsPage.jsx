@@ -54,8 +54,6 @@ export default function NotificationsPage() {
     loadNotifications();
   }, []);
 
-  if (state.loading) return <Loader label="Loading notifications..." />;
-
   const iconByCategory = {
     interviews: CalendarClock,
     applications: BriefcaseBusiness,
@@ -78,6 +76,8 @@ export default function NotificationsPage() {
     () => normalized.filter((item) => item.priority === 'high' && !item.isRead).length,
     [normalized]
   );
+
+  if (state.loading) return <Loader label="Loading notifications..." />;
 
   return (
     <>

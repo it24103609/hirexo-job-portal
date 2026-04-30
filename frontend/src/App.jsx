@@ -34,6 +34,7 @@ const EmployerOverviewPage = lazy(() => import('./pages/dashboard/EmployerOvervi
 const EmployerCompanyProfilePage = lazy(() => import('./pages/dashboard/EmployerCompanyProfilePage'));
 const EmployerJobsPage = lazy(() => import('./pages/dashboard/EmployerJobsPage'));
 const EmployerJobFormPage = lazy(() => import('./pages/dashboard/EmployerJobFormPage'));
+const EmployerCandidatesPage = lazy(() => import('./pages/dashboard/EmployerCandidatesPage'));
 const EmployerApplicantsPage = lazy(() => import('./pages/dashboard/EmployerApplicantsPage'));
 const EmployerCandidateDetailPage = lazy(() => import('./pages/dashboard/EmployerCandidateDetailPage'));
 const EmployerInterviewsPage = lazy(() => import('./pages/dashboard/EmployerInterviewsPage'));
@@ -102,6 +103,7 @@ export default function App() {
               <Route path="employer/dashboard" element={<EmployerDashboard />} />
               <Route path="employer/company-profile" element={<EmployerCompanyProfilePage />} />
               <Route path="employer/jobs" element={<EmployerJobsPage />} />
+              <Route path="employer/candidates" element={<EmployerCandidatesPage />} />
               <Route path="employer/interviews" element={<EmployerInterviewsPage />} />
               <Route path="employer/activity-calendar" element={<EmployerActivityCalendarPage />} />
               <Route path="employer/approvals" element={<EmployerApprovalsPage />} />

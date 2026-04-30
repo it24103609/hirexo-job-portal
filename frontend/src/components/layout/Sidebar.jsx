@@ -22,7 +22,8 @@ import {
   ListChecks,
   CalendarDays,
   HandCoins,
-  UserPlus
+  UserPlus,
+  ChevronDown
 } from 'lucide-react';
 import { siteContent } from '../../data/siteContent';
 import { useAuth } from '../../contexts/AuthContext';
@@ -43,6 +44,7 @@ const iconByPath = {
   '/employer/dashboard': LayoutDashboard,
   '/employer/company-profile': Building2,
   '/employer/jobs': FolderKanban,
+  '/employer/candidates': Users,
   '/employer/interviews': CalendarDays,
   '/employer/activity-calendar': CalendarDays,
   '/employer/approvals': ShieldCheck,
@@ -88,6 +90,7 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
   const links = siteContent.dashboardLinks[role] || [];
   const { user } = useAuth();
   const [candidateProfile, setCandidateProfile] = useState(null);
+  const [collapsedEmployerGroups, setCollapsedEmployerGroups] = useState({});
   const candidateImageUrl = useCandidateProfilePicture(candidateProfile?.profilePicture);
 
   useEffect(() => {
@@ -133,25 +136,28 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
 
     return [
       { label: 'Overview', to: '/employer/overview', icon: LayoutDashboard },
-      { label: 'Dashboard', to: '/employer/dashboard', icon: LayoutDashboard },
-      { label: 'Tracking', to: '/employer/jobs', icon: ListChecks },
+      { label: 'Jobs', to: '/employer/jobs', icon: BriefcaseBusiness },
+      { label: 'Candidates', to: '/employer/candidates', icon: Users },
+      { label: 'Assessments', to: '/employer/reports-center', icon: Sparkles },
       { label: 'Interviews', to: '/employer/interviews', icon: CalendarDays },
-      { label: 'Calendar', to: '/employer/activity-calendar', icon: CalendarDays },
+      { label: 'Onboard', to: '/employer/offers', icon: HandCoins },
+      { label: 'People', to: '/employer/team', icon: Users },
+      { label: 'Tracking', to: '/employer/activity-calendar', icon: ListChecks },
       { label: 'Approvals', to: '/employer/approvals', icon: ShieldCheck },
-      { label: 'Allocations', to: '/employer/allocations', icon: Users },
-      { label: 'Reports', to: '/employer/reports-center', icon: BarChart3 },
-      { label: 'Policies', to: '/employer/policies', icon: FileText },
-      { label: 'Company Profile', to: '/employer/company-profile', icon: CalendarDays },
+      { label: 'Allocations', to: '/employer/allocations', icon: FolderKanban },
       { label: 'Talent Pool', to: '/employer/talent-pool', icon: UserPlus },
-      { label: 'Hiring Team', to: '/employer/team', icon: Users },
-      { label: 'Offers', to: '/employer/offers', icon: HandCoins },
+      { label: 'Reports', to: '/employer/reports-center', icon: BarChart3 },
+      { label: 'Company Profile', to: '/employer/company-profile', icon: Building2 },
       { label: 'Post Job', to: '/employer/jobs/new', icon: PlusSquare },
+      { label: 'Policies', to: '/employer/policies', icon: FileText },
       { label: 'Messages', to: '/employer/messages', icon: Mail },
       { label: 'Notifications', to: '/employer/notifications', icon: Bell }
     ].filter((entry) => {
-      if (entry.label === 'Tracking') return links.some((link) => link.to === '/employer/jobs');
+      if (entry.label === 'Jobs') return links.some((link) => link.to === '/employer/jobs');
+      if (entry.label === 'Candidates') return true;
+      if (entry.label === 'Assessments') return links.some((link) => link.to === '/employer/reports-center');
       if (entry.label === 'Interviews') return links.some((link) => link.to === '/employer/interviews');
-      if (entry.label === 'Calendar') return links.some((link) => link.to === '/employer/activity-calendar');
+      if (entry.label === 'Tracking') return links.some((link) => link.to === '/employer/activity-calendar');
       if (entry.label === 'Approvals') return links.some((link) => link.to === '/employer/approvals');
       if (entry.label === 'Allocations') return links.some((link) => link.to === '/employer/allocations');
       if (entry.label === 'Reports') return links.some((link) => link.to === '/employer/reports-center');
@@ -168,6 +174,21 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
       return links.some((link) => link.to === entry.to);
     });
   }, [links, role]);
+  const employerGroups = useMemo(() => {
+    if (role !== 'employer') return [];
+
+    const pick = (labels) => employerLinks.filter((link) => labels.includes(link.label));
+    return [
+      { key: 'overview', label: 'Overview', icon: LayoutDashboard, links: pick(['Overview']) },
+      { key: 'hire', label: 'Hire', icon: ListChecks, links: pick(['Jobs', 'Candidates', 'Assessments', 'Interviews', 'Post Job']) },
+      { key: 'manage', label: 'Manage', icon: Users, links: pick(['Onboard', 'People', 'Tracking', 'Approvals', 'Allocations', 'Talent Pool', 'Reports']) },
+      { key: 'settings', label: 'Settings', icon: ShieldCheck, links: pick(['Company Profile', 'Policies', 'Messages', 'Notifications']) }
+    ].filter((group) => group.links.length);
+  }, [employerLinks, role]);
+
+  const toggleEmployerGroup = (key) => {
+    setCollapsedEmployerGroups((current) => ({ ...current, [key]: !current[key] }));
+  };
 
   return (
     <aside
@@ -254,23 +275,43 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
         </div>
       ) : role === 'employer' ? (
         <div className="sidebar-group-stack employer-sidebar-stack">
-          <nav className="sidebar-nav employer-sidebar-nav-flat" aria-label="Employer navigation">
-            {employerLinks.map((link) => (
-              <NavLink
-                key={`${link.label}-${link.to}`}
-                to={link.to}
-                end={link.to === `/${role}/dashboard`}
-                className={({ isActive }) => `sidebar-link employer-sidebar-link-flat ${isActive ? 'active' : ''}`}
-                onClick={onNavigate}
-              >
-                {(() => {
-                  const Icon = link.icon || iconByPath[link.to] || LayoutDashboard;
-                  return <Icon size={18} className="sidebar-link-icon" aria-hidden="true" />;
-                })()}
-                <span>{link.label}</span>
-              </NavLink>
-            ))}
-          </nav>
+          {employerGroups.map((group) => {
+            const GroupIcon = group.icon;
+            const isCollapsed = collapsedEmployerGroups[group.key];
+            return (
+              <div key={group.key} className={`employer-sidebar-group employer-sidebar-group-${group.key}`}>
+                <button type="button" className="employer-sidebar-toggle" onClick={() => toggleEmployerGroup(group.key)}>
+                  <span className="employer-sidebar-group-head">
+                    <span className="employer-sidebar-group-title">
+                      <GroupIcon size={18} />
+                      <strong>{group.label}</strong>
+                    </span>
+                    <ChevronDown size={16} className={isCollapsed ? 'is-collapsed' : ''} />
+                  </span>
+                </button>
+                {!isCollapsed ? (
+                  <nav className="sidebar-nav employer-sidebar-nav" aria-label={`${group.label} navigation`}>
+                    {group.links.map((link) => (
+                      <NavLink
+                        key={`${link.label}-${link.to}`}
+                        to={link.to}
+                        end={link.to === `/${role}/dashboard` || link.to === '/employer/overview'}
+                        className={({ isActive }) => `sidebar-link employer-sidebar-link ${isActive ? 'active' : ''}`}
+                        onClick={onNavigate}
+                      >
+                        {(() => {
+                          const Icon = link.icon || iconByPath[link.to] || LayoutDashboard;
+                          return <Icon size={18} className="sidebar-link-icon" aria-hidden="true" />;
+                        })()}
+                        <span>{link.label}</span>
+                        {link.label === 'Assessments' ? <span className="employer-sidebar-crown" aria-hidden="true">Premium</span> : null}
+                      </NavLink>
+                    ))}
+                  </nav>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       ) : (
         <nav className="sidebar-nav">

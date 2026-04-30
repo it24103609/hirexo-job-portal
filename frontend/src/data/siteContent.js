@@ -63,6 +63,7 @@ export const siteContent = {
       { label: 'Dashboard', to: '/employer/dashboard' },
       { label: 'Company Profile', to: '/employer/company-profile' },
       { label: 'Manage Jobs', to: '/employer/jobs' },
+      { label: 'Candidates', to: '/employer/candidates' },
       { label: 'Interviews', to: '/employer/interviews' },
       { label: 'Hiring Calendar', to: '/employer/activity-calendar' },
       { label: 'Approvals', to: '/employer/approvals' },

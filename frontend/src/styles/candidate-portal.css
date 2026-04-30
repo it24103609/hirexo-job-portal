@@ -2029,6 +2029,16 @@
   background: rgba(26, 138, 86, 0.14);
 }
 
+.employer-sidebar-crown {
+  margin-left: auto;
+  border-radius: 999px;
+  padding: 0.14rem 0.42rem;
+  background: rgba(245, 166, 35, 0.14);
+  color: #a66500;
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
 .employer-sidebar-toggle {
   width: 100%;
   padding: 0.14rem;
@@ -2049,6 +2059,262 @@
   max-width: 66ch;
   color: #587266;
   line-height: 1.62;
+}
+
+.rooster-page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0 1.25rem;
+  border-bottom: 1px solid rgba(22, 114, 74, 0.13);
+}
+
+.rooster-page-head > div {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.rooster-page-head h1 {
+  margin: 0;
+  color: #102f22;
+  font-size: clamp(2rem, 4vw, 2.7rem);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.rooster-page-head span {
+  color: #485d54;
+  font-weight: 700;
+}
+
+.rooster-create-button {
+  border-radius: 8px;
+  min-height: 48px;
+  padding-inline: 1.3rem;
+  background: #2e8f79;
+  box-shadow: none;
+}
+
+.rooster-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.5rem 0 1rem;
+  border-bottom: 1px solid rgba(22, 114, 74, 0.1);
+}
+
+.rooster-search-field {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: 1 1 310px;
+  min-height: 52px;
+  border: 1px solid rgba(47, 75, 61, 0.16);
+  border-radius: 8px;
+  background: #fff;
+  padding: 0 1rem;
+}
+
+.rooster-search-field svg {
+  color: #a9b5ae;
+  flex-shrink: 0;
+}
+
+.rooster-search-field input {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  outline: 0;
+  color: #172d24;
+  background: transparent;
+  font-size: 1rem;
+}
+
+.rooster-search-field input::placeholder {
+  color: #bdc8c2;
+}
+
+.rooster-select {
+  min-width: 150px;
+  min-height: 52px;
+  border-radius: 8px;
+  border-color: rgba(47, 75, 61, 0.16);
+  color: #1f342b;
+  background: #fff;
+  font-weight: 600;
+}
+
+.rooster-status-select {
+  border-color: rgba(46, 143, 121, 0.55);
+  color: #2e8f79;
+}
+
+.rooster-filter-row .field {
+  gap: 0;
+}
+
+.rooster-clear-button {
+  border: 0;
+  background: transparent;
+  color: #7c8984;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.rooster-view-toggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  white-space: nowrap;
+}
+
+.rooster-view-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 38px;
+  border: 0;
+  background: transparent;
+  color: #77827d;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.rooster-view-toggle button.active {
+  color: #2e8f79;
+}
+
+.rooster-job-list {
+  display: grid;
+  gap: 1.05rem;
+  padding-top: 1.35rem;
+}
+
+.rooster-job-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, auto);
+  gap: 1rem;
+  align-items: center;
+  min-height: 96px;
+  border: 1px solid rgba(47, 75, 61, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.2rem 1.45rem;
+  box-shadow: none;
+}
+
+.rooster-job-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  color: #66736d;
+  font-size: 1.02rem;
+}
+
+.rooster-job-main > svg {
+  color: #2e8f79;
+  flex-shrink: 0;
+}
+
+.rooster-job-main strong {
+  color: #278473;
+  font-size: 1.04rem;
+  min-width: min(310px, 36%);
+}
+
+.rooster-job-main span:not(.badge) {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.rooster-job-main span:not(.badge)::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: #a8b3ad;
+}
+
+.rooster-job-counts {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  color: #536760;
+  text-align: right;
+}
+
+.rooster-job-counts strong {
+  width: 100%;
+  color: #ff6932;
+  font-size: 1.02rem;
+}
+
+.rooster-job-counts span {
+  color: #63746d;
+  font-weight: 700;
+}
+
+.rooster-table-card {
+  padding-top: 1.2rem;
+}
+
+.rooster-table-card .table-wrap {
+  border-radius: 8px;
+  border-color: rgba(47, 75, 61, 0.12);
+  box-shadow: none;
+}
+
+.rooster-table-card .table th {
+  color: #273d33;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.9rem;
+  background: rgba(250, 252, 251, 0.92);
+}
+
+.rooster-table-card .table td {
+  color: #4b5f56;
+}
+
+.rooster-candidate-table .badge-neutral {
+  background: rgba(255, 214, 120, 0.18);
+  color: #d09a22;
+}
+
+.rooster-candidate-link {
+  color: #2e8f79;
+  font-weight: 700;
+}
+
+.rooster-table-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.rooster-icon-link {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(46, 143, 121, 0.2);
+  border-radius: 8px;
+  background: rgba(46, 143, 121, 0.08);
+  color: #2e8f79;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
 }
 
 .employer-hero-strip {
@@ -3023,6 +3289,15 @@
   .employer-kanban-board {
     grid-template-columns: repeat(3, minmax(260px, 1fr));
   }
+
+  .rooster-job-row {
+    grid-template-columns: 1fr;
+  }
+
+  .rooster-job-counts {
+    justify-content: flex-start;
+    text-align: left;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -3255,6 +3530,49 @@
 
   .overview-card-tools {
     width: 100%;
+  }
+
+  .rooster-page-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rooster-create-button {
+    width: 100%;
+  }
+
+  .rooster-filter-row {
+    align-items: stretch;
+  }
+
+  .rooster-filter-row .field,
+  .rooster-search-field,
+  .rooster-select,
+  .rooster-view-toggle {
+    width: 100%;
+  }
+
+  .rooster-view-toggle {
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+
+  .rooster-job-main {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .rooster-job-main strong {
+    min-width: 0;
+  }
+
+  .rooster-job-main span:not(.badge)::before {
+    display: none;
+  }
+
+  .rooster-table-tools {
+    align-items: stretch;
+    flex-direction: column;
   }
 }
 
