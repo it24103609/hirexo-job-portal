@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BriefcaseBusiness, Building2, Crown, Laptop, MapPin, Sliders, X } from 'lucide-react';
 import './JobFilters.css';
 
@@ -14,6 +15,8 @@ function getOptionValue(item) {
 }
 
 export default function JobFilters({ filters, onChange, onClear, categories = [], locations = [], jobTypes = [] }) {
+  const navigate = useNavigate();
+
   return (
     <div className="jobs-filters-sidebar">
       <div className="jobs-filters-header">
@@ -90,9 +93,18 @@ export default function JobFilters({ filters, onChange, onClear, categories = []
         </div>
         <h4>Premium Roles</h4>
         <p>Explore hand-picked roles and personalized positions from top-tier companies.</p>
-        <button type="button" className="premium-role-btn">
-          Explore Premium <ArrowRight size={15} />
-        </button>
+        <div className="premium-role-actions">
+          <button type="button" className="premium-role-btn" onClick={() => navigate('/premium')}>
+            Explore Premium <ArrowRight size={15} />
+          </button>
+          <button
+            type="button"
+            className="premium-role-btn premium-role-btn-secondary"
+            onClick={() => navigate('/premium#plans')}
+          >
+            What&apos;s included? <ArrowRight size={15} />
+          </button>
+        </div>
       </div>
     </div>
   );

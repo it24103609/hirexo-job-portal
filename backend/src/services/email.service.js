@@ -1,14 +1,16 @@
 const getTransporter = require('../config/email');
 const EmailLog = require('../models/EmailLog');
+const { defaultTextToHtml } = require('../utils/emailTemplates');
 
 async function sendEmail({ to, subject, html, text, attachments = [] }) {
   const transporter = getTransporter();
+  const finalHtml = html || (text ? defaultTextToHtml({ subject, text }) : undefined);
 
   if (!transporter) {
     await EmailLog.create({
       to,
       subject,
-      html,
+      html: finalHtml,
       text,
       attachmentNames: attachments.map((item) => item.filename).filter(Boolean),
       status: 'skipped',
@@ -23,7 +25,7 @@ async function sendEmail({ to, subject, html, text, attachments = [] }) {
       from: process.env.SMTP_FROM,
       to,
       subject,
-      html,
+      html: finalHtml,
       text,
       attachments
     });
@@ -31,7 +33,7 @@ async function sendEmail({ to, subject, html, text, attachments = [] }) {
     await EmailLog.create({
       to,
       subject,
-      html,
+      html: finalHtml,
       text,
       attachmentNames: attachments.map((item) => item.filename).filter(Boolean),
       status: 'sent',
@@ -48,7 +50,7 @@ async function sendEmail({ to, subject, html, text, attachments = [] }) {
     await EmailLog.create({
       to,
       subject,
-      html,
+      html: finalHtml,
       text,
       attachmentNames: attachments.map((item) => item.filename).filter(Boolean),
       status: 'failed',

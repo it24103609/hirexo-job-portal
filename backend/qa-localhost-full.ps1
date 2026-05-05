@@ -8,30 +8,35 @@ function Add-Result($step, $status, $detail) {
   Write-Host ("[{0}] {1} - {2}" -f $status, $step, $detail)
 }
 
+function Ensure-MasterItem($type, $name, $headers) {
+  $items = (Invoke-RestMethod -Method GET -Uri "$base/master-data/$type" -Headers $headers).data
+  $existing = @($items | Where-Object { $_.name -eq $name } | Select-Object -First 1)
+  if ($existing.Count -gt 0) { return $existing[0] }
+
+  $body = @{ name = $name; active = $true } | ConvertTo-Json
+  return (Invoke-RestMethod -Method POST -Uri "$base/master-data/$type" -Headers $headers -ContentType 'application/json' -Body $body).data
+}
+
 # Health
 $health = Invoke-RestMethod -Method GET -Uri "$base/health"
 Add-Result 'health' 'PASS' $health.message
 
 # Admin login first (needed for protected master-data + approvals)
-$adminBody = @{ email = 'admin@hirexo.com'; password = 'admin123' } | ConvertTo-Json
+$adminEmail = if ($env:ADMIN_EMAIL) { $env:ADMIN_EMAIL } else { 'frank.admin@hirexo.test' }
+$adminPassword = if ($env:ADMIN_PASSWORD) { $env:ADMIN_PASSWORD } else { 'FrankAdmin123!' }
+$adminBody = @{ email = $adminEmail; password = $adminPassword } | ConvertTo-Json
 $admin = Invoke-RestMethod -Method POST -Uri "$base/auth/login" -ContentType 'application/json' -Body $adminBody
 $adminToken = $admin.data.accessToken
 if (-not $adminToken) { throw 'admin token missing' }
 Add-Result 'admin-login' 'PASS' 'token issued'
 
-# Master data IDs with admin auth
+# Master data with admin auth
 $authHeader = @{ Authorization = "Bearer $adminToken" }
-$cats = (Invoke-RestMethod -Method GET -Uri "$base/master-data/categories" -Headers $authHeader).data
-$locs = (Invoke-RestMethod -Method GET -Uri "$base/master-data/locations" -Headers $authHeader).data
-$types = (Invoke-RestMethod -Method GET -Uri "$base/master-data/job-types" -Headers $authHeader).data
-$inds = (Invoke-RestMethod -Method GET -Uri "$base/master-data/industries" -Headers $authHeader).data
-if (-not $cats -or -not $locs -or -not $types -or -not $inds) { throw 'master data missing in one or more collections' }
-
-$categoryId = $cats[0]._id
-$locationId = $locs[0]._id
-$jobTypeId = $types[0]._id
-$industryId = $inds[0]._id
-Add-Result 'master-data' 'PASS' "category=$categoryId, location=$locationId, jobType=$jobTypeId, industry=$industryId"
+$category = Ensure-MasterItem 'categories' 'Engineering' $authHeader
+$location = Ensure-MasterItem 'locations' 'Colombo' $authHeader
+$jobType = Ensure-MasterItem 'job-types' 'Full Time' $authHeader
+$industry = Ensure-MasterItem 'industries' 'Technology' $authHeader
+Add-Result 'master-data' 'PASS' "category=$($category.name), location=$($location.name), jobType=$($jobType.name), industry=$($industry.name)"
 
 # Employer register/login
 $employerEmail = "qa.employer.$stamp@hirexo.test"
@@ -50,10 +55,10 @@ Add-Result 'employer-login' 'PASS' 'token issued'
 $jobBody = @{
   title = "QA Local Job $stamp"
   description = 'Local QA job create flow'
-  category = $categoryId
-  location = $locationId
-  jobType = $jobTypeId
-  industry = $industryId
+  category = $category.name
+  location = $location.name
+  jobType = $jobType.name
+  industry = $industry.name
   experienceLevel = 'Mid'
   salaryMin = 500000
   salaryMax = 900000
@@ -84,7 +89,9 @@ $candidateToken = $candLogin.data.accessToken
 if (-not $candidateToken) { throw 'candidate token missing' }
 Add-Result 'candidate-login' 'PASS' 'token issued'
 
-$resumePath = "c:\Users\thanu\Desktop\my-website (2)\backend\uploads\qa-local-resume.pdf"
+$fixtureDir = Join-Path $PSScriptRoot 'uploads'
+New-Item -ItemType Directory -Force -Path $fixtureDir | Out-Null
+$resumePath = Join-Path $fixtureDir 'qa-local-resume.pdf'
 @"
 %PDF-1.1
 1 0 obj

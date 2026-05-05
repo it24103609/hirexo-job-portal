@@ -15,8 +15,19 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    const message = error?.response?.data?.message || error.message || 'Something went wrong';
+  async (error) => {
+    let message = error?.response?.data?.message || error.message || 'Something went wrong';
+
+    if (error?.response?.data instanceof Blob) {
+      try {
+        const text = await error.response.data.text();
+        const payload = text ? JSON.parse(text) : null;
+        message = payload?.message || message;
+      } catch {
+        // Keep the original network/HTTP error message for non-JSON blob responses.
+      }
+    }
+
     return Promise.reject(new Error(message));
   }
 );

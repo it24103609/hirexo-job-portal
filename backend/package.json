@@ -6,7 +6,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "dev": "nodemon --watch src --ext js,json --ignore uploads --ignore logs src/server.js",
     "seed:admin": "node src/utils/seedAdmin.js",
     "seed:test-users": "node src/utils/seedTestUsers.js",
     "seed:hiring-ops-demo": "node src/utils/seedHiringOpsDemo.js",
@@ -24,7 +24,9 @@
     "mongoose": "^8.11.0",
     "morgan": "^1.10.0",
     "multer": "^2.0.2",
+    "node-schedule": "^2.1.1",
     "nodemailer": "^8.0.5",
+    "razorpay": "^2.9.1",
     "slugify": "^1.6.6"
   },
   "devDependencies": {

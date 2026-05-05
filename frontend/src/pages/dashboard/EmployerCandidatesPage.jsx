@@ -46,6 +46,10 @@ function getScore(application) {
   return `${Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 20)}%`;
 }
 
+function hasResume(application) {
+  return Boolean(application?.resumeSnapshot?.fileName);
+}
+
 export default function EmployerCandidatesPage() {
   const [state, setState] = useState({ loading: true, jobs: [], applications: [] });
   const [filters, setFilters] = useState({ keyword: '', tag: 'all', position: 'all', stage: 'all', date: 'all', rating: 'all' });
@@ -126,6 +130,11 @@ export default function EmployerCandidatesPage() {
   };
 
   const downloadResume = async (application) => {
+    if (!hasResume(application)) {
+      toast.info('This candidate has not attached a resume.');
+      return;
+    }
+
     try {
       const blob = await applicationsApi.downloadResume(application._id);
       const url = window.URL.createObjectURL(blob);
@@ -234,9 +243,13 @@ export default function EmployerCandidatesPage() {
                     <td>{formatDate(application.createdAt)}</td>
                     <td>{getScore(application)}</td>
                     <td>
-                      <button type="button" className="rooster-icon-link" onClick={() => downloadResume(application)} aria-label={`Download ${candidateName} resume`}>
-                        <Download size={16} />
-                      </button>
+                      {hasResume(application) ? (
+                        <button type="button" className="rooster-icon-link" onClick={() => downloadResume(application)} aria-label={`Download ${candidateName} resume`}>
+                          <Download size={16} />
+                        </button>
+                      ) : (
+                        <span className="muted-text">No resume</span>
+                      )}
                     </td>
                   </tr>
                 );

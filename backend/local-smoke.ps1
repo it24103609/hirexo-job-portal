@@ -9,7 +9,9 @@ $health=Invoke-RestMethod -Method GET -Uri "$base/health"
 Write-Host ("  PASS -> " + $health.message)
 
 Write-Host "STEP 1: Admin login"
-$adminBody=@{email='admin@hirexo.com';password='admin123'} | ConvertTo-Json
+$adminEmail = if ($env:ADMIN_EMAIL) { $env:ADMIN_EMAIL } else { 'frank.admin@hirexo.test' }
+$adminPassword = if ($env:ADMIN_PASSWORD) { $env:ADMIN_PASSWORD } else { 'FrankAdmin123!' }
+$adminBody=@{email=$adminEmail;password=$adminPassword} | ConvertTo-Json
 $admin=Invoke-RestMethod -Method POST -Uri "$base/auth/login" -ContentType 'application/json' -Body $adminBody
 $adminToken=$admin.data.accessToken
 Write-Host "  PASS -> admin login success"
@@ -26,7 +28,9 @@ $candidateToken=$candidateLogin.data.accessToken
 Write-Host "  PASS -> candidate login success"
 
 Write-Host "STEP 4: Create test resume PDF"
-$resumePath="c:\Users\thanu\Desktop\my-website (2)\backend\uploads\local-test-resume.pdf"
+$fixtureDir = Join-Path $PSScriptRoot 'uploads'
+New-Item -ItemType Directory -Force -Path $fixtureDir | Out-Null
+$resumePath = Join-Path $fixtureDir 'local-test-resume.pdf'
 @"
 %PDF-1.1
 1 0 obj

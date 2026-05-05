@@ -12,6 +12,7 @@ const Offer = require('../models/Offer');
 const { JOB_REVIEW_STATUS, JOB_STATUS, ROLES, USER_STATUS, APPLICATION_STATUS } = require('../utils/constants');
 const { createNotification } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
+const { jobApprovedEmail } = require('../utils/emailTemplates');
 
 const DEFAULT_AI_SCORING = {
   skillsWeight: 60,
@@ -185,7 +186,13 @@ const approveJob = asyncHandler(async (req, res) => {
       await sendEmail({
         to: employerEmail,
         subject: 'Job approved',
-        text: `Your job ${job.title} has been approved.`
+        text: `Your job ${job.title} has been approved.`,
+        html: jobApprovedEmail({
+          employerName: employer?.user?.name,
+          jobTitle: job.title,
+          companyName: job.companyName,
+          jobId: job._id
+        })
       });
     }
   }

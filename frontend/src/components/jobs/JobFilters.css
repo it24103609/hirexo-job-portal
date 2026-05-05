@@ -197,6 +197,17 @@
   transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
+.premium-role-actions {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.premium-role-btn-secondary {
+  border-color: rgba(15, 53, 39, 0.12);
+  color: #114233;
+  background: linear-gradient(145deg, rgba(15, 128, 80, 0.08), rgba(255, 255, 255, 0.96));
+}
+
 .premium-role-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 16px 30px rgba(20, 61, 46, 0.14);
@@ -216,6 +227,10 @@
     align-items: center;
   }
 
+  .premium-role-actions {
+    width: fit-content;
+  }
+
   .premium-role-btn {
     width: fit-content;
   }
@@ -227,6 +242,7 @@
     grid-template-columns: 1fr;
   }
 
+  .premium-role-actions,
   .premium-role-btn {
     width: 100%;
   }

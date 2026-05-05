@@ -10,6 +10,7 @@ import { ROLES } from './utils/constants';
 const HomePage = lazy(() => import('./pages/public/HomePage'));
 const AboutPage = lazy(() => import('./pages/public/AboutPage'));
 const ServicesPage = lazy(() => import('./pages/public/ServicesPage'));
+const PremiumPage = lazy(() => import('./pages/public/PremiumPage'));
 const JobsPage = lazy(() => import('./pages/public/JobsPage'));
 const JobDetailsPage = lazy(() => import('./pages/public/JobDetailsPage'));
 const CandidateRegisterPage = lazy(() => import('./pages/public/CandidateRegisterPage'));
@@ -68,6 +69,7 @@ export default function App() {
           <Route index element={<HomePage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="services" element={<ServicesPage />} />
+          <Route path="premium" element={<PremiumPage />} />
           <Route path="auth" element={<AuthPage />} />
           <Route path="candidate/register" element={<CandidateRegisterPage />} />
           <Route path="candidate/login" element={<CandidateLoginPage />} />

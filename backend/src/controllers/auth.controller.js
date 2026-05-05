@@ -12,6 +12,7 @@ const { createUniqueSlug } = require('../utils/slug');
 const { createNotification } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
 const { env } = require('../config/env');
+const { welcomeEmail, passwordResetEmail } = require('../utils/emailTemplates');
 
 function buildName({ name, fullName, firstName, lastName }) {
   const directName = String(name || fullName || '').trim();
@@ -93,7 +94,14 @@ const registerCandidate = asyncHandler(async (req, res) => {
   await sendEmail({
     to: user.email,
     subject: 'Welcome to Hirexo',
-    text: 'Your candidate account is ready.'
+    text: 'Your candidate account is ready. Complete your profile and start applying for jobs.',
+    html: welcomeEmail({
+      roleLabel: 'Candidate',
+      name: user.name,
+      actionLabel: 'Open candidate dashboard',
+      actionUrl: `${env.clientUrl.replace(/\/$/, '')}/candidate/dashboard`,
+      note: 'Complete your profile, upload your resume, and start applying for roles that fit you.'
+    })
   });
 
   const tokens = createAuthPayload(user);
@@ -146,7 +154,14 @@ const registerEmployer = asyncHandler(async (req, res) => {
   await sendEmail({
     to: user.email,
     subject: 'Employer account created',
-    text: 'Your employer account is ready.'
+    text: 'Your employer account is ready. Complete your company profile to start posting jobs.',
+    html: welcomeEmail({
+      roleLabel: 'Employer',
+      name: user.name,
+      actionLabel: 'Open employer dashboard',
+      actionUrl: `${env.clientUrl.replace(/\/$/, '')}/employer/dashboard`,
+      note: 'Complete your company profile and publish roles to start receiving applications.'
+    })
   });
 
   const tokens = createAuthPayload(user);
@@ -259,21 +274,11 @@ const forgotPassword = asyncHandler(async (req, res) => {
       to: user.email,
       subject: 'Reset your Hirexo password',
       text: `Use this link to reset your password: ${resetUrl}. This link expires in ${env.passwordResetExpiresMinutes} minutes.`,
-      html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #1f2937;">
-          <h2 style="margin-bottom: 12px;">Reset your Hirexo password</h2>
-          <p>Hello ${user.name || 'there'},</p>
-          <p>We received a request to reset your password. Click the button below to choose a new one.</p>
-          <p style="margin: 24px 0;">
-            <a href="${resetUrl}" style="background: #0f766e; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 8px; display: inline-block;">
-              Reset password
-            </a>
-          </p>
-          <p>If the button does not work, copy and paste this link into your browser:</p>
-          <p><a href="${resetUrl}">${resetUrl}</a></p>
-          <p>This link expires in ${env.passwordResetExpiresMinutes} minutes. If you did not request this, you can safely ignore this email.</p>
-        </div>
-      `
+      html: passwordResetEmail({
+        name: user.name,
+        resetUrl,
+        expiresInMinutes: env.passwordResetExpiresMinutes
+      })
     });
 
     if (emailResult?.skipped) {

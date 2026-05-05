@@ -17,6 +17,9 @@ const masterDataRoutes = require('./routes/masterData.routes');
 const blogRoutes = require('./routes/blog.routes');
 const contactRoutes = require('./routes/contact.routes');
 const notificationRoutes = require('./routes/notification.routes');
+const premiumRoutes = require('./routes/premium.routes');
+const paymentRoutes = require('./routes/payment.routes');
+const CronJobs = require('./utils/cronJobs');
 
 const app = express();
 
@@ -45,6 +48,13 @@ app.use('/api/master-data', masterDataRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/premium', premiumRoutes);
+app.use('/api/payments', paymentRoutes);
+
+// Initialize cron jobs
+if (process.env.NODE_ENV === 'production' || process.env.ENABLE_CRON === 'true') {
+  CronJobs.initialize();
+}
 
 app.use((req, res) => {
   res.status(404).json({

@@ -6,6 +6,7 @@ const apiResponse = require('../utils/apiResponse');
 const Application = require('../models/Application');
 const ApplicationMessage = require('../models/ApplicationMessage');
 const Job = require('../models/Job');
+const User = require('../models/User');
 const CandidateProfile = require('../models/CandidateProfile');
 const PlatformSetting = require('../models/PlatformSetting');
 const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
@@ -14,6 +15,7 @@ const { DEFAULT_AI_SCORING, buildAiExplanation } = require('../utils/aiScoring')
 const { JOB_REVIEW_STATUS, JOB_STATUS, APPLICATION_STATUS, NOTIFICATION_TYPES, ROLES } = require('../utils/constants');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
+const { applicationConfirmationEmail, employerNewApplicationEmail, statusUpdateEmail } = require('../utils/emailTemplates');
 
 function normalizeCandidateSource(value) {
   const allowed = ['Hirexo Portal', 'LinkedIn', 'Referral', 'Website', 'Agency'];
@@ -203,8 +205,29 @@ const applyForJob = asyncHandler(async (req, res) => {
   await sendEmail({
     to: req.user.email,
     subject: 'Application confirmation',
-    text: `Your application for ${job.title} was submitted successfully.`
+    text: `Your application for ${job.title} was submitted successfully.`,
+    html: applicationConfirmationEmail({
+      candidateName: req.user.name,
+      jobTitle: job.title,
+      companyName: job.companyName,
+      applicationId: application._id
+    })
   });
+
+  const employerRecipient = await User.findById(job.employerUser).select('name email').lean();
+  if (employerRecipient?.email) {
+    await sendEmail({
+      to: employerRecipient.email,
+      subject: `New application for ${job.title}`,
+      text: `${req.user.name} applied for ${job.title}. Review the candidate in your Hirexo dashboard.`,
+      html: employerNewApplicationEmail({
+        employerName: employerRecipient.name,
+        candidateName: req.user.name,
+        jobTitle: job.title,
+        applicationId: application._id
+      })
+    });
+  }
 
   res.status(201).json(apiResponse({
     message: 'Application submitted successfully',
@@ -438,6 +461,13 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
     to: application.candidateUser.email,
     subject: statusEmail.subject,
     text: statusEmail.text,
+    html: statusUpdateEmail({
+      candidateName: application.candidateUser?.name,
+      jobTitle: job?.title,
+      companyName: job?.companyName,
+      status: req.body.status,
+      interviewAt: application.interviewScheduledAt
+    }),
     attachments
   });
 

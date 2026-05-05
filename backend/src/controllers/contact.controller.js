@@ -3,6 +3,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const apiResponse = require('../utils/apiResponse');
 const Contact = require('../models/Contact');
 const { sendEmail } = require('../services/email.service');
+const { contactAckEmail, contactReplyEmail } = require('../utils/emailTemplates');
 
 const createContact = asyncHandler(async (req, res) => {
   const contact = await Contact.create({
@@ -13,7 +14,8 @@ const createContact = asyncHandler(async (req, res) => {
   await sendEmail({
     to: req.body.email,
     subject: 'We received your message',
-    text: `Hi ${req.body.name}, thank you for contacting Hirexo. We will respond to your inquiry shortly.`
+    text: `Hi ${req.body.name}, thank you for contacting Hirexo. We will respond to your inquiry shortly.`,
+    html: contactAckEmail({ name: req.body.name })
   });
 
   res.status(201).json(apiResponse({
@@ -75,7 +77,11 @@ const replyContact = asyncHandler(async (req, res) => {
   await sendEmail({
     to: contact.email,
     subject: `Re: ${contact.subject}`,
-    text: req.body.message
+    text: req.body.message,
+    html: contactReplyEmail({
+      subject: `Re: ${contact.subject}`,
+      message: req.body.message
+    })
   });
 
   res.json(apiResponse({

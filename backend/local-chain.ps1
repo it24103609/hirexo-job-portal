@@ -34,7 +34,9 @@ $jobId=$jobCreate.data._id
 Write-Host ("  PASS -> job created (pending): " + $jobId)
 
 Write-Host "CHAIN 4: Admin login + approve job"
-$adminBody=@{email='admin@hirexo.com';password='admin123'} | ConvertTo-Json
+$adminEmail = if ($env:ADMIN_EMAIL) { $env:ADMIN_EMAIL } else { 'frank.admin@hirexo.test' }
+$adminPassword = if ($env:ADMIN_PASSWORD) { $env:ADMIN_PASSWORD } else { 'FrankAdmin123!' }
+$adminBody=@{email=$adminEmail;password=$adminPassword} | ConvertTo-Json
 $admin=Invoke-RestMethod -Method POST -Uri "$base/auth/login" -ContentType 'application/json' -Body $adminBody
 $adminToken=$admin.data.accessToken
 $approve=Invoke-RestMethod -Method PATCH -Uri "$base/admin/jobs/$jobId/approve" -Headers @{Authorization="Bearer $adminToken"}
@@ -49,7 +51,9 @@ $candToken=$candLogin.data.accessToken
 Write-Host "  PASS -> candidate ready"
 
 Write-Host "CHAIN 6: Candidate upload resume"
-$resumePath="c:\Users\thanu\Desktop\my-website (2)\backend\uploads\local-chain-resume.pdf"
+$fixtureDir = Join-Path $PSScriptRoot 'uploads'
+New-Item -ItemType Directory -Force -Path $fixtureDir | Out-Null
+$resumePath = Join-Path $fixtureDir 'local-chain-resume.pdf'
 @"
 %PDF-1.1
 1 0 obj
