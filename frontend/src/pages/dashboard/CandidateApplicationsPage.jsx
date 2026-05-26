@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { BriefcaseBusiness, CalendarClock, CircleCheckBig } from 'lucide-react';
+import { BriefcaseBusiness, CalendarClock, CircleCheckBig, Mail } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
@@ -10,6 +10,8 @@ import Loader from '../../components/ui/Loader';
 import Select from '../../components/ui/Select';
 import { applicationsApi } from '../../services/applications.api';
 import { candidateApi } from '../../services/candidate.api';
+import { useCandidateProfilePicture } from '../../hooks/useCandidateProfilePicture';
+import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
 import { formatDate, formatDateTime } from '../../utils/formatters';
 import { ROLES } from '../../utils/constants';
@@ -25,6 +27,7 @@ function getStatusMeta(status = '') {
 
 export default function CandidateApplicationsPage() {
   const [searchParams] = useSearchParams();
+  const { user } = useAuth();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [messagePanels, setMessagePanels] = useState({});
@@ -38,6 +41,17 @@ export default function CandidateApplicationsPage() {
       .catch(() => setApplications([]))
       .finally(() => setLoading(false));
   }, []);
+
+  const [profile, setProfile] = useState(null);
+  useEffect(() => {
+    let mounted = true;
+    candidateApi.profile()
+      .then((res) => { if (mounted) setProfile(res.data || null); })
+      .catch(() => { if (mounted) setProfile(null); });
+    return () => { mounted = false; };
+  }, []);
+
+  const profileImageUrl = useCandidateProfilePicture(profile?.profilePicture);
 
   useEffect(() => {
     const requestedApplicationId = searchParams.get('applicationId');
@@ -182,7 +196,37 @@ export default function CandidateApplicationsPage() {
   return (
     <>
       <Seo title="Applied Jobs | Hirexo" description="Track your submitted applications." />
-      <DashboardHeader title="Applied Jobs" description="See the jobs you’ve applied for and their current status." />
+      <DashboardHeader
+        title="Applied Jobs"
+        description="See the jobs you’ve applied for and their current status."
+        className="candidate-premium-header"
+        actions={(
+          <div className="candidate-hero-side">
+            <div className="candidate-hero-summary-card candidate-glass-card">
+              <div className="candidate-hero-summary-top">
+                <div className="candidate-hero-summary-profile">
+                  <div className="candidate-dashboard-profile-visual" aria-hidden="true">
+                    {profileImageUrl ? (
+                      <img src={profileImageUrl} alt="" />
+                    ) : (
+                      <span>{(user?.name || 'You').slice(0, 1).toUpperCase()}</span>
+                    )}
+                  </div>
+                  <div>
+                    <strong>{user?.name || 'Candidate'}</strong>
+                    <p>{profile?.location || 'Candidate workspace'}</p>
+                  </div>
+                </div>
+                <span className="candidate-hero-summary-status">Active</span>
+              </div>
+            </div>
+            <div className="candidate-hero-actions">
+              <Link className="btn btn-secondary btn-sm" to="/candidate/applications"><Mail size={14} /> Open Messages</Link>
+              <Link className="btn btn-primary btn-sm" to="/jobs"><BriefcaseBusiness size={14} /> Browse jobs</Link>
+            </div>
+          </div>
+        )}
+      />
 
       {!loading ? (
         <div className="candidate-stat-grid mb-1">

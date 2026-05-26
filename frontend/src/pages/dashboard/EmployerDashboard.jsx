@@ -2,28 +2,32 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
-  BarChart2,
+  BarChart3,
   Bell,
   BriefcaseBusiness,
   CalendarClock,
+  CheckCircle2,
+  CircleUserRound,
   Clock3,
   FolderKanban,
+  Gauge,
   LineChart,
   ListChecks,
-  PieChart,
-  PlusSquare,
   Mail,
+  MessageSquareText,
+  PlusSquare,
+  Search,
+  Settings,
   Sparkles,
   TrendingUp,
-  UserCheck
+  UserCheck,
+  Users
 } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
-import DashboardHeader from '../../components/layout/DashboardHeader';
-import StatCard from '../../components/ui/StatCard';
-import Card from '../../components/ui/Card';
 import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import Loader from '../../components/ui/Loader';
+import { useAuth } from '../../contexts/AuthContext';
 import { employerApi } from '../../services/employer.api';
 import { formatDate } from '../../utils/formatters';
 
@@ -58,7 +62,23 @@ function getMonthKey(date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
+function makeLinePoints(items, maxValue) {
+  if (!items.length) return '';
+  const width = 520;
+  const height = 190;
+  const gap = items.length > 1 ? width / (items.length - 1) : width;
+
+  return items
+    .map((item, index) => {
+      const x = Math.round(index * gap);
+      const y = Math.round(height - (item.count / maxValue) * 150 - 20);
+      return `${x},${y}`;
+    })
+    .join(' ');
+}
+
 export default function EmployerDashboard() {
+  const { user } = useAuth();
   const [state, setState] = useState({
     loading: true,
     dashboard: fallbackDashboard,
@@ -75,12 +95,11 @@ export default function EmployerDashboard() {
       const jobs = jobsRes.status === 'fulfilled' ? jobsRes.value.data || [] : [];
       const dashboard = dashRes.status === 'fulfilled' ? { ...fallbackDashboard, ...(dashRes.value.data || {}) } : fallbackDashboard;
 
-      const analyticsJobs = jobs;
-      const applicantResults = await Promise.allSettled(analyticsJobs.map((job) => employerApi.applicants(job._id)));
+      const applicantResults = await Promise.allSettled(jobs.map((job) => employerApi.applicants(job._id)));
       const applicationsByJob = {};
       const applications = [];
 
-      analyticsJobs.forEach((job, index) => {
+      jobs.forEach((job, index) => {
         const result = applicantResults[index];
         const list = result?.status === 'fulfilled' ? result.value.data?.applications || [] : [];
         applicationsByJob[job._id] = list;
@@ -121,84 +140,50 @@ export default function EmployerDashboard() {
   }, []);
 
   const metrics = { ...fallbackDashboard, ...(state.dashboard || {}) };
-  const recentJobs = state.jobs.slice(0, 5);
   const applicantTargetJob = state.jobs.find((job) => job.reviewStatus === 'approved') || state.jobs[0];
   const applicantsRoute = applicantTargetJob ? `/employer/jobs/${applicantTargetJob._id}/applicants` : '/employer/jobs';
 
   const pipelineCounts = useMemo(() => {
     const counts = {
       applied: 0,
-      reviewed: 0,
-      shortlisted: 0,
+      screening: 0,
       interview: 0,
-      hired: 0,
-      rejected: 0
+      selected: 0,
+      hired: 0
     };
 
     state.applications.forEach((application) => {
       const status = String(application.status || '').toLowerCase();
       if (status === 'pending') counts.applied += 1;
-      else if (status === 'reviewed') counts.reviewed += 1;
-      else if (status === 'shortlisted') counts.shortlisted += 1;
+      else if (status === 'reviewed') counts.screening += 1;
+      else if (status === 'shortlisted') counts.selected += 1;
       else if (status === 'interview_scheduled') counts.interview += 1;
       else if (status === 'hired') counts.hired += 1;
-      else if (status === 'rejected') counts.rejected += 1;
     });
 
     return counts;
   }, [state.applications]);
 
   const totalApplications = Math.max(metrics.totalApplications || 0, state.applications.length);
-  const shortlistedCount = Math.max(metrics.shortlistedApplications || 0, pipelineCounts.shortlisted);
+  const shortlistedCount = Math.max(metrics.shortlistedApplications || 0, pipelineCounts.selected);
   const hiredCount = Math.max(metrics.hiredApplications || 0, pipelineCounts.hired);
+  const successRate = totalApplications ? Math.round((hiredCount / totalApplications) * 100) : 0;
   const pipelineTotal = Object.values(pipelineCounts).reduce((sum, value) => sum + value, 0);
+  const recentJobs = state.jobs.slice(0, 4);
 
   const applicationsPerJob = useMemo(() => {
     const rows = state.jobs.slice(0, 8).map((job) => ({
       id: job._id,
       title: job.title,
-      createdAt: job.createdAt,
       applicants: state.applicationsByJob[job._id]?.length || 0
     }));
 
-    rows.sort((left, right) => right.applicants - left.applicants || new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime());
+    rows.sort((left, right) => right.applicants - left.applicants);
     return rows.slice(0, 5);
   }, [state.jobs, state.applicationsByJob]);
 
-  const applicationsPerJobMax = useMemo(
-    () => Math.max(1, ...applicationsPerJob.map((item) => item.applicants)),
-    [applicationsPerJob]
-  );
-
-  const jobStatusDistribution = useMemo(() => {
-    const counts = {
-      active: 0,
-      pending: 0,
-      rejected: 0,
-      other: 0
-    };
-
-    state.jobs.forEach((job) => {
-      const reviewStatus = String(job.reviewStatus || '').toLowerCase();
-      const lifecycleStatus = String(job.status || '').toLowerCase();
-
-      if (reviewStatus === 'pending') counts.pending += 1;
-      else if (reviewStatus === 'rejected') counts.rejected += 1;
-      else if (lifecycleStatus === 'active') counts.active += 1;
-      else counts.other += 1;
-    });
-
-    const total = state.jobs.length || 1;
-    return [
-      { key: 'active', label: 'Active', value: counts.active, percent: Math.round((counts.active / total) * 100) },
-      { key: 'pending', label: 'Pending review', value: counts.pending, percent: Math.round((counts.pending / total) * 100) },
-      { key: 'rejected', label: 'Rejected', value: counts.rejected, percent: Math.round((counts.rejected / total) * 100) },
-      { key: 'other', label: 'Inactive / expired', value: counts.other, percent: Math.round((counts.other / total) * 100) }
-    ];
-  }, [state.jobs]);
-
   const monthlyTrend = useMemo(() => {
-    const windowSize = 6;
+    const windowSize = 7;
     const now = new Date();
     const buckets = [];
     const bucketMap = new Map();
@@ -217,9 +202,7 @@ export default function EmployerDashboard() {
 
     state.applications.forEach((application) => {
       if (!application.createdAt) return;
-      const date = new Date(application.createdAt);
-      const key = getMonthKey(date);
-      const bucket = bucketMap.get(key);
+      const bucket = bucketMap.get(getMonthKey(new Date(application.createdAt)));
       if (bucket) bucket.count += 1;
     });
 
@@ -231,431 +214,352 @@ export default function EmployerDashboard() {
     [monthlyTrend]
   );
 
+  const analyticsPoints = useMemo(() => makeLinePoints(monthlyTrend, monthlyTrendMax), [monthlyTrend, monthlyTrendMax]);
+
   const statCards = [
-    {
-      label: 'Total jobs',
-      value: metrics.totalJobs,
-      hint: `${metrics.activeJobs} active listings are live`,
-      trend: `${metrics.pendingJobs} currently waiting for review`,
-      icon: BriefcaseBusiness
-    },
-    {
-      label: 'Pending review',
-      value: metrics.pendingJobs,
-      hint: 'Jobs in moderation queue',
-      trend: 'Speed up review-to-live conversion',
-      icon: Clock3
-    },
-    {
-      label: 'Active jobs',
-      value: metrics.activeJobs,
-      hint: 'Open roles visible to candidates',
-      trend: 'Keep quality and freshness high',
-      icon: Sparkles
-    },
-    {
-      label: 'Total applications',
-      value: totalApplications,
-      hint: 'Applications across all open roles',
-      trend: `${pipelineCounts.applied} newly applied candidates`,
-      icon: TrendingUp
-    },
-    {
-      label: 'Shortlisted candidates',
-      value: shortlistedCount,
-      hint: 'Candidates moved to shortlist',
-      trend: `${pipelineCounts.reviewed} reviewed so far`,
-      icon: UserCheck
-    },
-    {
-      label: 'Interviews scheduled',
-      value: pipelineCounts.interview,
-      hint: 'Candidates in interview stage',
-      trend: `${pipelineCounts.rejected} rejected after review`,
-      icon: CalendarClock
-    },
-    {
-      label: 'Hired candidates',
-      value: hiredCount,
-      hint: 'Successful hires across your roles',
-      trend: `${pipelineCounts.interview} interview-stage candidates remain active`,
-      icon: UserCheck
-    }
+    { label: 'Total Jobs', value: metrics.totalJobs, trend: '+12.4%', icon: BriefcaseBusiness, tone: 'emerald' },
+    { label: 'Pending Review', value: metrics.pendingJobs, trend: '-4.8%', icon: Clock3, tone: 'mint' },
+    { label: 'Active Jobs', value: metrics.activeJobs, trend: '+8.2%', icon: Sparkles, tone: 'green' },
+    { label: 'Total Applications', value: totalApplications, trend: '+24.7%', icon: TrendingUp, tone: 'emerald' },
+    { label: 'Shortlisted Candidates', value: shortlistedCount, trend: '+16.1%', icon: UserCheck, tone: 'mint' },
+    { label: 'Interview Scheduled', value: pipelineCounts.interview, trend: '+9.5%', icon: CalendarClock, tone: 'green' },
+    { label: 'Hired Candidates', value: hiredCount, trend: '+6.8%', icon: CheckCircle2, tone: 'emerald' },
+    { label: 'Hiring Success Rate', value: `${successRate}%`, trend: '+3.2%', icon: Gauge, tone: 'mint' }
   ];
 
-  const pipelineSteps = [
-    { key: 'applied', label: 'Applied', value: pipelineCounts.applied, icon: ListChecks },
-    { key: 'reviewed', label: 'Reviewed', value: pipelineCounts.reviewed, icon: BriefcaseBusiness },
-    { key: 'shortlisted', label: 'Shortlisted', value: pipelineCounts.shortlisted, icon: UserCheck },
-    { key: 'interview', label: 'Interview', value: pipelineCounts.interview, icon: CalendarClock },
-    { key: 'hired', label: 'Hired', value: pipelineCounts.hired, icon: Sparkles },
-    { key: 'rejected', label: 'Rejected', value: pipelineCounts.rejected, icon: Clock3 }
+  const heroStats = [
+    { label: 'Active Jobs', value: metrics.activeJobs, icon: BriefcaseBusiness },
+    { label: 'Interviews', value: pipelineCounts.interview, icon: CalendarClock },
+    { label: 'Applicants', value: totalApplications, icon: Users },
+    { label: 'Hired', value: hiredCount, icon: Sparkles }
   ];
 
   const quickActions = [
-    {
-      title: 'Post a new job',
-      description: 'Launch a role with job details, skills, and salary bands.',
-      to: '/employer/jobs/new',
-      icon: PlusSquare,
-      cta: 'Create job'
-    },
-    {
-      title: 'Edit company profile',
-      description: 'Keep branding, website, and contact details up to date.',
-      to: '/employer/company-profile',
-      icon: FolderKanban,
-      cta: 'Open profile'
-    },
-    {
-      title: 'Review applications',
-      description: 'Move candidates through review, shortlist, and interview.',
-      to: applicantsRoute,
-      icon: UserCheck,
-      cta: 'Open applicants'
-    },
-    {
-      title: 'Open notifications',
-      description: 'Track status updates and candidate communications.',
-      to: '/employer/notifications',
-      icon: Bell,
-      cta: 'View alerts'
-    },
-    {
-      title: 'Talent pool',
-      description: 'Save warm candidates for future openings and internal CRM follow-up.',
-      to: '/employer/talent-pool',
-      icon: Sparkles,
-      cta: 'Open talent pool'
-    },
-    {
-      title: 'Hiring team',
-      description: 'Coordinate recruiters, interviewers, and hiring leads.',
-      to: '/employer/team',
-      icon: UserCheck,
-      cta: 'Manage team'
-    },
-    {
-      title: 'Interview scheduling',
-      description: 'Open the applicant pool to schedule interviews and send updates.',
-      to: applicantsRoute,
-      icon: CalendarClock,
-      cta: 'Schedule now'
-    },
-    {
-      title: 'Candidate communication',
-      description: 'Open one-to-one message threads with candidates or reply to admin.',
-      to: '/employer/messages',
-      icon: Mail,
-      cta: 'Open messages'
-    }
+    { title: 'Post Job', description: 'Launch a premium role in minutes.', to: '/employer/jobs/new', icon: PlusSquare },
+    { title: 'Review Candidates', description: 'Open your live applicant workspace.', to: applicantsRoute, icon: UserCheck },
+    { title: 'Schedule Interview', description: 'Move shortlisted talent to meetings.', to: applicantsRoute, icon: CalendarClock },
+    { title: 'Team Communication', description: 'Coordinate hiring conversations.', to: '/employer/messages', icon: MessageSquareText },
+    { title: 'Analytics', description: 'Inspect growth and hiring velocity.', to: '/employer/reports-center', icon: BarChart3 },
+    { title: 'Hiring Settings', description: 'Tune policies and approval rules.', to: '/employer/policies', icon: Settings }
   ];
 
-  if (state.loading) return <Loader label="Loading employer dashboard..." />;
+  const pipelineSteps = [
+    { label: 'Applied', value: pipelineCounts.applied },
+    { label: 'Screening', value: pipelineCounts.screening },
+    { label: 'Interview', value: pipelineCounts.interview },
+    { label: 'Selected', value: pipelineCounts.selected },
+    { label: 'Hired', value: pipelineCounts.hired }
+  ];
+
+  const activities = [
+    state.applications[0] ? { title: 'Candidate applied', detail: state.applications[0].jobTitle || 'Open role', icon: Users } : null,
+    state.jobs[0] ? { title: 'Job posted', detail: state.jobs[0].title, icon: BriefcaseBusiness } : null,
+    pipelineCounts.interview ? { title: 'Interview scheduled', detail: `${pipelineCounts.interview} candidates in interview`, icon: CalendarClock } : null,
+    shortlistedCount ? { title: 'Candidate shortlisted', detail: `${shortlistedCount} candidates shortlisted`, icon: UserCheck } : null
+  ].filter(Boolean);
+
+  if (state.loading) return <Loader label="Loading premium employer dashboard..." />;
 
   return (
-    <>
-      <Seo title="Employer Dashboard | Hirexo" description="Manage company profile, jobs, and applicants." />
-      <DashboardHeader
-        className="employer-workspace-header"
-        title="Employer Dashboard"
-        description="Monitor your jobs, pending reviews, and applicant flow. Run hiring from one premium control center."
-        actions={(
-          <>
-            <Button as={Link} to="/employer/jobs/new" size="sm">
-              <PlusSquare size={16} />
-              Post New Job
-            </Button>
-            <Button as={Link} to="/employer/jobs" size="sm" variant="secondary">
-              <FolderKanban size={16} />
-              Manage Jobs
-            </Button>
-            <Button as={Link} to={applicantsRoute} size="sm" variant="ghost">
-              <UserCheck size={16} />
-              View Applicants
-            </Button>
-            <Button as={Link} to="/employer/messages" size="sm" variant="ghost">
-              <Mail size={16} />
-              New Chat
-            </Button>
-            <Button as={Link} to="/employer/talent-pool" size="sm" variant="ghost">
-              <Sparkles size={16} />
-              Talent Pool
-            </Button>
-          </>
-        )}
-      />
+    <div className="employer-premium-dashboard">
+      <Seo title="Employer Dashboard | Hirexo" description="Premium employer hiring command center." />
 
-      <section className="employer-hero-strip">
+      <header className="employer-command-header">
         <div>
-          <span className="employer-hero-badge"><Sparkles size={14} /> Hiring workspace</span>
-          <h2>Premium hiring control for modern employer teams.</h2>
-          <p>Stay close to job performance, applicant quality, and interview pipeline with live dashboard signals in one place.</p>
+          <span className="employer-command-kicker"><Sparkles size={14} /> Enterprise HR Command Center</span>
+          <h1>Welcome back, {user?.name || 'Employer'} 👋</h1>
+          <p>Operate jobs, applicants, interviews, analytics, and team workflows from one futuristic hiring cockpit.</p>
         </div>
-        <div className="employer-hero-pills">
-          <span><BriefcaseBusiness size={14} /> {metrics.activeJobs} active jobs</span>
-          <span><UserCheck size={14} /> {shortlistedCount} shortlisted</span>
-          <span><CalendarClock size={14} /> {pipelineCounts.interview} interviews</span>
-          <span><Sparkles size={14} /> {hiredCount} hired</span>
+        <div className="employer-command-side">
+          <div className="employer-command-tools">
+            <label className="employer-command-search" aria-label="Search dashboard">
+              <Search size={17} />
+              <input type="search" placeholder="Search jobs, candidates, reports..." />
+            </label>
+            <button type="button" className="employer-command-icon" aria-label="Notifications">
+              <Bell size={18} />
+              <span aria-hidden="true" />
+            </button>
+            <div className="employer-command-profile">
+              <span><CircleUserRound size={18} /></span>
+              <div>
+                <strong>{user?.name || 'Employer'}</strong>
+                <small>Premium workspace</small>
+              </div>
+            </div>
+          </div>
+          <nav className="employer-command-actions" aria-label="Employer quick actions">
+            <Button as={Link} to="/employer/jobs/new" size="sm"><PlusSquare size={16} /> Post New Job</Button>
+            <Button as={Link} to="/employer/jobs" size="sm" variant="secondary"><FolderKanban size={16} /> Manage Jobs</Button>
+            <Button as={Link} to={applicantsRoute} size="sm" variant="ghost"><UserCheck size={16} /> View Applicants</Button>
+          </nav>
+        </div>
+      </header>
+
+      <section className="employer-premium-hero">
+        <div className="employer-premium-hero-copy">
+          <span className="employer-hero-badge"><Sparkles size={14} /> Live hiring intelligence</span>
+          <h2>Premium hiring control for modern employer teams.</h2>
+          <p>Forecast demand, inspect pipeline health, and move candidates faster with a command center designed for enterprise HR operators.</p>
+          <div className="employer-hero-cta-row">
+            <Link to="/employer/jobs/new">Launch role <ArrowRight size={15} /></Link>
+            <Link to="/employer/reports-center">Open analytics <LineChart size={15} /></Link>
+          </div>
+        </div>
+        <div className="employer-hero-visual" aria-hidden="true">
+          <div className="employer-3d-chip employer-3d-chip-a" />
+          <div className="employer-3d-chip employer-3d-chip-b" />
+          <div className="employer-3d-dashboard-card">
+            <div className="employer-3d-card-top">
+              <span />
+              <span />
+              <span />
+            </div>
+            <div className="employer-3d-chart">
+              <i />
+              <i />
+              <i />
+              <i />
+            </div>
+            <div className="employer-3d-user-row">
+              <span />
+              <span />
+              <span />
+            </div>
+          </div>
+        </div>
+        <div className="employer-hero-live-grid">
+          {heroStats.map((item) => {
+            const Icon = item.icon;
+            return (
+              <article key={item.label} className="employer-hero-live-card">
+                <span><Icon size={18} /></span>
+                <strong>{item.value}</strong>
+                <small>{item.label}</small>
+              </article>
+            );
+          })}
         </div>
       </section>
 
-      <div className="dashboard-grid employer-stat-grid">
-        {statCards.map((item) => (
-          <StatCard
-            key={item.label}
-            label={item.label}
-            value={item.value}
-            hint={item.hint}
-            trend={item.trend}
-            icon={item.icon}
-            className="employer-stat-card"
-          />
-        ))}
-      </div>
-
-      <section className="employer-dashboard-layout mt-1">
-        <Card className="employer-panel employer-panel-wide">
-          <div className="panel-head employer-panel-head">
-            <div>
-              <p className="section-eyebrow">Latest postings</p>
-              <h3>Recent jobs</h3>
-            </div>
-            <Button as={Link} to="/employer/jobs" size="sm" variant="secondary">View all jobs</Button>
-          </div>
-
-          {recentJobs.length ? (
-            <div className="employer-job-list">
-              {recentJobs.map((job) => {
-                const badge = getJobBadge(job);
-                const applicantCount = state.applicationsByJob[job._id]?.length || 0;
-
-                return (
-                  <article key={job._id} className="employer-job-item">
-                    <div>
-                      <div className="employer-job-title-row">
-                        <h4>{job.title}</h4>
-                        <Badge tone={badge.tone}>{badge.label}</Badge>
-                      </div>
-                      <div className="employer-job-meta">
-                        <span>Posted {formatDate(job.createdAt)}</span>
-                        <span>{applicantCount} applicant{applicantCount === 1 ? '' : 's'}</span>
-                      </div>
-                    </div>
-                    <div className="employer-job-actions">
-                      <Button as={Link} to={`/employer/jobs/${job._id}/edit`} size="sm" variant="ghost">Edit</Button>
-                      <Button as={Link} to={`/employer/jobs/${job._id}/applicants`} size="sm" variant="secondary">Applicants</Button>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="employer-empty-state">
-              <div className="employer-empty-icon"><BriefcaseBusiness size={22} /></div>
+      <section className="employer-premium-stat-grid" aria-label="Hiring statistics">
+        {statCards.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <article key={item.label} className={`employer-premium-stat-card is-${item.tone}`} style={{ '--delay': `${index * 45}ms` }}>
+              <div className="employer-stat-3d-icon"><Icon size={22} /></div>
               <div>
-                <h4>No jobs published yet</h4>
-                <p>Create your first job to start receiving applications and unlock hiring analytics on this dashboard.</p>
-                <Button as={Link} to="/employer/jobs/new" size="sm">Post your first job</Button>
+                <small>{item.label}</small>
+                <strong>{item.value}</strong>
               </div>
-            </div>
-          )}
-        </Card>
+              <span className="employer-stat-trend">{item.trend}</span>
+            </article>
+          );
+        })}
+      </section>
 
-        <Card className="employer-panel">
-          <div className="panel-head employer-panel-head">
+      <section className="employer-premium-analytics-grid">
+        <article className="employer-premium-panel employer-analytics-line-panel">
+          <div className="employer-premium-panel-head">
             <div>
-              <p className="section-eyebrow">Fast navigation</p>
-              <h3>Quick actions</h3>
+              <p className="section-eyebrow">Hiring analytics</p>
+              <h3>Application Trend</h3>
             </div>
-            <Badge tone="success">Productive mode</Badge>
+            <Badge tone="success">Live</Badge>
           </div>
+          <div className="employer-line-chart" role="img" aria-label="Hiring analytics line chart">
+            <svg viewBox="0 0 520 210" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="employerLineGradient" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor="rgba(75, 222, 128, 0.45)" />
+                  <stop offset="100%" stopColor="rgba(75, 222, 128, 0)" />
+                </linearGradient>
+              </defs>
+              <polyline className="employer-chart-area" points={`0,210 ${analyticsPoints} 520,210`} />
+              <polyline className="employer-chart-line" points={analyticsPoints} />
+            </svg>
+            <div className="employer-chart-tooltip">
+              <strong>{totalApplications}</strong>
+              <span>Total applications</span>
+            </div>
+          </div>
+        </article>
 
-          <div className="employer-quick-actions-grid">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
+        <article className="employer-premium-panel">
+          <div className="employer-premium-panel-head">
+            <div>
+              <p className="section-eyebrow">Monthly insights</p>
+              <h3>Hiring performance</h3>
+            </div>
+            <Badge tone="neutral">7 months</Badge>
+          </div>
+          <div className="employer-insight-summary">
+            <div>
+              <small>Total applications</small>
+              <strong>{totalApplications}</strong>
+            </div>
+            <div>
+              <small>Success rate</small>
+              <strong>{successRate}%</strong>
+            </div>
+          </div>
+          <div className="employer-premium-bars">
+            {monthlyTrend.map((item) => (
+              <div key={item.key} className="employer-premium-bar-column">
+                <small>{item.count}</small>
+                <span style={{ height: `${Math.max(item.count ? 22 : 10, (item.count / monthlyTrendMax) * 100)}%` }} />
+                <em>{item.label}</em>
+              </div>
+            ))}
+          </div>
+        </article>
 
+        <article className="employer-premium-panel employer-pipeline-panel">
+          <div className="employer-premium-panel-head">
+            <div>
+              <p className="section-eyebrow">Hiring pipeline</p>
+              <h3>Applied → Screening → Interview → Selected → Hired</h3>
+            </div>
+            <Badge tone="success">{pipelineTotal} tracked</Badge>
+          </div>
+          <div className="employer-modern-pipeline">
+            {pipelineSteps.map((step, index) => {
+              const percent = pipelineTotal ? Math.max(8, Math.round((step.value / pipelineTotal) * 100)) : 0;
               return (
-                <article key={action.title} className="employer-quick-action-card">
-                  <span className="employer-quick-action-icon"><Icon size={18} /></span>
-                  <strong>{action.title}</strong>
-                  <p>{action.description}</p>
-                  <Link to={action.to} className="employer-quick-action-link">{action.cta} <ArrowRight size={14} /></Link>
+                <article key={step.label} className="employer-pipeline-step">
+                  <div className="employer-pipeline-step-top">
+                    <span>{index + 1}</span>
+                    <strong>{step.value}</strong>
+                  </div>
+                  <p>{step.label}</p>
+                  <div className="employer-pipeline-progress"><span style={{ width: `${percent}%` }} /></div>
                 </article>
               );
             })}
           </div>
-        </Card>
-
-        <Card className="employer-panel employer-panel-wide">
-          <div className="panel-head employer-panel-head">
-            <div>
-              <p className="section-eyebrow">Communication</p>
-              <h3>Interview and message hub</h3>
-            </div>
-            <Badge tone="neutral">Visible on dashboard</Badge>
-          </div>
-
-          <div className="employer-quick-actions-grid">
-            <article className="employer-quick-action-card">
-              <span className="employer-quick-action-icon"><CalendarClock size={18} /></span>
-              <strong>Schedule interviews</strong>
-              <p>Open the applicant pool and move shortlisted candidates into the interview stage.</p>
-              <Link to={applicantsRoute} className="employer-quick-action-link">Open applicant pool <ArrowRight size={14} /></Link>
-            </article>
-            <article className="employer-quick-action-card">
-              <span className="employer-quick-action-icon"><Mail size={18} /></span>
-              <strong>Start a new chat</strong>
-              <p>Open one-to-one message threads with candidates or continue admin conversations from your inbox.</p>
-              <Link to="/employer/messages" className="employer-quick-action-link">Open messages <ArrowRight size={14} /></Link>
-            </article>
-            <article className="employer-quick-action-card">
-              <span className="employer-quick-action-icon"><Bell size={18} /></span>
-              <strong>Monitor alerts</strong>
-              <p>Review job approval notifications, status changes, and incoming candidate updates.</p>
-              <Link to="/employer/notifications" className="employer-quick-action-link">View alerts <ArrowRight size={14} /></Link>
-            </article>
-          </div>
-        </Card>
+        </article>
       </section>
 
-      <section className="employer-analytics-grid mt-1">
-        <Card className="employer-panel">
-          <div className="panel-head employer-panel-head">
+      <section className="employer-premium-lower-grid">
+        <article className="employer-premium-panel">
+          <div className="employer-premium-panel-head">
             <div>
-              <p className="section-eyebrow">Analytics</p>
-              <h3><BarChart2 size={16} /> Applications per job</h3>
+              <p className="section-eyebrow">Quick actions</p>
+              <h3>High velocity workflows</h3>
             </div>
           </div>
-
-          {applicationsPerJob.length ? (
-            <div className="employer-chart">
-              {applicationsPerJob.map((item) => {
-                const width = `${Math.max(10, (item.applicants / applicationsPerJobMax) * 100)}%`;
-
-                return (
-                  <div key={item.id} className="employer-chart-row">
-                    <div className="employer-chart-label">
-                      <span>{item.title}</span>
-                      <strong>{item.applicants}</strong>
-                    </div>
-                    <div className="employer-chart-track">
-                      <span className="employer-chart-fill" style={{ width }} />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="employer-empty-inline">
-              <h4>Application chart will appear here</h4>
-              <p>As applications arrive, this chart will rank jobs by candidate interest.</p>
-            </div>
-          )}
-        </Card>
-
-        <Card className="employer-panel">
-          <div className="panel-head employer-panel-head">
-            <div>
-              <p className="section-eyebrow">Distribution</p>
-              <h3><PieChart size={16} /> Job status mix</h3>
-            </div>
-          </div>
-
-          {state.jobs.length ? (
-            <div className="employer-status-summary">
-              <div className="employer-status-stack" role="img" aria-label="Job status distribution">
-                {jobStatusDistribution.map((item) => (
-                  <span
-                    key={item.key}
-                    className={`employer-status-segment employer-status-${item.key}`}
-                    style={{ width: `${Math.max(item.value ? 8 : 0, item.percent)}%` }}
-                  />
-                ))}
-              </div>
-              <div className="employer-status-list">
-                {jobStatusDistribution.map((item) => (
-                  <div key={item.key} className="employer-status-item">
-                    <span className={`employer-status-dot employer-status-${item.key}`} />
-                    <p>{item.label}</p>
-                    <strong>{item.value}</strong>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <div className="employer-empty-inline">
-              <h4>Status distribution unavailable</h4>
-              <p>Publish jobs to get a live split of active, pending review, and closed roles.</p>
-            </div>
-          )}
-        </Card>
-
-        <Card className="employer-panel employer-panel-wide">
-          <div className="panel-head employer-panel-head">
-            <div>
-              <p className="section-eyebrow">Trend</p>
-              <h3><LineChart size={16} /> Monthly application trend</h3>
-            </div>
-            <Badge tone="neutral">Last 6 months</Badge>
-          </div>
-
-          {pipelineTotal ? (
-            <div className="employer-trend-chart">
-              {monthlyTrend.map((item) => {
-                const height = `${Math.max(item.count ? 16 : 8, (item.count / monthlyTrendMax) * 100)}%`;
-
-                return (
-                  <div key={item.key} className="employer-trend-column">
-                    <small className="employer-trend-value">{item.count}</small>
-                    <span className="employer-trend-bar" style={{ height }} />
-                    <small className="employer-trend-label">{item.label}</small>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="employer-empty-inline">
-              <h4>No application trend yet</h4>
-              <p>Once candidates start applying, you will see hiring momentum month by month.</p>
-            </div>
-          )}
-        </Card>
-      </section>
-
-      <Card className="employer-panel employer-pipeline mt-1">
-        <div className="panel-head employer-panel-head">
-          <div>
-            <p className="section-eyebrow">Hiring workflow</p>
-            <h3>Hiring pipeline</h3>
-          </div>
-          <Badge tone="neutral">{pipelineTotal} total tracked</Badge>
-        </div>
-
-        {pipelineTotal ? (
-          <div className="employer-pipeline-grid">
-            {pipelineSteps.map((step) => {
-              const Icon = step.icon;
+          <div className="employer-action-matrix">
+            {quickActions.map((action) => {
+              const Icon = action.icon;
               return (
-                <article key={step.key} className="employer-pipeline-card">
-                  <span className="employer-pipeline-icon"><Icon size={16} /></span>
-                  <small>{step.label}</small>
-                  <strong>{step.value}</strong>
+                <Link key={action.title} to={action.to} className="employer-action-tile">
+                  <span><Icon size={19} /></span>
+                  <div>
+                    <strong>{action.title}</strong>
+                    <p>{action.description}</p>
+                  </div>
+                  <ArrowRight size={15} />
+                </Link>
+              );
+            })}
+          </div>
+        </article>
+
+        <article className="employer-premium-panel">
+          <div className="employer-premium-panel-head">
+            <div>
+              <p className="section-eyebrow">Recent activity</p>
+              <h3>Hiring timeline</h3>
+            </div>
+          </div>
+          <div className="employer-activity-timeline">
+            {activities.length ? activities.map((activity, index) => {
+              const Icon = activity.icon;
+              return (
+                <div key={`${activity.title}-${index}`} className="employer-activity-item">
+                  <span><Icon size={16} /></span>
+                  <div>
+                    <strong>{activity.title}</strong>
+                    <p>{activity.detail}</p>
+                  </div>
+                </div>
+              );
+            }) : (
+              <div className="employer-empty-inline">
+                <h4>No activity yet</h4>
+                <p>Candidate and job events will appear here as your hiring workflow begins.</p>
+              </div>
+            )}
+          </div>
+        </article>
+      </section>
+
+      <section className="employer-premium-panel employer-job-management-panel">
+        <div className="employer-premium-panel-head">
+          <div>
+            <p className="section-eyebrow">Job management</p>
+            <h3>Premium role cards</h3>
+          </div>
+          <Button as={Link} to="/employer/jobs" size="sm" variant="secondary">View all jobs</Button>
+        </div>
+        {recentJobs.length ? (
+          <div className="employer-premium-job-grid">
+            {recentJobs.map((job) => {
+              const badge = getJobBadge(job);
+              const applicantCount = state.applicationsByJob[job._id]?.length || 0;
+              return (
+                <article key={job._id} className="employer-premium-job-card">
+                  <div className="employer-job-card-head">
+                    <span><BriefcaseBusiness size={18} /></span>
+                    <Badge tone={badge.tone}>{badge.label}</Badge>
+                  </div>
+                  <h4>{job.title}</h4>
+                  <p>{job.company || 'Hirexo Employer'} · Posted {formatDate(job.createdAt)}</p>
+                  <div className="employer-job-card-metrics">
+                    <span>{applicantCount} applicants</span>
+                    <span>{job.salaryMin || job.salaryMax ? `${job.salaryMin || ''}-${job.salaryMax || ''}` : 'Salary hidden'}</span>
+                  </div>
+                  <div className="employer-job-card-actions">
+                    <Link to={`/employer/jobs/${job._id}/edit`}>Edit</Link>
+                    <Link to={`/employer/jobs/${job._id}/applicants`}>Applicants <ArrowRight size={14} /></Link>
+                  </div>
                 </article>
               );
             })}
           </div>
         ) : (
           <div className="employer-empty-state">
-            <div className="employer-empty-icon"><ListChecks size={22} /></div>
+            <div className="employer-empty-icon"><BriefcaseBusiness size={22} /></div>
             <div>
-              <h4>Pipeline data is empty right now</h4>
-              <p>As applications are reviewed and moved across stages, your hiring funnel will populate here.</p>
-              <Button as={Link} to="/employer/jobs/new" size="sm" variant="secondary">Publish a role</Button>
+              <h4>No jobs published yet</h4>
+              <p>Create your first premium role card and start collecting applications.</p>
+              <Button as={Link} to="/employer/jobs/new" size="sm">Post your first job</Button>
             </div>
           </div>
         )}
-      </Card>
-    </>
+      </section>
+
+      {applicationsPerJob.length ? (
+        <section className="employer-premium-panel employer-interest-panel">
+          <div className="employer-premium-panel-head">
+            <div>
+              <p className="section-eyebrow">Role demand</p>
+              <h3>Applications by job</h3>
+            </div>
+          </div>
+          <div className="employer-interest-list">
+            {applicationsPerJob.map((item) => (
+              <div key={item.id} className="employer-interest-row">
+                <div>
+                  <strong>{item.title}</strong>
+                  <small>{item.applicants} applicants</small>
+                </div>
+                <span style={{ width: `${Math.max(10, (item.applicants / Math.max(1, applicationsPerJob[0]?.applicants || 1)) * 100)}%` }} />
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
+    </div>
   );
 }

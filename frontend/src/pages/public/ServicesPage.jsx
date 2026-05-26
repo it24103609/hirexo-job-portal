@@ -1,18 +1,17 @@
 import { Link } from 'react-router-dom';
 import {
   ArrowRight,
-  Award,
   BadgeCheck,
   Briefcase,
   Calendar,
   CheckCircle2,
+  ClipboardList,
   ClipboardCheck,
+  Gauge,
   Handshake,
-  Rocket,
   Search,
-  ShieldCheck,
+  SlidersHorizontal,
   Sparkles,
-  Users,
   Users2
 } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
@@ -85,10 +84,10 @@ export default function ServicesPage() {
   ];
 
   const whyChoose = [
-    { icon: Rocket, title: 'Faster hiring', desc: 'Reduce time-to-hire and access the best talent in a competitive market.' },
-    { icon: ShieldCheck, title: 'Quality screening', desc: 'Precise assessment of skills, role fit, and long-term retention potential.' },
-    { icon: Users, title: 'Culture alignment', desc: "Deep understanding of your team's culture to ensure candidates excel." },
-    { icon: Award, title: 'Flexible models', desc: 'From permanent hires to project staffing, solutions that adapt to workforce goals.' }
+    { icon: Gauge, title: 'Faster hiring', desc: 'Reduce time-to-hire and access the best talent in a competitive market.' },
+    { icon: ClipboardList, title: 'Quality screening', desc: 'Precise assessment of skills, role fit, and long-term retention potential.' },
+    { icon: Handshake, title: 'Culture alignment', desc: "Deep understanding of your team's culture to ensure candidates excel." },
+    { icon: SlidersHorizontal, title: 'Flexible models', desc: 'From permanent hires to project staffing, solutions that adapt to workforce goals.' }
   ];
 
   return (
@@ -188,10 +187,12 @@ export default function ServicesPage() {
           <div className="how-it-works-grid">
             {howItWorks.map(({ icon: Icon, title, description }, index) => (
               <article key={title} className="how-it-works-card">
-                <div className="process-illustration">
-                  <Icon size={48} />
+                <div className="how-it-works-card-top">
+                  <div className="process-icon-box">
+                    <Icon size={20} />
+                  </div>
+                  <span className="how-it-works-step">{String(index + 1).padStart(2, '0')}</span>
                 </div>
-                <span className="how-it-works-step">{index + 1}</span>
                 <h3>{title}</h3>
                 <p>{description}</p>
               </article>
@@ -211,7 +212,7 @@ export default function ServicesPage() {
             {whyChoose.map(({ icon: Icon, title, desc }) => (
               <article key={title} className="why-choose-card">
                 <div className="why-choose-icon">
-                  <Icon size={36} />
+                  <Icon size={22} strokeWidth={2} />
                 </div>
                 <h3>{title}</h3>
                 <p>{desc}</p>

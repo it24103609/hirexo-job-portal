@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
+import { CalendarClock, Clock3, RotateCcw, PanelTop, Users, Sparkles } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
-import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
@@ -116,31 +116,71 @@ export default function CandidateInterviewsPage() {
   return (
     <>
       <Seo title="My Interviews | Hirexo" description="Track interview rounds, book slots, and request changes." />
-      <DashboardHeader title="My Interviews" description="Stay on top of interview rounds, panel details, reminders, and any reschedule requests." />
+      <section className="candidate-interviews-hero candidate-glass-card">
+        <div className="candidate-interviews-hero-copy">
+          <p className="candidate-interviews-eyebrow">Candidate</p>
+          <h1>My Interviews</h1>
+          <p>Stay on top of interview rounds, panel details, reminders, and any reschedule requests.</p>
+        </div>
+        <div className="candidate-interviews-hero-panel" aria-hidden="true">
+          <span className="candidate-interviews-hero-orb candidate-interviews-hero-orb-a" />
+          <span className="candidate-interviews-hero-orb candidate-interviews-hero-orb-b" />
+          <div className="candidate-interviews-hero-chip">
+            <Sparkles size={16} />
+            <span>Interview flow</span>
+          </div>
+          <div className="candidate-interviews-hero-card">
+            <div className="candidate-interviews-hero-card-icon"><CalendarClock size={18} /></div>
+            <div>
+              <strong>{stats.total} rounds</strong>
+              <p>{stats.upcoming} upcoming · {stats.reschedule} reschedules</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-      <div className="candidate-stat-grid mb-1">
-        <article className="candidate-stat-card"><div><p>Interview Rounds</p><strong>{stats.total}</strong></div></article>
-        <article className="candidate-stat-card"><div><p>Upcoming</p><strong>{stats.upcoming}</strong></div></article>
-        <article className="candidate-stat-card"><div><p>Reschedule Requests</p><strong>{stats.reschedule}</strong></div></article>
+      <div className="candidate-interviews-stats">
+        <article className="candidate-interviews-stat-card candidate-glass-card">
+          <span className="candidate-interviews-stat-icon"><PanelTop size={18} /></span>
+          <div>
+            <p>Interview Rounds</p>
+            <strong>{stats.total}</strong>
+          </div>
+        </article>
+        <article className="candidate-interviews-stat-card candidate-glass-card">
+          <span className="candidate-interviews-stat-icon"><Clock3 size={18} /></span>
+          <div>
+            <p>Upcoming</p>
+            <strong>{stats.upcoming}</strong>
+          </div>
+        </article>
+        <article className="candidate-interviews-stat-card candidate-glass-card">
+          <span className="candidate-interviews-stat-icon"><RotateCcw size={18} /></span>
+          <div>
+            <p>Reschedule Requests</p>
+            <strong>{stats.reschedule}</strong>
+          </div>
+        </article>
       </div>
 
-      <div style={{ display: 'grid', gap: 16 }}>
+      <div className="candidate-interviews-list">
         {applications.length ? applications.map((application) => (
-          <Card key={application._id}>
-            <div className="panel-head">
+          <Card key={application._id} className="candidate-interview-application-card candidate-glass-card">
+            <div className="panel-head candidate-interview-application-head">
               <div>
                 <p className="section-eyebrow">Interview journey</p>
                 <h3>{application.job?.title || 'Role'} · {application.job?.companyName || 'Company'}</h3>
+                <p className="candidate-interview-application-subtitle">A clean timeline of each scheduled round, panel, and action request.</p>
               </div>
               <Badge>{application.interviewRounds.length} rounds</Badge>
             </div>
 
-            <div style={{ display: 'grid', gap: 12 }}>
+            <div className="candidate-interview-rounds-grid">
               {(application.interviewRounds || []).map((round) => {
                 const openSlots = (round.interviewSlots || []).filter((slot) => !slot.isBooked);
                 return (
-                  <article key={round._id} style={{ border: '1px solid var(--border)', borderRadius: 16, padding: 16, display: 'grid', gap: 10 }}>
-                    <div className="panel-head" style={{ marginBottom: 0 }}>
+                  <article key={round._id} className="candidate-interview-round-card">
+                    <div className="panel-head candidate-interview-round-head">
                       <div>
                         <strong>{round.roundName || `Round ${round.order || 1}`}</strong>
                         <p className="m-0">
@@ -155,55 +195,55 @@ export default function CandidateInterviewsPage() {
                     {(round.panelInterviewers || []).length ? (
                       <div>
                         <small>Panel</small>
-                        <div>{round.panelInterviewers.map((item) => item.name || item.email || 'Interviewer').join(', ')}</div>
+                        <div className="candidate-interview-meta-copy">{round.panelInterviewers.map((item) => item.name || item.email || 'Interviewer').join(', ')}</div>
                       </div>
                     ) : null}
 
                     {round.meetingLink ? (
-                      <div>
+                      <div className="candidate-interview-meta-block">
                         <small>Meeting link</small>
                         <div><a href={round.meetingLink} target="_blank" rel="noreferrer">{round.meetingLink}</a></div>
                       </div>
                     ) : null}
 
                     {round.notes ? (
-                      <div>
+                      <div className="candidate-interview-meta-block">
                         <small>Notes</small>
-                        <div>{round.notes}</div>
+                        <div className="candidate-interview-meta-copy">{round.notes}</div>
                       </div>
                     ) : null}
 
                     {round.status === 'no_show' ? (
-                      <div>
+                      <div className="candidate-interview-meta-block">
                         <small>No-show status</small>
-                        <div>{round.noShowReason || 'This round was marked as no-show.'}</div>
+                        <div className="candidate-interview-meta-copy">{round.noShowReason || 'This round was marked as no-show.'}</div>
                       </div>
                     ) : null}
 
                     {round.rescheduleRequestReason ? (
-                      <div>
+                      <div className="candidate-interview-meta-block">
                         <small>Pending reschedule request</small>
-                        <div>{round.rescheduleRequestReason}</div>
+                        <div className="candidate-interview-meta-copy">{round.rescheduleRequestReason}</div>
                       </div>
                     ) : null}
 
                     {round.feedback?.submittedAt ? (
-                      <div style={{ border: '1px solid var(--border)', borderRadius: 12, padding: 10 }}>
+                      <div className="candidate-interview-feedback">
                         <small>Interview scorecard summary</small>
-                        <div>
+                        <div className="candidate-interview-meta-copy">
                           Comm {round.feedback.communication || 0} · Tech {round.feedback.technicalSkills || 0} · Confidence {round.feedback.confidence || 0} · Culture {round.feedback.cultureFit || 0}
                         </div>
-                        <div>{round.feedback.recommendation ? round.feedback.recommendation.replace(/_/g, ' ') : 'No recommendation'}</div>
+                        <div className="candidate-interview-meta-copy">{round.feedback.recommendation ? round.feedback.recommendation.replace(/_/g, ' ') : 'No recommendation'}</div>
                         {round.feedback.summary ? <small>{round.feedback.summary}</small> : null}
                       </div>
                     ) : null}
 
                     {openSlots.length ? (
-                      <div style={{ display: 'grid', gap: 8 }}>
+                      <div className="candidate-interview-slot-list">
                         <small>Available slots</small>
                         {openSlots.map((slot) => (
-                          <div key={slot._id} style={{ display: 'flex', justifyContent: 'space-between', gap: 12, alignItems: 'center', border: '1px solid var(--border)', borderRadius: 12, padding: 10 }}>
-                            <div>
+                          <div key={slot._id} className="candidate-interview-slot-item">
+                            <div className="candidate-interview-slot-copy">
                               <div>{formatDateTime(slot.startsAt)}</div>
                               <small>{slot.mode || round.mode || 'video'}{slot.location ? ` · ${slot.location}` : ''}</small>
                             </div>
@@ -220,7 +260,7 @@ export default function CandidateInterviewsPage() {
                     ) : null}
 
                     {!['completed', 'cancelled'].includes(String(round.status || '').toLowerCase()) ? (
-                      <div style={{ display: 'grid', gap: 8 }}>
+                      <div className="candidate-interview-reschedule">
                         <Input
                           label="Need a different time?"
                           value={rescheduleForms[round._id] || ''}
@@ -245,7 +285,12 @@ export default function CandidateInterviewsPage() {
             </div>
           </Card>
         )) : (
-          <Card>
+          <Card className="candidate-interview-empty candidate-glass-card">
+            <div className="candidate-interview-empty-orbit candidate-interview-empty-orbit-a" aria-hidden="true" />
+            <div className="candidate-interview-empty-orbit candidate-interview-empty-orbit-b" aria-hidden="true" />
+            <div className="candidate-interview-empty-icon" aria-hidden="true">
+              <Users size={24} />
+            </div>
             <h3>No interviews yet</h3>
             <p className="m-0">When an employer schedules a round, it will show up here with slot booking and reschedule support.</p>
           </Card>

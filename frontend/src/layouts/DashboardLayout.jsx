@@ -64,9 +64,9 @@ export default function DashboardLayout({ role }) {
         </button>
       </div>
 
-      <div className={`dashboard-shell ${role === 'candidate' ? 'candidate-portal-shell' : ''} ${sidebarOpen ? 'mobile-nav-open' : ''}`}>
+      <div className={`dashboard-shell ${role === 'candidate' ? 'candidate-portal-shell' : ''} ${role === 'employer' ? 'employer-portal-shell' : ''} ${sidebarOpen ? 'mobile-nav-open' : ''}`}>
         <Sidebar role={role} isOpen={sidebarOpen} onNavigate={() => setSidebarOpen(false)} />
-        <div className={`dashboard-main ${role === 'candidate' ? 'candidate-portal-main' : ''}`}>
+        <div className={`dashboard-main ${role === 'candidate' ? 'candidate-portal-main' : ''} ${role === 'employer' ? 'employer-portal-main' : ''}`}>
           <Outlet />
         </div>
       </div>

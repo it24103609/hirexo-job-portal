@@ -51,7 +51,7 @@ export default function CandidateProfilePage() {
       };
       setForm(nextForm);
       setInitialForm(nextForm);
-      setProfilePicture(pictureRes.data || null);
+      setProfilePicture(pictureRes.data?.data || pictureRes.data || null);
     }).catch(() => {}).finally(() => setLoading(false));
   }, []);
 
@@ -72,7 +72,7 @@ export default function CandidateProfilePage() {
     setIsUploadingPicture(true);
     try {
       const response = await candidateApi.uploadProfilePicture(formData);
-      setProfilePicture(response.data);
+      setProfilePicture(response.data?.data || response.data || null);
       setPictureFile(null);
       broadcastProfileRefresh();
       toast.success('Profile picture uploaded');
