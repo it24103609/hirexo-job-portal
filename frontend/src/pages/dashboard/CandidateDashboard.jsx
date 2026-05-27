@@ -280,9 +280,8 @@ export default function CandidateDashboard() {
                 <p>Curated opportunities aligned with your profile signals.</p>
               </div>
             </div>
-            <Link to="/jobs" className="link-button">Explore all <ArrowRight size={14} /></Link>
+            <Link to="/jobs" className="link-button candidate-recommended-link">Explore all <ArrowRight size={14} /></Link>
           </div>
-          <DashboardIllustration type="roles" className="candidate-feature-illustration" />
           {recommendedJobs.length ? (
             <div className="candidate-recommended-grid">
               {recommendedJobs.map((job) => (
@@ -290,12 +289,12 @@ export default function CandidateDashboard() {
                   <span className="candidate-company-badge" aria-hidden="true">
                     {(job.companyName || 'H').slice(0, 1).toUpperCase()}
                   </span>
-                  <div>
-                    <Badge tone="success">{job.jobType?.name || job.jobType || 'Role'}</Badge>
+                  <div className="candidate-recommended-copy">
+                    <Badge tone="success" className="candidate-job-type-badge">{job.jobType?.name || job.jobType || 'Role'}</Badge>
                     <h4>{job.title}</h4>
                     <p>{job.companyName || 'Hirexo partner'} · {job.location?.name || job.location || 'Remote/Hybrid'}</p>
                   </div>
-                  <Link className="btn btn-secondary btn-sm" to={`/jobs/${job.slug || job._id}`}>View details</Link>
+                  <Link className="btn btn-secondary btn-sm candidate-recommended-action" to={`/jobs/${job.slug || job._id}`}>View details</Link>
                 </article>
               ))}
             </div>

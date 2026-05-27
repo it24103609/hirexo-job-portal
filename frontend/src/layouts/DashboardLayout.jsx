@@ -18,6 +18,11 @@ export default function DashboardLayout({ role }) {
   }, [sidebarOpen]);
 
   useEffect(() => {
+    document.body.classList.add('dashboard-layout-active');
+    return () => document.body.classList.remove('dashboard-layout-active');
+  }, []);
+
+  useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
 
