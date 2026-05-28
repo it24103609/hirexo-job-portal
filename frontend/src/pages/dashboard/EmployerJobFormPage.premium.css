@@ -350,17 +350,52 @@
 }
 
 .jobform-preview-card .job-list-actions {
-  min-width: 120px;
-  gap: 0.6rem;
+  min-width: 0;
+  gap: 0.75rem;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,252,250,0.98));
   border: 1px solid rgba(26,138,86,0.06);
-  padding: 6px;
+  padding: 8px 10px;
   border-radius: 14px;
   box-shadow: 0 8px 20px rgba(17,64,43,0.04);
+  max-width: 100%;
+  width: fit-content;
+}
+
+.jobform-preview-card .job-card-list {
+  grid-template-columns: 74px minmax(0, 1fr) 124px;
+  grid-template-areas:
+    'logo content thumb'
+    'actions actions actions';
+  column-gap: 0.85rem;
+  row-gap: 0.6rem;
+  align-items: start;
+  overflow: hidden;
+}
+
+.jobform-preview-card .job-list-logo {
+  grid-area: logo;
+  align-self: start;
+}
+
+.jobform-preview-card .job-list-content {
+  grid-area: content;
+}
+
+.jobform-preview-card .job-list-thumb {
+  grid-area: thumb;
+  width: 124px;
+  height: 96px;
+  justify-self: end;
+  align-self: start;
+}
+
+.jobform-preview-card .job-list-actions {
+  grid-area: actions;
+  justify-self: stretch;
 }
 
 /* ensure each action aligns nicely when horizontal */
@@ -371,42 +406,44 @@
   background: transparent;
   border: none;
   box-shadow: none;
-  padding: 8px 10px;
+  padding: 9px 12px;
   margin: 0;
   color: inherit;
 }
 
 /* compact heart icon button */
 .jobform-preview-card .job-list-actions .icon-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
   background: transparent;
   border: none;
   padding: 0;
+  border-right: 1px solid rgba(26, 138, 86, 0.1);
+  padding-right: 4px;
 }
 
 /* details button styling */
 .jobform-preview-card .job-list-actions .details-btn {
-  min-width: 84px;
-  height: 40px;
-  border-radius: 8px;
+  min-width: 96px;
+  height: 44px;
+  border-radius: 10px;
   background: transparent;
   border: none;
-  color: #214f3a;
+  justify-content: flex-start;
   font-weight: 700;
-  padding: 0 12px;
+  padding: 0 14px;
 }
 
 /* primary apply button */
 .jobform-preview-card .job-list-actions .apply-btn {
-  min-width: 100px;
-  height: 40px;
-  border-radius: 8px;
+  width: 100%;
+  height: 44px;
+  border-radius: 10px;
   background: linear-gradient(135deg, var(--primary), var(--primary-2));
   color: #fff;
   font-weight: 800;
-  padding: 0 18px;
+  padding: 0 20px;
   box-shadow: none;
 }
 
@@ -420,14 +457,17 @@
 
 /* subtle separator between icon and details when needed */
 .jobform-preview-card .job-list-actions .details-btn {
-  border-left: 1px solid rgba(26,138,86,0.04);
+  border-left: none;
   padding-left: 14px;
 }
 
 /* ensure the group box wraps tightly and appears as a single unit */
 .jobform-preview-card .job-list-actions {
-  gap: 8px;
-  padding: 6px 8px;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 16px;
+  margin-top: 0.3rem;
+  width: 100%;
 }
 
 /* remove red focus/outline and use subtle green focus */
@@ -439,13 +479,24 @@
 }
 
 @media (max-width: 900px) {
+  .jobform-preview-card .job-card-list {
+    grid-template-columns: 74px minmax(0, 1fr);
+    grid-template-areas:
+      'logo content'
+      'actions actions';
+  }
+
+  .jobform-preview-card .job-list-thumb {
+    display: none;
+  }
+
   .jobform-preview-card .job-list-actions {
     justify-content: flex-start;
     gap: 0.5rem;
     padding: 4px;
   }
   .jobform-preview-card .job-list-actions .apply-btn {
-    min-width: 84px;
+    min-width: 98px;
   }
 }
 
