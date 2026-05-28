@@ -17,7 +17,6 @@ import {
   PencilLine,
   Mail,
   BarChart3,
-  Sparkles,
   X,
   ListChecks,
   CalendarDays,
@@ -208,15 +207,10 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
         <div className="admin-sidebar-identity">
           <div className="admin-sidebar-top">
             <div className="candidate-avatar admin-sidebar-avatar" aria-hidden="true">{initials}</div>
-            <div>
-              <span className="admin-sidebar-badge"><Sparkles size={12} /> Admin Control</span>
+            <div className="admin-sidebar-copy">
               <strong>{user?.name || 'Hirexo Admin'}</strong>
-              <p>{user?.email || 'admin@hirexo.com'}</p>
+              <span className="admin-sidebar-role">System Admin</span>
             </div>
-          </div>
-          <div className="admin-sidebar-meta">
-            <span>Secure moderation workspace</span>
-            <span>Live platform oversight</span>
           </div>
         </div>
       ) : null}

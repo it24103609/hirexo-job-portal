@@ -176,18 +176,14 @@
   border: 1px solid rgba(26, 138, 86, 0.14);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.78);
-  padding: 0.85rem;
-  box-shadow: 0 18px 34px rgba(12, 52, 35, 0.07);
 }
 
 .sidebar-help-card svg {
   color: var(--primary);
   margin-top: 0.15rem;
 }
-
 .sidebar-help-card strong {
   color: var(--primary-dark);
-  font-size: 0.9rem;
 }
 
 .sidebar-help-card p {
@@ -1002,6 +998,27 @@
   color: #0f8050;
 }
 
+.policy-toggle-setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(26, 138, 86, 0.12);
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.policy-toggle-button {
+  min-width: 120px;
+  justify-content: flex-end;
+}
+
+.policy-toggle-button .candidate-switch-label {
+  min-width: 42px;
+  text-align: right;
+}
+
 .candidate-digest-select {
   width: min(220px, 100%);
   min-height: 42px;
@@ -1046,68 +1063,55 @@
 }
 
 .admin-sidebar-identity {
-  border: 1px solid rgba(26, 138, 86, 0.16);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.95rem 1rem;
   border-radius: 22px;
-  background: linear-gradient(145deg, rgba(18, 97, 61, 0.97), rgba(26, 138, 86, 0.92));
-  color: #f5fff9;
-  padding: 1rem;
-  display: grid;
-  gap: 0.9rem;
-  box-shadow: 0 18px 34px rgba(12, 52, 35, 0.2);
+  border: 1px solid rgba(26, 138, 86, 0.18);
+  background: linear-gradient(135deg, rgba(18, 105, 66, 0.98), rgba(42, 163, 103, 0.94));
+  box-shadow: 0 18px 40px rgba(12, 52, 35, 0.16);
+  margin-bottom: 0.7rem;
 }
 
 .admin-sidebar-top {
   display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
+  align-items: center;
+  gap: 0.8rem;
+  min-width: 0;
 }
 
 .admin-sidebar-avatar {
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  box-shadow: none;
+  flex: 0 0 auto;
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid rgba(255, 255, 255, 0.42);
+  box-shadow: 0 10px 18px rgba(7, 31, 21, 0.16);
 }
 
-.admin-sidebar-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-bottom: 0.45rem;
-  padding: 0.24rem 0.58rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.14);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+.admin-sidebar-copy {
+  min-width: 0;
 }
 
-.admin-sidebar-top strong {
+.admin-sidebar-copy strong {
   display: block;
-  font-size: 1rem;
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-weight: 800;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.admin-sidebar-top p {
-  margin: 0.22rem 0 0;
-  color: rgba(255, 255, 255, 0.76);
-  font-size: 0.8rem;
-}
-
-.admin-sidebar-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.admin-sidebar-meta span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 32px;
-  border-radius: 999px;
-  padding: 0.3rem 0.7rem;
-  background: rgba(255, 255, 255, 0.12);
-  font-size: 0.76rem;
+.admin-sidebar-role {
+  display: block;
+  margin-top: 0.22rem;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.74rem;
   font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .sidebar-group-stack {
@@ -2163,6 +2167,7 @@
   padding: 1.15rem;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 247, 0.96));
   border-color: rgba(26, 138, 86, 0.14);
+  font-family: 'Inter', 'Manrope', sans-serif;
 }
 
 .employer-sidebar-stack {
@@ -5605,19 +5610,30 @@
 }
 
 .dashboard-sidebar-employer .employer-sidebar-link {
-  min-height: 42px;
-  border-radius: 14px;
-  background: transparent;
-  color: #52685d;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 48px;
+  border-radius: 17px;
+  padding: 0.78rem 0.86rem;
+  font-weight: 700;
+  color: #2f5145;
+  background: rgba(255, 255, 255, 0.34);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
 }
 
 .dashboard-sidebar-employer .employer-sidebar-link:hover {
-  background: rgba(26, 138, 86, 0.08);
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 12px 24px rgba(12, 52, 35, 0.08);
 }
 
 .dashboard-sidebar-employer .employer-sidebar-link.active {
-  color: #0f5a39;
-  background: rgba(26, 138, 86, 0.12);
+  color: #fff;
+  background: linear-gradient(135deg, #25a86a, #158853);
+  border-color: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 18px 34px rgba(21, 136, 83, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
 
 @media (max-width: 1200px) {
@@ -6471,21 +6487,30 @@
 }
 
 .dashboard-sidebar-employer .employer-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   min-height: 48px;
-  border-radius: 16px;
-  font-weight: 800;
+  border-radius: 17px;
+  padding: 0.78rem 0.86rem;
+  font-weight: 700;
+  color: #2f5145;
+  background: rgba(255, 255, 255, 0.34);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
 }
 
 .dashboard-sidebar-employer .employer-sidebar-link:hover {
-  transform: translateX(3px);
-  background: rgba(220, 252, 231, 0.52);
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 12px 24px rgba(12, 52, 35, 0.08);
 }
 
 .dashboard-sidebar-employer .employer-sidebar-link.active {
-  color: #063f29;
-  background: linear-gradient(135deg, rgba(196, 255, 220, 0.84), rgba(255, 255, 255, 0.72));
-  border-color: rgba(34, 197, 94, 0.22);
-  box-shadow: 0 14px 28px rgba(18, 151, 91, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  color: #fff;
+  background: linear-gradient(135deg, #25a86a, #158853);
+  border-color: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 18px 34px rgba(21, 136, 83, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.32);
 }
 
 @keyframes employerFadeUp {
@@ -7777,11 +7802,17 @@
 }
 
 .dashboard-sidebar-employer .employer-sidebar-link {
-  min-height: 48px;
+  display: flex;
+  align-items: center;
   gap: 0.6rem;
-  padding: 0.78rem 0.86rem;
+  min-height: 48px;
   border-radius: 17px;
-  font-size: 0.95rem;
+  padding: 0.78rem 0.86rem;
+  font-weight: 700;
+  color: #2f5145;
+  background: rgba(255, 255, 255, 0.34);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
 }
 
 .dashboard-sidebar-employer .employer-sidebar-link .sidebar-link-icon {
@@ -7793,6 +7824,8 @@
 
 .dashboard-sidebar-employer .employer-sidebar-link:hover {
   transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 12px 24px rgba(12, 52, 35, 0.08);
 }
 
 @media (max-width: 1200px) {

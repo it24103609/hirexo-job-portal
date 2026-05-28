@@ -11,6 +11,26 @@ import Textarea from '../../components/ui/Textarea';
 import Loader from '../../components/ui/Loader';
 import { employerApi } from '../../services/employer.api';
 
+function ToggleSwitch({ label, checked, onToggle }) {
+  return (
+    <div className="policy-toggle-setting">
+      <span className="field-label">{label}</span>
+      <button
+        type="button"
+        className="candidate-switch policy-toggle-button"
+        role="switch"
+        aria-checked={Boolean(checked)}
+        onClick={onToggle}
+      >
+        <span className="candidate-switch-track" aria-hidden="true">
+          <span className="candidate-switch-thumb" />
+        </span>
+        <span className="candidate-switch-label">{checked ? 'ON' : 'OFF'}</span>
+      </button>
+    </div>
+  );
+}
+
 const emptyPolicy = {
   name: '',
   category: 'workflow',
@@ -95,10 +115,11 @@ export default function EmployerPoliciesConfigPage() {
               <Input label="Auto archive (days)" type="number" value={policyForm.autoArchiveDays} onChange={(event) => setPolicyForm((current) => ({ ...current, autoArchiveDays: event.target.value }))} />
             </div>
             <Input label="Tags" value={policyForm.tags} onChange={(event) => setPolicyForm((current) => ({ ...current, tags: event.target.value }))} placeholder="sla, interview, standard" />
-            <label className="field">
-              <span className="field-label">Approval required</span>
-              <input type="checkbox" checked={Boolean(policyForm.approvalRequired)} onChange={(event) => setPolicyForm((current) => ({ ...current, approvalRequired: event.target.checked }))} />
-            </label>
+            <ToggleSwitch
+              label="Approval required"
+              checked={Boolean(policyForm.approvalRequired)}
+              onToggle={() => setPolicyForm((current) => ({ ...current, approvalRequired: !Boolean(current.approvalRequired) }))}
+            />
             <div className="dashboard-actions">
               <Button onClick={async () => {
                 await employerApi.savePolicy({
@@ -152,14 +173,16 @@ export default function EmployerPoliciesConfigPage() {
               <option value="agenda">Agenda</option>
               <option value="month">Month</option>
             </Select>
-            <label className="field">
-              <span className="field-label">Reschedule approval required</span>
-              <input type="checkbox" checked={Boolean(configuration.rescheduleApprovalRequired)} onChange={(event) => setConfiguration((current) => ({ ...current, rescheduleApprovalRequired: event.target.checked }))} />
-            </label>
-            <label className="field">
-              <span className="field-label">Offer approval required</span>
-              <input type="checkbox" checked={Boolean(configuration.offerApprovalRequired)} onChange={(event) => setConfiguration((current) => ({ ...current, offerApprovalRequired: event.target.checked }))} />
-            </label>
+            <ToggleSwitch
+              label="Reschedule approval required"
+              checked={Boolean(configuration.rescheduleApprovalRequired)}
+              onToggle={() => setConfiguration((current) => ({ ...current, rescheduleApprovalRequired: !Boolean(current.rescheduleApprovalRequired) }))}
+            />
+            <ToggleSwitch
+              label="Offer approval required"
+              checked={Boolean(configuration.offerApprovalRequired)}
+              onToggle={() => setConfiguration((current) => ({ ...current, offerApprovalRequired: !Boolean(current.offerApprovalRequired) }))}
+            />
             <div className="dashboard-actions">
               <Button onClick={async () => {
                 await employerApi.updateConfigurations({
