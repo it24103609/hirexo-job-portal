@@ -1,6 +1,7 @@
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'react-toastify';
 import Seo from '../../components/ui/Seo';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
@@ -26,11 +27,16 @@ export default function AdminLoginPage() {
               Admin access only. Unauthorized access attempts are monitored.
             </p>
             <form className="form-grid" onSubmit={handleSubmit(async (values) => {
-              const user = await login(values);
-              if (user.role === 'admin') {
-                navigate('/admin/dashboard');
-              } else {
-                navigate('/');
+              try {
+                const user = await login(values);
+                if (user.role === 'admin') {
+                  navigate('/admin/dashboard');
+                } else {
+                  toast.error('This account does not have admin access.');
+                  navigate('/');
+                }
+              } catch (error) {
+                toast.error(error.message || 'Unable to sign in.');
               }
             })}>
               <Input 

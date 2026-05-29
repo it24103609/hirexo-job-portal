@@ -26,6 +26,7 @@ const {
   syncLegacyInterviewFields,
   pushInterviewTimeline
 } = require('../utils/interviewWorkflow');
+const { assertValidStatusTransition, parseFutureDate } = require('../utils/applicationWorkflow');
 const { DEFAULT_AI_SCORING, buildAiExplanation } = require('../utils/aiScoring');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
@@ -94,6 +95,9 @@ function normalizeInterviewSlot(slot = {}) {
   const normalizedStart = new Date(startsAt);
   if (Number.isNaN(normalizedStart.getTime())) {
     throw new AppError('Interview slot start time is invalid', 400);
+  }
+  if (normalizedStart <= new Date()) {
+    throw new AppError('Interview slot start time must be in the future', 400);
   }
 
   const normalizedEnd = endsAt ? new Date(endsAt) : new Date(normalizedStart.getTime() + (45 * 60 * 1000));
@@ -534,6 +538,7 @@ const bookApplicationSlot = asyncHandler(async (req, res) => {
   if (!slot) {
     throw new AppError('Interview slot not found', 404);
   }
+  parseFutureDate(slot.startsAt, 'Interview slot start time');
 
   round.interviewSlots.forEach((entry) => {
     entry.isBooked = String(entry._id) === slotId;
@@ -635,6 +640,8 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
     throw new AppError('Application not found', 404);
   }
 
+  assertValidStatusTransition(application.status, status);
+
   application.status = status;
   application.notes = notes || application.notes;
 
@@ -658,7 +665,7 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
     }
 
     round.status = 'scheduled';
-    round.scheduledAt = normalizeDate(interviewAt);
+    round.scheduledAt = parseFutureDate(interviewAt, 'Interview date and time');
     round.mode = req.body.interviewMode || req.body.interview?.mode || round.mode;
     round.location = req.body.interviewLocation || req.body.interview?.location || round.location;
     round.meetingLink = req.body.interviewMeetingLink || req.body.interview?.meetingLink || round.meetingLink;
@@ -892,10 +899,7 @@ const updateInterviewRound = asyncHandler(async (req, res) => {
   if (req.body.panelInterviewers !== undefined) round.panelInterviewers = normalizePanelInterviewers(req.body.panelInterviewers);
 
   if (action === 'schedule' || req.body.scheduledAt) {
-    const scheduledAt = normalizeDate(req.body.scheduledAt);
-    if (!scheduledAt) {
-      throw new AppError('Valid scheduled time is required', 400);
-    }
+    const scheduledAt = parseFutureDate(req.body.scheduledAt, 'Scheduled time');
     round.scheduledAt = scheduledAt;
     round.status = 'scheduled';
   }
@@ -914,10 +918,7 @@ const updateInterviewRound = asyncHandler(async (req, res) => {
   }
 
   if (action === 'reschedule') {
-    const scheduledAt = normalizeDate(req.body.scheduledAt);
-    if (!scheduledAt) {
-      throw new AppError('Valid rescheduled time is required', 400);
-    }
+    const scheduledAt = parseFutureDate(req.body.scheduledAt, 'Rescheduled time');
     round.scheduledAt = scheduledAt;
     round.status = 'scheduled';
     round.rescheduleRequestedAt = undefined;
