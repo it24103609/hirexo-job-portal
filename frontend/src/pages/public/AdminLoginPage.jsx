@@ -1,4 +1,5 @@
 import { useNavigate, Link } from 'react-router-dom';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'react-toastify';
@@ -7,13 +8,24 @@ import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import BrandIdentity from '../../components/layout/BrandIdentity';
+import LoginRecaptcha from '../../components/auth/LoginRecaptcha';
 import { loginSchema } from '../../utils/validators';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(loginSchema) });
+  const captchaRef = useRef(null);
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+  const { register, handleSubmit, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(loginSchema) });
+
+  const handleRecaptchaChange = (token) => {
+    setRecaptchaToken(token || '');
+
+    if (token) {
+      clearErrors('recaptchaToken');
+    }
+  };
 
   return (
     <>
@@ -27,8 +39,13 @@ export default function AdminLoginPage() {
               Admin access only. Unauthorized access attempts are monitored.
             </p>
             <form className="form-grid" onSubmit={handleSubmit(async (values) => {
+              if (!recaptchaToken) {
+                setError('recaptchaToken', { type: 'manual', message: 'Please complete the reCAPTCHA verification.' });
+                return;
+              }
+
               try {
-                const user = await login(values);
+                const user = await login({ ...values, recaptchaToken });
                 if (user.role === 'admin') {
                   navigate('/admin/dashboard');
                 } else {
@@ -37,6 +54,9 @@ export default function AdminLoginPage() {
                 }
               } catch (error) {
                 toast.error(error.message || 'Unable to sign in.');
+              } finally {
+                captchaRef.current?.reset?.();
+                setRecaptchaToken('');
               }
             })}>
               <Input 
@@ -52,6 +72,12 @@ export default function AdminLoginPage() {
                 placeholder="Enter password" 
                 error={errors.password?.message} 
                 {...register('password')} 
+              />
+              <LoginRecaptcha
+                captchaRef={captchaRef}
+                error={errors.recaptchaToken?.message}
+                onChange={handleRecaptchaChange}
+                onExpired={() => setRecaptchaToken('')}
               />
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Signing in...' : 'Sign in'}

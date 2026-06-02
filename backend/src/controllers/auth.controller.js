@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const axios = require('axios');
 const User = require('../models/User');
 const CandidateProfile = require('../models/CandidateProfile');
 const EmployerProfile = require('../models/EmployerProfile');
@@ -58,6 +59,45 @@ async function loadProfile(user) {
   }
 
   return null;
+}
+
+async function verifyRecaptchaToken(recaptchaToken) {
+  if (!env.recaptchaSecretKey) {
+    throw new AppError('reCAPTCHA is not configured on the server.', 500);
+  }
+
+  if (!recaptchaToken) {
+    throw new AppError('Please complete the reCAPTCHA verification.', 400);
+  }
+
+  try {
+    const params = new URLSearchParams({
+      secret: env.recaptchaSecretKey,
+      response: recaptchaToken
+    });
+
+    const { data } = await axios.post('https://www.google.com/recaptcha/api/siteverify', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+
+    if (!data?.success) {
+      const errorCodes = Array.isArray(data?.['error-codes']) && data['error-codes'].length
+        ? ` (${data['error-codes'].join(', ')})`
+        : '';
+
+      throw new AppError(`reCAPTCHA verification failed${errorCodes}. Please try again.`, 400);
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof AppError) {
+      throw error;
+    }
+
+    throw new AppError('Unable to verify reCAPTCHA right now. Please try again.', 503);
+  }
 }
 
 const registerCandidate = asyncHandler(async (req, res) => {
@@ -175,11 +215,13 @@ const registerEmployer = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, recaptchaToken } = req.body;
 
   if (!email || !password) {
     throw new AppError('Email and password are required', 400);
   }
+
+  await verifyRecaptchaToken(recaptchaToken);
 
   const user = await User.findOne({ email: email.toLowerCase() });
   if (!user || !(await user.comparePassword(password))) {

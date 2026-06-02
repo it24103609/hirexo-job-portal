@@ -18,6 +18,10 @@ api.interceptors.response.use(
   async (error) => {
     let message = error?.response?.data?.message || error.message || 'Something went wrong';
 
+    if (error?.code === 'ERR_NETWORK') {
+      message = 'Backend server is not reachable. Please check if the API is running.';
+    }
+
     if (error?.response?.data instanceof Blob) {
       try {
         const text = await error.response.data.text();

@@ -10,7 +10,8 @@ const env = {
   maxFileSize: Number(process.env.MAX_FILE_SIZE || 2 * 1024 * 1024),
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000),
   rateLimitMax: Number(process.env.RATE_LIMIT_MAX || 100),
-  authRateLimitMax: Number(process.env.AUTH_RATE_LIMIT_MAX || 10)
+  authRateLimitMax: Number(process.env.AUTH_RATE_LIMIT_MAX || 10),
+  recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY || ''
 };
 
 function assertEnv() {
