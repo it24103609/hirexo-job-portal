@@ -4,6 +4,7 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
 const corsMiddleware = require('./config/cors');
+const { passport, configurePassport } = require('./config/passport');
 const { apiLimiter } = require('./middlewares/rateLimit.middleware');
 const errorHandler = require('./middlewares/error.middleware');
 
@@ -22,12 +23,14 @@ const paymentRoutes = require('./routes/payment.routes');
 const CronJobs = require('./utils/cronJobs');
 
 const app = express();
+configurePassport();
 
 app.use(helmet());
 app.use(corsMiddleware());
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(passport.initialize());
 app.use(morgan('dev'));
 app.use(apiLimiter);
 
@@ -39,6 +42,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 app.use('/api/candidates', candidateRoutes);
 app.use('/api/employers', employerRoutes);
 app.use('/api/jobs', jobRoutes);
