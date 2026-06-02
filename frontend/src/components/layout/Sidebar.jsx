@@ -175,10 +175,10 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
 
     const pick = (labels) => employerLinks.filter((link) => labels.includes(link.label));
     return [
-      { key: 'overview', label: 'Command', icon: LayoutDashboard, links: pick(['Dashboard']) },
-      { key: 'hire', label: 'Hiring', icon: ListChecks, links: pick(['Post Job', 'Manage Jobs', 'Applicants', 'Interviews', 'Talent Pool']) },
-      { key: 'manage', label: 'Operations', icon: Users, links: pick(['Messages', 'Analytics', 'Hiring Team', 'Tracking', 'Approvals', 'Allocations']) },
-      { key: 'settings', label: 'Control', icon: ShieldCheck, links: pick(['Settings', 'Company Profile', 'Notifications']) }
+      { key: 'overview', label: 'Overview', icon: LayoutDashboard, links: pick(['Dashboard']) },
+      { key: 'hire', label: 'Hire', icon: ListChecks, links: pick(['Post Job', 'Manage Jobs', 'Applicants', 'Interviews', 'Offers', 'Talent Pool']) },
+      { key: 'manage', label: 'Manage', icon: Users, links: pick(['Messages', 'Analytics', 'Hiring Team', 'Tracking', 'Approvals', 'Allocations']) },
+      { key: 'company', label: 'Company', icon: Building2, links: pick(['Company Profile', 'Settings', 'Notifications']) }
     ].filter((group) => group.links.length);
   }, [employerLinks, role]);
 

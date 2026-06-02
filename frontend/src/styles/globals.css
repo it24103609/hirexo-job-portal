@@ -451,6 +451,8 @@ main { min-height: 60vh; }
 .form-card h1, .form-card h2 { margin-top: 0; }
 .form-meta { color: var(--muted); margin-top: 0.35rem; }
 .form-links { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-top: 1rem; }
+.recaptcha-field { gap: 0.6rem; }
+.recaptcha-box { display: flex; justify-content: center; }
 .tag-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
 .detail-list {

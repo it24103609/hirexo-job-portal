@@ -5,12 +5,14 @@ import {
   BarChart3,
   Bell,
   BriefcaseBusiness,
+  Building2,
   CalendarClock,
   CheckCircle2,
   CircleUserRound,
   Clock3,
   FolderKanban,
   Gauge,
+  HandCoins,
   LineChart,
   ListChecks,
   Mail,
@@ -21,6 +23,7 @@ import {
   Sparkles,
   TrendingUp,
   UserCheck,
+  UserPlus,
   Users
 } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
@@ -142,6 +145,75 @@ export default function EmployerDashboard() {
   const metrics = { ...fallbackDashboard, ...(state.dashboard || {}) };
   const applicantTargetJob = state.jobs.find((job) => job.reviewStatus === 'approved') || state.jobs[0];
   const applicantsRoute = applicantTargetJob ? `/employer/jobs/${applicantTargetJob._id}/applicants` : '/employer/jobs';
+
+  const workflowSteps = [
+    {
+      title: 'Post role',
+      description: 'Create an opening and publish it to the portal.',
+      to: '/employer/jobs/new',
+      icon: PlusSquare
+    },
+    {
+      title: 'Review candidates',
+      description: 'Open applications and shortlist top fits.',
+      to: applicantsRoute,
+      icon: Users
+    },
+    {
+      title: 'Schedule interviews',
+      description: 'Book interview slots for your shortlisted talent.',
+      to: '/employer/interviews',
+      icon: CalendarClock
+    },
+    {
+      title: 'Issue offers',
+      description: 'Send offers and close hires in one place.',
+      to: '/employer/offers',
+      icon: HandCoins
+    }
+  ];
+
+  const dashboardGroups = [
+    {
+      key: 'hire',
+      icon: BriefcaseBusiness,
+      label: 'Hire',
+      description: 'Job creation, candidate review, interview scheduling, and offers.',
+      items: [
+        { title: 'Post Job', description: 'Create and publish a role instantly.', to: '/employer/jobs/new', icon: PlusSquare },
+        { title: 'Manage Jobs', description: 'Edit, clone, or close live listings.', to: '/employer/jobs', icon: BriefcaseBusiness },
+        { title: 'Applicants', description: 'Review candidates and move them through stages.', to: applicantsRoute, icon: Users },
+        { title: 'Interviews', description: 'Book and manage interview rounds.', to: '/employer/interviews', icon: CalendarClock },
+        { title: 'Offers', description: 'Send offers and track acceptance.', to: '/employer/offers', icon: HandCoins },
+        { title: 'Talent Pool', description: 'Search saved candidate matches.', to: '/employer/talent-pool', icon: UserPlus }
+      ]
+    },
+    {
+      key: 'manage',
+      icon: Users,
+      label: 'Manage',
+      description: 'Team collaboration, approvals, analytics, and operational control.',
+      items: [
+        { title: 'Messages', description: 'Chat with applicants and team members.', to: '/employer/messages', icon: Mail },
+        { title: 'Analytics', description: 'Track pipeline and hiring performance.', to: '/employer/reports-center', icon: BarChart3 },
+        { title: 'Hiring Team', description: 'Manage collaborators and assignments.', to: '/employer/team', icon: Users },
+        { title: 'Tracking', description: 'Monitor workflows, approvals, and tasks.', to: '/employer/activity-calendar', icon: ListChecks },
+        { title: 'Approvals', description: 'Review and approve candidate actions.', to: '/employer/approvals', icon: CheckCircle2 },
+        { title: 'Allocations', description: 'Assign roles, budgets, and resources.', to: '/employer/allocations', icon: FolderKanban }
+      ]
+    },
+    {
+      key: 'company',
+      icon: Building2,
+      label: 'Company',
+      description: 'Employer branding, policies, and notifications.',
+      items: [
+        { title: 'Company Profile', description: 'Customize your public hiring page.', to: '/employer/company-profile', icon: Building2 },
+        { title: 'Policies', description: 'Configure hiring and interview rules.', to: '/employer/policies', icon: Settings },
+        { title: 'Notifications', description: 'View alerts and system updates.', to: '/employer/notifications', icon: Bell }
+      ]
+    }
+  ];
 
   const pipelineCounts = useMemo(() => {
     const counts = {
@@ -340,6 +412,53 @@ export default function EmployerDashboard() {
             );
           })}
         </div>
+      </section>
+
+      <section className="employer-workflow-path" aria-label="Hiring workflow steps">
+        {workflowSteps.map((step, index) => {
+          const StepIcon = step.icon;
+          return (
+            <Link key={step.title} to={step.to} className="employer-workflow-step">
+              <span><StepIcon size={18} /></span>
+              <div>
+                <strong>{step.title}</strong>
+                <p>{step.description}</p>
+              </div>
+              {index < workflowSteps.length - 1 ? <span className="employer-workflow-separator" aria-hidden="true">›</span> : null}
+            </Link>
+          );
+        })}
+      </section>
+
+      <section className="employer-dashboard-sections" aria-label="Employer workflow groups">
+        {dashboardGroups.map((group) => {
+          const GroupIcon = group.icon;
+          return (
+            <article key={group.key} className="employer-dashboard-group-card">
+              <div className="employer-dashboard-group-header">
+                <span><GroupIcon size={18} /></span>
+                <div>
+                  <small>{group.label}</small>
+                  <h3>{group.description}</h3>
+                </div>
+              </div>
+              <div className="employer-dashboard-group-list">
+                {group.items.map((item) => {
+                  const ItemIcon = item.icon;
+                  return (
+                    <Link key={item.title} to={item.to} className="employer-dashboard-group-item">
+                      <span><ItemIcon size={16} /></span>
+                      <div>
+                        <strong>{item.title}</strong>
+                        <p>{item.description}</p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </article>
+          );
+        })}
       </section>
 
       <section className="employer-premium-stat-grid" aria-label="Hiring statistics">

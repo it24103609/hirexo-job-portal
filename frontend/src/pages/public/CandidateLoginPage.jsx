@@ -1,18 +1,32 @@
 import { useNavigate, Link } from 'react-router-dom';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'react-toastify';
 import Seo from '../../components/ui/Seo';
 import Card from '../../components/ui/Card';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import BrandIdentity from '../../components/layout/BrandIdentity';
+import LoginRecaptcha from '../../components/auth/LoginRecaptcha';
+import SocialLoginButtons from '../../components/auth/SocialLoginButtons';
 import { loginSchema } from '../../utils/validators';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function CandidateLoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(loginSchema) });
+  const captchaRef = useRef(null);
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+  const { register, handleSubmit, setError, clearErrors, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(loginSchema) });
+
+  const handleRecaptchaChange = (token) => {
+    setRecaptchaToken(token || '');
+
+    if (token) {
+      clearErrors('recaptchaToken');
+    }
+  };
 
   return (
     <>
@@ -23,11 +37,29 @@ export default function CandidateLoginPage() {
             <BrandIdentity className="auth-brand" subtitle="Candidate portal" />
             <h1>Candidate sign in</h1>
             <form className="form-grid" onSubmit={handleSubmit(async (values) => {
-              const user = await login(values);
-              navigate(user.role === 'candidate' ? '/candidate/dashboard' : '/');
+              if (!recaptchaToken) {
+                setError('recaptchaToken', { type: 'manual', message: 'Please complete the reCAPTCHA verification.' });
+                return;
+              }
+
+              try {
+                const user = await login({ ...values, recaptchaToken });
+                navigate(user.role === 'candidate' ? '/candidate/dashboard' : '/');
+              } catch (error) {
+                toast.error(error.message || 'Unable to sign in.');
+              } finally {
+                captchaRef.current?.reset?.();
+                setRecaptchaToken('');
+              }
             })}>
               <Input label="Email" type="email" placeholder="name@example.com" error={errors.email?.message} {...register('email')} />
               <Input label="Password" type="password" placeholder="Enter password" error={errors.password?.message} {...register('password')} />
+              <LoginRecaptcha
+                captchaRef={captchaRef}
+                error={errors.recaptchaToken?.message}
+                onChange={handleRecaptchaChange}
+                onExpired={() => setRecaptchaToken('')}
+              />
               <div style={{ textAlign: 'right', marginTop: '-0.5rem' }}>
                 <Link to="/forgot-password" style={{ color: '#0f766e', textDecoration: 'none', fontSize: '0.9rem', fontWeight: '600' }}>
                   Forgot password?
@@ -35,6 +67,7 @@ export default function CandidateLoginPage() {
               </div>
               <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Signing in...' : 'Sign in'}</Button>
             </form>
+            <SocialLoginButtons />
             <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #eee', textAlign: 'center' }}>
               <p className="text-sm" style={{ color: '#666', marginBottom: '0.75rem' }}>
                 Don't have an account?{' '}

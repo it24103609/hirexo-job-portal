@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const axios = require('axios');
 const User = require('../models/User');
 const CandidateProfile = require('../models/CandidateProfile');
 const EmployerProfile = require('../models/EmployerProfile');
@@ -36,6 +37,46 @@ function createAuthPayload(user) {
   };
 }
 
+const OAUTH_STATE_COOKIE = 'hirexo_oauth_state';
+
+function getCookieOptions(maxAge) {
+  return {
+    httpOnly: true,
+    secure: env.nodeEnv === 'production',
+    sameSite: 'lax',
+    maxAge
+  };
+}
+
+function signOAuthState(nonce) {
+  return crypto
+    .createHmac('sha256', env.oauthStateSecret)
+    .update(nonce)
+    .digest('hex');
+}
+
+function buildOAuthState(nonce) {
+  return `${nonce}.${signOAuthState(nonce)}`;
+}
+
+function verifyOAuthStateValue(state, nonce) {
+  if (!state || !nonce || !state.includes('.')) {
+    return false;
+  }
+
+  const [stateNonce, signature] = state.split('.');
+  if (stateNonce !== nonce) {
+    return false;
+  }
+
+  const expectedSignature = signOAuthState(nonce);
+  if (signature.length !== expectedSignature.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+}
+
 function createPasswordResetToken() {
   const token = crypto.randomBytes(32).toString('hex');
   const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
@@ -48,6 +89,54 @@ function createPasswordResetToken() {
   };
 }
 
+const createOAuthState = asyncHandler(async (req, res, next) => {
+  if (!env.oauthStateSecret) {
+    throw new AppError('OAuth state signing is not configured.', 500);
+  }
+
+  const nonce = crypto.randomBytes(24).toString('hex');
+  req.oauthState = buildOAuthState(nonce);
+  res.cookie(OAUTH_STATE_COOKIE, nonce, getCookieOptions(10 * 60 * 1000));
+  next();
+});
+
+const verifyOAuthState = asyncHandler(async (req, res, next) => {
+  const nonce = req.cookies?.[OAUTH_STATE_COOKIE];
+  const isValid = verifyOAuthStateValue(String(req.query.state || ''), nonce);
+  res.clearCookie(OAUTH_STATE_COOKIE, getCookieOptions(0));
+
+  if (!isValid) {
+    throw new AppError('Invalid OAuth state. Please try signing in again.', 401);
+  }
+
+  next();
+});
+
+const oauthCallback = asyncHandler(async (req, res) => {
+  const user = req.user;
+  if (!user) {
+    throw new AppError('OAuth authentication failed.', 401);
+  }
+
+  if (user.status === USER_STATUS.BLOCKED) {
+    throw new AppError('Your account is blocked', 403);
+  }
+
+  user.lastLoginAt = new Date();
+  await user.save({ validateBeforeSave: false });
+
+  const profile = await loadProfile(user);
+  const tokens = createAuthPayload(user);
+  const sessionPayload = Buffer.from(JSON.stringify({
+    user: user.toJSON(),
+    profile,
+    ...tokens
+  })).toString('base64url');
+
+  const redirectUrl = `${env.clientUrl.replace(/\/$/, '')}/oauth/callback#session=${sessionPayload}`;
+  res.redirect(redirectUrl);
+});
+
 async function loadProfile(user) {
   if (user.role === ROLES.CANDIDATE) {
     return CandidateProfile.findOne({ user: user._id }).populate('preferredJobTypes');
@@ -58,6 +147,45 @@ async function loadProfile(user) {
   }
 
   return null;
+}
+
+async function verifyRecaptchaToken(recaptchaToken) {
+  if (!env.recaptchaSecretKey) {
+    throw new AppError('reCAPTCHA is not configured on the server.', 500);
+  }
+
+  if (!recaptchaToken) {
+    throw new AppError('Please complete the reCAPTCHA verification.', 400);
+  }
+
+  try {
+    const params = new URLSearchParams({
+      secret: env.recaptchaSecretKey,
+      response: recaptchaToken
+    });
+
+    const { data } = await axios.post('https://www.google.com/recaptcha/api/siteverify', params, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+
+    if (!data?.success) {
+      const errorCodes = Array.isArray(data?.['error-codes']) && data['error-codes'].length
+        ? ` (${data['error-codes'].join(', ')})`
+        : '';
+
+      throw new AppError(`reCAPTCHA verification failed${errorCodes}. Please try again.`, 400);
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof AppError) {
+      throw error;
+    }
+
+    throw new AppError('Unable to verify reCAPTCHA right now. Please try again.', 503);
+  }
 }
 
 const registerCandidate = asyncHandler(async (req, res) => {
@@ -175,11 +303,13 @@ const registerEmployer = asyncHandler(async (req, res) => {
 });
 
 const login = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, recaptchaToken } = req.body;
 
   if (!email || !password) {
     throw new AppError('Email and password are required', 400);
   }
+
+  await verifyRecaptchaToken(recaptchaToken);
 
   const user = await User.findOne({ email: email.toLowerCase() });
   if (!user || !(await user.comparePassword(password))) {
@@ -331,5 +461,8 @@ module.exports = {
   me,
   changePassword,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  createOAuthState,
+  verifyOAuthState,
+  oauthCallback
 };

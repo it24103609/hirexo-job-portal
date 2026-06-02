@@ -19,6 +19,7 @@ const EmployerRegisterPage = lazy(() => import('./pages/public/EmployerRegisterP
 const EmployerLoginPage = lazy(() => import('./pages/public/EmployerLoginPage'));
 const AdminLoginPage = lazy(() => import('./pages/public/AdminLoginPage'));
 const AuthPage = lazy(() => import('./pages/public/AuthPage'));
+const OAuthCallbackPage = lazy(() => import('./pages/public/OAuthCallbackPage'));
 const ForgotPasswordPage = lazy(() => import('./pages/public/ForgotPasswordPage'));
 const ResetPasswordPage = lazy(() => import('./pages/public/ResetPasswordPage'));
 const BlogListPage = lazy(() => import('./pages/public/BlogListPage'));
@@ -72,6 +73,7 @@ export default function App() {
           <Route path="services" element={<ServicesPage />} />
           <Route path="premium" element={<PremiumPage />} />
           <Route path="auth" element={<AuthPage />} />
+          <Route path="oauth/callback" element={<OAuthCallbackPage />} />
           <Route path="candidate/register" element={<CandidateRegisterPage />} />
           <Route path="candidate/login" element={<CandidateLoginPage />} />
           <Route path="employer/register" element={<EmployerRegisterPage />} />
