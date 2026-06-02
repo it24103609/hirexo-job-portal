@@ -11,7 +11,13 @@ const env = {
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000),
   rateLimitMax: Number(process.env.RATE_LIMIT_MAX || 100),
   authRateLimitMax: Number(process.env.AUTH_RATE_LIMIT_MAX || 10),
-  recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY || ''
+  recaptchaSecretKey: process.env.RECAPTCHA_SECRET_KEY || '',
+  serverUrl: process.env.SERVER_URL || `http://localhost:${process.env.PORT || 5000}`,
+  oauthStateSecret: process.env.OAUTH_STATE_SECRET || process.env.JWT_ACCESS_SECRET || '',
+  googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+  githubClientId: process.env.GITHUB_CLIENT_ID || '',
+  githubClientSecret: process.env.GITHUB_CLIENT_SECRET || ''
 };
 
 function assertEnv() {

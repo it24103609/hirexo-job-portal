@@ -20,7 +20,32 @@ const userSchema = new mongoose.Schema(
     },
     passwordHash: {
       type: String,
-      required: [true, 'Password hash is required']
+      required() {
+        return this.authProvider === 'local';
+      }
+    },
+    authProvider: {
+      type: String,
+      enum: ['local', 'google', 'github'],
+      default: 'local',
+      index: true
+    },
+    google: {
+      id: {
+        type: String,
+        index: true
+      }
+    },
+    github: {
+      id: {
+        type: String,
+        index: true
+      }
+    },
+    profileImage: {
+      type: String,
+      trim: true,
+      default: ''
     },
     role: {
       type: String,
@@ -53,6 +78,10 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.methods.comparePassword = function comparePassword(candidatePassword) {
+  if (!this.passwordHash) {
+    return false;
+  }
+
   return bcrypt.compare(candidatePassword, this.passwordHash);
 };
 
