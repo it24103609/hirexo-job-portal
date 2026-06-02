@@ -17,7 +17,6 @@ import {
   PencilLine,
   Mail,
   BarChart3,
-  Sparkles,
   X,
   ListChecks,
   CalendarDays,
@@ -135,38 +134,35 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
     if (role !== 'employer') return [];
 
     return [
-      { label: 'Overview', to: '/employer/overview', icon: LayoutDashboard },
-      { label: 'Jobs', to: '/employer/jobs', icon: BriefcaseBusiness },
-      { label: 'Candidates', to: '/employer/candidates', icon: Users },
-      { label: 'Assessments', to: '/employer/reports-center', icon: Sparkles },
+      { label: 'Dashboard', to: '/employer/dashboard', icon: LayoutDashboard },
+      { label: 'Post Job', to: '/employer/jobs/new', icon: PlusSquare },
+      { label: 'Manage Jobs', to: '/employer/jobs', icon: BriefcaseBusiness },
+      { label: 'Applicants', to: '/employer/candidates', icon: Users },
       { label: 'Interviews', to: '/employer/interviews', icon: CalendarDays },
-      { label: 'Onboard', to: '/employer/offers', icon: HandCoins },
-      { label: 'People', to: '/employer/team', icon: Users },
+      { label: 'Talent Pool', to: '/employer/talent-pool', icon: UserPlus },
+      { label: 'Messages', to: '/employer/messages', icon: Mail },
+      { label: 'Analytics', to: '/employer/reports-center', icon: BarChart3 },
+      { label: 'Hiring Team', to: '/employer/team', icon: Users },
+      { label: 'Settings', to: '/employer/policies', icon: FileText },
       { label: 'Tracking', to: '/employer/activity-calendar', icon: ListChecks },
       { label: 'Approvals', to: '/employer/approvals', icon: ShieldCheck },
       { label: 'Allocations', to: '/employer/allocations', icon: FolderKanban },
-      { label: 'Talent Pool', to: '/employer/talent-pool', icon: UserPlus },
-      { label: 'Reports', to: '/employer/reports-center', icon: BarChart3 },
       { label: 'Company Profile', to: '/employer/company-profile', icon: Building2 },
-      { label: 'Post Job', to: '/employer/jobs/new', icon: PlusSquare },
-      { label: 'Policies', to: '/employer/policies', icon: FileText },
-      { label: 'Messages', to: '/employer/messages', icon: Mail },
       { label: 'Notifications', to: '/employer/notifications', icon: Bell }
     ].filter((entry) => {
-      if (entry.label === 'Jobs') return links.some((link) => link.to === '/employer/jobs');
-      if (entry.label === 'Candidates') return true;
-      if (entry.label === 'Assessments') return links.some((link) => link.to === '/employer/reports-center');
+      if (entry.label === 'Dashboard') return links.some((link) => link.to === '/employer/dashboard');
+      if (entry.label === 'Manage Jobs') return links.some((link) => link.to === '/employer/jobs');
+      if (entry.label === 'Applicants') return true;
+      if (entry.label === 'Analytics') return links.some((link) => link.to === '/employer/reports-center');
       if (entry.label === 'Interviews') return links.some((link) => link.to === '/employer/interviews');
       if (entry.label === 'Tracking') return links.some((link) => link.to === '/employer/activity-calendar');
       if (entry.label === 'Approvals') return links.some((link) => link.to === '/employer/approvals');
       if (entry.label === 'Allocations') return links.some((link) => link.to === '/employer/allocations');
-      if (entry.label === 'Reports') return links.some((link) => link.to === '/employer/reports-center');
-      if (entry.label === 'Policies') return links.some((link) => link.to === '/employer/policies');
+      if (entry.label === 'Settings') return links.some((link) => link.to === '/employer/policies');
       if (entry.label === 'Company Profile') return links.some((link) => link.to === '/employer/company-profile');
       if (entry.label === 'Post Job') return links.some((link) => link.to === '/employer/jobs/new');
       if (entry.label === 'Talent Pool') return links.some((link) => link.to === '/employer/talent-pool');
       if (entry.label === 'Hiring Team') return links.some((link) => link.to === '/employer/team');
-      if (entry.label === 'Offers') return links.some((link) => link.to === '/employer/offers');
       if (entry.label === 'Messages') return links.some((link) => link.to === '/employer/messages');
       if (entry.label === 'Notifications') {
         return links.some((link) => link.to === '/employer/notifications');
@@ -179,10 +175,10 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
 
     const pick = (labels) => employerLinks.filter((link) => labels.includes(link.label));
     return [
-      { key: 'overview', label: 'Overview', icon: LayoutDashboard, links: pick(['Overview']) },
-      { key: 'hire', label: 'Hire', icon: ListChecks, links: pick(['Jobs', 'Candidates', 'Assessments', 'Interviews', 'Post Job']) },
-      { key: 'manage', label: 'Manage', icon: Users, links: pick(['Onboard', 'People', 'Tracking', 'Approvals', 'Allocations', 'Talent Pool', 'Reports']) },
-      { key: 'settings', label: 'Settings', icon: ShieldCheck, links: pick(['Company Profile', 'Policies', 'Messages', 'Notifications']) }
+      { key: 'overview', label: 'Overview', icon: LayoutDashboard, links: pick(['Dashboard']) },
+      { key: 'hire', label: 'Hire', icon: ListChecks, links: pick(['Post Job', 'Manage Jobs', 'Applicants', 'Interviews', 'Offers', 'Talent Pool']) },
+      { key: 'manage', label: 'Manage', icon: Users, links: pick(['Messages', 'Analytics', 'Hiring Team', 'Tracking', 'Approvals', 'Allocations']) },
+      { key: 'company', label: 'Company', icon: Building2, links: pick(['Company Profile', 'Settings', 'Notifications']) }
     ].filter((group) => group.links.length);
   }, [employerLinks, role]);
 
@@ -211,15 +207,10 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
         <div className="admin-sidebar-identity">
           <div className="admin-sidebar-top">
             <div className="candidate-avatar admin-sidebar-avatar" aria-hidden="true">{initials}</div>
-            <div>
-              <span className="admin-sidebar-badge"><Sparkles size={12} /> Admin Control</span>
+            <div className="admin-sidebar-copy">
               <strong>{user?.name || 'Hirexo Admin'}</strong>
-              <p>{user?.email || 'admin@hirexo.com'}</p>
+              <span className="admin-sidebar-role">System Admin</span>
             </div>
-          </div>
-          <div className="admin-sidebar-meta">
-            <span>Secure moderation workspace</span>
-            <span>Live platform oversight</span>
           </div>
         </div>
       ) : null}
@@ -304,7 +295,7 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
                           return <Icon size={18} className="sidebar-link-icon" aria-hidden="true" />;
                         })()}
                         <span>{link.label}</span>
-                        {link.label === 'Assessments' ? <span className="employer-sidebar-crown" aria-hidden="true">Premium</span> : null}
+                        {link.label === 'Analytics' ? <span className="employer-sidebar-crown" aria-hidden="true">Premium</span> : null}
                       </NavLink>
                     ))}
                   </nav>

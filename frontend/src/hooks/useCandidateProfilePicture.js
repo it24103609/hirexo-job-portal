@@ -4,25 +4,33 @@ import { candidateApi } from '../services/candidate.api';
 export function useCandidateProfilePicture(profilePicture) {
   const [imageUrl, setImageUrl] = useState('');
 
-  const pictureKey = useMemo(() => {
-    if (!profilePicture) return '';
-    return [
-      profilePicture.fileName || '',
-      profilePicture.uploadedAt || '',
-      profilePicture.size || ''
-    ].join('|');
+  const normalizedProfilePicture = useMemo(() => {
+    if (!profilePicture) return null;
+    if (profilePicture.fileName || profilePicture.filePath || profilePicture.uploadedAt || profilePicture.size) {
+      return profilePicture;
+    }
+    return profilePicture.data || null;
   }, [profilePicture]);
+
+  const pictureKey = useMemo(() => {
+    if (!normalizedProfilePicture) return '';
+    return [
+      normalizedProfilePicture.fileName || '',
+      normalizedProfilePicture.uploadedAt || '',
+      normalizedProfilePicture.size || ''
+    ].join('|');
+  }, [normalizedProfilePicture]);
 
   useEffect(() => {
     let objectUrl = '';
     let isActive = true;
 
-    if (!profilePicture) {
+    if (!normalizedProfilePicture) {
       setImageUrl('');
       return undefined;
     }
 
-    candidateApi.downloadProfilePicture()
+    candidateApi.downloadProfilePicture(pictureKey)
       .then((blob) => {
         if (!isActive) return;
         objectUrl = URL.createObjectURL(blob);
@@ -36,7 +44,7 @@ export function useCandidateProfilePicture(profilePicture) {
       isActive = false;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [pictureKey, profilePicture]);
+  }, [pictureKey, normalizedProfilePicture]);
 
   return imageUrl;
 }

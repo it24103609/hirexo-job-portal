@@ -29,6 +29,7 @@ const CandidateProfilePage = lazy(() => import('./pages/dashboard/CandidateProfi
 const CandidateResumePage = lazy(() => import('./pages/dashboard/CandidateResumePage'));
 const CandidateApplicationsPage = lazy(() => import('./pages/dashboard/CandidateApplicationsPage'));
 const CandidateInterviewsPage = lazy(() => import('./pages/dashboard/CandidateInterviewsPage'));
+const CandidateMessagesPage = lazy(() => import('./pages/dashboard/CandidateMessagesPage'));
 const CandidateSavedJobsPage = lazy(() => import('./pages/dashboard/CandidateSavedJobsPage'));
 const EmployerDashboard = lazy(() => import('./pages/dashboard/EmployerDashboard'));
 const EmployerOverviewPage = lazy(() => import('./pages/dashboard/EmployerOverviewPage'));
@@ -47,9 +48,9 @@ const EmployerActivityCalendarPage = lazy(() => import('./pages/dashboard/Employ
 const EmployerApprovalsPage = lazy(() => import('./pages/dashboard/EmployerApprovalsPage'));
 const EmployerAllocationsPage = lazy(() => import('./pages/dashboard/EmployerAllocationsPage'));
 const EmployerReportsCenterPage = lazy(() => import('./pages/dashboard/EmployerReportsCenterPage'));
+const AdminOverviewPage = lazy(() => import('./pages/dashboard/AdminOverviewPage'));
 const EmployerPoliciesConfigPage = lazy(() => import('./pages/dashboard/EmployerPoliciesConfigPage'));
 const AdminDashboard = lazy(() => import('./pages/dashboard/AdminDashboard'));
-const AdminOverviewPage = lazy(() => import('./pages/dashboard/AdminOverviewPage'));
 const AdminUsersPage = lazy(() => import('./pages/dashboard/AdminUsersPage'));
 const AdminJobsModerationPage = lazy(() => import('./pages/dashboard/AdminJobsModerationPage'));
 const AdminInterviewsPage = lazy(() => import('./pages/dashboard/AdminInterviewsPage'));
@@ -93,7 +94,7 @@ export default function App() {
               <Route path="candidate/resume" element={<CandidateResumePage />} />
               <Route path="candidate/applications" element={<CandidateApplicationsPage />} />
               <Route path="candidate/interviews" element={<CandidateInterviewsPage />} />
-              <Route path="candidate/messages" element={<CandidateApplicationsPage />} />
+              <Route path="candidate/messages" element={<CandidateMessagesPage />} />
               <Route path="candidate/saved-jobs" element={<CandidateSavedJobsPage />} />
               <Route path="candidate/notifications" element={<NotificationsPage />} />
             </Route>

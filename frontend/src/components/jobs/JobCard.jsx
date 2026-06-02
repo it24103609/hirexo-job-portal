@@ -214,18 +214,18 @@ export default function JobCard({ job, variant = 'default' }) {
 
         <div className="job-list-actions">
           <button
-            className="job-list-btn job-list-btn-outline job-list-save"
+            className="job-list-btn job-list-btn-outline job-list-save icon-btn"
             onClick={handleSaveJob}
             disabled={isSaving || isSaved}
             type="button"
             aria-label={isSaved ? 'Saved job' : 'Save job'}
           >
-            <Heart size={18} /> <span>{isSaved ? 'Saved' : (isSaving ? 'Saving...' : 'Save')}</span>
+            <Heart size={18} /> <span className="sr-only">{isSaved ? 'Saved' : (isSaving ? 'Saving...' : 'Save')}</span>
           </button>
-          <Link to={`/jobs/${slug}`} className="job-list-btn job-list-btn-outline">
+          <Link to={`/jobs/${slug}`} className="job-list-btn job-list-btn-outline details-btn">
             Details
           </Link>
-          <Link to={`/jobs/${slug}`} className="job-list-btn job-list-btn-primary">
+          <Link to={`/jobs/${slug}`} className="job-list-btn job-list-btn-primary apply-btn">
             Apply
           </Link>
         </div>

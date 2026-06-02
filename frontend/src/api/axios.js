@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, ''),
+  baseURL: (import.meta.env.VITE_API_BASE_URL || '').replace(/\/api\/?$/, '').replace(/\/$/, ''),
   withCredentials: true
 });
 
@@ -17,6 +17,10 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     let message = error?.response?.data?.message || error.message || 'Something went wrong';
+
+    if (error?.code === 'ERR_NETWORK') {
+      message = 'Backend server is not reachable. Please check if the API is running.';
+    }
 
     if (error?.response?.data instanceof Blob) {
       try {

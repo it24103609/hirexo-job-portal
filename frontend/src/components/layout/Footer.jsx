@@ -48,9 +48,6 @@ export default function Footer() {
             <Link to="/blog"><FileSearch size={16} /> Blog</Link>
             <Link to="/contact"><MessageCircle size={16} /> Contact Us</Link>
           </div>
-          <div className="footer-doc-visual" aria-hidden="true">
-            <FileSearch size={78} />
-          </div>
         </div>
 
         <div className="footer-links-panel footer-connect-panel">

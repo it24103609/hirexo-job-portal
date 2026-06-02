@@ -36,7 +36,23 @@ function stageTone(status) {
   return 'neutral';
 }
 
+function getCandidate(application) {
+  const candidate = application.candidateUser && typeof application.candidateUser === 'object'
+    ? application.candidateUser
+    : {};
+
+  return {
+    ...candidate,
+    name: candidate.name || application.candidateName || application.name || '',
+    email: candidate.email || application.candidateEmail || application.email || ''
+  };
+}
+
 function getScore(application) {
+  if (Number.isFinite(Number(application.aiMatchScore))) {
+    return `${Math.round(Number(application.aiMatchScore))}%`;
+  }
+
   const feedback = application.interviewFeedback || {};
   const values = ['communication', 'technicalSkills', 'confidence', 'cultureFit']
     .map((key) => Number(feedback[key]))
@@ -104,8 +120,9 @@ export default function EmployerCandidatesPage() {
     const now = Date.now();
 
     return state.applications.filter((application) => {
-      const candidateName = application.candidateUser?.name || application.candidateUser?.email || 'Candidate';
-      const haystack = [candidateName, application.candidateUser?.email, application.jobTitle, application.status, application.jobCategory].map(normalize).join(' ');
+      const candidate = getCandidate(application);
+      const candidateName = candidate.name || candidate.email || 'Candidate';
+      const haystack = [candidateName, candidate.email, application.jobTitle, application.status, application.jobCategory].map(normalize).join(' ');
       const createdAt = application.createdAt ? new Date(application.createdAt).getTime() : 0;
       const score = getScore(application);
       const numericScore = score === '-' ? 0 : Number(score.replace('%', ''));
@@ -140,7 +157,7 @@ export default function EmployerCandidatesPage() {
       const url = window.URL.createObjectURL(blob);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = application.resumeSnapshot?.fileName || `${application.candidateUser?.name || 'candidate'}-resume`;
+      anchor.download = application.resumeSnapshot?.fileName || `${getCandidate(application).name || 'candidate'}-resume`;
       document.body.appendChild(anchor);
       anchor.click();
       anchor.remove();
@@ -224,7 +241,7 @@ export default function EmployerCandidatesPage() {
             </thead>
             <tbody>
               {filteredApplications.length ? filteredApplications.map((application) => {
-                const candidate = application.candidateUser || {};
+                const candidate = getCandidate(application);
                 const candidateName = candidate.name || candidate.email || 'Candidate';
                 return (
                   <tr key={application._id}>

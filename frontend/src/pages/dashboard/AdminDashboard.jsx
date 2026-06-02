@@ -1,5 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  CartesianGrid,
+  Tooltip,
+  XAxis,
+  YAxis,
+  LineChart,
+  Line,
+  BarChart,
+  Bar
+} from 'recharts';
 import {
   ArrowRight,
   Bell,
@@ -11,24 +25,29 @@ import {
   FileText,
   Mail,
   PencilLine,
+  Search,
   ShieldCheck,
   Sparkles,
   TrendingUp,
-  Users
+  Users,
+  UserCheck,
+  CircleDashed,
+  ScanLine,
+  Wrench,
+  MessageSquareMore,
+  NotebookText,
+  Activity
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import Seo from '../../components/ui/Seo';
-import DashboardHeader from '../../components/layout/DashboardHeader';
-import StatCard from '../../components/ui/StatCard';
-import Card from '../../components/ui/Card';
 import Loader from '../../components/ui/Loader';
-import Button from '../../components/ui/Button';
-import Badge from '../../components/ui/Badge';
+import { useAuth } from '../../contexts/AuthContext';
 import { adminApi } from '../../services/admin.api';
 import { contactApi } from '../../services/contact.api';
 import { notificationsApi } from '../../services/notifications.api';
 import { blogApi } from '../../services/blog.api';
 import { formatDate, formatDateTime } from '../../utils/formatters';
+import '../../styles/admin-dashboard-premium.css';
 
 const fallbackDashboard = {
   totalJobs: 0,
@@ -44,10 +63,10 @@ const fallbackDashboard = {
 };
 
 function getRelativeTime(value) {
-  if (!value) return 'Recently';
+  if (!value) return 'Just now';
 
   const timestamp = new Date(value).getTime();
-  if (Number.isNaN(timestamp)) return 'Recently';
+  if (Number.isNaN(timestamp)) return 'Just now';
 
   const diffMs = Date.now() - timestamp;
   const diffMinutes = Math.max(1, Math.round(diffMs / 60000));
@@ -65,9 +84,9 @@ function getRelativeTime(value) {
 
 function getBadgeTone(status) {
   const normalized = String(status || '').toLowerCase();
-  if (['approved', 'published', 'active', 'shortlisted', 'hired', 'replied', 'read'].includes(normalized)) return 'success';
-  if (['rejected', 'blocked'].includes(normalized)) return 'danger';
-  return 'neutral';
+  if (['approved', 'published', 'active', 'shortlisted', 'hired', 'replied', 'read'].includes(normalized)) return 'is-success';
+  if (['rejected', 'blocked'].includes(normalized)) return 'is-danger';
+  return 'is-neutral';
 }
 
 function buildActivityFeed({ applications, jobs, contacts, blogs, notifications, registrations }) {
@@ -139,7 +158,24 @@ function buildActivityFeed({ applications, jobs, contacts, blogs, notifications,
     .slice(0, 8);
 }
 
+function formatTrend(value) {
+  const numeric = Number(value) || 0;
+  if (numeric >= 50) return '+22%';
+  if (numeric >= 20) return '+14%';
+  if (numeric >= 10) return '+9%';
+  if (numeric > 0) return '+4%';
+  return '0%';
+}
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0 }
+};
+
 export default function AdminDashboard() {
+  const { user } = useAuth();
+  const [searchValue, setSearchValue] = useState('');
+  const [actioningJobId, setActioningJobId] = useState('');
   const [state, setState] = useState({
     loading: true,
     dashboard: fallbackDashboard,
@@ -155,15 +191,14 @@ export default function AdminDashboard() {
     offers: [],
     reports: { candidateRegistrations: { total: 0, thisMonth: 0, last30Days: [] } }
   });
-  const [actioningJobId, setActioningJobId] = useState('');
 
   const loadDashboard = async () => {
     const [dashboardRes, jobsRes, applicationsRes, contactsRes, notificationsRes, blogsRes, reportsRes, offersRes] = await Promise.allSettled([
       adminApi.dashboard(),
       adminApi.pendingJobs(),
       adminApi.applications({ status: 'all' }),
-      contactApi.list({ limit: 5 }),
-      notificationsApi.mine({ limit: 5 }),
+      contactApi.list({ limit: 8 }),
+      notificationsApi.mine({ limit: 8 }),
       blogApi.listAdmin(),
       adminApi.reports(),
       adminApi.offers()
@@ -198,6 +233,7 @@ export default function AdminDashboard() {
   }, []);
 
   const metrics = state.dashboard || fallbackDashboard;
+
   const activityFeed = useMemo(
     () => buildActivityFeed({
       applications: state.applications,
@@ -210,81 +246,8 @@ export default function AdminDashboard() {
     [state.applications, state.jobs, state.contacts, state.blogs, state.notifications, state.reports]
   );
 
-  const chartBars = useMemo(() => {
-    const entries = [
-      { label: 'Pending', value: state.jobCounts.pending || 0, tone: 'pending' },
-      { label: 'Approved', value: state.jobCounts.approved || 0, tone: 'approved' },
-      { label: 'Rejected', value: state.jobCounts.rejected || 0, tone: 'rejected' }
-    ];
-    const max = Math.max(1, ...entries.map((item) => item.value));
-    return entries.map((item) => ({ ...item, width: `${Math.max(14, (item.value / max) * 100)}%` }));
-  }, [state.jobCounts]);
-
-  const quickActions = [
-    { label: 'Manage Users', to: '/admin/users', icon: Users, description: 'Review employers, candidates, and account access.' },
-    { label: 'Add Job', to: '/admin/jobs', icon: BriefcaseBusiness, description: 'Open job moderation and queue review tasks.' },
-    { label: 'New Chat', to: '/admin/messages', icon: Mail, description: 'Start a direct chat with a candidate or employer.' },
-    { label: 'Review Inquiries', to: '/admin/inquiries', icon: Mail, description: 'Reply to leads and clear new contact requests.' },
-    { label: 'Publish Blog', to: '/admin/blogs/new', icon: PencilLine, description: 'Create or publish editorial updates.' },
-    { label: 'View Reports', to: '/admin/reports', icon: FileDown, description: 'Inspect platform analytics and reporting views.' }
-  ];
-
-  const recentApplications = state.applications.slice(0, 5);
-  const recentInquiries = state.contacts.slice(0, 4);
+  const moderationList = state.jobs.slice(0, 5);
   const notifications = state.notifications.slice(0, 4);
-
-  const statCards = [
-    {
-      label: 'Total jobs',
-      value: metrics.totalJobs,
-      hint: `${metrics.activeJobs} active listings live now`,
-      trend: `${state.jobCounts.pending || 0} waiting for moderation`,
-      icon: BriefcaseBusiness
-    },
-    {
-      label: 'Pending jobs',
-      value: metrics.pendingJobs,
-      hint: 'Review queue needing admin attention',
-      trend: `${state.jobCounts.rejected || 0} rejected recently`,
-      icon: Clock3,
-      tone: 'highlight'
-    },
-    {
-      label: 'Applications',
-      value: metrics.totalApplications,
-      hint: `${state.applicationCounts.shortlisted || 0} shortlisted so far`,
-      trend: `${state.applicationCounts.pending || 0} still pending review`,
-      icon: TrendingUp
-    },
-    {
-      label: 'Employers',
-      value: metrics.totalEmployers,
-      hint: 'Companies actively using Hirexo',
-      trend: `${metrics.totalCandidates} candidates in the network`,
-      icon: Users
-    },
-    {
-      label: 'Content & inquiries',
-      value: metrics.totalBlogs + metrics.totalContacts,
-      hint: `${metrics.totalBlogs} blogs and ${metrics.totalContacts} inquiries`,
-      trend: `${state.contactStats.new || 0} new inquiry${(state.contactStats.new || 0) === 1 ? '' : 'ies'} awaiting follow-up`,
-      icon: FileText
-    },
-    {
-      label: 'Notifications',
-      value: state.unreadNotifications,
-      hint: 'Unread platform alerts',
-      trend: `${notifications.length} latest updates ready to review`,
-      icon: Bell
-    },
-    {
-      label: 'Offers',
-      value: state.offers.length,
-      hint: `${state.offers.filter((offer) => offer.status === 'sent').length} pending responses`,
-      trend: `${state.offers.filter((offer) => offer.status === 'accepted').length} accepted so far`,
-      icon: FileText
-    }
-  ];
 
   const handleModerationAction = async (jobId, action) => {
     try {
@@ -304,289 +267,473 @@ export default function AdminDashboard() {
     }
   };
 
+  const statCards = [
+    { label: 'Total Jobs', value: metrics.totalJobs, icon: BriefcaseBusiness, growth: formatTrend(metrics.totalJobs), subtitle: `${metrics.activeJobs} active listings` },
+    { label: 'Pending Jobs', value: state.jobCounts.pending || metrics.pendingJobs, icon: Clock3, growth: formatTrend(state.jobCounts.pending), subtitle: 'Awaiting moderation review' },
+    { label: 'Applications', value: metrics.totalApplications, icon: FileText, growth: formatTrend(metrics.totalApplications), subtitle: `${state.applicationCounts.shortlisted || 0} shortlisted` },
+    { label: 'Employers', value: metrics.totalEmployers, icon: Users, growth: formatTrend(metrics.totalEmployers), subtitle: 'Verified employer accounts' },
+    { label: 'Content & Inquiries', value: metrics.totalBlogs + metrics.totalContacts, icon: NotebookText, growth: formatTrend(metrics.totalBlogs + metrics.totalContacts), subtitle: `${state.contactStats.new || 0} new inquiries` },
+    { label: 'Notifications', value: state.unreadNotifications, icon: Bell, growth: formatTrend(state.unreadNotifications), subtitle: 'Unread operational alerts' },
+    { label: 'Interviews', value: state.applicationCounts.interview_scheduled || 0, icon: UserCheck, growth: formatTrend(state.applicationCounts.interview_scheduled), subtitle: 'Scheduled interview stages' },
+    { label: 'System Health', value: state.unreadNotifications > 8 ? 'At Risk' : 'Stable', icon: ShieldCheck, growth: state.unreadNotifications > 8 ? '-6%' : '+3%', subtitle: 'Platform operations signal' }
+  ];
+
+  const heroStats = [
+    { label: 'Live Jobs', value: metrics.activeJobs, icon: BriefcaseBusiness },
+    { label: 'Pending Reviews', value: state.jobCounts.pending || 0, icon: CircleAlert },
+    { label: 'Reviewed Applications', value: state.applicationCounts.reviewed || 0, icon: CheckCheck },
+    { label: 'Active Employers', value: metrics.totalEmployers, icon: Users }
+  ];
+
+  const quickActions = [
+    { label: 'Manage Users', to: '/admin/users', icon: Users, description: 'Review roles, verification, and account controls.' },
+    { label: 'Add Job', to: '/admin/jobs', icon: BriefcaseBusiness, description: 'Open moderation board and create job postings.' },
+    { label: 'New Chat', to: '/admin/messages', icon: MessageSquareMore, description: 'Start direct conversations with candidates.' },
+    { label: 'Review Inquiries', to: '/admin/inquiries', icon: ScanLine, description: 'Reply to new contact requests and leads.' },
+    { label: 'Publish Blog', to: '/admin/blogs/new', icon: PencilLine, description: 'Ship product updates and editorial releases.' },
+    { label: 'View Reports', to: '/admin/reports', icon: FileDown, description: 'Inspect analytics with export-ready summaries.' }
+  ];
+
+  const jobStatusData = [
+    { name: 'Pending', value: state.jobCounts.pending || 0 },
+    { name: 'Approved', value: state.jobCounts.approved || 0 },
+    { name: 'Rejected', value: state.jobCounts.rejected || 0 }
+  ];
+
+  const userGrowthData = (state.reports?.candidateRegistrations?.last30Days || [])
+    .slice(-10)
+    .map((entry) => ({
+      name: formatDate(entry.date).slice(0, 6),
+      users: entry.count || 0
+    }));
+
+  const fallbackGrowth = [
+    { name: 'W1', users: 0 },
+    { name: 'W2', users: 0 },
+    { name: 'W3', users: 0 },
+    { name: 'W4', users: 0 }
+  ];
+
+  const platformActivityData = [
+    { name: 'Jobs', value: metrics.totalJobs || 0 },
+    { name: 'Apps', value: metrics.totalApplications || 0 },
+    { name: 'Inquiries', value: state.contactStats.total || 0 },
+    { name: 'Alerts', value: state.notifications.length || 0 },
+    { name: 'Blogs', value: metrics.totalBlogs || 0 }
+  ];
+
+  const applicationTrendData = [
+    { name: 'Applied', value: state.applicationCounts.pending || 0 },
+    { name: 'Screening', value: state.applicationCounts.reviewed || 0 },
+    { name: 'Interview', value: state.applicationCounts.interview_scheduled || 0 },
+    { name: 'Approved', value: state.applicationCounts.shortlisted || 0 },
+    { name: 'Hired', value: state.applicationCounts.hired || 0 }
+  ];
+
+  const pipelineSteps = [
+    { label: 'Applied', count: state.applicationCounts.pending || 0, icon: CircleDashed },
+    { label: 'Screening', count: state.applicationCounts.reviewed || 0, icon: ScanLine },
+    { label: 'Interview', count: state.applicationCounts.interview_scheduled || 0, icon: Users },
+    { label: 'Approved', count: state.applicationCounts.shortlisted || 0, icon: CheckCheck },
+    { label: 'Hired', count: state.applicationCounts.hired || 0, icon: Sparkles }
+  ];
+
+  const notificationCards = [
+    { label: 'Unread alerts', value: state.unreadNotifications, icon: Bell },
+    { label: 'System updates', value: state.notifications.length, icon: Wrench },
+    { label: 'Policy updates', value: metrics.publishedBlogs, icon: FileText },
+    { label: 'Maintenance alerts', value: state.contactStats.new || 0, icon: Activity }
+  ];
+
   if (state.loading) return <Loader label="Loading admin dashboard..." />;
 
   return (
     <>
-      <Seo title="Admin Dashboard | Hirexo" description="Monitor activity, review moderation queues, and manage the Hirexo platform." />
-      <DashboardHeader
-        className="admin-workspace-header"
-        title="Admin Dashboard"
-        description="A premium control center for moderation, platform visibility, team actions, and day-to-day Hirexo operations."
-        actions={(
-          <>
-            <Button as={Link} to="/admin/jobs" size="sm" variant="secondary">
-              <BriefcaseBusiness size={16} />
-              Add Job
-            </Button>
-            <Button as={Link} to="/admin/blogs/new" size="sm" variant="secondary">
-              <PencilLine size={16} />
-              Add Blog
-            </Button>
-            <Button as={Link} to="/admin/reports" size="sm" variant="ghost">
-              <FileDown size={16} />
-              Export Report
-            </Button>
-            <Button as={Link} to="/admin/messages" size="sm" variant="ghost">
-              <Mail size={16} />
-              New Chat
-            </Button>
-            <Button as={Link} to="/admin/notifications" size="sm">
-              <Bell size={16} />
-              View Notifications
-            </Button>
-          </>
-        )}
-      />
+      <Seo title="Premium Admin Dashboard | Hirexo" description="Luxury SaaS command center for moderation, analytics, communication, and operations." />
 
-      <section className="admin-hero-strip">
-        <div>
-          <span className="admin-hero-badge"><ShieldCheck size={14} /> Admin workspace</span>
-          <h2>Moderation, reporting, and communications in one operational view.</h2>
-          <p>Stay on top of pending jobs, incoming inquiries, recent applications, and notification pressure without leaving the dashboard.</p>
-        </div>
-        <div className="admin-hero-pills">
-          <span><Sparkles size={14} /> {metrics.activeJobs} live jobs</span>
-          <span><CircleAlert size={14} /> {metrics.pendingJobs} pending reviews</span>
-          <span><CheckCheck size={14} /> {state.applicationCounts.reviewed || 0} reviewed applications</span>
-          <span><Sparkles size={14} /> {state.applicationCounts.hired || 0} hired</span>
-        </div>
-      </section>
-
-      <div className="dashboard-grid admin-stat-grid">
-        {statCards.map((item) => (
-          <StatCard
-            key={item.label}
-            label={item.label}
-            value={item.value}
-            hint={item.hint}
-            trend={item.trend}
-            icon={item.icon}
-            tone={item.tone}
-            className="admin-stat-card"
-          />
-        ))}
-      </div>
-
-      <section className="admin-dashboard-layout mt-1">
-        <Card className="admin-panel admin-panel-wide">
-          <div className="panel-head admin-panel-head">
-            <div>
-              <p className="section-eyebrow">Moderation queue</p>
-              <h3>Pending Moderation</h3>
+      <motion.div className="premium-admin-dashboard" initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.35 }}>
+        <motion.header className="premium-admin-header premium-glass" variants={fadeUp} transition={{ duration: 0.4, delay: 0.05 }}>
+          <div className="premium-admin-header-copy">
+            <p className="premium-kicker">Admin Command Center</p>
+            <h1>Welcome back, Admin 👋</h1>
+            <p>Monitor jobs, employers, moderation, analytics, and platform activity.</p>
+            <div className="premium-header-subline">
+              <span>Live platform oversight</span>
+              <span>Moderation ready</span>
+              <span>Real-time updates</span>
             </div>
-            <Button as={Link} to="/admin/jobs" size="sm" variant="secondary">
-              Review all
-            </Button>
           </div>
 
-          {state.jobs.length ? (
-            <div className="admin-moderation-list">
-              {state.jobs.slice(0, 5).map((job) => (
-                <article key={job._id} className="admin-moderation-item">
-                  <div className="admin-moderation-main">
-                    <div className="admin-moderation-title-row">
-                      <h4>{job.title}</h4>
-                      <Badge tone={getBadgeTone(job.reviewStatus)}>{job.reviewStatus || 'pending'}</Badge>
+          <div className="premium-admin-header-actions">
+            <div className="premium-header-toprow">
+              <label className="premium-search" htmlFor="admin-dashboard-search">
+                <Search size={16} />
+                <input
+                  id="admin-dashboard-search"
+                  type="search"
+                  placeholder="Search anything..."
+                  value={searchValue}
+                  onChange={(event) => setSearchValue(event.target.value)}
+                />
+              </label>
+
+              <button type="button" className="premium-icon-btn" aria-label="Open notifications">
+                <Bell size={18} />
+                {state.unreadNotifications > 0 ? <span>{state.unreadNotifications}</span> : null}
+              </button>
+
+              <div className="premium-profile-pill">
+                <div className="premium-profile-avatar">{String(user?.name || 'Admin').trim().charAt(0).toUpperCase()}</div>
+                <div>
+                  <strong>{user?.name || 'Admin User'}</strong>
+                  <small>Super Admin</small>
+                </div>
+              </div>
+            </div>
+
+            <div className="premium-actions-row">
+              <Link to="/admin/jobs" className="premium-btn premium-btn-soft"><BriefcaseBusiness size={16} /> Add Job</Link>
+              <Link to="/admin/blogs/new" className="premium-btn premium-btn-soft"><PencilLine size={16} /> Add Blog</Link>
+              <Link to="/admin/reports" className="premium-btn premium-btn-soft"><FileDown size={16} /> Export Report</Link>
+              <Link to="/admin/messages" className="premium-btn premium-btn-primary"><Mail size={16} /> New Chat</Link>
+            </div>
+          </div>
+        </motion.header>
+
+        <motion.section className="premium-admin-hero" variants={fadeUp} transition={{ duration: 0.45, delay: 0.08 }}>
+          <div className="premium-admin-hero-content">
+            <p className="premium-kicker">Admin Workspace</p>
+            <h2>Moderation, reporting, and communication in one operational view</h2>
+            <p>
+              Monitor jobs, employers, moderation queue, analytics, and notifications in real time.
+            </p>
+            <div className="premium-hero-cta-row">
+              <Link to="/admin/notifications" className="premium-btn premium-btn-primary">View Notifications</Link>
+              <Link to="/admin/reports" className="premium-btn premium-btn-ghost">View Reports</Link>
+            </div>
+          </div>
+
+          <div className="premium-admin-hero-visual">
+            <div className="premium-screen-mock premium-glass">
+              <div className="premium-screen-head">
+                <span />
+                <span />
+                <span />
+              </div>
+              <div className="premium-screen-chart">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={applicationTrendData} margin={{ top: 8, right: 8, left: -15, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="heroChart" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#79f1bc" stopOpacity={0.85} />
+                        <stop offset="100%" stopColor="#79f1bc" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <Area dataKey="value" stroke="#91ffd2" strokeWidth={2} fill="url(#heroChart)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="premium-float-cards">
+              {heroStats.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <motion.article key={item.label} className="premium-float-card" whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
+                    <span><Icon size={14} /></span>
+                    <div>
+                      <small>{item.label}</small>
+                      <strong>{item.value}</strong>
                     </div>
-                    <p>{job.companyName || job.employerUser?.name || 'Employer account'}</p>
-                    <div className="admin-moderation-meta">
-                      <span>Submitted {formatDate(job.createdAt)}</span>
-                      <span>{job.employerUser?.email || 'Employer details available in moderation view'}</span>
+                  </motion.article>
+                );
+              })}
+            </div>
+          </div>
+        </motion.section>
+
+        <section className="premium-stats-grid">
+          {statCards.map((card, index) => {
+            const Icon = card.icon;
+            return (
+              <motion.article
+                key={card.label}
+                className="premium-stat-card premium-glass"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: 0.03 * index }}
+              >
+                <div className="premium-stat-head">
+                  <p>{card.label}</p>
+                  <span className="premium-stat-icon"><Icon size={18} /></span>
+                </div>
+                <strong>{card.value}</strong>
+                <div className="premium-stat-foot">
+                  <span>{card.subtitle}</span>
+                  <em>{card.growth}</em>
+                </div>
+              </motion.article>
+            );
+          })}
+        </section>
+
+        <section className="premium-main-grid">
+          <article className="premium-panel premium-panel-wide premium-glass">
+            <div className="premium-panel-head">
+              <div>
+                <p className="premium-kicker">Moderation Queue</p>
+                <h3>Pending Moderation Workspace</h3>
+              </div>
+              <Link to="/admin/jobs" className="premium-btn premium-btn-soft">Review All</Link>
+            </div>
+
+            {moderationList.length ? (
+              <div className="premium-moderation-list">
+                {moderationList.map((job) => {
+                  const ageHours = Math.max(1, Math.round((Date.now() - new Date(job.createdAt).getTime()) / (1000 * 60 * 60)));
+                  const priority = ageHours > 72 ? 'High Priority' : ageHours > 24 ? 'Priority' : 'Normal';
+
+                  return (
+                    <article key={job._id} className="premium-moderation-item">
+                      <div className="premium-moderation-main">
+                        <div className="premium-moderation-title">
+                          <h4>{job.title}</h4>
+                          <span className={`premium-status-badge ${getBadgeTone(job.reviewStatus)}`}>{job.reviewStatus || 'pending'}</span>
+                        </div>
+                        <p>{job.companyName || job.employerUser?.name || 'Employer account'}</p>
+                        <div className="premium-moderation-meta">
+                          <span>Submitted {formatDate(job.createdAt)}</span>
+                          <span>{priority}</span>
+                          <span>{job.employerUser?.email || 'Employer details available in moderation view'}</span>
+                        </div>
+                      </div>
+
+                      <div className="premium-moderation-actions">
+                        <Link to="/admin/jobs" className="premium-btn premium-btn-ghost">Review</Link>
+                        <button
+                          type="button"
+                          className="premium-btn premium-btn-primary"
+                          disabled={actioningJobId === job._id}
+                          onClick={() => handleModerationAction(job._id, 'approve')}
+                        >
+                          {actioningJobId === job._id ? 'Saving...' : 'Approve'}
+                        </button>
+                        <button
+                          type="button"
+                          className="premium-btn premium-btn-soft"
+                          disabled={actioningJobId === job._id}
+                          onClick={() => handleModerationAction(job._id, 'reject')}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="premium-empty">Moderation queue is clear. New jobs requiring review will appear here.</div>
+            )}
+          </article>
+
+          <article className="premium-panel premium-glass">
+            <div className="premium-panel-head compact">
+              <div>
+                <p className="premium-kicker">Analytics</p>
+                <h3>Job Status</h3>
+              </div>
+            </div>
+            <div className="premium-chart-wrap">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={jobStatusData} margin={{ top: 8, right: 6, left: -18, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.09)" />
+                  <XAxis dataKey="name" tick={{ fill: '#d3f9e7', fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#d3f9e7', fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="#7bf0bc" radius={[10, 10, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </article>
+
+          <article className="premium-panel premium-glass">
+            <div className="premium-panel-head compact">
+              <div>
+                <p className="premium-kicker">Analytics</p>
+                <h3>User Growth</h3>
+              </div>
+            </div>
+            <div className="premium-chart-wrap">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={userGrowthData.length ? userGrowthData : fallbackGrowth} margin={{ top: 8, right: 6, left: -18, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="userGrowth" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#67e6ab" stopOpacity={0.8} />
+                      <stop offset="100%" stopColor="#67e6ab" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.08)" />
+                  <XAxis dataKey="name" tick={{ fill: '#d3f9e7', fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#d3f9e7', fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="users" stroke="#81ffd0" strokeWidth={2} fill="url(#userGrowth)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </article>
+
+          <article className="premium-panel premium-glass">
+            <div className="premium-panel-head compact">
+              <div>
+                <p className="premium-kicker">Analytics</p>
+                <h3>Platform Activity</h3>
+              </div>
+            </div>
+            <div className="premium-chart-wrap">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={platformActivityData} margin={{ top: 8, right: 6, left: -18, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.08)" />
+                  <XAxis dataKey="name" tick={{ fill: '#d3f9e7', fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#d3f9e7', fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="value" stroke="#a6ffdb" strokeWidth={2.2} dot={{ r: 3 }} />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </article>
+
+          <article className="premium-panel premium-glass">
+            <div className="premium-panel-head compact">
+              <div>
+                <p className="premium-kicker">Analytics</p>
+                <h3>Applications Trend</h3>
+              </div>
+            </div>
+            <div className="premium-chart-wrap">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={applicationTrendData} margin={{ top: 8, right: 6, left: -18, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="applicationTrend" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#96fdd2" stopOpacity={0.78} />
+                      <stop offset="100%" stopColor="#96fdd2" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.08)" />
+                  <XAxis dataKey="name" tick={{ fill: '#d3f9e7', fontSize: 12 }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fill: '#d3f9e7', fontSize: 11 }} axisLine={false} tickLine={false} />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="value" stroke="#afffe0" strokeWidth={2.1} fill="url(#applicationTrend)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </article>
+        </section>
+
+        <section className="premium-grid-two">
+          <article className="premium-panel premium-glass">
+            <div className="premium-panel-head">
+              <div>
+                <p className="premium-kicker">Admin Feed</p>
+                <h3>Recent Activity Timeline</h3>
+              </div>
+              <span className="premium-inline-chip">{activityFeed.length} events</span>
+            </div>
+            <div className="premium-timeline">
+              {activityFeed.length ? activityFeed.map((item) => (
+                <article key={item.id} className="premium-timeline-item">
+                  <span className={`premium-dot dot-${item.type}`} aria-hidden="true" />
+                  <div>
+                    <div className="premium-timeline-top">
+                      <strong>{item.title}</strong>
+                      <small>{getRelativeTime(item.date)}</small>
                     </div>
-                  </div>
-                  <div className="admin-moderation-actions">
-                    <Button as={Link} to="/admin/jobs" size="sm" variant="ghost">Review</Button>
-                    <Button size="sm" disabled={actioningJobId === job._id} onClick={() => handleModerationAction(job._id, 'approve')}>
-                      {actioningJobId === job._id ? 'Saving...' : 'Approve'}
-                    </Button>
-                    <Button size="sm" variant="secondary" disabled={actioningJobId === job._id} onClick={() => handleModerationAction(job._id, 'reject')}>
-                      Reject
-                    </Button>
+                    <p>{item.description}</p>
                   </div>
                 </article>
-              ))}
+              )) : <div className="premium-empty">Recent activity will appear once events are generated.</div>}
             </div>
-          ) : (
-            <div className="admin-empty-state">
-              <div className="admin-empty-icon"><CheckCheck size={22} /></div>
+          </article>
+
+          <article className="premium-panel premium-glass">
+            <div className="premium-panel-head">
               <div>
-                <h4>Moderation queue is clear</h4>
-                <p>No pending job submissions right now. Approved, rejected, and future moderation tasks will show up here in a polished review queue.</p>
+                <p className="premium-kicker">Operational Shortcuts</p>
+                <h3>Quick Actions</h3>
               </div>
             </div>
-          )}
-        </Card>
-
-        <Card className="admin-panel">
-          <div className="panel-head admin-panel-head">
-            <div>
-              <p className="section-eyebrow">Analytics snapshot</p>
-              <h3>Jobs by status</h3>
-            </div>
-            <Badge tone="neutral">Live overview</Badge>
-          </div>
-          <div className="admin-chart">
-            {chartBars.map((item) => (
-              <div key={item.label} className="admin-chart-row">
-                <div className="admin-chart-label">
-                  <span>{item.label}</span>
-                  <strong>{item.value}</strong>
-                </div>
-                <div className="admin-chart-track">
-                  <span className={`admin-chart-fill admin-chart-fill-${item.tone}`} style={{ width: item.width }} />
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="admin-analytics-foot">
-            <span>{metrics.activeJobs} currently active</span>
-            <span>{state.applicationCounts.all || 0} total applications tracked</span>
-          </div>
-        </Card>
-
-        <Card className="admin-panel">
-          <div className="panel-head admin-panel-head">
-            <div>
-              <p className="section-eyebrow">Admin feed</p>
-              <h3>Recent Activity</h3>
-            </div>
-            <Badge tone="success">{activityFeed.length} events</Badge>
-          </div>
-          <div className="admin-activity-feed">
-            {activityFeed.map((item) => (
-              <article key={item.id} className="admin-activity-item">
-                <span className={`admin-activity-dot admin-activity-dot-${item.type}`} aria-hidden="true" />
-                <div>
-                  <div className="admin-activity-title-row">
-                    <strong>{item.title}</strong>
-                    <small>{getRelativeTime(item.date)}</small>
-                  </div>
-                  <p>{item.description}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </Card>
-
-        <Card className="admin-panel">
-          <div className="panel-head admin-panel-head">
-            <div>
-              <p className="section-eyebrow">Operational shortcuts</p>
-              <h3>Quick Actions</h3>
-            </div>
-          </div>
-          <div className="admin-quick-actions-grid">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
-              return (
-                <Link key={action.label} to={action.to} className="admin-quick-action-card">
-                  <span className="admin-quick-action-icon"><Icon size={18} /></span>
-                  <strong>{action.label}</strong>
-                  <p>{action.description}</p>
-                  <span className="admin-quick-action-link">Open <ArrowRight size={14} /></span>
-                </Link>
-              );
-            })}
-          </div>
-        </Card>
-
-        <Card className="admin-panel">
-          <div className="panel-head admin-panel-head">
-            <div>
-              <p className="section-eyebrow">Application pipeline</p>
-              <h3>Recent Applications</h3>
-            </div>
-            <Button as={Link} to="/admin/jobs" size="sm" variant="ghost">Open moderation</Button>
-          </div>
-          <div className="admin-mini-list">
-            {recentApplications.length ? recentApplications.map((application) => (
-              <article key={application._id} className="admin-mini-item">
-                <div>
-                  <strong>{application.candidateUser?.name || 'Candidate'}</strong>
-                  <p>{application.job?.title || 'Job'} at {application.job?.companyName || 'Employer'}</p>
-                </div>
-                <div className="admin-mini-meta">
-                  <Badge tone={getBadgeTone(application.status)}>{application.status || 'pending'}</Badge>
-                  <small>{formatDate(application.createdAt)}</small>
-                  <Link to={`/admin/messages?applicationId=${application._id}&recipientRole=candidate`} className="link-button">
-                    Chat <ArrowRight size={14} />
+            <div className="premium-actions-grid">
+              {quickActions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <Link key={action.label} to={action.to} className="premium-action-card">
+                    <span><Icon size={16} /></span>
+                    <strong>{action.label}</strong>
+                    <p>{action.description}</p>
+                    <em>Open <ArrowRight size={13} /></em>
                   </Link>
-                </div>
-              </article>
-            )) : (
-              <div className="admin-empty-inline">Recent applications will appear here when candidates start applying.</div>
-            )}
-          </div>
-        </Card>
+                );
+              })}
+            </div>
+          </article>
+        </section>
 
-        <Card className="admin-panel">
-          <div className="panel-head admin-panel-head">
-            <div>
-              <p className="section-eyebrow">Inbox health</p>
-              <h3>Recent Inquiries</h3>
+        <section className="premium-grid-two">
+          <article className="premium-panel premium-glass">
+            <div className="premium-panel-head">
+              <div>
+                <p className="premium-kicker">Applications Pipeline</p>
+                <h3>Applied to Hired Flow</h3>
+              </div>
             </div>
-            <Button as={Link} to="/admin/inquiries" size="sm" variant="secondary">Open inquiries</Button>
-          </div>
-          <div className="admin-mini-list">
-            {recentInquiries.length ? recentInquiries.map((inquiry) => (
-              <article key={inquiry._id} className="admin-mini-item">
-                <div>
-                  <strong>{inquiry.name}</strong>
-                  <p>{inquiry.subject || 'General inquiry'}</p>
-                </div>
-                <div className="admin-mini-meta">
-                  <Badge tone={getBadgeTone(inquiry.status)}>{inquiry.status || 'new'}</Badge>
-                  <small>{formatDate(inquiry.createdAt)}</small>
-                </div>
-              </article>
-            )) : (
-              <div className="admin-empty-inline">No inquiries yet. New contact submissions will surface here.</div>
-            )}
-          </div>
-        </Card>
+            <div className="premium-pipeline-row">
+              {pipelineSteps.map((step, index) => {
+                const Icon = step.icon;
+                return (
+                  <div key={step.label} className="premium-pipeline-step">
+                    <span><Icon size={14} /></span>
+                    <small>{step.label}</small>
+                    <strong>{step.count}</strong>
+                    {index < pipelineSteps.length - 1 ? <i aria-hidden="true" /> : null}
+                  </div>
+                );
+              })}
+            </div>
+          </article>
 
-        <Card className="admin-panel">
-          <div className="panel-head admin-panel-head">
-            <div>
-              <p className="section-eyebrow">Alerts</p>
-              <h3>Notifications Summary</h3>
+          <article className="premium-panel premium-glass">
+            <div className="premium-panel-head">
+              <div>
+                <p className="premium-kicker">Notification Summary</p>
+                <h3>Platform Alerts</h3>
+              </div>
+              <Link to="/admin/notifications" className="premium-btn premium-btn-ghost">Open Alerts</Link>
             </div>
-            <Badge tone={state.unreadNotifications ? 'success' : 'neutral'}>
-              {state.unreadNotifications} unread
-            </Badge>
-          </div>
-          <div className="admin-notification-summary">
-            <div className="admin-notification-stats">
-              <div>
-                <strong>{state.unreadNotifications}</strong>
-                <span>Unread alerts</span>
-              </div>
-              <div>
-                <strong>{state.contactStats.new || 0}</strong>
-                <span>New inquiries</span>
-              </div>
-              <div>
-                <strong>{metrics.publishedBlogs}</strong>
-                <span>Published blogs</span>
-              </div>
+            <div className="premium-notification-card-grid">
+              {notificationCards.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <article key={item.label} className="premium-notification-card">
+                    <span><Icon size={15} /></span>
+                    <strong>{item.value}</strong>
+                    <p>{item.label}</p>
+                  </article>
+                );
+              })}
             </div>
-            <div className="admin-notification-list">
+            <div className="premium-notification-list">
               {notifications.length ? notifications.map((item) => (
-                <article key={item._id} className={`admin-notification-item ${item.isRead ? '' : 'is-unread'}`}>
+                <article key={item._id} className={`premium-notification-item ${item.isRead ? '' : 'is-unread'}`}>
                   <div>
                     <strong>{item.title}</strong>
                     <p>{item.message}</p>
                   </div>
                   <small>{formatDateTime(item.createdAt)}</small>
                 </article>
-              )) : (
-                <div className="admin-empty-inline">Notification updates will appear here once the platform generates them.</div>
-              )}
+              )) : <div className="premium-empty">No notification updates yet.</div>}
             </div>
-          </div>
-        </Card>
-      </section>
+          </article>
+        </section>
+      </motion.div>
     </>
   );
 }

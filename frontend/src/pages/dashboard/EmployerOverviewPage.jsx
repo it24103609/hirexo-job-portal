@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, BriefcaseBusiness, ChartColumnBig, Filter, Users, XCircle } from 'lucide-react';
+import { ArrowRight, BriefcaseBusiness, CalendarClock, ChartColumnBig, Filter, HandCoins, Users, XCircle } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
@@ -88,6 +88,33 @@ export default function EmployerOverviewPage() {
   const maxReason = Math.max(1, ...rejectionReasons.map((item) => item.value), 1);
   const sourceTotal = sources.reduce((sum, item) => sum + item.value, 0);
 
+  const workflowSteps = [
+    {
+      title: 'Create role',
+      description: 'Add a new job opening and publish it to the portal.',
+      to: '/employer/jobs/new',
+      icon: BriefcaseBusiness
+    },
+    {
+      title: 'Review candidates',
+      description: 'Open applications and shortlist top fits for the role.',
+      to: '/employer/jobs',
+      icon: Users
+    },
+    {
+      title: 'Schedule interviews',
+      description: 'Book interview slots for shortlisted candidates.',
+      to: '/employer/interviews',
+      icon: CalendarClock
+    },
+    {
+      title: 'Close hires',
+      description: 'Send offers and finalize successful candidates.',
+      to: '/employer/offers',
+      icon: HandCoins
+    }
+  ];
+
   if (state.loading) return <Loader label="Loading employer overview..." />;
 
   return (
@@ -110,6 +137,22 @@ export default function EmployerOverviewPage() {
           </>
         )}
       />
+
+      <section className="employer-workflow-path" aria-label="Employer hiring workflow">
+        {workflowSteps.map((step, index) => {
+          const StepIcon = step.icon;
+          return (
+            <Link key={step.title} to={step.to} className="employer-workflow-step">
+              <span><StepIcon size={18} /></span>
+              <div>
+                <strong>{step.title}</strong>
+                <p>{step.description}</p>
+              </div>
+              {index < workflowSteps.length - 1 ? <span className="employer-workflow-separator" aria-hidden="true">›</span> : null}
+            </Link>
+          );
+        })}
+      </section>
 
       <div className="overview-metric-strip">
         <article className="overview-metric-card">

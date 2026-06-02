@@ -322,9 +322,7 @@
   overflow: hidden;
   padding: 1.8rem;
   border-radius: 24px;
-  background:
-    radial-gradient(circle at 90% 80%, rgba(95, 210, 139, 0.18), transparent 36%),
-    rgba(255, 255, 255, 0.84);
+  background: rgba(255, 255, 255, 0.84);
 }
 
 .about-card-icon {
@@ -354,34 +352,6 @@
   color: #5a7467;
   line-height: 1.62;
   font-size: 0.93rem;
-}
-
-.about-3d-visual {
-  position: absolute;
-  right: 1.1rem;
-  bottom: 1rem;
-  width: 118px;
-  height: 88px;
-  opacity: 0.9;
-}
-
-.about-3d-visual.flag {
-  background:
-    linear-gradient(145deg, transparent 0 42%, #cfd8df 43% 100%),
-    linear-gradient(90deg, #35c87a 0 40%, transparent 41%);
-  clip-path: polygon(0 100%, 26% 48%, 46% 100%, 68% 34%, 100% 100%);
-}
-
-.about-3d-visual.scope {
-  border-radius: 999px;
-  background: radial-gradient(circle at 35% 35%, #dff7eb, #5bd18d 45%, #0f8050 100%);
-  transform: rotate(-24deg);
-}
-
-.about-3d-visual.heart {
-  border-radius: 34px;
-  background: linear-gradient(145deg, #dff7eb, #35c87a);
-  transform: rotate(45deg) scale(0.7);
 }
 
 .about-section-header {

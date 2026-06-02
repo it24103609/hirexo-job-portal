@@ -31,9 +31,9 @@ const images = {
 
 export default function AboutPage() {
   const storyCards = [
-    { icon: TargetIcon, title: 'Our mission', text: siteContent.mission, visual: 'flag' },
-    { icon: Eye, title: 'Our vision', text: siteContent.vision, visual: 'scope' },
-    { icon: Heart, title: 'Our values', text: siteContent.values, visual: 'heart' }
+    { icon: TargetIcon, title: 'Our mission', text: siteContent.mission },
+    { icon: Eye, title: 'Our vision', text: siteContent.vision },
+    { icon: Heart, title: 'Our values', text: siteContent.values }
   ];
 
   const whoWeServe = [
@@ -139,12 +139,11 @@ export default function AboutPage() {
 
       <section className="about-story-shell">
         <div className="shell about-story-grid">
-          {storyCards.map(({ icon: Icon, title, text, visual }) => (
+          {storyCards.map(({ icon: Icon, title, text }) => (
             <article className="about-story-card" key={title}>
               <span className="about-card-icon"><Icon size={24} /></span>
               <h3>{title}</h3>
               <p>{text}</p>
-              <span className={`about-3d-visual ${visual}`} aria-hidden="true" />
             </article>
           ))}
         </div>

@@ -11,6 +11,7 @@ const CandidateProfile = require('../models/CandidateProfile');
 const PlatformSetting = require('../models/PlatformSetting');
 const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
 const { ensureInterviewRounds, getInterviewRoundById, syncLegacyInterviewFields, pushInterviewTimeline } = require('../utils/interviewWorkflow');
+const { assertValidStatusTransition, parseFutureDate } = require('../utils/applicationWorkflow');
 const { DEFAULT_AI_SCORING, buildAiExplanation } = require('../utils/aiScoring');
 const { JOB_REVIEW_STATUS, JOB_STATUS, APPLICATION_STATUS, NOTIFICATION_TYPES, ROLES } = require('../utils/constants');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
@@ -335,6 +336,8 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
     throw new AppError('You cannot update this application', 403);
   }
 
+  assertValidStatusTransition(application.status, req.body.status);
+
   application.status = req.body.status;
   application.notes = req.body.notes || application.notes;
 
@@ -348,7 +351,7 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
       throw new AppError('Interview date and time is required', 400);
     }
 
-    application.interviewScheduledAt = new Date(interviewAt);
+    application.interviewScheduledAt = parseFutureDate(interviewAt, 'Interview date and time');
     application.interviewMode = req.body.interviewMode || req.body.interview?.mode || application.interviewMode;
     application.interviewLocation = req.body.interviewLocation || req.body.interview?.location || application.interviewLocation;
     application.interviewMeetingLink = req.body.interviewMeetingLink || req.body.interview?.meetingLink || application.interviewMeetingLink;
@@ -535,6 +538,7 @@ const bookInterviewSlot = asyncHandler(async (req, res) => {
   if (!slot) {
     throw new AppError('Interview slot not found', 404);
   }
+  parseFutureDate(slot.startsAt, 'Interview slot start time');
 
   const targetSlots = round ? round.interviewSlots : application.interviewSlots;
   targetSlots.forEach((entry) => {

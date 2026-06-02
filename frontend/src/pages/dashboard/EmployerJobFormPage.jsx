@@ -387,29 +387,45 @@ export default function EmployerJobFormPage({ mode }) {
         </div>
         <aside ref={previewRef} className="jobform-preview-sticky jobform-preview-sticky-premium">
           <div className="jobform-preview-label jobform-preview-label-premium">Live Preview</div>
-          <JobCard
-            job={{
-              title: form.title || 'Job Title',
-              companyName: 'Your Company',
-              location: form.location || 'Location',
-              jobType: form.jobType || 'Job Type',
-              experienceLevel: form.experienceLevel,
-              salaryMin: form.salaryMin,
-              salaryMax: form.salaryMax,
-              image: form.imageUrl ? { url: form.imageUrl, alt: form.imageAlt } : undefined,
-              description: form.description,
-              vacancies: form.vacancies
-            }}
-            variant="list"
-          />
-          <Card className="mt-1">
-            <div className="panel-head">
-              <h3 style={{ margin: 0 }}>Hiring summary</h3>
+          <div className="jobform-preview-card">
+            <JobCard
+              job={{
+                title: form.title || 'Job Title',
+                companyName: 'Your Company',
+                location: form.location || 'Location',
+                jobType: form.jobType || 'Job Type',
+                experienceLevel: form.experienceLevel,
+                salaryMin: form.salaryMin,
+                salaryMax: form.salaryMax,
+                image: form.imageUrl ? { url: form.imageUrl, alt: form.imageAlt } : undefined,
+                description: form.description,
+                vacancies: form.vacancies
+              }}
+              variant="list"
+            />
+          </div>
+          <Card className="jobform-summary-card">
+            <div className="panel-head jobform-summary-head">
+              <h3>Hiring summary</h3>
             </div>
-            <p className="m-0">Priority: <strong>{form.hiringPriority}</strong></p>
-            <p className="m-0">Remote-friendly: <strong>{form.remoteFriendly ? 'Yes' : 'No'}</strong></p>
-            <p className="m-0">Screening questions: <strong>{screeningPreviewCount}</strong></p>
-            <p className="m-0">Hiring lead: <strong>{teamMembers.find((member) => member._id === form.hiringLeadMember)?.name || 'Not assigned'}</strong></p>
+            <div className="jobform-summary-grid">
+              <div className="jobform-summary-row">
+                <span>Priority</span>
+                <strong>{form.hiringPriority}</strong>
+              </div>
+              <div className="jobform-summary-row">
+                <span>Remote-friendly</span>
+                <strong>{form.remoteFriendly ? 'Yes' : 'No'}</strong>
+              </div>
+              <div className="jobform-summary-row">
+                <span>Screening questions</span>
+                <strong>{screeningPreviewCount}</strong>
+              </div>
+              <div className="jobform-summary-row">
+                <span>Hiring lead</span>
+                <strong>{teamMembers.find((member) => member._id === form.hiringLeadMember)?.name || 'Not assigned'}</strong>
+              </div>
+            </div>
           </Card>
         </aside>
       </div>

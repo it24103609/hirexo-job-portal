@@ -1,5 +1,16 @@
 const AppError = require('../utils/AppError');
 
+function redactBody(body) {
+  if (!body || typeof body !== 'object') return body;
+
+  return Object.fromEntries(
+    Object.entries(body).map(([key, value]) => [
+      key,
+      /password|token|secret/i.test(key) ? '[redacted]' : value
+    ])
+  );
+}
+
 function errorHandler(err, req, res, next) {
   const error = err instanceof AppError ? err : new AppError(err.message || 'Internal Server Error', err.statusCode || 500);
 
@@ -7,8 +18,7 @@ function errorHandler(err, req, res, next) {
   console.error('[ERROR]', err);
   if (req && req.method && req.url) {
     console.error('[ERROR] Request:', req.method, req.url);
-    if (req.body) console.error('[ERROR] Body:', req.body);
-    if (req.headers) console.error('[ERROR] Headers:', req.headers);
+    if (req.body) console.error('[ERROR] Body:', redactBody(req.body));
   }
 
   if (error.name === 'CastError') {
@@ -22,8 +32,9 @@ function errorHandler(err, req, res, next) {
     error.message = `${duplicateField} already exists`;
   }
 
-  // Always set CORS headers for error responses
-  res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL || '*');
+  if (!res.getHeader('Access-Control-Allow-Origin')) {
+    res.setHeader('Access-Control-Allow-Origin', process.env.CLIENT_URL || '*');
+  }
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.status(error.statusCode).json({
     success: false,

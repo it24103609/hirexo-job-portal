@@ -9,16 +9,27 @@ function getCategoryLabel(category) {
 }
 
 export default function BlogCard({ post }) {
-  const hasImage = post.image?.url;
-  const imageUrl = post.image?.url || 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop';
+  const fallback = 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&h=400&fit=crop';
+  const imageUrl = post.image?.url || fallback;
   
   return (
     <article className="blog-card card">
-      {hasImage && (
-        <div className="blog-card-image">
-          <img src={imageUrl} alt={post.image?.alt || post.title} loading="lazy" />
-        </div>
-      )}
+      <div className="blog-card-image">
+        <img
+          src={imageUrl}
+          alt={post.image?.alt || post.title}
+          loading="lazy"
+          onError={(e) => {
+            const el = e.currentTarget;
+            if (el.src !== fallback) {
+              el.onerror = null;
+              el.src = fallback;
+            } else {
+              el.style.display = 'none';
+            }
+          }}
+        />
+      </div>
       <div className="blog-card-content">
         {post.publishedAt && (
           <span className="blog-card-date">📅 {formatDate(post.publishedAt)}</span>

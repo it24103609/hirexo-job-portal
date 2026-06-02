@@ -34,6 +34,12 @@ export default function NotificationsPage() {
   });
   const [filter, setFilter] = useState('all');
 
+  const updatePreferences = async (nextPreferences) => {
+    setState((current) => ({ ...current, preferences: nextPreferences }));
+    await notificationsApi.updatePreferences(nextPreferences);
+    toast.success('Preferences updated');
+  };
+
   const loadNotifications = async () => {
     try {
       const res = await notificationsApi.mine({ limit: 100 });
@@ -153,39 +159,62 @@ export default function NotificationsPage() {
               </div>
             </div>
             <div className="form-grid">
-              <label className="field">
-                <span className="field-label">Email notifications</span>
-                <input
-                  type="checkbox"
-                  checked={Boolean(state.preferences?.emailEnabled)}
+              <div className="candidate-notification-setting">
+                <div>
+                  <span className="field-label">Email notifications</span>
+                  <p className="candidate-notification-setting-note">Receive email alerts for updates that match your work queue.</p>
+                </div>
+                <button
+                  type="button"
+                  className="candidate-switch"
+                  role="switch"
+                  aria-checked={Boolean(state.preferences?.emailEnabled)}
+                  onClick={async () => {
+                    const next = {
+                      ...state.preferences,
+                      emailEnabled: !Boolean(state.preferences?.emailEnabled)
+                    };
+                    try {
+                      await updatePreferences(next);
+                    } catch (error) {
+                      toast.error(error.message || 'Failed to update preferences');
+                    }
+                  }}
+                >
+                  <span className="candidate-switch-track" aria-hidden="true">
+                    <span className="candidate-switch-thumb" />
+                  </span>
+                  <span className="candidate-switch-label">
+                    {state.preferences?.emailEnabled ? 'Enabled' : 'Disabled'}
+                  </span>
+                </button>
+              </div>
+              <div className="candidate-notification-setting candidate-notification-setting-select">
+                <div>
+                  <span className="field-label">Digest frequency</span>
+                  <p className="candidate-notification-setting-note">Choose how often notification summaries should arrive.</p>
+                </div>
+                <Select
+                  className="candidate-digest-select"
+                  aria-label="Digest frequency"
+                  value={state.preferences?.digestFrequency || 'instant'}
                   onChange={async (event) => {
                     const next = {
                       ...state.preferences,
-                      emailEnabled: event.target.checked
+                      digestFrequency: event.target.value
                     };
-                    setState((current) => ({ ...current, preferences: next }));
-                    await notificationsApi.updatePreferences(next);
-                    toast.success('Preferences updated');
+                    try {
+                      await updatePreferences(next);
+                    } catch (error) {
+                      toast.error(error.message || 'Failed to update preferences');
+                    }
                   }}
-                />
-              </label>
-              <Select
-                label="Digest frequency"
-                value={state.preferences?.digestFrequency || 'instant'}
-                onChange={async (event) => {
-                  const next = {
-                    ...state.preferences,
-                    digestFrequency: event.target.value
-                  };
-                  setState((current) => ({ ...current, preferences: next }));
-                  await notificationsApi.updatePreferences(next);
-                  toast.success('Preferences updated');
-                }}
-              >
-                <option value="instant">Instant</option>
-                <option value="daily">Daily</option>
-                <option value="weekly">Weekly</option>
-              </Select>
+                >
+                  <option value="instant">Instant</option>
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                </Select>
+              </div>
             </div>
           </Card>
 
