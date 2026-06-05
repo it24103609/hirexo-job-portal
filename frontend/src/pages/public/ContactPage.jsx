@@ -24,7 +24,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <>
+    <div>
       <Seo title="Contact Hirexo" description="Contact the Hirexo team for hiring inquiries, support, and partnerships." />
       
       {/* Hero Section */}
@@ -190,6 +190,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }
