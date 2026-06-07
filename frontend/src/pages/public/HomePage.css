@@ -1098,3 +1098,427 @@
     display: none;
   }
 }
+
+.forms-section,
+.process-section,
+.industry-section,
+.corporate-section,
+.divisions-section,
+.clients-section,
+.testimonials-section {
+  padding: 4.5rem 0;
+}
+
+.forms-section h2,
+.process-section h2,
+.industry-section h2,
+.corporate-section h2,
+.divisions-section h2,
+.clients-section h2 {
+  margin: 0;
+  color: #17251f;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  line-height: 1.04;
+}
+
+.job-listing-grid {
+  display: grid;
+  gap: 0.85rem;
+  margin: 1.5rem 0;
+}
+
+.opening-card,
+.talent-form-card,
+.process-step,
+.corporate-note,
+.division-card,
+.global-trade-card,
+.testimonial-card {
+  border: 1px solid rgba(26, 138, 86, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 42px rgba(20, 61, 46, 0.09);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.opening-card:hover,
+.division-card:hover,
+.testimonial-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 55px rgba(20, 61, 46, 0.16);
+  border-color: rgba(26, 138, 86, 0.28);
+}
+
+.opening-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 18px;
+}
+
+.opening-card > div,
+.opening-card footer {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.opening-card > div {
+  align-items: flex-start;
+}
+
+.opening-card h3 {
+  margin: 0.2rem 0;
+  color: #17251f;
+  font-size: 1.05rem;
+}
+
+.opening-card small,
+.opening-card p {
+  margin: 0;
+  color: #5d7869;
+}
+
+.opening-card p {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.opening-card footer {
+  justify-content: space-between;
+}
+
+.opening-card footer span {
+  border-radius: 999px;
+  padding: 0.42rem 0.75rem;
+  color: #107648;
+  background: rgba(26, 138, 86, 0.1);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.forms-section {
+  background:
+    radial-gradient(circle at 12% 20%, rgba(75, 208, 142, 0.16), transparent 24%),
+    linear-gradient(180deg, #ffffff, rgba(245, 250, 248, 0.8));
+}
+
+.forms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4rem;
+  align-items: start;
+}
+
+.talent-form-card {
+  padding: 1.5rem;
+  border-radius: 24px;
+}
+
+.talent-form-card > p,
+.corporate-section p,
+.division-card p,
+.global-trade-card p,
+.testimonial-card p {
+  color: #5d7869;
+  line-height: 1.7;
+}
+
+.talent-form-card form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.35rem;
+}
+
+.talent-form-card label {
+  display: grid;
+  gap: 0.45rem;
+  color: #2f4b3d;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.talent-form-card input,
+.talent-form-card textarea {
+  width: 100%;
+  border: 1px solid rgba(26, 138, 86, 0.16);
+  border-radius: 14px;
+  padding: 0.85rem 0.95rem;
+  color: #17251f;
+  background: #ffffff;
+  font: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.talent-form-card input:focus,
+.talent-form-card textarea:focus {
+  border-color: rgba(26, 138, 86, 0.48);
+  box-shadow: 0 0 0 4px rgba(26, 138, 86, 0.1);
+}
+
+.talent-form-card textarea {
+  resize: vertical;
+}
+
+.talent-form-card .full-field,
+.talent-form-card .btn {
+  grid-column: 1 / -1;
+}
+
+.process-timeline {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.process-step {
+  position: relative;
+  min-height: 150px;
+  padding: 1rem;
+  overflow: hidden;
+  border-radius: 18px;
+}
+
+.process-step::after {
+  content: '';
+  position: absolute;
+  inset: auto -22px -30px auto;
+  width: 86px;
+  height: 86px;
+  border-radius: 999px;
+  background: rgba(54, 206, 130, 0.14);
+}
+
+.process-step span {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #14935d, #38c77c);
+  font-weight: 900;
+}
+
+.process-step h3 {
+  position: relative;
+  z-index: 1;
+  margin: 1rem 0 0;
+  color: #17251f;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.industry-section,
+.divisions-section,
+.testimonials-section {
+  background:
+    radial-gradient(circle at 86% 10%, rgba(75, 208, 142, 0.18), transparent 26%),
+    linear-gradient(180deg, rgba(245, 250, 248, 0.7), #ffffff);
+}
+
+.industry-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.industry-grid span,
+.client-strip span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 58px;
+  border: 1px solid rgba(26, 138, 86, 0.12);
+  border-radius: 16px;
+  padding: 0.85rem 1rem;
+  color: #2f4b3d;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 14px 30px rgba(20, 61, 46, 0.07);
+  font-weight: 900;
+}
+
+.industry-grid svg {
+  color: #14935d;
+  flex-shrink: 0;
+}
+
+.corporate-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+  gap: 2rem;
+  align-items: center;
+}
+
+.corporate-note {
+  padding: 1.5rem;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 80% 10%, rgba(75, 208, 142, 0.2), transparent 32%),
+    rgba(255, 255, 255, 0.92);
+}
+
+.corporate-note strong {
+  color: #14935d;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.corporate-note h3 {
+  margin: 0.5rem 0;
+  color: #17251f;
+  font-size: 1.7rem;
+}
+
+.division-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.division-card {
+  display: grid;
+  gap: 0.7rem;
+  padding: 1.2rem;
+  border-radius: 18px;
+}
+
+.division-card span {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  color: #0f7c4f;
+  background: #e5f8ee;
+}
+
+.division-card h3,
+.trade-list h3 {
+  margin: 0;
+  color: #17251f;
+}
+
+.global-trade-card {
+  margin-top: 1.2rem;
+  padding: 1.5rem;
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(75, 208, 142, 0.18), transparent 28%),
+    rgba(255, 255, 255, 0.94);
+}
+
+.trade-columns {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 0.9fr;
+  gap: 1rem;
+  margin-top: 1.4rem;
+}
+
+.trade-list {
+  border-radius: 18px;
+  padding: 1rem;
+  background: #f6fbf8;
+}
+
+.trade-list ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trade-list li {
+  position: relative;
+  padding-left: 1.1rem;
+  color: #4d675b;
+  line-height: 1.45;
+}
+
+.trade-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #14935d;
+}
+
+.client-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.client-strip span {
+  justify-content: center;
+  text-align: center;
+}
+
+.testimonial-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.testimonial-card {
+  padding: 1.4rem;
+  border-radius: 20px;
+}
+
+.testimonial-card strong {
+  display: block;
+  margin-top: 1rem;
+  color: #17251f;
+}
+
+.contact-mini {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.2rem;
+  color: rgba(255, 255, 255, 0.78);
+  font-style: normal;
+}
+
+.contact-mini span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+@media (max-width: 1100px) {
+  .forms-grid,
+  .corporate-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .process-timeline,
+  .industry-grid,
+  .division-grid,
+  .client-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .trade-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .talent-form-card form,
+  .process-timeline,
+  .industry-grid,
+  .division-grid,
+  .client-strip,
+  .testimonial-grid {
+    grid-template-columns: 1fr;
+  }
+}
