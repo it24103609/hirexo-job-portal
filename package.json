@@ -1,8 +1,8 @@
 {
-  "name": "hirexo-job-portal-workspace",
+  "name": "HEXORA-job-portal-workspace",
   "version": "1.0.0",
   "private": true,
-  "description": "Workspace utilities for the Hirexo job portal project.",
+  "description": "Workspace utilities for the HEXORA job portal project.",
   "scripts": {
     "frontend:dev": "npm --prefix frontend run dev",
     "frontend:build": "npm --prefix frontend run build",

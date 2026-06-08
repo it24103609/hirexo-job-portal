@@ -195,7 +195,7 @@ export default function CandidateApplicationsPage() {
 
   return (
     <>
-      <Seo title="Applied Jobs | Hirexo" description="Track your submitted applications." />
+      <Seo title="Applied Jobs | HEXORA" description="Track your submitted applications." />
       <DashboardHeader
         title="Applied Jobs"
         description="See the jobs you’ve applied for and their current status."

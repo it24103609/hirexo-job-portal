@@ -236,7 +236,7 @@ export default function EmployerMessagesPage() {
 
   return (
     <>
-      <Seo title="Employer Messages | Hirexo" description="Chat with candidates across your applications." />
+      <Seo title="Employer Messages | HEXORA" description="Chat with candidates across your applications." />
       <div className="employer-wa-page">
         <DashboardHeader title="Messages" description="Follow up with candidates from one shared employer inbox." />
 

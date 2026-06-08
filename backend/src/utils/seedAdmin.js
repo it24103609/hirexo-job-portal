@@ -8,7 +8,7 @@ async function seedAdmin() {
   assertEnv();
   await connectDB(env.mongoUri);
 
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@hirexo.com';
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@HEXORA.com';
   const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
   const existing = await User.findOne({ email: adminEmail });

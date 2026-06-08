@@ -300,7 +300,7 @@ export default function EmployerInterviewsPage() {
 
   return (
     <>
-      <Seo title="Interview Hub | Hirexo" description="Manage rounds, panel interviewers, scorecards, no-shows, and reminders." />
+      <Seo title="Interview Hub | HEXORA" description="Manage rounds, panel interviewers, scorecards, no-shows, and reminders." />
       <DashboardHeader
         title="Interview Hub"
         description="Run structured multi-round interviews with scheduling, panel coordination, scorecards, no-show tracking, and reminders."

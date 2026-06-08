@@ -250,7 +250,7 @@ export default function AdminJobsModerationPage() {
 
   return (
     <>
-      <Seo title="Job Moderation | Hirexo" description="Approve or reject submitted jobs." />
+      <Seo title="Job Moderation | HEXORA" description="Approve or reject submitted jobs." />
       <DashboardHeader title="Moderation Console" description="Premium admin review center for jobs and applications." />
 
       {/* Stat cards row */}

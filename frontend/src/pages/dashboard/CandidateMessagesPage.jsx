@@ -207,7 +207,7 @@ export default function CandidateMessagesPage() {
 
   return (
     <>
-      <Seo title="Candidate Messages | Hirexo" description="Message employers about your applications." />
+      <Seo title="Candidate Messages | HEXORA" description="Message employers about your applications." />
       <div className="candidate-wa-page">
         <DashboardHeader title="Messages" description="Follow up on your applications and interview updates." />
 

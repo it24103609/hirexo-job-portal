@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const siteUrl = String(process.env.VITE_SITE_URL || process.env.SITE_URL || 'https://hirexo.com').replace(/\/$/, '');
+const siteUrl = String(process.env.VITE_SITE_URL || process.env.SITE_URL || 'https://HEXORA.com').replace(/\/$/, '');
 const today = new Date().toISOString();
 
 const publicRoutes = [

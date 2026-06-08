@@ -87,7 +87,7 @@ export default function NotificationsPage() {
 
   return (
     <>
-      <Seo title="Notifications | Hirexo" description="Track job approvals, application updates, and interview schedules." />
+      <Seo title="Notifications | HEXORA" description="Track job approvals, application updates, and interview schedules." />
       <DashboardHeader
         title="Notifications"
         description="Job approval alerts, application updates, and interview schedules."

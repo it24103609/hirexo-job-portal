@@ -77,7 +77,7 @@ export default function AdminReportsPage() {
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = `hirexo-reports-${new Date().toISOString().slice(0, 10)}.csv`;
+    anchor.download = `HEXORA-reports-${new Date().toISOString().slice(0, 10)}.csv`;
     anchor.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
     toast.success('Report exported as CSV');
@@ -96,7 +96,7 @@ export default function AdminReportsPage() {
 
   return (
     <>
-      <Seo title="Reports | Hirexo" description="Platform reports and analytics summary." />
+      <Seo title="Reports | HEXORA" description="Platform reports and analytics summary." />
       <DashboardHeader
         title="Reports"
         description="Track applications, employer activity, and candidate registration trends."

@@ -10,7 +10,7 @@ import {
 import Seo from '../../components/ui/Seo';
 import candidate3d from '../../assets/onboarding/candidate-3d.png';
 import employer3d from '../../assets/onboarding/employer-3d.png';
-import onboarding3d from '../../assets/onboarding/hirexo-onboarding-3d.png';
+import onboarding3d from '../../assets/onboarding/HEXORA-onboarding-3d.png';
 import adminSecurity3d from '../../assets/onboarding/admin-security-3d.png';
 import './AuthPage.css';
 
@@ -91,7 +91,7 @@ function RoleIllustration({ image, role }) {
 export default function AuthPage() {
   return (
     <>
-      <Seo title="Sign In or Register | Hirexo" description="Join Hirexo as a candidate, employer, or administrator." />
+      <Seo title="Sign In or Register | HEXORA" description="Join HEXORA as a candidate, employer, or administrator." />
       <section className="auth-landing-shell">
         <div className="auth-ambient auth-ambient-a" aria-hidden="true" />
         <div className="auth-ambient auth-ambient-b" aria-hidden="true" />
@@ -101,10 +101,10 @@ export default function AuthPage() {
           <div className="auth-intro-panel">
             <p className="auth-eyebrow"><Sparkles size={14} /> Recruitment, Simplified</p>
             <h1>
-              How would you like to use <span>Hirexo?</span>
+              How would you like to use <span>HEXORA?</span>
             </h1>
             <p className="auth-subtitle">
-              Choose the path that fits you best. Hirexo keeps candidate and employer journeys focused,
+              Choose the path that fits you best. HEXORA keeps candidate and employer journeys focused,
               secure, and easy to navigate from the very first click.
             </p>
             <OnboardingIllustration />

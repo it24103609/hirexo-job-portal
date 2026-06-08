@@ -23,7 +23,7 @@ function detailRow(label, value) {
 }
 
 function renderPremiumEmail({
-  eyebrow = 'Hirexo',
+  eyebrow = 'HEXORA',
   title,
   intro,
   badge,
@@ -31,7 +31,7 @@ function renderPremiumEmail({
   ctaLabel,
   ctaUrl,
   note,
-  footer = 'Hirexo recruitment platform'
+  footer = 'HEXORA GLOBAL GROUP'
 }) {
   const rows = details
     .map((item) => detailRow(item.label, item.value))
@@ -107,14 +107,14 @@ function defaultTextToHtml({ subject, text }) {
     .join('');
 
   return renderPremiumEmail({
-    eyebrow: 'Hirexo update',
-    title: subject || 'Hirexo notification',
-    intro: 'You have a new update from Hirexo.',
+    eyebrow: 'HEXORA update',
+    title: subject || 'HEXORA notification',
+    intro: 'You have a new update from HEXORA.',
     note: '',
-    footer: 'Hirexo recruitment platform'
+    footer: 'HEXORA GLOBAL GROUP'
   }).replace(
     /<p style="margin:0;color:#475467;font-size:15px;line-height:1.75;">[^<]*<\/p>/,
-    paragraphs || `<p style="margin:0;color:#475467;font-size:15px;line-height:1.75;">${escapeHtml(text || 'You have a new notification from Hirexo.')}</p>`
+    paragraphs || `<p style="margin:0;color:#475467;font-size:15px;line-height:1.75;">${escapeHtml(text || 'You have a new notification from HEXORA.')}</p>`
   );
 }
 
@@ -186,16 +186,16 @@ function statusUpdateEmail({ candidateName, jobTitle, companyName, status, inter
     ctaUrl: absoluteUrl('/candidate/applications'),
     note: status === 'interview_scheduled'
       ? 'Your calendar invite is attached. Please check the meeting link and be ready a few minutes early.'
-      : 'You can track the latest application progress from your Hirexo dashboard.'
+      : 'You can track the latest application progress from your HEXORA dashboard.'
   });
 }
 
 function welcomeEmail({ roleLabel, name, actionLabel, actionUrl, note }) {
   return renderPremiumEmail({
-    eyebrow: 'Welcome to Hirexo',
+    eyebrow: 'Welcome to HEXORA',
     title: `${roleLabel} account ready`,
     badge: 'Welcome',
-    intro: `Hi ${name || 'there'}, your Hirexo ${roleLabel.toLowerCase()} account is ready to use.`,
+    intro: `Hi ${name || 'there'}, your HEXORA ${roleLabel.toLowerCase()} account is ready to use.`,
     ctaLabel: actionLabel,
     ctaUrl: actionUrl,
     note: note || 'You can sign in anytime and continue from your dashboard.'
@@ -205,7 +205,7 @@ function welcomeEmail({ roleLabel, name, actionLabel, actionUrl, note }) {
 function passwordResetEmail({ name, resetUrl, expiresInMinutes }) {
   return renderPremiumEmail({
     eyebrow: 'Password reset',
-    title: 'Reset your Hirexo password',
+    title: 'Reset your HEXORA password',
     badge: `${expiresInMinutes} minute link`,
     intro: `Hi ${name || 'there'}, we received a request to reset your password. Use the secure button below to choose a new one.`,
     ctaLabel: 'Reset password',
@@ -219,8 +219,8 @@ function contactAckEmail({ name }) {
     eyebrow: 'Message received',
     title: 'We received your message',
     badge: 'Support team notified',
-    intro: `Hi ${name || 'there'}, thanks for reaching out to Hirexo. Our team has received your inquiry and will get back to you shortly.`,
-    ctaLabel: 'Visit Hirexo',
+    intro: `Hi ${name || 'there'}, thanks for reaching out to HEXORA. Our team has received your inquiry and will get back to you shortly.`,
+    ctaLabel: 'Visit HEXORA',
     ctaUrl: absoluteUrl('/contact'),
     note: 'If your request is urgent, please include as much detail as possible when you reply.'
   });
@@ -228,8 +228,8 @@ function contactAckEmail({ name }) {
 
 function contactReplyEmail({ subject, message }) {
   return renderPremiumEmail({
-    eyebrow: 'Hirexo reply',
-    title: subject || 'Response from Hirexo',
+    eyebrow: 'HEXORA reply',
+    title: subject || 'Response from HEXORA',
     intro: 'Our team has replied to your inquiry.',
     note: message
   });
@@ -245,7 +245,7 @@ function subscriptionSuccessEmail({ name, tier, role, renewalDate, price }) {
     eyebrow: 'Premium subscription active',
     title: `Welcome to ${tierDisplay} plan`,
     badge: 'Payment confirmed',
-    intro: `Hi ${name || 'there'}, thank you for subscribing to Hirexo ${roleDisplay} premium! Your account has been upgraded and premium features are now available.`,
+    intro: `Hi ${name || 'there'}, thank you for subscribing to HEXORA ${roleDisplay} premium! Your account has been upgraded and premium features are now available.`,
     details: [
       { label: 'Plan', value: tierDisplay },
       { label: 'Price', value: `₹${price || 0}` },
@@ -281,7 +281,7 @@ function jobFeaturedEmail({ employerName, jobTitle, featuredUntil, featuredType 
     eyebrow: 'Job featured',
     title: `${jobTitle} is now featured`,
     badge: 'Premium feature',
-    intro: `Hi ${employerName || 'there'}, congratulations! Your job posting has been featured on Hirexo, which means it will get more visibility and attract better candidates.`,
+    intro: `Hi ${employerName || 'there'}, congratulations! Your job posting has been featured on HEXORA, which means it will get more visibility and attract better candidates.`,
     details: [
       { label: 'Job title', value: jobTitle },
       { label: 'Feature type', value: typeDisplay },
@@ -340,7 +340,7 @@ function renewalReminderEmail({ name, tier, renewalDate, price }) {
     eyebrow: 'Subscription renewal',
     title: `Your ${tier} plan renews in ${daysUntil} days`,
     badge: 'Action needed',
-    intro: `Hi ${name || 'there'}, your Hirexo premium subscription will automatically renew on ${new Date(renewalDate).toLocaleDateString()}.`,
+    intro: `Hi ${name || 'there'}, your HEXORA premium subscription will automatically renew on ${new Date(renewalDate).toLocaleDateString()}.`,
     details: [
       { label: 'Plan', value: tier },
       { label: 'Renewal amount', value: `₹${price || 0}` },

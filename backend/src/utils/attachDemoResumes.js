@@ -20,7 +20,7 @@ endobj
 4 0 obj
 << /Length 44 >>
 stream
-BT /F1 14 Tf 40 240 Td (Hirexo Demo Resume) Tj ET
+BT /F1 14 Tf 40 240 Td (HEXORA Demo Resume) Tj ET
 endstream
 endobj
 trailer

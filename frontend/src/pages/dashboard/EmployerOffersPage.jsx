@@ -58,7 +58,7 @@ export default function EmployerOffersPage() {
 
   return (
     <>
-      <Seo title="Offers | Hirexo" description="Create and track offers for shortlisted candidates." />
+      <Seo title="Offers | HEXORA" description="Create and track offers for shortlisted candidates." />
       <DashboardHeader title="Offer Management" description="Move from final interview to offer decision with a simple offer workspace." />
       <div className="grid-2">
         <Card>

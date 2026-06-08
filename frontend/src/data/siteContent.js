@@ -1,10 +1,10 @@
 export const siteContent = {
-  brandName: 'Hirexo',
-  aboutIntro: 'Hirexo is a results-driven recruitment partner built for speed, precision, and impact. We go beyond CVs, focusing on real business needs, team fit, and long-term success.',
+  brandName: 'HEXORA',
+  aboutIntro: 'HEXORA is a results-driven recruitment partner built for speed, precision, and impact. We go beyond CVs, focusing on real business needs, team fit, and long-term success.',
   mission: 'To connect businesses with the right talent through efficient, reliable, and people-focused recruitment solutions.',
   vision: 'To become a trusted global partner in delivering top talent with speed and precision.',
   values: 'We act with integrity, move with speed, and focus on results, building lasting relationships through trust and excellence.',
-  testimonial: 'Hirexo demonstrated a clear understanding of our hiring needs and consistently delivered candidates aligned with our culture and expectations. Their professionalism, speed, and responsiveness made the recruitment process smooth and efficient.',
+  testimonial: 'HEXORA demonstrated a clear understanding of our hiring needs and consistently delivered candidates aligned with our culture and expectations. Their professionalism, speed, and responsiveness made the recruitment process smooth and efficient.',
   contact: {
     phonePrimary: '0773191832',
     phoneSecondary: '0705343427',

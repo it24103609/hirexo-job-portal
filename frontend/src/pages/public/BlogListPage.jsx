@@ -45,7 +45,7 @@ export default function BlogListPage() {
 
   return (
     <>
-      <Seo title="Blog | Hirexo" description="Career tips, hiring advice, and employer branding updates." />
+      <Seo title="Blog | HEXORA" description="Career tips, hiring advice, and employer branding updates." />
       <section className="section-block blog-list-page">
         <div className="shell">
           <SectionHeader eyebrow="Blog" title="Articles for candidates and employers" description="Useful SEO content and hiring guidance." />

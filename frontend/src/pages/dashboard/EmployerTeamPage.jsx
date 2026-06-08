@@ -39,7 +39,7 @@ export default function EmployerTeamPage() {
 
   return (
     <>
-      <Seo title="Hiring Team | Hirexo" description="Coordinate your internal hiring collaborators from one place." />
+      <Seo title="Hiring Team | HEXORA" description="Coordinate your internal hiring collaborators from one place." />
       <DashboardHeader title="Hiring Team" description="Track recruiters, interviewers, and approvers who support your hiring workflow." />
       <div className="grid-2">
         <Card>

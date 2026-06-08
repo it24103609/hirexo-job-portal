@@ -47,7 +47,7 @@ export default function EmployerAllocationsPage() {
 
   return (
     <>
-      <Seo title="Recruiter Allocation | Hirexo" description="Assign recruiters and interviewers to jobs and interview rounds." />
+      <Seo title="Recruiter Allocation | HEXORA" description="Assign recruiters and interviewers to jobs and interview rounds." />
       <DashboardHeader title="Recruiter / Interviewer Allocation" description="Distribute hiring workload across recruiters, interviewers, coordinators, and approvers." />
 
       <div className="grid-2">

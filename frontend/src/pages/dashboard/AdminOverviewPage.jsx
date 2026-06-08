@@ -94,7 +94,7 @@ export default function AdminOverviewPage() {
 
   return (
     <>
-      <Seo title="Admin Overview | Hirexo" description="Platform-wide hiring funnel, volume, and rejection analytics." />
+      <Seo title="Admin Overview | HEXORA" description="Platform-wide hiring funnel, volume, and rejection analytics." />
       <DashboardHeader
         className="admin-workspace-header"
         title="Overview"

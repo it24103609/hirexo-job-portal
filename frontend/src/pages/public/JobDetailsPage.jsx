@@ -83,7 +83,7 @@ export default function JobDetailsPage() {
   return (
     <>
       <Seo
-        title={`${job.title} | Hirexo`}
+        title={`${job.title} | HEXORA`}
         description={job.description || 'Job details page'}
         image={imageUrl}
         type="article"
@@ -95,7 +95,7 @@ export default function JobDetailsPage() {
           datePosted: job.createdAt,
           hiringOrganization: {
             '@type': 'Organization',
-            name: job.companyName || 'Hirexo'
+            name: job.companyName || 'HEXORA'
           },
           employmentType: getLabel(job.jobType, 'Full-time'),
           jobLocation: {

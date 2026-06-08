@@ -123,7 +123,7 @@ export default function EmployerCompanyProfilePage() {
 
   return (
     <>
-      <Seo title="Company Profile | Hirexo" description="Manage company profile information." />
+      <Seo title="Company Profile | HEXORA" description="Manage company profile information." />
       <DashboardHeader
         className="employer-company-header"
         title="Company Profile"
@@ -155,14 +155,14 @@ export default function EmployerCompanyProfilePage() {
                 <div className="grid-2">
                   <Input
                     label="Company name"
-                    placeholder="Hirexo Technologies Pvt Ltd"
+                    placeholder="HEXORA Technologies Pvt Ltd"
                     value={form.companyName}
                     onChange={(event) => setForm((current) => ({ ...current, companyName: event.target.value }))}
                   />
                   <Input
                     label="Website"
                     type="url"
-                    placeholder="https://hirexo.com"
+                    placeholder="https://HEXORA.com"
                     value={form.website}
                     onChange={(event) => setForm((current) => ({ ...current, website: event.target.value }))}
                   />

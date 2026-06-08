@@ -115,7 +115,7 @@ export default function CandidateInterviewsPage() {
 
   return (
     <>
-      <Seo title="My Interviews | Hirexo" description="Track interview rounds, book slots, and request changes." />
+      <Seo title="My Interviews | HEXORA" description="Track interview rounds, book slots, and request changes." />
       <section className="candidate-interviews-hero candidate-glass-card">
         <div className="candidate-interviews-hero-copy">
           <p className="candidate-interviews-eyebrow">Candidate</p>

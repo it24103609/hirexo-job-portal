@@ -16,7 +16,7 @@ export default function EmployerRegisterPage() {
 
   return (
     <>
-      <Seo title="Employer Register | Hirexo" description="Create an employer account and start posting jobs." />
+      <Seo title="Employer Register | HEXORA" description="Create an employer account and start posting jobs." />
       <section className="section-block">
         <div className="shell">
           <Card className="form-card">

@@ -80,7 +80,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <Seo title="About Hirexo" description="Learn about Hirexo's recruitment-first approach to corporate hiring and talent acquisition." />
+      <Seo title="About HEXORA" description="Learn about HEXORA's recruitment-first approach to corporate hiring and talent acquisition." />
 
       <section className="about-hero-shell">
         <div className="about-hero-ambient about-hero-ambient-a" aria-hidden="true" />
@@ -89,9 +89,9 @@ export default function AboutPage() {
         <div className="shell about-hero-grid">
           <div className="about-hero-copy">
             <span className="about-badge"><Sparkles size={15} /> AI-Powered Hiring</span>
-            <h1>A recruitment platform built for clarity, speed, and <span>results</span></h1>
+            <h1>A GLOBAL GROUP built for clarity, speed, and <span>results</span></h1>
             <p>
-              We believe hiring should be transparent, fair, and efficient. Hirexo connects
+              We believe hiring should be transparent, fair, and efficient. HEXORA connects
               exceptional talent with businesses that value them, every single day.
             </p>
 
@@ -159,7 +159,7 @@ export default function AboutPage() {
           <div className="about-serve-grid">
             {whoWeServe.map(({ icon: Icon, title, desc, image }) => (
               <article className="about-serve-card" key={title}>
-                <img src={image} alt={`${title} using Hirexo`} />
+                <img src={image} alt={`${title} using HEXORA`} />
                 <div className="about-serve-content">
                   <span className="about-card-icon"><Icon size={22} /></span>
                   <h3>{title}</h3>
@@ -174,7 +174,7 @@ export default function AboutPage() {
       <section className="about-why-shell">
         <div className="shell">
           <div className="about-section-header">
-            <h2>Why choose Hirexo</h2>
+            <h2>Why choose HEXORA</h2>
             <p>Built on a foundation of clarity, speed, practice, support, and proven results.</p>
           </div>
 
@@ -232,7 +232,7 @@ export default function AboutPage() {
         <div className="shell about-cta-card">
           <div className="about-cta-copy">
             <h2>Ready to connect with the right talent?</h2>
-            <p>Join hundreds of companies and job seekers who trust Hirexo for clarity, speed, and fair recruitment.</p>
+            <p>Join hundreds of companies and job seekers who trust HEXORA for clarity, speed, and fair recruitment.</p>
             <div className="about-cta-buttons">
               <Link to="/contact" className="about-btn about-btn-light">Contact Us <ArrowRight size={17} /></Link>
               <Link to="/jobs" className="about-btn about-btn-outline">View Open Roles <ArrowRight size={17} /></Link>

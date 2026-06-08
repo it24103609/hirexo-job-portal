@@ -89,7 +89,7 @@ export default function AdminInterviewsPage() {
 
   return (
     <>
-      <Seo title="Admin Interviews | Hirexo" description="Monitor multi-round interviews, reschedules, and hiring coordination." />
+      <Seo title="Admin Interviews | HEXORA" description="Monitor multi-round interviews, reschedules, and hiring coordination." />
       <DashboardHeader title="Interview Oversight" description="Review interview activity across the platform, including round health, panel setup, and reschedule requests." />
 
       <div className="candidate-stat-grid mb-1">

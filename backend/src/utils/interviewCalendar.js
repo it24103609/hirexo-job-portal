@@ -38,12 +38,12 @@ function buildInterviewCalendarInvite({
   ].filter(Boolean);
 
   const now = formatIcsDate(new Date());
-  const uid = `${Date.now()}-${Math.random().toString(36).slice(2)}@hirexo.com`;
+  const uid = `${Date.now()}-${Math.random().toString(36).slice(2)}@HEXORA.com`;
 
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Hirexo//Interview Scheduler//EN',
+    'PRODID:-//HEXORA//Interview Scheduler//EN',
     'CALSCALE:GREGORIAN',
     'METHOD:REQUEST',
     'BEGIN:VEVENT',

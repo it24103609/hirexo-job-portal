@@ -19,8 +19,8 @@ const { sendEmail } = require('../services/email.service');
 const { applicationConfirmationEmail, employerNewApplicationEmail, statusUpdateEmail } = require('../utils/emailTemplates');
 
 function normalizeCandidateSource(value) {
-  const allowed = ['Hirexo Portal', 'LinkedIn', 'Referral', 'Website', 'Agency'];
-  return allowed.includes(value) ? value : 'Hirexo Portal';
+  const allowed = ['HEXORA Portal', 'LinkedIn', 'Referral', 'Website', 'Agency'];
+  return allowed.includes(value) ? value : 'HEXORA Portal';
 }
 
 function buildStatusEmail(status, interviewAt) {
@@ -220,7 +220,7 @@ const applyForJob = asyncHandler(async (req, res) => {
     await sendEmail({
       to: employerRecipient.email,
       subject: `New application for ${job.title}`,
-      text: `${req.user.name} applied for ${job.title}. Review the candidate in your Hirexo dashboard.`,
+      text: `${req.user.name} applied for ${job.title}. Review the candidate in your HEXORA dashboard.`,
       html: employerNewApplicationEmail({
         employerName: employerRecipient.name,
         candidateName: req.user.name,
@@ -445,7 +445,7 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
   const attachments = [];
   if (req.body.status === APPLICATION_STATUS.INTERVIEW_SCHEDULED && application.interviewScheduledAt) {
     attachments.push({
-      filename: 'hirexo-interview-invite.ics',
+      filename: 'HEXORA-interview-invite.ics',
       content: buildInterviewCalendarInvite({
         candidateName: application.candidateUser?.name,
         companyName: job?.companyName,
@@ -620,7 +620,7 @@ const bookInterviewSlot = asyncHandler(async (req, res) => {
     subject: 'Interview slot confirmed',
     text: `Your interview for ${application.job?.title || 'the role'} is confirmed on ${application.interviewScheduledAt?.toISOString()}.`,
     attachments: [{
-      filename: 'hirexo-interview-invite.ics',
+      filename: 'HEXORA-interview-invite.ics',
       content: buildInterviewCalendarInvite({
         candidateName: application.candidateUser?.name,
         companyName: application.job?.companyName,

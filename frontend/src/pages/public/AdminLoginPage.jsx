@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
 
   return (
     <>
-      <Seo title="Admin Login | Hirexo" description="Sign in to access admin dashboard and manage platform resources." />
+      <Seo title="Admin Login | HEXORA" description="Sign in to access admin dashboard and manage platform resources." />
       <section className="section-block">
         <div className="shell">
           <Card className="form-card">
@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
               <Input 
                 label="Email" 
                 type="email" 
-                placeholder="admin@hirexo.com" 
+                placeholder="admin@HEXORA.com" 
                 error={errors.email?.message} 
                 {...register('email')} 
               />

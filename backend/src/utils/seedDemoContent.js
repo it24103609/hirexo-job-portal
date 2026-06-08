@@ -151,7 +151,7 @@ async function seedDemoContent() {
     industry: 'Software',
     location: 'Colombo',
     jobType: 'Full Time',
-    description: 'Build dashboards, APIs, and candidate workflows for a fast-moving recruitment platform.',
+    description: 'Build dashboards, APIs, and candidate workflows for a fast-moving GLOBAL GROUP.',
     responsibilities: ['Develop React screens', 'Create secure Express APIs', 'Tune MongoDB queries'],
     requirements: ['2+ years MERN experience', 'Good Git workflow', 'Comfortable with REST APIs'],
     skills: ['React', 'Node.js', 'MongoDB', 'Express'],

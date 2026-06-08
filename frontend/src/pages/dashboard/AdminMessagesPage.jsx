@@ -59,7 +59,7 @@ function formatThreadTime(value) {
 function getThreadPreview(thread, messages = []) {
   const lastMessage = messages[messages.length - 1];
   if (lastMessage?.message) return lastMessage.message;
-  return `${thread.job?.title || 'Application'} · ${thread.job?.companyName || 'Hirexo'}`;
+  return `${thread.job?.title || 'Application'} · ${thread.job?.companyName || 'HEXORA'}`;
 }
 
 function hasUnreadForAdmin(messages = []) {
@@ -196,7 +196,7 @@ export default function AdminMessagesPage() {
 
   return (
     <>
-      <Seo title="Admin Messages | Hirexo" description="Monitor employer and candidate application conversations." />
+      <Seo title="Admin Messages | HEXORA" description="Monitor employer and candidate application conversations." />
       <div className="admin-wa-page">
       <DashboardHeader title="Messages" description="Read application conversations across the platform." />
 
@@ -250,7 +250,7 @@ export default function AdminMessagesPage() {
                         <strong>{item.candidateUser?.name || 'Candidate'}</strong>
                       </span>
                       <span className="admin-wa-thread-role">
-                        {item.job?.title || 'Application'} · {item.job?.companyName || 'Hirexo'}
+                        {item.job?.title || 'Application'} · {item.job?.companyName || 'HEXORA'}
                       </span>
                       <span className="admin-wa-thread-preview">{preview}</span>
                     </span>
@@ -285,7 +285,7 @@ export default function AdminMessagesPage() {
                     </span>
                     <div className="admin-wa-chat-identity-info">
                       <strong>{selectedThread.candidateUser?.name || 'Candidate'}</strong>
-                      <span>{selectedThread.job?.title || 'Application'} · {selectedThread.job?.companyName || 'Hirexo'}</span>
+                      <span>{selectedThread.job?.title || 'Application'} · {selectedThread.job?.companyName || 'HEXORA'}</span>
                     </div>
                   </div>
                   <span className="admin-wa-status">{formatApplicationStatus(selectedThread.status)}</span>

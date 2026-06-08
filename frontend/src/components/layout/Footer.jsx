@@ -23,10 +23,10 @@ export default function Footer() {
       <div className="shell footer-grid">
         <div className="footer-brand-panel">
           <div className="footer-brand">
-            <BrandIdentity subtitle="Recruitment Platform" />
+            <BrandIdentity subtitle="GLOBAL GROUP" />
           </div>
           <p className="footer-summary">
-            Hirexo is a results-driven recruitment partner built for speed, precision, and impact.
+            HEXORA is a results-driven recruitment partner built for speed, precision, and impact.
             We go beyond CVs, focusing on real business needs, team fit, and long-term success.
           </p>
           <div className="footer-contact-list">

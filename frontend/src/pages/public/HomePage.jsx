@@ -19,7 +19,9 @@ import {
   UserCheck,
   Users
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { toast } from 'react-toastify';
 import Seo from '../../components/ui/Seo';
 import Button from '../../components/ui/Button';
 import { siteContent } from '../../data/siteContent';
@@ -161,6 +163,27 @@ const testimonials = [
 ];
 
 export default function HomePage() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleCvClick = () => {
+    if (user && user.role === 'candidate') {
+      navigate('/candidate/resume');
+    } else {
+      toast.info('Register Candidate');
+      navigate('/candidate/register');
+    }
+  };
+
+  const handleEmployerClick = () => {
+    if (user && user.role === 'employer') {
+      navigate('/employer/jobs/new');
+    } else {
+      toast.info('Register Employer');
+      navigate('/employer/register');
+    }
+  };
+
   return (
     <>
       <Seo
@@ -311,30 +334,22 @@ export default function HomePage() {
             <p className="home-eyebrow"><UploadCloud size={16} /> Candidate Registration</p>
             <h2>Upload Your CV</h2>
             <p>Share your profile with HEXORA TALENT and our recruitment team will review suitable openings.</p>
-            <form onSubmit={(event) => event.preventDefault()}>
-              <label>Full Name<input type="text" name="fullName" placeholder="Your full name" /></label>
-              <label>Email Address<input type="email" name="email" placeholder="you@example.com" /></label>
-              <label>Phone Number<input type="tel" name="phone" placeholder="+94 77 000 0000" /></label>
-              <label>Position Interested In<input type="text" name="position" placeholder="Software Engineer, HR Executive..." /></label>
-              <label>Upload CV<input type="file" name="cv" accept=".pdf,.doc,.docx" /></label>
-              <Button type="submit">Submit CV <ArrowRight size={16} /></Button>
-            </form>
+            <div style={{ marginTop: '2.5rem', display: 'flex', justifyContent: 'center' }}>
+              <Button onClick={handleCvClick} size="lg" style={{ width: '100%', justifyContent: 'center' }}>
+                Upload Your CV <ArrowRight size={16} />
+              </Button>
+            </div>
           </article>
 
           <article className="talent-form-card" id="employer-requirements">
             <p className="home-eyebrow"><Briefcase size={16} /> Employer Hiring Request</p>
             <h2>Employer Requirement Form</h2>
             <p>Tell us what role you need to fill and HEXORA TALENT will help build a qualified shortlist.</p>
-            <form onSubmit={(event) => event.preventDefault()}>
-              <label>Company Name<input type="text" name="companyName" placeholder="Company name" /></label>
-              <label>Contact Person<input type="text" name="contactPerson" placeholder="Contact person" /></label>
-              <label>Email<input type="email" name="email" placeholder="company@example.com" /></label>
-              <label>Phone Number<input type="tel" name="phone" placeholder="+94 77 000 0000" /></label>
-              <label>Position Required<input type="text" name="positionRequired" placeholder="Role title" /></label>
-              <label>Number of Vacancies<input type="number" name="vacancies" min="1" placeholder="1" /></label>
-              <label className="full-field">Hiring Requirements<textarea name="requirements" rows="4" placeholder="Skills, experience, salary range, location, timeline..." /></label>
-              <Button type="submit">Submit Requirement <ArrowRight size={16} /></Button>
-            </form>
+            <div style={{ marginTop: '2.5rem', display: 'flex', justifyContent: 'center' }}>
+              <Button onClick={handleEmployerClick} size="lg" style={{ width: '100%', justifyContent: 'center' }}>
+                Employer Requirement Form <ArrowRight size={16} />
+              </Button>
+            </div>
           </article>
         </div>
       </section>

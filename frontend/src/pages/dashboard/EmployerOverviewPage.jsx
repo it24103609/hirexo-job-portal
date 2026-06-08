@@ -119,7 +119,7 @@ export default function EmployerOverviewPage() {
 
   return (
     <>
-      <Seo title="Employer Overview | Hirexo" description="Track hiring pipeline, conversions, and candidate sources." />
+      <Seo title="Employer Overview | HEXORA" description="Track hiring pipeline, conversions, and candidate sources." />
       <DashboardHeader
         className="employer-workspace-header"
         title="Overview"
@@ -354,7 +354,7 @@ export default function EmployerOverviewPage() {
           <Filter size={18} />
           <div>
             <strong>How this works</strong>
-            <p>`Candidate source` defaults to `Hirexo Portal`. `Rejection reason` gets saved when you reject a candidate from the applicants page.</p>
+            <p>`Candidate source` defaults to `HEXORA Portal`. `Rejection reason` gets saved when you reject a candidate from the applicants page.</p>
           </div>
         </div>
         <Link to={state.jobs[0]?._id ? `/employer/jobs/${state.jobs[0]._id}/applicants` : '/employer/jobs'} className="link-button">

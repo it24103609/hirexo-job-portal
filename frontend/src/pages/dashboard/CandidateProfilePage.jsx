@@ -121,7 +121,7 @@ export default function CandidateProfilePage() {
 
   return (
     <>
-      <Seo title="Candidate Profile | Hirexo" description="Create and update your candidate profile." />
+      <Seo title="Candidate Profile | HEXORA" description="Create and update your candidate profile." />
       <DashboardHeader title="My Profile" description="Keep your profile complete to improve shortlisting chances." />
 
       <Card className="candidate-profile-picture-card">

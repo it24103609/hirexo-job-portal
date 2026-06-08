@@ -25,7 +25,7 @@ export default function ContactPage() {
 
   return (
     <div>
-      <Seo title="Contact Hirexo" description="Contact the Hirexo team for hiring inquiries, support, and partnerships." />
+      <Seo title="Contact HEXORA" description="Contact the HEXORA team for hiring inquiries, support, and partnerships." />
       
       {/* Hero Section */}
       <section className="contact-hero-shell">

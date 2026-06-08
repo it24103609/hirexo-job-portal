@@ -80,7 +80,7 @@ export default function EmployerPoliciesConfigPage() {
 
   return (
     <>
-      <Seo title="Hiring Policies & Configurations | Hirexo" description="Manage SLAs, offer expiry, reminder timings, approvals, and hiring workflow defaults." />
+      <Seo title="Hiring Policies & Configurations | HEXORA" description="Manage SLAs, offer expiry, reminder timings, approvals, and hiring workflow defaults." />
       <DashboardHeader title="Hiring Policies + Configurations" description="Define hiring rules, turnaround SLAs, approval requirements, reminder timings, and workflow defaults." />
 
       <div className="grid-2">

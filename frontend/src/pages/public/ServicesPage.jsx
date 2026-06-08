@@ -92,7 +92,7 @@ export default function ServicesPage() {
 
   return (
     <>
-      <Seo title="Services | Hirexo" description="Premium recruitment, talent acquisition, and HR services on Hirexo." />
+      <Seo title="Services | HEXORA" description="Premium recruitment, talent acquisition, and HR services on HEXORA." />
 
       <section className="services-hero-shell">
         <video
@@ -126,15 +126,15 @@ export default function ServicesPage() {
         <div className="shell">
           <div className="services-section-header">
             <span className="services-section-badge">Our Expertise</span>
-            <h2>What <span>Hirexo</span> helps businesses do</h2>
+            <h2>What <span>HEXORA</span> helps businesses do</h2>
             <p>Comprehensive recruitment services tailored to your hiring needs and business goals.</p>
           </div>
 
           <div className="services-overview-block">
-            <div className="services-video-card services-overview-video" aria-label="Hirexo recruitment services overview video">
+            <div className="services-video-card services-overview-video" aria-label="HEXORA recruitment services overview video">
               <iframe
                 src="https://www.youtube.com/embed/Y7cpCDlRfV0"
-                title="Hirexo recruitment services overview"
+                title="HEXORA recruitment services overview"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
               />
@@ -144,7 +144,7 @@ export default function ServicesPage() {
               <span>Overview</span>
               <h3>Recruitment support that keeps hiring moving</h3>
               <p>
-                Hirexo helps teams plan roles, screen stronger candidates, and move from shortlist
+                HEXORA helps teams plan roles, screen stronger candidates, and move from shortlist
                 to onboarding with a cleaner hiring workflow.
               </p>
               <ul>

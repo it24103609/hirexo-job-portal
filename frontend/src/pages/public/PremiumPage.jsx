@@ -69,8 +69,8 @@ export default function PremiumPage() {
   return (
     <>
       <Seo
-        title="Premium | Hirexo"
-        description="Explore Hirexo premium hiring tools, featured roles, analytics, and team support."
+        title="Premium | HEXORA"
+        description="Explore HEXORA premium hiring tools, featured roles, analytics, and team support."
       />
 
       <section className="premium-page-shell">

@@ -16,19 +16,19 @@ function ensureGoogleAnalytics() {
     };
   }
 
-  if (!window.__hirexoGaScriptLoaded) {
+  if (!window.__HEXORAGaScriptLoaded) {
     const script = document.createElement('script');
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${MEASUREMENT_ID}`;
-    script.setAttribute('data-hirexo-ga', 'script');
+    script.setAttribute('data-HEXORA-ga', 'script');
     document.head.appendChild(script);
-    window.__hirexoGaScriptLoaded = true;
+    window.__HEXORAGaScriptLoaded = true;
   }
 
-  if (!window.__hirexoGaConfigured) {
+  if (!window.__HEXORAGaConfigured) {
     window.gtag('js', new Date());
     window.gtag('config', MEASUREMENT_ID, { send_page_view: false });
-    window.__hirexoGaConfigured = true;
+    window.__HEXORAGaConfigured = true;
   }
 
   return true;

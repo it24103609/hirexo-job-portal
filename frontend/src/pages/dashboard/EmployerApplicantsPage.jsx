@@ -326,7 +326,7 @@ export default function EmployerApplicantsPage() {
 
   return (
     <>
-      <Seo title="Applicants | Hirexo" description="Review applicants, book interview slots, and move candidates across your hiring pipeline." />
+      <Seo title="Applicants | HEXORA" description="Review applicants, book interview slots, and move candidates across your hiring pipeline." />
       <DashboardHeader
         title="Hiring Workspace"
         description={state.job ? `${state.job.title} - calendar, kanban, and AI review` : 'Applicant pipeline for your role'}

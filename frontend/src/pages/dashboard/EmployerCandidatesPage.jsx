@@ -142,7 +142,7 @@ export default function EmployerCandidatesPage() {
   const clearFilters = () => setFilters({ keyword: '', tag: 'all', position: 'all', stage: 'all', date: 'all', rating: 'all' });
 
   const saveSearch = () => {
-    window.localStorage.setItem('hirexo-employer-candidate-search', JSON.stringify(filters));
+    window.localStorage.setItem('HEXORA-employer-candidate-search', JSON.stringify(filters));
     toast.success('Current candidate search saved.');
   };
 
@@ -171,7 +171,7 @@ export default function EmployerCandidatesPage() {
 
   return (
     <>
-      <Seo title="Candidates | Hirexo" description="Search and filter all candidates across employer jobs." />
+      <Seo title="Candidates | HEXORA" description="Search and filter all candidates across employer jobs." />
 
       <section className="rooster-page-head">
         <div>

@@ -29,7 +29,7 @@ export default function EmployerLoginPage() {
 
   return (
     <>
-      <Seo title="Employer Login | Hirexo" description="Sign in to manage company profile, jobs, and applicants." />
+      <Seo title="Employer Login | HEXORA" description="Sign in to manage company profile, jobs, and applicants." />
       <section className="section-block">
         <div className="shell">
           <Card className="form-card">

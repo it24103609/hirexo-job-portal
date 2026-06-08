@@ -48,7 +48,7 @@ export default function EmployerReportsCenterPage() {
 
   return (
     <>
-      <Seo title="Export & Reporting Center | Hirexo" description="Export hiring data and review job performance, monthly trends, and team activity." />
+      <Seo title="Export & Reporting Center | HEXORA" description="Export hiring data and review job performance, monthly trends, and team activity." />
       <DashboardHeader title="Export & Reporting Center" description="Download hiring data and review trends for applications, interviews, offers, and workload." />
 
       <div className="candidate-stat-grid mb-1">

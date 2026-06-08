@@ -17,7 +17,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
-      <Seo title="Forgot Password | Hirexo" description="Request a password reset link for your Hirexo account." />
+      <Seo title="Forgot Password | HEXORA" description="Request a password reset link for your HEXORA account." />
       <section className="section-block">
         <div className="shell">
           <Card className="form-card">

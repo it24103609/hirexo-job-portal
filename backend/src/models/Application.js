@@ -201,7 +201,7 @@ const applicationSchema = new mongoose.Schema(
     candidateSource: {
       type: String,
       trim: true,
-      default: 'Hirexo Portal'
+      default: 'HEXORA Portal'
     },
     rejectionReason: {
       type: String,
