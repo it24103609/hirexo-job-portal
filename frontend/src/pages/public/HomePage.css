@@ -1097,6 +1097,82 @@
   .floating-stat {
     display: none;
   }
+
+  /* Premium Dual Card Section Responsive */
+  .premium-dual-card-section {
+    padding: 4rem 0 3rem;
+  }
+
+  .premium-dual-card-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .card-content-wrapper {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .card-right-image {
+    height: 200px;
+    order: -1;
+  }
+
+  .card-left-content {
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  .premium-card-heading {
+    font-size: 1.5rem;
+  }
+
+  .floating-stats-grid,
+  .premium-mini-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .premium-analytics-widget {
+    grid-template-columns: 1fr;
+  }
+
+  .floating-ui-card {
+    display: none;
+  }
+
+  .premium-trust-section {
+    padding: 1.5rem;
+  }
+
+  .company-logos-grid {
+    gap: 0.75rem;
+  }
+
+  .company-logo-item {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 621px) and (max-width: 1100px) {
+  .premium-dual-card-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .card-content-wrapper {
+    grid-template-columns: 1fr 240px;
+  }
+
+  .card-right-image {
+    height: 100%;
+  }
+
+  .floating-stats-grid,
+  .premium-mini-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .forms-section,
@@ -1215,6 +1291,594 @@
   border-radius: 24px;
 }
 
+/* Premium Dual Card Section */
+.premium-dual-card-section {
+  position: relative;
+  padding: 6rem 0 5rem;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(56, 189, 248, 0.08), transparent 28%),
+    radial-gradient(circle at 86% 72%, rgba(16, 185, 129, 0.12), transparent 34%),
+    linear-gradient(180deg, #f8fffc, rgba(241, 250, 247, 0.72));
+  overflow: hidden;
+}
+
+.premium-section-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(16, 185, 129, 0.08), transparent),
+    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(52, 211, 153, 0.06), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(52, 211, 153, 0.06), transparent);
+}
+
+.premium-glass-container {
+  position: relative;
+  border: 1px solid rgba(26, 138, 86, 0.15);
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(24px);
+  box-shadow:
+    0 32px 64px rgba(20, 61, 46, 0.08),
+    0 16px 32px rgba(20, 61, 46, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  overflow: hidden;
+}
+
+.premium-dual-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  padding: 1.2rem;
+}
+
+.premium-candidate-card,
+.premium-employer-card {
+  position: relative;
+  border: 1px solid rgba(26, 138, 86, 0.18);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 88% 18%, rgba(16, 185, 129, 0.12), transparent 30%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(248, 253, 251, 0.94));
+  box-shadow:
+    0 28px 58px rgba(20, 61, 46, 0.09),
+    0 12px 24px rgba(20, 61, 46, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.premium-candidate-card:hover,
+.premium-employer-card:hover {
+  transform: translateY(-8px);
+  box-shadow:
+    0 32px 64px rgba(20, 61, 46, 0.12),
+    0 16px 32px rgba(20, 61, 46, 0.08);
+  border-color: rgba(26, 138, 86, 0.32);
+}
+
+.card-content-wrapper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(245px, 42%);
+  gap: 0;
+  min-height: 560px;
+}
+
+.card-left-content {
+  padding: clamp(1.6rem, 2vw, 2.35rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  justify-content: center;
+}
+
+.premium-badge-wrapper {
+  margin-bottom: 0.25rem;
+}
+
+.premium-eyebrow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(26, 138, 86, 0.16);
+  border-radius: 999px;
+  color: #078345;
+  background: rgba(247, 255, 251, 0.88);
+  box-shadow: 0 12px 30px rgba(21, 128, 61, 0.08);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.accent-icon {
+  color: #10b981;
+}
+
+.premium-card-heading {
+  margin: 0;
+  color: #07130f;
+  font-size: clamp(2.15rem, 3vw, 3.35rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.premium-card-heading span {
+  color: #0a9b56;
+}
+
+.premium-card-subtext {
+  margin: 0;
+  max-width: 31rem;
+  color: #415c72;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.feature-highlights-list {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.premium-candidate-card .feature-highlights-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.feature-highlight-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 64px;
+  padding: 0.72rem 0.78rem;
+  border: 1px solid rgba(18, 143, 84, 0.12);
+  border-radius: 14px;
+  color: #10241d;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 14px 32px rgba(18, 72, 53, 0.08);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.premium-employer-card .feature-highlight-item {
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.check-icon {
+  flex: 0 0 auto;
+  color: #0bb56d;
+  padding: 0.45rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: #e8f9ef;
+  filter: drop-shadow(0 8px 14px rgba(16, 185, 129, 0.18));
+}
+
+.employer-step-one {
+  color: #2463eb;
+  background: #e8f0ff;
+}
+
+.employer-step-two {
+  color: #0ba565;
+  background: #e5f8ee;
+}
+
+.employer-step-three {
+  color: #f97316;
+  background: #fff0e4;
+}
+
+.floating-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  padding: 1rem;
+  border: 1px solid rgba(18, 143, 84, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 18px 42px rgba(18, 72, 53, 0.08);
+}
+
+.floating-stat-item {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.45rem 0.75rem;
+  text-align: center;
+}
+
+.floating-stat-item + .floating-stat-item {
+  border-left: 1px solid rgba(18, 143, 84, 0.12);
+}
+
+.floating-stat-item strong {
+  color: #0d7a4e;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.floating-stat-item span {
+  color: #5d7869;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.premium-mini-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.mini-card {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.75rem 0.6rem;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(5, 150, 105, 0.05));
+  border: 1px solid rgba(26, 138, 86, 0.12);
+  text-align: center;
+}
+
+.mini-card-label {
+  color: #5d7869;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mini-card-value {
+  color: #0d7a4e;
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.premium-luxury-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 74px;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 28px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #06a85d 0%, #0fc878 52%, #00685f 100%);
+  box-shadow:
+    0 18px 34px rgba(16, 185, 129, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.premium-luxury-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 32px rgba(16, 185, 129, 0.4),
+    0 8px 16px rgba(16, 185, 129, 0.3);
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
+.premium-security-note {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: -0.35rem 0 0;
+  color: #547082;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.premium-security-note svg {
+  color: #38b65d;
+}
+
+.card-right-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-visual-panel {
+  isolation: isolate;
+  min-height: 560px;
+  display: grid;
+  place-items: stretch;
+  background:
+    radial-gradient(circle at 48% 36%, rgba(67, 216, 127, 0.26), transparent 34%),
+    linear-gradient(180deg, rgba(248, 255, 252, 0.92) 0%, rgba(232, 248, 241, 0.86) 58%, rgba(220, 244, 233, 0.9) 100%);
+}
+
+.premium-visual-panel::before {
+  content: "";
+  position: absolute;
+  right: -24%;
+  bottom: -10%;
+  width: 118%;
+  aspect-ratio: 1;
+  border-radius: 50% 0 0 50%;
+  background:
+    radial-gradient(circle, rgba(190, 244, 215, 0.9), rgba(95, 211, 151, 0.42) 58%, transparent 72%);
+  z-index: 0;
+}
+
+.premium-visual-panel::after {
+  content: "";
+  position: absolute;
+  right: 8%;
+  top: 6%;
+  width: 42%;
+  aspect-ratio: 1;
+  background-image: radial-gradient(rgba(16, 185, 129, 0.26) 1.5px, transparent 1.5px);
+  background-size: 14px 14px;
+  opacity: 0.55;
+  z-index: 1;
+}
+
+.employer-visual-panel {
+  background:
+    radial-gradient(circle at 50% 20%, rgba(255, 255, 255, 0.95), transparent 26%),
+    radial-gradient(circle at 46% 42%, rgba(34, 197, 94, 0.24), transparent 36%),
+    linear-gradient(180deg, #f5fffb 0%, #dff5ee 50%, #b0cbc2 100%);
+}
+
+.image-glow-effect {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 70% 30%, rgba(16, 185, 129, 0.25), transparent 50%),
+    radial-gradient(circle at 30% 70%, rgba(52, 211, 153, 0.15), transparent 50%);
+  z-index: 1;
+}
+
+.candidate-image,
+.employer-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.premium-card-image {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: right bottom;
+  filter:
+    drop-shadow(0 30px 32px rgba(18, 72, 53, 0.14));
+  transform: none;
+}
+
+.candidate-image.premium-card-image {
+  width: 118%;
+  height: 104%;
+  right: -15%;
+  left: auto;
+  top: auto;
+  bottom: -1%;
+  object-position: right bottom;
+}
+
+.employer-image.premium-card-image {
+  width: 128%;
+  height: 104%;
+  right: -24%;
+  left: auto;
+  top: auto;
+  bottom: -1%;
+  object-position: center bottom;
+}
+
+.image-overlay-gradient {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 44%, rgba(15, 62, 48, 0.08) 100%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.18), transparent 36%);
+  z-index: 3;
+}
+
+.visual-metric {
+  position: absolute;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.68rem 0.82rem;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  border-radius: 999px;
+  color: #0d6f4c;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 36px rgba(18, 72, 53, 0.14);
+  backdrop-filter: blur(14px);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.visual-metric-top {
+  top: 16%;
+  left: 8%;
+}
+
+.visual-metric-bottom {
+  right: 8%;
+  bottom: 18%;
+}
+
+.floating-ui-card {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 24px rgba(20, 61, 46, 0.15);
+  animation: floatCard 4s ease-in-out infinite;
+}
+
+.ui-card-1 {
+  top: 15%;
+  right: 7%;
+  animation-delay: 0s;
+}
+
+.ui-card-2 {
+  bottom: 18%;
+  left: 8%;
+  animation-delay: 1s;
+}
+
+.ui-card-icon {
+  color: #0d7a4e;
+}
+
+.ui-card-text {
+  color: #2f4b3d;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.premium-analytics-widget {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.analytics-item {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.75rem 0.6rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.06), rgba(5, 150, 105, 0.03));
+  border: 1px solid rgba(26, 138, 86, 0.1);
+  text-align: center;
+}
+
+.analytics-label {
+  color: #5d7869;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.analytics-value {
+  color: #0d7a4e;
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.analytics-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 32px;
+  padding-top: 0.5rem;
+}
+
+.chart-bar {
+  width: 8px;
+  border-radius: 999px 999px 4px 4px;
+  background: linear-gradient(180deg, #10b981, #059669);
+  transition: height 0.3s ease;
+}
+
+/* Premium Trust Section */
+.premium-trust-section {
+  margin-top: 3rem;
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.trust-section-header {
+  margin-bottom: 2rem;
+}
+
+.trust-section-header h3 {
+  margin: 0 0 1rem;
+  color: #0f2e23;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.trust-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.stars-row {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.rating-text {
+  color: #4a6358;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.company-logos-grid {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.company-logo-item {
+  padding: 0.85rem 1.5rem;
+  border: 1px solid rgba(26, 138, 86, 0.15);
+  border-radius: 12px;
+  color: #2f4b3d;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+}
+
+.company-logo-item:hover {
+  border-color: rgba(26, 138, 86, 0.35);
+  background: rgba(220, 252, 231, 0.5);
+  transform: translateY(-2px);
+}
+
 .talent-form-card > p,
 .corporate-section p,
 .division-card p,
@@ -1279,16 +1943,6 @@
   padding: 1rem;
   overflow: hidden;
   border-radius: 18px;
-}
-
-.process-step::after {
-  content: '';
-  position: absolute;
-  inset: auto -22px -30px auto;
-  width: 86px;
-  height: 86px;
-  border-radius: 999px;
-  background: rgba(54, 206, 130, 0.14);
 }
 
 .process-step span {
@@ -1386,7 +2040,7 @@
   border-radius: 18px;
 }
 
-.division-card span {
+.division-icon {
   width: 44px;
   height: 44px;
   display: grid;
@@ -1394,6 +2048,26 @@
   border-radius: 14px;
   color: #0f7c4f;
   background: #e5f8ee;
+}
+
+.division-icon-people {
+  color: #0f766e;
+  background: #dff6f1;
+}
+
+.division-icon-trade {
+  color: #1d4ed8;
+  background: #e4edff;
+}
+
+.division-icon-foods {
+  color: #b45309;
+  background: #fff1d8;
+}
+
+.division-icon-solutions {
+  color: #7c3aed;
+  background: #efe7ff;
 }
 
 .division-card h3,
@@ -1520,5 +2194,6374 @@
   .client-strip,
   .testimonial-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   PREMIUM RECRUITMENT SECTION REDESIGN
+   ========================================================================== */
+
+.premium-recruitment-section {
+  position: relative;
+  padding: 6rem 0;
+  overflow: hidden;
+  background: 
+    radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.04), transparent 45%),
+    radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.05), transparent 45%),
+    #f8fafc;
+}
+
+.premium-noise-overlay {
+  position: absolute;
+  inset: 0;
+  opacity: 0.012;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  z-index: 1;
+}
+
+.luxury-glass-container {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 32px;
+  padding: 4.5rem;
+  box-shadow: 
+    0 30px 70px rgba(0, 0, 0, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 0 100px rgba(16, 185, 129, 0.02);
+}
+
+.luxury-recruitment-grid {
+  display: grid;
+  grid-template-columns: 45fr 55fr;
+  gap: 5rem;
+  align-items: start;
+}
+
+/* LEFT SIDE: Luxury Hero & Stats */
+.recruitment-left-hero {
+  display: flex;
+  flex-direction: column;
+}
+
+.premium-badge-wrapper {
+  margin-bottom: 1.5rem;
+  align-self: flex-start;
+}
+
+.premium-eyebrow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(16, 185, 129, 0.06);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  color: #047857;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.accent-sparkle {
+  color: #10b981;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.premium-headline {
+  font-size: clamp(2rem, 3.2vw, 2.8rem);
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0 0 1.25rem;
+}
+
+.green-gradient-text {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+}
+
+.premium-subtitle {
+  font-size: 1.05rem;
+  color: #475569;
+  line-height: 1.65;
+  margin: 0 0 2rem;
+}
+
+.premium-floating-badges-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.floating-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #334155;
+  transition: transform 0.2s ease;
+}
+
+.floating-badge-item:hover {
+  transform: translateX(4px);
+}
+
+.badge-check-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.premium-cta-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.cta-primary-luxury {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  font-weight: 700 !important;
+}
+
+.cta-primary-luxury:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(16, 185, 129, 0.3) !important;
+}
+
+.cta-secondary-luxury {
+  background: rgba(255, 255, 255, 0.7) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  color: #334155 !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  font-weight: 600 !important;
+}
+
+.cta-secondary-luxury:hover {
+  background: #ffffff !important;
+  transform: translateY(-2px);
+}
+
+.premium-social-proof {
+  border-top: 1px solid rgba(226, 232, 240, 0.5);
+  padding-top: 2rem;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.rating-block {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stars-row {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.rating-text {
+  font-size: 0.88rem;
+  color: #64748b;
+}
+
+.company-trust-logos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.trust-logo-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.logos-flex {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.trust-logo-item {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  letter-spacing: -0.02em;
+  cursor: default;
+  transition: color 0.3s ease;
+}
+
+.trust-logo-item:hover {
+  color: #64748b;
+}
+
+/* EDITORIAL COLLAGE */
+.premium-editorial-collage {
+  position: relative;
+  width: 100%;
+  height: 390px;
+  margin-top: 2rem;
+}
+
+.image-wrapper-large {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 60%;
+  height: 310px;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+  border: 4px solid #ffffff;
+  z-index: 1;
+}
+
+.image-wrapper-medium {
+  position: absolute;
+  right: 5%;
+  top: 50px;
+  width: 48%;
+  height: 200px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.04);
+  border: 4px solid #ffffff;
+  z-index: 2;
+}
+
+.collage-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.collage-img:hover {
+  transform: scale(1.05);
+}
+
+.img-glossy-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0.03) 100%);
+  pointer-events: none;
+}
+
+.candidate-status-badge {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* FLOATING WIDGETS */
+.floating-analytics-card {
+  position: absolute;
+  left: 4%;
+  bottom: -15px;
+  width: 170px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 18px;
+  padding: 1rem;
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.06), 0 5px 15px rgba(0, 0, 0, 0.02);
+  z-index: 3;
+}
+
+.analytics-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.spark-green {
+  color: #10b981;
+}
+
+.match-score {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0.15rem 0;
+  letter-spacing: -0.03em;
+}
+
+.match-bar-container {
+  height: 4px;
+  background: #f1f5f9;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 0.35rem;
+}
+
+.match-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+}
+
+.match-meta {
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+
+.hiring-graph-card {
+  position: absolute;
+  right: 5%;
+  bottom: -25px;
+  width: 190px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 18px;
+  padding: 0.85rem 1rem 0.6rem;
+  box-shadow: 0 20px 40px rgba(16, 185, 129, 0.06), 0 5px 15px rgba(0, 0, 0, 0.02);
+  z-index: 3;
+}
+
+.graph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 0.4rem;
+}
+
+.mini-chart-container {
+  margin-top: 0.2rem;
+}
+
+.stats-badge-overlap {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  padding: 0.6rem 0.95rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  z-index: 4;
+  transition: transform 0.3s ease;
+}
+
+.stats-badge-overlap:hover {
+  transform: translateY(-3px);
+}
+
+.stats-badge-overlap strong {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.stats-badge-overlap span {
+  font-size: 0.68rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.badge-placement {
+  left: 48%;
+  top: 15px;
+  transform: translateX(-50%);
+}
+
+.badge-speed {
+  right: 0;
+  top: 180px;
+}
+
+.badge-jobs {
+  left: -20px;
+  top: 150px;
+}
+
+/* RIGHT SIDE: Luxury Job Cards */
+.recruitment-right-jobs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.jobs-panel-header {
+  margin-bottom: 0.5rem;
+}
+
+.jobs-panel-header h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.25rem;
+}
+
+.jobs-panel-header p {
+  font-size: 0.92rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.luxury-jobs-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.premium-enterprise-card {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 24px;
+  padding: 1.35rem 1.5rem;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.01),
+    0 1px 3px rgba(0, 0, 0, 0.01);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.premium-enterprise-card:hover {
+  transform: translateY(-4px) scale(1.008);
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(16, 185, 129, 0.25);
+  box-shadow: 
+    0 20px 40px rgba(16, 185, 129, 0.05),
+    0 8px 20px rgba(0, 0, 0, 0.02);
+}
+
+.premium-enterprise-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(16, 185, 129, 0));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.premium-enterprise-card:hover::before {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.35), rgba(255, 255, 255, 0));
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.company-logo-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 800;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+.job-title-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-company-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.card-job-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0.1rem 0 0;
+}
+
+.save-job-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  background: #ffffff;
+  color: #94a3b8;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-job-btn:hover {
+  color: #e11d48;
+  border-color: rgba(225, 29, 72, 0.2);
+  background: rgba(225, 29, 72, 0.02);
+}
+
+.save-job-btn.is-saved {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.15);
+}
+
+.card-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+.detail-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.84rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.detail-tag svg {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.card-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(241, 245, 249, 0.7);
+  padding-top: 0.95rem;
+}
+
+.badges-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.badge-type, .badge-workplace {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: 99px;
+}
+
+.badge-type {
+  color: #2563eb;
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.badge-workplace {
+  color: #d97706;
+  background: rgba(217, 119, 6, 0.06);
+}
+
+.card-apply-btn {
+  font-weight: 700 !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 8px 18px rgba(5, 150, 105, 0.24) !important;
+  padding: 0.45rem 0.9rem !important;
+  border-radius: 10px !important;
+}
+
+.card-apply-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  transform: translateY(-1px);
+}
+
+.view-all-jobs-container {
+  margin-top: 0.5rem;
+}
+
+.view-all-jobs-luxury-btn {
+  width: 100% !important;
+  justify-content: center !important;
+  background: rgba(16, 185, 129, 0.04) !important;
+  border: 1px dashed rgba(16, 185, 129, 0.25) !important;
+  color: #047857 !important;
+  font-weight: 700 !important;
+  padding: 0.85rem !important;
+  box-shadow: none !important;
+  border-radius: 16px !important;
+}
+
+.view-all-jobs-luxury-btn:hover {
+  background: rgba(16, 185, 129, 0.08) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+/* MARQUEE RIBBON */
+.top-companies-ribbon {
+  margin-top: 4.5rem;
+  border-top: 1px solid rgba(226, 232, 240, 0.5);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+  padding: 1.25rem 0;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  overflow: hidden;
+}
+
+.ribbon-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #94a3b8;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.ribbon-slider {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.ribbon-slider::before,
+.ribbon-slider::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.ribbon-slider::before {
+  left: 0;
+  background: linear-gradient(90deg, #f8fafc, transparent);
+}
+
+.ribbon-slider::after {
+  right: 0;
+  background: linear-gradient(-90deg, #f8fafc, transparent);
+}
+
+.ribbon-track {
+  display: flex;
+  gap: 3.5rem;
+  width: max-content;
+  animation: scrollRibbon 20s linear infinite;
+}
+
+.ribbon-track span {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #cbd5e1;
+  letter-spacing: -0.02em;
+  cursor: default;
+  transition: color 0.3s ease;
+}
+
+.ribbon-track span:hover {
+  color: #10b981;
+}
+
+@keyframes scrollRibbon {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* BOTTOM PREMIUM CTA BANNER */
+.bottom-premium-cta-banner {
+  margin-top: 4rem;
+  position: relative;
+  border-radius: 28px;
+  overflow: hidden;
+  padding: 4.5rem 3rem;
+  background: linear-gradient(135deg, #022c22 0%, #064e3b 100%);
+  text-align: center;
+  box-shadow: 0 25px 65px rgba(2, 44, 34, 0.25);
+}
+
+.banner-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.banner-content {
+  position: relative;
+  z-index: 2;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.banner-content h3 {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.banner-content p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.6;
+  margin: 0 0 1.75rem;
+}
+
+.banner-primary-btn {
+  background: #ffffff !important;
+  color: #064e3b !important;
+  border: none !important;
+  font-weight: 700 !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+.banner-primary-btn:hover {
+  background: #f8fafc !important;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* RESPONSIVE LAYOUTS */
+@media (max-width: 1024px) {
+  .luxury-recruitment-grid {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+  .luxury-glass-container {
+    padding: 3rem;
+  }
+  .image-wrapper-large {
+    width: 65%;
+  }
+  .image-wrapper-medium {
+    width: 50%;
+  }
+}
+
+@media (max-width: 640px) {
+  .luxury-glass-container {
+    padding: 1.5rem;
+    border-radius: 24px;
+  }
+  .premium-headline {
+    font-size: 1.8rem;
+  }
+  .premium-floating-badges-grid {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+  .premium-cta-group {
+    flex-direction: column;
+  }
+  .premium-cta-group .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .premium-editorial-collage {
+    height: 320px;
+  }
+  .image-wrapper-large {
+    width: 75%;
+    height: 250px;
+  }
+  .image-wrapper-medium {
+    width: 60%;
+    height: 160px;
+    top: 40px;
+  }
+  .stats-badge-overlap {
+    padding: 0.4rem 0.8rem;
+  }
+  .stats-badge-overlap strong {
+    font-size: 0.95rem;
+  }
+  .stats-badge-overlap span {
+    font-size: 0.6rem;
+  }
+  .badge-placement {
+    top: 10px;
+  }
+  .badge-speed {
+    top: 140px;
+  }
+  .badge-jobs {
+    top: 120px;
+    left: -10px;
+  }
+  .floating-analytics-card {
+    width: 130px;
+    padding: 0.75rem;
+    bottom: -10px;
+  }
+  .match-score {
+    font-size: 1.4rem;
+  }
+  .hiring-graph-card {
+    width: 155px;
+    padding: 0.75rem;
+    bottom: -15px;
+  }
+  .card-top {
+    gap: 0.75rem;
+  }
+  .company-logo-wrap {
+    width: 38px;
+    height: 38px;
+    font-size: 0.8rem;
+  }
+  .card-job-title {
+    font-size: 0.95rem;
+  }
+  .card-details {
+    gap: 0.75rem;
+  }
+  .banner-content h3 {
+    font-size: 1.7rem;
+  }
+  .banner-content p {
+    font-size: 0.92rem;
+  }
+  .bottom-premium-cta-banner {
+    padding: 3rem 1.5rem;
+  }
+}
+
+/* Refined 2026 SaaS layout for the existing candidate/employer panels */
+.premium-dual-card-section {
+  padding: clamp(2rem, 4vw, 4rem) 0 2.5rem;
+  background:
+    linear-gradient(180deg, #f7fbf9 0%, #eef8f3 100%);
+}
+
+.premium-section-glow {
+  display: none;
+}
+
+.premium-glass-container {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  overflow: visible;
+}
+
+.premium-dual-card-grid {
+  align-items: stretch;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding: 0;
+}
+
+.premium-candidate-card,
+.premium-employer-card {
+  min-height: clamp(620px, 58vw, 760px);
+  border: 1px solid rgba(15, 118, 79, 0.14);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 88% 86%, rgba(16, 185, 129, 0.12), transparent 26%),
+    linear-gradient(145deg, #ffffff 0%, #fbfefd 62%, #f4fbf8 100%);
+  box-shadow:
+    0 24px 70px rgba(15, 81, 58, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+}
+
+.premium-candidate-card:hover,
+.premium-employer-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 28px 80px rgba(15, 81, 58, 0.11),
+    0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  border-color: rgba(16, 185, 129, 0.22);
+}
+
+.card-content-wrapper {
+  position: relative;
+  display: block;
+  min-height: inherit;
+}
+
+.card-left-content {
+  position: relative;
+  z-index: 5;
+  width: min(62%, 430px);
+  min-height: inherit;
+  padding: clamp(2rem, 3.2vw, 3rem);
+  gap: clamp(1.1rem, 1.6vw, 1.45rem);
+  justify-content: flex-start;
+}
+
+.premium-employer-card .card-left-content {
+  width: min(64%, 450px);
+}
+
+.premium-eyebrow-badge {
+  width: fit-content;
+  padding: 0.72rem 1.05rem;
+  border-color: rgba(12, 104, 70, 0.12);
+  color: #0a7b50;
+  background: rgba(247, 252, 250, 0.92);
+  box-shadow: 0 10px 28px rgba(15, 81, 58, 0.06);
+  font-size: 0.73rem;
+  letter-spacing: 0.065em;
+}
+
+.premium-card-heading {
+  max-width: 9ch;
+  font-size: clamp(3.25rem, 5vw, 5.25rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  color: #07280d;
+}
+
+.premium-employer-card .premium-card-heading {
+  max-width: 10ch;
+}
+
+.premium-card-heading span {
+  color: #078b4f;
+}
+
+.premium-card-subtext {
+  max-width: 25rem;
+  color: #3f5870;
+  font-size: clamp(1rem, 1.15vw, 1.12rem);
+  line-height: 1.65;
+}
+
+.premium-candidate-card .feature-highlights-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.feature-highlight-item {
+  min-height: 88px;
+  align-items: center;
+  padding: 0.85rem;
+  border-color: rgba(15, 81, 58, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 14px 34px rgba(15, 81, 58, 0.06);
+  color: #102033;
+  line-height: 1.35;
+}
+
+.premium-employer-card .feature-highlight-item {
+  min-height: 46px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+.check-icon {
+  width: 42px;
+  height: 42px;
+  padding: 0.55rem;
+  background: #e9f8ef;
+  filter: none;
+}
+
+.floating-stats-grid {
+  padding: 1.15rem 1rem;
+  border-color: rgba(15, 81, 58, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 18px 40px rgba(15, 81, 58, 0.07);
+}
+
+.floating-stat-item {
+  padding: 0.2rem 0.8rem;
+}
+
+.floating-stat-item strong {
+  font-size: clamp(1.55rem, 2vw, 1.9rem);
+  color: #078b4f;
+}
+
+.floating-stat-item span {
+  color: #304357;
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.premium-analytics-widget {
+  gap: 0.75rem;
+}
+
+.analytics-item {
+  min-height: 88px;
+  align-content: center;
+  border-color: rgba(15, 81, 58, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 14px 34px rgba(15, 81, 58, 0.05);
+}
+
+.premium-luxury-btn {
+  width: min(100%, 350px);
+  min-height: 62px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 18px 34px rgba(5, 150, 105, 0.22);
+  font-size: 1rem;
+}
+
+.premium-luxury-btn:hover {
+  background: linear-gradient(135deg, #12c88c 0%, #047857 100%);
+  box-shadow: 0 20px 38px rgba(5, 150, 105, 0.26);
+}
+
+.premium-security-note {
+  justify-content: flex-start;
+  margin: -0.15rem 0 0;
+  color: #41566b;
+}
+
+.card-right-image {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  width: 48%;
+  height: 48%;
+  min-height: 280px;
+  overflow: hidden;
+  border-radius: 0 0 24px 0;
+}
+
+.premium-visual-panel {
+  min-height: 0;
+  background: transparent;
+}
+
+.premium-visual-panel::before {
+  right: -22%;
+  bottom: -18%;
+  width: 118%;
+  background: radial-gradient(circle, rgba(188, 244, 215, 0.82), rgba(103, 216, 160, 0.34) 58%, transparent 72%);
+}
+
+.premium-visual-panel::after {
+  right: 52%;
+  top: 68%;
+  width: 30%;
+  opacity: 0.22;
+}
+
+.image-glow-effect,
+.image-overlay-gradient {
+  display: none;
+}
+
+.candidate-image.premium-card-image {
+  width: 92%;
+  height: 96%;
+  right: 3%;
+  bottom: -1%;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.employer-image.premium-card-image {
+  width: 112%;
+  height: 92%;
+  right: -14%;
+  bottom: 0;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.visual-metric,
+.floating-ui-card {
+  border-color: rgba(15, 81, 58, 0.08);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 16px 34px rgba(15, 81, 58, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.visual-metric-top {
+  top: 21%;
+  left: -30%;
+}
+
+.visual-metric-bottom {
+  display: none;
+}
+
+.ui-card-1 {
+  top: 18%;
+  right: 9%;
+}
+
+.ui-card-2 {
+  display: none;
+}
+
+.premium-trust-section {
+  margin-top: 1.25rem;
+  padding: 1.35rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.trust-section-header {
+  margin-bottom: 1.1rem;
+}
+
+.trust-section-header h3 {
+  font-size: 1.15rem;
+}
+
+.company-logo-item {
+  border-color: rgba(15, 81, 58, 0.08);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 81, 58, 0.04);
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-candidate-card,
+  .premium-employer-card {
+    min-height: 660px;
+  }
+
+  .card-left-content,
+  .premium-employer-card .card-left-content {
+    width: min(64%, 470px);
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section {
+    padding: 2rem 0;
+  }
+
+  .premium-candidate-card,
+  .premium-employer-card {
+    min-height: auto;
+  }
+
+  .card-content-wrapper {
+    display: grid;
+    min-height: auto;
+  }
+
+  .card-left-content,
+  .premium-employer-card .card-left-content {
+    width: 100%;
+    min-height: 0;
+    padding: 1.35rem;
+  }
+
+  .premium-card-heading {
+    max-width: 100%;
+    font-size: clamp(2.25rem, 12vw, 3.25rem);
+  }
+
+  .premium-candidate-card .feature-highlights-list,
+  .floating-stats-grid,
+  .premium-analytics-widget {
+    grid-template-columns: 1fr;
+  }
+
+  .floating-stat-item + .floating-stat-item {
+    border-left: 0;
+    border-top: 1px solid rgba(15, 81, 58, 0.1);
+    padding-top: 0.75rem;
+  }
+
+  .card-right-image {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    min-height: 260px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .candidate-image.premium-card-image,
+  .employer-image.premium-card-image {
+    width: 78%;
+    height: 100%;
+    right: 2%;
+  }
+
+  .visual-metric,
+  .floating-ui-card {
+    display: none;
+  }
+}
+
+/* Premium enterprise polish for the existing HEXORA GLOBAL TRADE block */
+.divisions-section {
+  background:
+    radial-gradient(circle at 7% 18%, rgba(16, 185, 129, 0.08), transparent 30%),
+    radial-gradient(circle at 92% 58%, rgba(45, 212, 191, 0.09), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f7fbf9 100%);
+}
+
+.divisions-section .shell {
+  width: min(100%, calc(100vw - clamp(2rem, 5vw, 4rem)));
+  max-width: 1440px;
+}
+
+.global-trade-card {
+  position: relative;
+  isolation: isolate;
+  margin-top: clamp(1.8rem, 3vw, 2.5rem);
+  padding: clamp(2rem, 4.5vw, 4rem);
+  overflow: hidden;
+  border: 1px solid rgba(22, 163, 109, 0.16);
+  border-radius: 32px;
+  color: #0b1424;
+  font-family: 'Inter', sans-serif;
+  background:
+    radial-gradient(circle at 88% 4%, rgba(209, 250, 229, 0.88), transparent 34%),
+    radial-gradient(circle at 16% 92%, rgba(236, 253, 245, 0.92), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 253, 251, 0.9));
+  box-shadow:
+    0 32px 90px rgba(15, 81, 58, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(24px);
+}
+
+.global-trade-card::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: -12% -9% auto auto;
+  width: min(38vw, 520px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(circle, rgba(16, 185, 129, 0.11) 0 1px, transparent 1px 16px),
+    radial-gradient(circle, rgba(167, 243, 208, 0.32), transparent 68%);
+  opacity: 0.75;
+}
+
+.global-trade-card::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: 9%;
+  bottom: -18%;
+  width: 46%;
+  height: 34%;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.11);
+  filter: blur(70px);
+}
+
+.global-trade-card > div:first-child {
+  max-width: 1220px;
+}
+
+.global-trade-card .home-eyebrow {
+  margin-bottom: 1.35rem;
+  color: #13845a;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+}
+
+.global-trade-card h2 {
+  max-width: 1180px;
+  color: #060d1c;
+  font-size: clamp(3.1rem, 5.6vw, 5.4rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+
+.global-trade-card > div:first-child > p:not(.home-eyebrow) {
+  max-width: 1180px;
+  margin: clamp(1.25rem, 2vw, 1.75rem) 0 0;
+  color: #5f6f82;
+  font-size: clamp(1.05rem, 1.35vw, 1.28rem);
+  line-height: 1.75;
+}
+
+.trade-columns {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.25rem, 2vw, 1.75rem);
+  margin-top: clamp(2rem, 3vw, 2.75rem);
+}
+
+.trade-list {
+  position: relative;
+  min-height: 100%;
+  padding: clamp(1.6rem, 2.4vw, 2.35rem);
+  overflow: hidden;
+  border: 1px solid rgba(15, 81, 58, 0.1);
+  border-radius: 24px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(249, 253, 251, 0.78)),
+    radial-gradient(circle at 16% 12%, rgba(209, 250, 229, 0.72), transparent 30%);
+  box-shadow:
+    0 20px 58px rgba(15, 81, 58, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(18px);
+  transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+}
+
+.trade-list:hover {
+  transform: translateY(-6px);
+  border-color: rgba(16, 185, 129, 0.24);
+  box-shadow:
+    0 28px 76px rgba(15, 81, 58, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
+}
+
+.trade-list h3 {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: center;
+  color: #080f1f;
+  font-size: clamp(1.15rem, 1.55vw, 1.45rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.trade-list h3::before {
+  content: '';
+  width: 58px;
+  height: 58px;
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(220, 252, 231, 0.82)),
+    radial-gradient(circle at 35% 28%, #34d399 0 4px, transparent 5px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 14px 30px rgba(16, 185, 129, 0.16);
+}
+
+.trade-list h3::after {
+  content: '';
+  grid-column: 2;
+  width: 40px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #0f9f63, rgba(15, 159, 99, 0));
+}
+
+.trade-list ul {
+  gap: 0;
+  margin-top: clamp(1.55rem, 2vw, 2rem);
+}
+
+.trade-list li {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1rem 0;
+  padding-left: 0;
+  color: #273345;
+  font-size: clamp(0.98rem, 1.05vw, 1.08rem);
+  line-height: 1.55;
+  border-bottom: 1px solid rgba(15, 81, 58, 0.08);
+}
+
+.trade-list li:last-child {
+  border-bottom: 0;
+}
+
+.trade-list li::before {
+  position: static;
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  margin-top: 0.56em;
+  background: #0f9f63;
+  box-shadow: 0 0 0 5px rgba(16, 185, 129, 0.11);
+}
+
+@media (max-width: 1100px) {
+  .global-trade-card {
+    padding: clamp(1.6rem, 4vw, 2.4rem);
+  }
+
+  .global-trade-card h2 {
+    font-size: clamp(2.4rem, 7vw, 4.2rem);
+  }
+
+  .trade-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .divisions-section .shell {
+    width: min(100%, calc(100vw - 1.2rem));
+  }
+
+  .global-trade-card {
+    border-radius: 24px;
+    padding: 1.25rem;
+  }
+
+  .global-trade-card .home-eyebrow {
+    font-size: 0.76rem;
+  }
+
+  .global-trade-card h2 {
+    font-size: clamp(2.25rem, 12vw, 3.1rem);
+  }
+
+  .global-trade-card > div:first-child > p:not(.home-eyebrow) {
+    font-size: 1rem;
+  }
+
+  .trade-list {
+    border-radius: 22px;
+    padding: 1.1rem;
+  }
+
+  .trade-list h3 {
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 0.8rem;
+    font-size: 1.08rem;
+  }
+
+  .trade-list h3::before {
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
+  }
+
+  .trade-list li {
+    padding: 0.82rem 0;
+    font-size: 0.95rem;
+  }
+}
+
+/* Viewport-fit correction: cards must sit fully inside 100vh at 100% zoom */
+.premium-dual-card-section {
+  min-height: 100svh !important;
+  padding: 10px clamp(22px, 4vw, 72px) !important;
+  overflow-x: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.premium-dual-card-section .shell {
+  width: 100% !important;
+  max-width: 1680px !important;
+  margin-inline: auto !important;
+  padding: 0 !important;
+}
+
+.premium-dual-card-section .premium-glass-container,
+.premium-dual-card-section .premium-dual-card-grid {
+  min-height: 0 !important;
+  width: 100% !important;
+}
+
+.premium-dual-card-section .premium-dual-card-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: clamp(12px, 1.2vw, 18px) !important;
+}
+
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  height: min(720px, calc(100svh - 20px)) !important;
+  min-height: 0 !important;
+  max-height: calc(100svh - 20px) !important;
+  width: 100% !important;
+}
+
+.premium-dual-card-section .card-content-wrapper,
+.premium-dual-card-section .card-right-image,
+.premium-dual-card-section .premium-visual-panel {
+  height: 100% !important;
+  min-height: 0 !important;
+}
+
+.premium-dual-card-section .card-left-content,
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  min-height: 0 !important;
+  height: 100% !important;
+  padding-top: clamp(22px, 3vh, 34px) !important;
+  padding-bottom: clamp(14px, 2vh, 24px) !important;
+  gap: clamp(10px, 1.7vh, 18px) !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge {
+  min-height: 48px !important;
+  padding: 8px 24px 8px 16px !important;
+  font-size: clamp(12px, 0.95vw, 15px) !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge svg {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.premium-dual-card-section .premium-card-heading,
+.premium-dual-card-section .premium-employer-card .premium-card-heading {
+  font-size: clamp(42px, 3.5vw, 60px) !important;
+  line-height: 0.98 !important;
+  margin-top: clamp(4px, 1vh, 10px) !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .premium-card-heading span::after {
+  height: 6px !important;
+  width: 82px !important;
+  margin-top: 3px !important;
+}
+
+.premium-dual-card-section .premium-card-subtext {
+  max-width: 470px !important;
+  font-size: clamp(15px, 1.08vw, 18px) !important;
+  line-height: 1.48 !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+  width: min(500px, 100%) !important;
+  gap: 6px !important;
+  margin-top: 2px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+  grid-template-columns: 38px minmax(0, 1fr) !important;
+  min-height: 58px !important;
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item strong {
+  font-size: 13px !important;
+}
+
+.premium-dual-card-section .check-icon {
+  width: 36px !important;
+  height: 36px !important;
+  padding: 7px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+  position: absolute !important;
+  z-index: 12 !important;
+  left: 52px !important;
+  bottom: clamp(108px, 15vh, 136px) !important;
+  width: min(560px, calc(100% - 88px)) !important;
+  min-height: 86px !important;
+  margin: 0 !important;
+  padding: 12px !important;
+}
+
+.premium-dual-card-section .floating-stat-item {
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+  column-gap: 8px !important;
+  padding: 0 10px !important;
+}
+
+.premium-dual-card-section .floating-stat-item svg {
+  width: 40px !important;
+  height: 40px !important;
+  padding: 8px !important;
+}
+
+.premium-dual-card-section .floating-stat-item strong {
+  font-size: clamp(20px, 1.7vw, 25px) !important;
+}
+
+.premium-dual-card-section .floating-stat-item span {
+  font-size: clamp(10px, 0.82vw, 13px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlights-list {
+  margin-top: clamp(12px, 3vh, 26px) !important;
+  gap: clamp(12px, 2.3vh, 20px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlight-item {
+  min-height: 44px !important;
+  grid-template-columns: 48px minmax(0, 1fr) !important;
+  font-size: clamp(13px, 1vw, 16px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .check-icon {
+  width: 44px !important;
+  height: 44px !important;
+  padding: 9px !important;
+}
+
+.premium-dual-card-section .premium-luxury-btn {
+  min-height: clamp(58px, 8vh, 70px) !important;
+  font-size: clamp(18px, 1.65vw, 24px) !important;
+  margin-top: auto !important;
+  padding-left: 18px !important;
+  padding-right: 18px !important;
+}
+
+.premium-dual-card-section .premium-btn-label {
+  gap: 12px !important;
+}
+
+.premium-dual-card-section .premium-btn-label svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.premium-dual-card-section .premium-btn-arrow {
+  width: 46px !important;
+  height: 46px !important;
+  padding: 10px !important;
+}
+
+.premium-dual-card-section .premium-security-note {
+  font-size: clamp(12px, 0.95vw, 15px) !important;
+  line-height: 1.2 !important;
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image {
+  width: min(650px, 115%) !important;
+  height: 94% !important;
+  right: -72px !important;
+  bottom: -16px !important;
+}
+
+.premium-dual-card-section .employer-image.premium-card-image {
+  width: min(780px, 138%) !important;
+  height: 90% !important;
+  right: -168px !important;
+  bottom: -18px !important;
+}
+
+.premium-dual-card-section .ui-card-1 {
+  bottom: clamp(170px, 29vh, 230px) !important;
+  width: 136px !important;
+  min-height: 112px !important;
+  padding: 14px !important;
+}
+
+.premium-dual-card-section .ui-card-1 strong {
+  font-size: 13px !important;
+}
+
+@media (max-height: 760px) and (min-width: 1181px) {
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    height: calc(100svh - 16px) !important;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    font-size: clamp(40px, 3.25vw, 56px) !important;
+  }
+
+  .premium-dual-card-section .premium-card-subtext {
+    font-size: 15px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+    min-height: 52px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+    bottom: 104px !important;
+  }
+
+  .premium-dual-card-section .premium-luxury-btn {
+    min-height: 58px !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-section {
+    display: block !important;
+    min-height: auto !important;
+  }
+
+  .premium-dual-card-section .premium-dual-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    height: auto !important;
+    min-height: 680px !important;
+    max-height: none !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section {
+    padding: 10px 12px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: auto !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+    position: relative !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+  }
+}
+
+/* Final overflow fix: contain dual cards inside the visible screen at 100% zoom */
+.premium-dual-card-section,
+.premium-dual-card-section * {
+  box-sizing: border-box !important;
+}
+
+.premium-dual-card-section {
+  width: 100% !important;
+  height: min(700px, calc(100svh - 124px)) !important;
+  min-height: 560px !important;
+  max-height: calc(100svh - 124px) !important;
+  padding: 8px clamp(16px, 3vw, 48px) !important;
+  margin: 0 auto !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: center !important;
+}
+
+.premium-dual-card-section .shell {
+  width: 100% !important;
+  max-width: min(1540px, calc(100vw - clamp(32px, 6vw, 96px))) !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .premium-glass-container,
+.premium-dual-card-section .premium-dual-card-grid {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .premium-dual-card-grid {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: clamp(10px, 1vw, 16px) !important;
+  align-items: stretch !important;
+}
+
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
+  border-radius: 28px !important;
+}
+
+.premium-dual-card-section .card-content-wrapper {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  grid-template-columns: minmax(0, 52%) minmax(0, 48%) !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .card-left-content,
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  min-width: 0 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: clamp(16px, 2.4vh, 28px) clamp(12px, 1.4vw, 22px) clamp(12px, 1.8vh, 20px) clamp(22px, 2.6vw, 42px) !important;
+  gap: clamp(8px, 1.45vh, 15px) !important;
+  overflow: visible !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge {
+  min-height: 42px !important;
+  max-width: 100% !important;
+  padding: 7px 18px 7px 12px !important;
+  font-size: clamp(11px, 0.82vw, 14px) !important;
+  white-space: normal !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge svg {
+  width: 26px !important;
+  height: 26px !important;
+  flex: 0 0 auto !important;
+}
+
+.premium-dual-card-section .premium-card-heading,
+.premium-dual-card-section .premium-employer-card .premium-card-heading {
+  max-width: 100% !important;
+  font-size: clamp(38px, 3.35vw, 56px) !important;
+  line-height: 0.98 !important;
+  margin-top: 2px !important;
+  overflow-wrap: anywhere !important;
+}
+
+.premium-dual-card-section .premium-card-subtext {
+  max-width: min(100%, 430px) !important;
+  font-size: clamp(13px, 1vw, 16px) !important;
+  line-height: 1.42 !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+  width: min(100%, 460px) !important;
+  max-width: 100% !important;
+  gap: 6px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+  min-width: 0 !important;
+  min-height: 50px !important;
+  padding: 7px 9px !important;
+  grid-template-columns: 32px minmax(0, 1fr) !important;
+  font-size: 11px !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item strong {
+  font-size: 12px !important;
+}
+
+.premium-dual-card-section .check-icon {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 6px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+  left: clamp(18px, 2.6vw, 42px) !important;
+  bottom: clamp(86px, 13vh, 112px) !important;
+  width: min(475px, calc(100% - clamp(36px, 5.2vw, 84px))) !important;
+  max-width: calc(100% - clamp(36px, 5.2vw, 84px)) !important;
+  min-height: 72px !important;
+  padding: 9px !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .floating-stat-item {
+  min-width: 0 !important;
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  column-gap: 6px !important;
+  padding: 0 7px !important;
+}
+
+.premium-dual-card-section .floating-stat-item svg {
+  width: 34px !important;
+  height: 34px !important;
+  padding: 7px !important;
+}
+
+.premium-dual-card-section .floating-stat-item strong {
+  font-size: clamp(17px, 1.45vw, 22px) !important;
+}
+
+.premium-dual-card-section .floating-stat-item span {
+  font-size: clamp(9px, 0.72vw, 11px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlights-list {
+  width: min(100%, 360px) !important;
+  gap: clamp(9px, 1.8vh, 16px) !important;
+  margin-top: clamp(6px, 2vh, 18px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlight-item {
+  min-width: 0 !important;
+  min-height: 38px !important;
+  grid-template-columns: 40px minmax(0, 1fr) !important;
+  font-size: clamp(12px, 0.9vw, 14px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .check-icon {
+  width: 38px !important;
+  height: 38px !important;
+  padding: 8px !important;
+}
+
+.premium-dual-card-section .premium-luxury-btn {
+  width: 100% !important;
+  min-height: clamp(50px, 7vh, 62px) !important;
+  padding: 0 12px !important;
+  grid-template-columns: minmax(0, 1fr) 40px !important;
+  font-size: clamp(16px, 1.35vw, 21px) !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .premium-btn-label {
+  min-width: 0 !important;
+  gap: 8px !important;
+  white-space: normal !important;
+}
+
+.premium-dual-card-section .premium-btn-label svg {
+  width: 20px !important;
+  height: 20px !important;
+  flex: 0 0 auto !important;
+}
+
+.premium-dual-card-section .premium-btn-arrow {
+  width: 40px !important;
+  height: 40px !important;
+  padding: 9px !important;
+}
+
+.premium-dual-card-section .premium-security-note {
+  max-width: 100% !important;
+  font-size: clamp(10px, 0.82vw, 13px) !important;
+  line-height: 1.15 !important;
+}
+
+.premium-dual-card-section .card-right-image,
+.premium-dual-card-section .premium-visual-panel {
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .premium-card-image {
+  max-width: 100% !important;
+  object-fit: contain !important;
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image {
+  width: min(112%, 560px) !important;
+  max-width: 112% !important;
+  height: 91% !important;
+  right: max(-46px, -8%) !important;
+  bottom: -10px !important;
+}
+
+.premium-dual-card-section .employer-image.premium-card-image {
+  width: min(128%, 660px) !important;
+  max-width: 128% !important;
+  height: 88% !important;
+  right: max(-112px, -18%) !important;
+  bottom: -12px !important;
+}
+
+.premium-dual-card-section .visual-metric-top {
+  width: 46px !important;
+  height: 46px !important;
+  left: 2px !important;
+}
+
+.premium-dual-card-section .ui-card-1 {
+  left: 4px !important;
+  bottom: clamp(122px, 24vh, 178px) !important;
+  width: 116px !important;
+  min-height: 92px !important;
+  padding: 10px !important;
+}
+
+.premium-dual-card-section .ui-card-1 strong {
+  font-size: 11px !important;
+}
+
+@media (max-height: 760px) and (min-width: 1181px) {
+  .premium-dual-card-section {
+    height: calc(100svh - 112px) !important;
+    min-height: 500px !important;
+    max-height: calc(100svh - 112px) !important;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    font-size: clamp(34px, 3vw, 48px) !important;
+  }
+
+  .premium-dual-card-section .premium-card-subtext {
+    font-size: 13px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+    min-height: 44px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+    bottom: 74px !important;
+    min-height: 62px !important;
+  }
+
+  .premium-dual-card-section .premium-luxury-btn {
+    min-height: 48px !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-section {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    display: block !important;
+  }
+
+  .premium-dual-card-section .premium-dual-card-grid {
+    grid-template-columns: 1fr !important;
+    overflow: visible !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    height: auto !important;
+    min-height: 640px !important;
+    max-height: none !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section {
+    padding: 10px 12px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: auto !important;
+  }
+
+  .premium-dual-card-section .card-content-wrapper {
+    grid-template-columns: 1fr !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+    position: relative !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Final overflow fix: keep the full two-card layout inside the viewport at 100% zoom */
+.premium-dual-card-section,
+.premium-dual-card-section * {
+  box-sizing: border-box !important;
+}
+
+.premium-dual-card-section {
+  width: 100% !important;
+  max-width: 100vw !important;
+  min-height: auto !important;
+  padding: 8px clamp(14px, 2.8vw, 46px) 10px !important;
+  overflow: hidden !important;
+  display: block !important;
+}
+
+.premium-dual-card-section .shell {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+.premium-dual-card-section .premium-glass-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+}
+
+.premium-dual-card-section .premium-dual-card-grid {
+  width: 100% !important;
+  max-width: 100% !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: clamp(10px, 1.1vw, 16px) !important;
+  overflow: visible !important;
+}
+
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: clamp(560px, calc(100svh - 132px), 690px) !important;
+  min-height: 0 !important;
+  max-height: calc(100svh - 132px) !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .card-content-wrapper {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  grid-template-columns: minmax(0, 52%) minmax(0, 48%) !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .card-left-content,
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: clamp(18px, 2.6vh, 30px) clamp(10px, 1.4vw, 22px) clamp(12px, 1.8vh, 20px) clamp(26px, 3.1vw, 48px) !important;
+  gap: clamp(8px, 1.45vh, 16px) !important;
+  overflow: visible !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge {
+  max-width: min(100%, 330px) !important;
+  min-height: 44px !important;
+  padding: 7px 20px 7px 14px !important;
+  font-size: clamp(11px, 0.82vw, 14px) !important;
+  line-height: 1.1 !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge svg {
+  width: 26px !important;
+  height: 26px !important;
+}
+
+.premium-dual-card-section .premium-card-heading,
+.premium-dual-card-section .premium-employer-card .premium-card-heading {
+  max-width: 100% !important;
+  font-size: clamp(38px, 3.2vw, 56px) !important;
+  line-height: 0.98 !important;
+  margin-top: clamp(2px, 0.7vh, 8px) !important;
+  overflow-wrap: normal !important;
+}
+
+.premium-dual-card-section .premium-card-subtext {
+  max-width: min(100%, 440px) !important;
+  font-size: clamp(13px, 1vw, 16px) !important;
+  line-height: 1.45 !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+  width: min(100%, 470px) !important;
+  max-width: 100% !important;
+  gap: 5px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+  min-width: 0 !important;
+  min-height: 50px !important;
+  padding: 7px 9px !important;
+  grid-template-columns: 32px minmax(0, 1fr) !important;
+  font-size: 10.5px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item strong {
+  font-size: 12px !important;
+}
+
+.premium-dual-card-section .check-icon {
+  width: 30px !important;
+  height: 30px !important;
+  padding: 6px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+  left: clamp(26px, 3.1vw, 48px) !important;
+  bottom: clamp(86px, 13vh, 118px) !important;
+  width: min(430px, calc(100% - 54px)) !important;
+  max-width: calc(100% - 54px) !important;
+  min-height: 72px !important;
+  padding: 9px !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .floating-stat-item {
+  min-width: 0 !important;
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  column-gap: 6px !important;
+  padding: 0 6px !important;
+}
+
+.premium-dual-card-section .floating-stat-item svg {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 6px !important;
+}
+
+.premium-dual-card-section .floating-stat-item strong {
+  font-size: clamp(16px, 1.35vw, 21px) !important;
+}
+
+.premium-dual-card-section .floating-stat-item span {
+  font-size: clamp(8.5px, 0.7vw, 11px) !important;
+  line-height: 1.1 !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlights-list {
+  width: min(100%, 380px) !important;
+  margin-top: clamp(8px, 2.2vh, 20px) !important;
+  gap: clamp(9px, 1.9vh, 16px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlight-item {
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+  min-height: 40px !important;
+  font-size: clamp(11px, 0.9vw, 14px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .check-icon {
+  width: 38px !important;
+  height: 38px !important;
+  padding: 8px !important;
+}
+
+.premium-dual-card-section .premium-luxury-btn {
+  width: min(100%, 520px) !important;
+  min-height: clamp(52px, 7vh, 64px) !important;
+  grid-template-columns: minmax(0, 1fr) 42px !important;
+  padding: 0 12px 0 16px !important;
+  font-size: clamp(16px, 1.45vw, 21px) !important;
+}
+
+.premium-dual-card-section .premium-btn-label {
+  min-width: 0 !important;
+  gap: 9px !important;
+}
+
+.premium-dual-card-section .premium-btn-label svg {
+  width: 21px !important;
+  height: 21px !important;
+}
+
+.premium-dual-card-section .premium-btn-arrow {
+  width: 40px !important;
+  height: 40px !important;
+  padding: 9px !important;
+}
+
+.premium-dual-card-section .premium-security-note {
+  max-width: 100% !important;
+  font-size: clamp(10.5px, 0.82vw, 13px) !important;
+}
+
+.premium-dual-card-section .card-right-image,
+.premium-dual-card-section .premium-visual-panel {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .premium-visual-panel::before {
+  right: -18% !important;
+  bottom: 2% !important;
+  width: 124% !important;
+}
+
+.premium-dual-card-section .premium-card-image {
+  max-width: none !important;
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image {
+  width: min(560px, 126%) !important;
+  height: 94% !important;
+  right: clamp(-82px, -5vw, -38px) !important;
+  bottom: -12px !important;
+}
+
+.premium-dual-card-section .employer-image.premium-card-image {
+  width: min(640px, 142%) !important;
+  height: 90% !important;
+  right: clamp(-156px, -8vw, -70px) !important;
+  bottom: -14px !important;
+}
+
+.premium-dual-card-section .visual-metric-top {
+  width: 46px !important;
+  height: 46px !important;
+  left: -22px !important;
+}
+
+.premium-dual-card-section .ui-card-1 {
+  left: -58px !important;
+  bottom: clamp(138px, 25vh, 190px) !important;
+  width: 118px !important;
+  min-height: 94px !important;
+  padding: 10px !important;
+}
+
+.premium-dual-card-section .ui-card-1 strong {
+  font-size: 11px !important;
+}
+
+@media (max-width: 1280px) and (min-width: 1181px) {
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    font-size: clamp(34px, 3vw, 48px) !important;
+  }
+
+  .premium-dual-card-section .premium-card-subtext {
+    font-size: 13px !important;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 1181px) {
+  .premium-dual-card-section {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    height: calc(100svh - 12px) !important;
+    max-height: calc(100svh - 12px) !important;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    font-size: clamp(32px, 2.9vw, 48px) !important;
+  }
+
+  .premium-dual-card-section .premium-card-subtext {
+    font-size: 12.5px !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-section {
+    display: block !important;
+    min-height: auto !important;
+    padding: 12px clamp(16px, 4vw, 34px) !important;
+  }
+
+  .premium-dual-card-section .premium-dual-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    height: auto !important;
+    min-height: 640px !important;
+    max-height: none !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section {
+    padding: 10px 12px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: auto !important;
+  }
+
+  .premium-dual-card-section .card-content-wrapper {
+    grid-template-columns: 1fr !important;
+    overflow: hidden !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+    position: relative !important;
+    left: auto !important;
+    bottom: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Final viewport-fit override: cards section must fit inside one screen */
+.premium-dual-card-section {
+  height: 100vh !important;
+  min-height: 620px !important;
+  max-height: 100vh !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px clamp(18px, 3vw, 52px) !important;
+  overflow: hidden !important;
+}
+
+.premium-dual-card-section .shell,
+.premium-dual-card-section .premium-glass-container,
+.premium-dual-card-section .premium-dual-card-grid {
+  height: 100% !important;
+}
+
+.premium-dual-card-section .premium-dual-card-grid {
+  gap: 14px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  height: calc(100vh - 20px) !important;
+  min-height: 600px !important;
+  max-height: 760px !important;
+}
+
+.premium-dual-card-section .card-content-wrapper {
+  grid-template-columns: minmax(0, 55%) minmax(310px, 45%) !important;
+}
+
+.premium-dual-card-section .card-left-content,
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  padding: clamp(22px, 3vh, 34px) 16px clamp(18px, 2.5vh, 28px) clamp(30px, 3vw, 44px) !important;
+  gap: clamp(11px, 1.65vh, 18px) !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge {
+  min-height: 46px !important;
+  padding: 8px 22px 8px 14px !important;
+  font-size: 13px !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge svg {
+  width: 28px !important;
+  height: 28px !important;
+}
+
+.premium-dual-card-section .premium-card-heading,
+.premium-dual-card-section .premium-employer-card .premium-card-heading {
+  font-size: clamp(46px, 6.8vh, 62px) !important;
+  line-height: 0.95 !important;
+  margin-top: clamp(6px, 1vh, 12px) !important;
+}
+
+.premium-dual-card-section .premium-card-subtext {
+  max-width: 430px !important;
+  font-size: clamp(15px, 2vh, 18px) !important;
+  line-height: 1.45 !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+  width: min(100%, 530px) !important;
+  gap: 6px !important;
+  margin-top: 2px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+  min-height: clamp(54px, 7vh, 66px) !important;
+  padding: 8px 12px !important;
+}
+
+.premium-dual-card-section .check-icon {
+  width: 38px !important;
+  height: 38px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+  position: absolute !important;
+  z-index: 12 !important;
+  left: clamp(30px, 3vw, 44px) !important;
+  bottom: clamp(104px, 15vh, 128px) !important;
+  width: min(610px, calc(100% - 70px)) !important;
+  min-height: clamp(78px, 11vh, 98px) !important;
+  margin: 0 !important;
+  padding: 12px 14px !important;
+  border-radius: 18px !important;
+}
+
+.premium-dual-card-section .floating-stat-item {
+  grid-template-columns: 46px minmax(0, 1fr) !important;
+  column-gap: 10px !important;
+  padding: 0 10px !important;
+}
+
+.premium-dual-card-section .floating-stat-item svg {
+  width: 44px !important;
+  height: 44px !important;
+  padding: 9px !important;
+}
+
+.premium-dual-card-section .floating-stat-item strong {
+  font-size: clamp(20px, 3vh, 26px) !important;
+}
+
+.premium-dual-card-section .floating-stat-item span {
+  font-size: clamp(11px, 1.6vh, 13px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlights-list {
+  margin-top: clamp(12px, 3vh, 26px) !important;
+  gap: clamp(12px, 2.6vh, 20px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlight-item {
+  grid-template-columns: 48px minmax(0, 1fr) !important;
+  min-height: 48px !important;
+  font-size: clamp(14px, 2vh, 16px) !important;
+}
+
+.premium-dual-card-section .premium-employer-card .check-icon {
+  width: 46px !important;
+  height: 46px !important;
+  padding: 10px !important;
+}
+
+.premium-dual-card-section .premium-luxury-btn {
+  min-height: clamp(58px, 8.5vh, 72px) !important;
+  font-size: clamp(18px, 3vh, 25px) !important;
+  padding: 0 22px !important;
+}
+
+.premium-dual-card-section .premium-btn-arrow {
+  width: clamp(42px, 6.4vh, 52px) !important;
+  height: clamp(42px, 6.4vh, 52px) !important;
+  padding: 11px !important;
+}
+
+.premium-dual-card-section .premium-security-note {
+  font-size: clamp(12px, 1.8vh, 15px) !important;
+  margin-top: -4px !important;
+}
+
+.premium-dual-card-section .premium-visual-panel::before {
+  right: -16% !important;
+  bottom: -2% !important;
+  width: 122% !important;
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image {
+  width: min(660px, 130%) !important;
+  height: 94% !important;
+  right: -74px !important;
+  bottom: -12px !important;
+}
+
+.premium-dual-card-section .employer-image.premium-card-image {
+  width: min(790px, 150%) !important;
+  height: 90% !important;
+  right: -176px !important;
+  bottom: -12px !important;
+}
+
+.premium-dual-card-section .visual-metric-top {
+  top: 26% !important;
+}
+
+.premium-dual-card-section .ui-card-1 {
+  bottom: 34% !important;
+  width: 142px !important;
+  min-height: 116px !important;
+  padding: 14px !important;
+}
+
+@media (max-height: 720px) and (min-width: 721px) {
+  .premium-dual-card-section {
+    min-height: 560px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: 540px !important;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    font-size: 46px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-section {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    padding: 12px !important;
+  }
+
+  .premium-dual-card-section .shell,
+  .premium-dual-card-section .premium-glass-container,
+  .premium-dual-card-section .premium-dual-card-grid {
+    height: auto !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    height: auto !important;
+    max-height: none !important;
+  }
+}
+
+/* Width correction: keep outer breathing room, stretch the two-card content area */
+.premium-dual-card-section {
+  padding-left: clamp(24px, 2.4vw, 42px) !important;
+  padding-right: clamp(24px, 2.4vw, 42px) !important;
+}
+
+.premium-dual-card-section .shell {
+  width: min(100%, 1780px) !important;
+  max-width: 1780px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.premium-dual-card-section .premium-dual-card-grid {
+  width: 100% !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: clamp(12px, 1.05vw, 18px) !important;
+}
+
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  width: 100% !important;
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-section {
+    padding-left: clamp(14px, 3vw, 28px) !important;
+    padding-right: clamp(14px, 3vw, 28px) !important;
+  }
+}
+
+/* Corrections only: closer match to supplied reference composition */
+.premium-dual-card-section {
+  padding-top: 18px !important;
+  padding-bottom: 28px !important;
+}
+
+.premium-dual-card-section .premium-dual-card-grid {
+  gap: 18px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  min-height: 750px !important;
+  border-radius: 32px !important;
+  background:
+    radial-gradient(circle at 82% 38%, rgba(187, 247, 208, 0.95) 0 18%, transparent 36%),
+    radial-gradient(circle at 92% 82%, rgba(91, 228, 165, 0.28), transparent 35%),
+    linear-gradient(135deg, #ffffff 0%, #ffffff 57%, #effdf6 100%) !important;
+  box-shadow:
+    0 28px 76px rgba(8, 86, 58, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+.premium-dual-card-section .premium-candidate-card::before,
+.premium-dual-card-section .premium-employer-card::before {
+  inset: 76px -98px -72px 53% !important;
+  border-width: 2px !important;
+  border-color: rgba(52, 211, 153, 0.48) !important;
+  transform: rotate(-16deg) !important;
+}
+
+.premium-dual-card-section .premium-candidate-card::after {
+  left: 57.5% !important;
+  top: 43% !important;
+  width: 54px !important;
+  height: 54px !important;
+  background: linear-gradient(135deg, #22c55e, #059669) !important;
+  filter: drop-shadow(0 14px 18px rgba(5, 150, 105, 0.34)) !important;
+}
+
+.premium-dual-card-section .card-content-wrapper {
+  grid-template-columns: minmax(0, 56%) minmax(340px, 44%) !important;
+}
+
+.premium-dual-card-section .card-left-content,
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  padding: 44px 18px 30px 52px !important;
+  gap: 24px !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge {
+  min-height: 60px !important;
+  padding: 12px 31px 12px 21px !important;
+  font-size: 18px !important;
+  box-shadow: 0 18px 42px rgba(15, 81, 58, 0.08) !important;
+}
+
+.premium-dual-card-section .premium-card-heading,
+.premium-dual-card-section .premium-employer-card .premium-card-heading {
+  max-width: 560px !important;
+  font-size: 72px !important;
+  line-height: 0.97 !important;
+  margin-top: 18px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .premium-card-heading {
+  max-width: 500px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .premium-card-heading span,
+.premium-dual-card-section .premium-employer-card .premium-card-heading span {
+  display: block !important;
+  width: fit-content !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .premium-card-heading span::after {
+  width: 96px !important;
+  height: 8px !important;
+  margin-top: 5px !important;
+}
+
+.premium-dual-card-section .premium-card-subtext {
+  max-width: 520px !important;
+  font-size: 20px !important;
+  line-height: 1.55 !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+  width: 560px !important;
+  max-width: calc(100vw - 92px) !important;
+  gap: 8px !important;
+  margin-top: 6px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+  grid-template-columns: 48px minmax(0, 1fr) !important;
+  min-height: 78px !important;
+  padding: 13px 16px !important;
+  border-radius: 15px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  box-shadow: 0 16px 34px rgba(15, 81, 58, 0.08) !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item strong {
+  font-size: 16px !important;
+}
+
+.premium-dual-card-section .check-icon {
+  width: 44px !important;
+  height: 44px !important;
+  color: #05a856 !important;
+  background: #ddf8e8 !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+  position: absolute !important;
+  z-index: 12 !important;
+  left: 52px !important;
+  bottom: 164px !important;
+  width: 650px !important;
+  max-width: calc(100% - 90px) !important;
+  min-height: 124px !important;
+  margin: 0 !important;
+  padding: 20px 18px !important;
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.84) !important;
+  box-shadow:
+    0 22px 52px rgba(15, 81, 58, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+  backdrop-filter: blur(18px) !important;
+}
+
+.premium-dual-card-section .floating-stat-item svg {
+  width: 56px !important;
+  height: 56px !important;
+  color: #08aa5c !important;
+  background: #dcf8e7 !important;
+}
+
+.premium-dual-card-section .floating-stat-item strong {
+  font-size: 30px !important;
+}
+
+.premium-dual-card-section .floating-stat-item span {
+  font-size: 15px !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlights-list {
+  margin-top: 42px !important;
+  gap: 25px !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlight-item {
+  grid-template-columns: 62px minmax(0, 1fr) !important;
+  font-size: 17px !important;
+}
+
+.premium-dual-card-section .premium-employer-card .check-icon {
+  width: 58px !important;
+  height: 58px !important;
+}
+
+.premium-dual-card-section .premium-luxury-btn {
+  min-height: 80px !important;
+  width: calc(100% - 10px) !important;
+  border-radius: 999px !important;
+  background: linear-gradient(135deg, #00a653 0%, #12c866 55%, #006064 100%) !important;
+  box-shadow:
+    0 24px 44px rgba(0, 166, 83, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+.premium-dual-card-section .premium-btn-arrow {
+  width: 56px !important;
+  height: 56px !important;
+}
+
+.premium-dual-card-section .premium-security-note {
+  margin-top: -2px !important;
+}
+
+.premium-dual-card-section .premium-visual-panel::before {
+  right: -20% !important;
+  bottom: 2% !important;
+  width: 130% !important;
+  border-radius: 48% 48% 0 48% !important;
+  background:
+    radial-gradient(circle at 40% 42%, rgba(220, 252, 231, 0.96), rgba(134, 239, 172, 0.66) 48%, rgba(45, 212, 191, 0.34) 76%) !important;
+  box-shadow: 0 0 100px rgba(34, 197, 94, 0.28) !important;
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image {
+  width: 720px !important;
+  height: 98% !important;
+  right: -105px !important;
+  bottom: -18px !important;
+  object-position: right top !important;
+}
+
+.premium-dual-card-section .employer-image.premium-card-image {
+  width: 870px !important;
+  height: 93% !important;
+  right: -210px !important;
+  bottom: -20px !important;
+  object-position: right top !important;
+}
+
+.premium-dual-card-section .visual-metric-top {
+  top: 31% !important;
+  left: -34px !important;
+  width: 62px !important;
+  height: 62px !important;
+  background: linear-gradient(135deg, #22c55e, #04965a) !important;
+  box-shadow: 0 18px 36px rgba(5, 150, 105, 0.28) !important;
+}
+
+.premium-dual-card-section .ui-card-1 {
+  left: -102px !important;
+  bottom: 31% !important;
+  width: 164px !important;
+  min-height: 136px !important;
+  box-shadow: 0 22px 44px rgba(15, 81, 58, 0.16) !important;
+}
+
+@media (max-width: 1500px) {
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    font-size: 64px !important;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image {
+    width: 650px !important;
+    right: -90px !important;
+  }
+
+  .premium-dual-card-section .employer-image.premium-card-image {
+    width: 760px !important;
+    right: -180px !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: 750px !important;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    font-size: 60px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+    bottom: 158px !important;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image {
+    right: -20px !important;
+  }
+
+  .premium-dual-card-section .employer-image.premium-card-image {
+    right: -84px !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: auto !important;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    font-size: clamp(42px, 12vw, 56px) !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .floating-stats-grid {
+    position: relative !important;
+    left: auto !important;
+    bottom: auto !important;
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image {
+    width: 98% !important;
+    height: 112% !important;
+    right: -8px !important;
+    bottom: -28px !important;
+  }
+
+  .premium-dual-card-section .employer-image.premium-card-image {
+    width: 122% !important;
+    height: 104% !important;
+    right: -62px !important;
+    bottom: -20px !important;
+  }
+}
+
+/* Reference-match redesign for Candidate Registration + Employer Requirement cards */
+.premium-dual-card-section {
+  --ref-green: #0aa65c;
+  --ref-green-dark: #00645f;
+  --ref-green-soft: #dff8e8;
+  --ref-text: #07111b;
+  --ref-muted: #3e5d76;
+  padding: clamp(0.75rem, 1.4vw, 1.25rem);
+  background:
+    radial-gradient(circle at 8% 8%, rgba(187, 247, 208, 0.52), transparent 26%),
+    radial-gradient(circle at 92% 14%, rgba(186, 230, 253, 0.42), transparent 26%),
+    linear-gradient(180deg, #f7fffb 0%, #eef8f4 100%);
+  font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.premium-dual-card-section .premium-section-glow,
+.premium-dual-card-section .premium-trust-section {
+  display: none !important;
+}
+
+.premium-dual-card-section .shell {
+  width: min(100%, 1900px);
+  max-width: 1900px;
+  padding-inline: 0;
+}
+
+.premium-dual-card-section .premium-glass-container {
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.premium-dual-card-section .premium-dual-card-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: clamp(1rem, 1.7vw, 1.5rem) !important;
+  align-items: stretch;
+  padding: 0 !important;
+}
+
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  position: relative;
+  min-height: clamp(610px, 40vw, 790px) !important;
+  border: 1px solid rgba(16, 185, 129, 0.26) !important;
+  border-radius: 32px !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 81% 42%, rgba(188, 247, 208, 0.84) 0 17%, transparent 35%),
+    radial-gradient(circle at 99% 92%, rgba(209, 250, 229, 0.72), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.99) 0%, rgba(253, 255, 254, 0.98) 55%, rgba(241, 253, 248, 0.98) 100%) !important;
+  box-shadow:
+    0 22px 60px rgba(15, 81, 58, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  transform: translateZ(0);
+  transition: transform 260ms ease, box-shadow 260ms ease, border-color 260ms ease;
+}
+
+.premium-dual-card-section .premium-candidate-card:hover,
+.premium-dual-card-section .premium-employer-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  box-shadow:
+    0 30px 78px rgba(15, 81, 58, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+.premium-dual-card-section .premium-candidate-card::before,
+.premium-dual-card-section .premium-employer-card::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 6.6rem -7rem -3rem 55%;
+  border: 2px dashed rgba(52, 211, 153, 0.38);
+  border-radius: 50%;
+  transform: rotate(-18deg);
+  pointer-events: none;
+}
+
+.premium-dual-card-section .premium-candidate-card::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  left: 58%;
+  top: 41%;
+  width: 48px;
+  height: 48px;
+  background:
+    linear-gradient(150deg, transparent 0 44%, #17b85e 45% 55%, transparent 56%),
+    linear-gradient(26deg, transparent 0 44%, #17b85e 45% 55%, transparent 56%);
+  clip-path: polygon(0 0, 100% 50%, 0 100%, 24% 52%);
+  filter: drop-shadow(0 12px 14px rgba(16, 185, 129, 0.22));
+  transform: rotate(-12deg);
+}
+
+.premium-dual-card-section .premium-employer-card::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 1.8rem;
+  right: 2rem;
+  width: 128px;
+  height: 96px;
+  opacity: 0.42;
+  background-image: radial-gradient(#93c5fd 2px, transparent 2px);
+  background-size: 16px 16px;
+}
+
+.premium-dual-card-section .card-content-wrapper {
+  position: relative;
+  z-index: 2;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 41%) !important;
+  min-height: inherit !important;
+}
+
+.premium-dual-card-section .card-left-content,
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  position: relative;
+  z-index: 5;
+  width: 100% !important;
+  min-height: inherit;
+  padding: clamp(2rem, 3.45vw, 4.4rem) clamp(1.1rem, 1.75vw, 2rem) clamp(1.65rem, 2.3vw, 2.6rem) clamp(2rem, 3.45vw, 4.4rem) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: clamp(1rem, 1.35vw, 1.55rem);
+}
+
+.premium-dual-card-section .premium-eyebrow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.78rem;
+  min-height: 60px;
+  width: fit-content;
+  padding: 0.9rem 1.75rem;
+  border: 1px solid rgba(16, 185, 129, 0.24);
+  border-radius: 999px;
+  color: #058a4f;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 34px rgba(15, 81, 58, 0.065);
+  font-size: clamp(0.78rem, 0.95vw, 1.08rem);
+  font-weight: 900;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge svg {
+  width: 30px;
+  height: 30px;
+  padding: 0.34rem;
+  border-radius: 10px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #61dc45, #0aa65c);
+}
+
+.premium-dual-card-section .premium-card-heading,
+.premium-dual-card-section .premium-employer-card .premium-card-heading {
+  max-width: 11ch !important;
+  margin: 0;
+  color: var(--ref-text);
+  font-size: clamp(3.3rem, 4.45vw, 5.45rem) !important;
+  font-weight: 950;
+  line-height: 1.02 !important;
+  letter-spacing: 0 !important;
+}
+
+.premium-dual-card-section .premium-card-heading span {
+  color: transparent !important;
+  background: linear-gradient(135deg, #08a852 0%, #35d64f 48%, #087949 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: none !important;
+}
+
+.premium-dual-card-section .premium-card-heading span::after {
+  content: "";
+  display: block;
+  width: 1.75em;
+  height: 8px;
+  margin: 0.05em 0 0 0.05em;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #62d545, #0aa65c);
+  transform: rotate(-4deg);
+}
+
+.premium-dual-card-section .premium-employer-card .premium-card-heading span::after {
+  display: none;
+}
+
+.premium-dual-card-section .premium-card-subtext {
+  max-width: 34rem !important;
+  margin: 0;
+  color: var(--ref-muted);
+  font-size: clamp(1rem, 1.18vw, 1.26rem) !important;
+  font-weight: 500;
+  line-height: 1.62 !important;
+}
+
+.premium-dual-card-section .feature-highlights-list,
+.premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  width: min(100%, 590px) !important;
+  max-width: 590px !important;
+  gap: 0.45rem !important;
+}
+
+.premium-dual-card-section .feature-highlight-item,
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+  align-items: center;
+  min-height: 70px !important;
+  padding: 0.68rem 0.78rem !important;
+  border: 1px solid rgba(16, 185, 129, 0.14) !important;
+  border-radius: 13px !important;
+  color: #112030;
+  background: rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 0 10px 28px rgba(15, 81, 58, 0.055) !important;
+  font-size: clamp(0.78rem, 0.86vw, 0.98rem) !important;
+  font-weight: 650;
+  line-height: 1.2 !important;
+}
+
+.premium-dual-card-section .feature-highlight-item strong {
+  display: block;
+  color: #07121b;
+  font-weight: 900;
+}
+
+.premium-dual-card-section .check-icon {
+  width: 42px !important;
+  height: 42px !important;
+  padding: 0.56rem !important;
+  border-radius: 50%;
+  color: #0ca957;
+  background: #e7f9ee !important;
+  filter: none !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlights-list {
+  grid-template-columns: 1fr !important;
+  width: min(100%, 430px) !important;
+  max-width: 430px !important;
+  gap: 1rem !important;
+  margin-top: 0.75rem;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlight-item {
+  grid-template-columns: 54px minmax(0, 1fr) !important;
+  min-height: 54px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: clamp(0.96rem, 1.05vw, 1.12rem) !important;
+  font-weight: 900;
+}
+
+.premium-dual-card-section .premium-employer-card .check-icon {
+  width: 54px !important;
+  height: 54px !important;
+  color: #1268ff;
+  background: #ddecff !important;
+}
+
+.premium-dual-card-section .premium-employer-card .employer-step-two {
+  color: #0ca957;
+  background: #e0f8ed !important;
+}
+
+.premium-dual-card-section .premium-employer-card .employer-step-three {
+  color: #f97316;
+  background: #fff0e6 !important;
+}
+
+.premium-dual-card-section .floating-stats-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  width: min(100%, 650px);
+  max-width: 650px;
+  gap: 0 !important;
+  padding: 1rem 1.15rem !important;
+  border: 1px solid rgba(16, 185, 129, 0.16) !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.84) !important;
+  box-shadow: 0 16px 38px rgba(15, 81, 58, 0.075) !important;
+  backdrop-filter: blur(14px);
+}
+
+.premium-dual-card-section .floating-stat-item {
+  display: grid !important;
+  grid-template-columns: 52px minmax(0, 1fr);
+  column-gap: 0.75rem;
+  align-items: center;
+  padding: 0.2rem 0.9rem !important;
+  text-align: left;
+}
+
+.premium-dual-card-section .floating-stat-item + .floating-stat-item {
+  border-left: 1px solid rgba(15, 81, 58, 0.12) !important;
+}
+
+.premium-dual-card-section .floating-stat-item svg {
+  grid-row: span 2;
+  width: 52px;
+  height: 52px;
+  padding: 0.66rem;
+  border-radius: 50%;
+  color: #10a65a;
+  background: #e3f8eb;
+}
+
+.premium-dual-card-section .floating-stat-item strong {
+  color: var(--ref-text) !important;
+  font-size: clamp(1.35rem, 1.55vw, 1.85rem) !important;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.premium-dual-card-section .floating-stat-item span {
+  color: #1e2f42 !important;
+  font-size: clamp(0.72rem, 0.82vw, 0.94rem) !important;
+  font-weight: 600;
+  line-height: 1.18 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.premium-dual-card-section .premium-luxury-btn {
+  display: grid !important;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  justify-content: stretch;
+  width: min(100%, 820px) !important;
+  min-height: 78px !important;
+  margin-top: auto;
+  padding: 0 1.85rem !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #009a53 0%, #13b95e 58%, #075663 100%) !important;
+  box-shadow: 0 18px 34px rgba(5, 150, 105, 0.25) !important;
+  font-size: clamp(1.1rem, 1.45vw, 1.78rem) !important;
+  font-weight: 950 !important;
+  letter-spacing: 0 !important;
+  transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+}
+
+.premium-dual-card-section .premium-luxury-btn:hover {
+  transform: translateY(-2px) scale(1.01);
+  filter: saturate(1.05);
+  box-shadow: 0 22px 42px rgba(5, 150, 105, 0.32) !important;
+}
+
+.premium-dual-card-section .premium-btn-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.premium-dual-card-section .premium-btn-label svg {
+  width: clamp(22px, 1.55vw, 30px);
+  height: clamp(22px, 1.55vw, 30px);
+}
+
+.premium-dual-card-section .premium-btn-arrow {
+  width: 50px !important;
+  height: 50px !important;
+  padding: 0.82rem !important;
+  border-radius: 50%;
+  color: #0b7457;
+  background: #ffffff;
+  flex: 0 0 auto;
+}
+
+.premium-dual-card-section .premium-security-note {
+  justify-content: center !important;
+  margin: -0.18rem 0 0 !important;
+  color: #526e80 !important;
+  font-size: clamp(0.86rem, 1vw, 1.06rem) !important;
+  font-weight: 650;
+}
+
+.premium-dual-card-section .premium-security-note svg {
+  color: #18b858;
+}
+
+.premium-dual-card-section .card-right-image {
+  position: relative !important;
+  z-index: 3;
+  width: 100% !important;
+  height: auto !important;
+  min-height: inherit !important;
+  overflow: visible !important;
+  border-radius: 0 !important;
+}
+
+.premium-dual-card-section .premium-visual-panel {
+  min-height: inherit !important;
+  background: transparent !important;
+}
+
+.premium-dual-card-section .premium-visual-panel::before {
+  display: block !important;
+  content: "";
+  position: absolute;
+  z-index: 1;
+  right: -14%;
+  bottom: 8%;
+  width: 116%;
+  aspect-ratio: 1;
+  border-radius: 46% 46% 0 46%;
+  background: linear-gradient(135deg, rgba(188, 247, 208, 0.92), rgba(45, 212, 191, 0.34));
+  transform: rotate(2deg);
+}
+
+.premium-dual-card-section .premium-visual-panel::after,
+.premium-dual-card-section .image-glow-effect,
+.premium-dual-card-section .image-overlay-gradient {
+  display: none !important;
+}
+
+.premium-dual-card-section .premium-card-image {
+  position: absolute !important;
+  z-index: 2;
+  object-fit: contain !important;
+  object-position: right bottom !important;
+  filter: drop-shadow(0 18px 22px rgba(15, 81, 58, 0.16));
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image {
+  width: min(128%, 610px) !important;
+  height: 86% !important;
+  right: -3.3rem !important;
+  bottom: 0 !important;
+}
+
+.premium-dual-card-section .employer-image.premium-card-image {
+  width: min(150%, 760px) !important;
+  height: 82% !important;
+  right: -9rem !important;
+  bottom: 0 !important;
+}
+
+.premium-dual-card-section .visual-metric,
+.premium-dual-card-section .floating-ui-card {
+  position: absolute !important;
+  z-index: 4;
+  border: 1px solid rgba(16, 185, 129, 0.13) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 16px 36px rgba(15, 81, 58, 0.11) !important;
+  backdrop-filter: blur(14px);
+  animation: refFloat 4s ease-in-out infinite;
+}
+
+.premium-dual-card-section .visual-metric-top {
+  display: inline-flex !important;
+  top: 32% !important;
+  left: -1.8rem !important;
+  right: auto !important;
+  width: 58px;
+  height: 58px;
+  padding: 0 !important;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #48d64c, #059669) !important;
+}
+
+.premium-dual-card-section .visual-metric-top span,
+.premium-dual-card-section .visual-metric-bottom,
+.premium-dual-card-section .ui-card-2 {
+  display: none !important;
+}
+
+.premium-dual-card-section .ui-card-1 {
+  display: block !important;
+  left: -5.4rem !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: 25% !important;
+  width: 150px;
+  min-height: 126px;
+  padding: 1rem !important;
+  color: #101d2b;
+  animation-delay: 0.45s;
+}
+
+.premium-dual-card-section .ui-card-1 strong {
+  display: block;
+  max-width: 9ch;
+  margin-bottom: 0.2rem;
+  font-size: 0.92rem;
+  font-weight: 900;
+  line-height: 1.18;
+}
+
+@keyframes refFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 1340px) {
+  .premium-dual-card-section .premium-dual-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: 680px !important;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image {
+    right: 0 !important;
+  }
+
+  .premium-dual-card-section .employer-image.premium-card-image {
+    right: -3rem !important;
+  }
+}
+
+@media (max-width: 780px) {
+  .premium-dual-card-section {
+    padding: 0.75rem;
+  }
+
+  .premium-dual-card-section .premium-dual-card-grid {
+    gap: 0.9rem !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: auto !important;
+    border-radius: 24px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card::before,
+  .premium-dual-card-section .premium-candidate-card::after,
+  .premium-dual-card-section .premium-employer-card::before,
+  .premium-dual-card-section .premium-employer-card::after {
+    display: none !important;
+  }
+
+  .premium-dual-card-section .card-content-wrapper {
+    grid-template-columns: 1fr !important;
+  }
+
+  .premium-dual-card-section .card-left-content,
+  .premium-dual-card-section .premium-employer-card .card-left-content {
+    min-height: 0;
+    padding: 1.35rem !important;
+  }
+
+  .premium-dual-card-section .premium-eyebrow-badge {
+    min-height: 48px;
+    padding: 0.7rem 1rem;
+    font-size: 0.72rem;
+  }
+
+  .premium-dual-card-section .premium-eyebrow-badge svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    max-width: 100% !important;
+    font-size: clamp(2.45rem, 11.2vw, 3.55rem) !important;
+  }
+
+  .premium-dual-card-section .feature-highlights-list,
+  .premium-dual-card-section .premium-candidate-card .feature-highlights-list,
+  .premium-dual-card-section .floating-stats-grid {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .premium-dual-card-section .floating-stat-item {
+    padding: 0.72rem 0 !important;
+  }
+
+  .premium-dual-card-section .floating-stat-item + .floating-stat-item {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(15, 81, 58, 0.12) !important;
+  }
+
+  .premium-dual-card-section .premium-luxury-btn {
+    min-height: 64px !important;
+    margin-top: 0.2rem;
+    padding: 0 0.7rem 0 1.15rem !important;
+    font-size: 1rem !important;
+  }
+
+  .premium-dual-card-section .premium-btn-label {
+    justify-content: flex-start;
+    gap: 0.55rem;
+  }
+
+  .premium-dual-card-section .premium-btn-arrow {
+    width: 42px !important;
+    height: 42px !important;
+  }
+
+  .premium-dual-card-section .card-right-image {
+    min-height: 330px !important;
+    height: 330px !important;
+    overflow: hidden !important;
+  }
+
+  .premium-dual-card-section .premium-visual-panel::before {
+    right: -8%;
+    bottom: -3%;
+    width: 92%;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image {
+    width: 84% !important;
+    height: 100% !important;
+    right: 0.5rem !important;
+  }
+
+  .premium-dual-card-section .employer-image.premium-card-image {
+    width: 108% !important;
+    height: 96% !important;
+    right: -2.4rem !important;
+  }
+
+  .premium-dual-card-section .visual-metric-top,
+  .premium-dual-card-section .ui-card-1 {
+    display: none !important;
+  }
+}
+
+/* Hard reference rebuild: force the existing action section to match the supplied layout */
+.premium-dual-card-section {
+  --hx-green: #079b50;
+  --hx-green-2: #51d15d;
+  --hx-dark: #07121b;
+  --hx-muted: #3e5c74;
+  padding: 8px 18px 10px !important;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(187, 247, 208, 0.38), transparent 30%),
+    radial-gradient(circle at 92% 8%, rgba(186, 230, 253, 0.34), transparent 30%),
+    linear-gradient(180deg, #f7fffb 0%, #edf8f4 100%) !important;
+  font-family: Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+.premium-dual-card-section .premium-section-glow,
+.premium-dual-card-section .premium-trust-section {
+  display: none !important;
+}
+
+
+.premium-dual-card-section .shell {
+  width: 100% !important;
+  max-width: 85% !important;   /* 🔥 correct control */
+  margin-inline: auto !important;
+}
+
+
+.premium-dual-card-section .premium-glass-container {
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+.premium-dual-card-section .premium-dual-card-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 18px !important;
+  padding: 0 !important;
+  align-items: stretch !important;
+}
+
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  position: relative !important;
+  min-height: 782px !important;
+  border: 1px solid rgba(16, 185, 129, 0.32) !important;
+  border-radius: 32px !important;
+  overflow: hidden !important;
+  background:
+    radial-gradient(circle at 84% 40%, rgba(187, 247, 208, 0.86) 0 17%, transparent 34%),
+    radial-gradient(circle at 98% 90%, rgba(209, 250, 229, 0.7), transparent 32%),
+    linear-gradient(135deg, #ffffff 0%, #fefffe 58%, #f2fdf8 100%) !important;
+  box-shadow:
+    0 26px 70px rgba(15, 81, 58, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  transform: none !important;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease !important;
+}
+
+.premium-dual-card-section .premium-candidate-card:hover,
+.premium-dual-card-section .premium-employer-card:hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(16, 185, 129, 0.48) !important;
+  box-shadow:
+    0 34px 86px rgba(15, 81, 58, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+.premium-dual-card-section .premium-candidate-card::before,
+.premium-dual-card-section .premium-employer-card::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  z-index: 2 !important;
+  inset: 92px -88px -64px 55% !important;
+  border: 2px dashed rgba(52, 211, 153, 0.42) !important;
+  border-radius: 50% !important;
+  transform: rotate(-17deg) !important;
+  pointer-events: none !important;
+}
+
+.premium-dual-card-section .premium-candidate-card::after {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 6 !important;
+  left: 57% !important;
+  top: 40% !important;
+  width: 46px !important;
+  height: 46px !important;
+  background: #14b95f !important;
+  clip-path: polygon(0 0, 100% 50%, 0 100%, 23% 52%) !important;
+  filter: drop-shadow(0 12px 14px rgba(16, 185, 129, 0.24)) !important;
+  transform: rotate(-13deg) !important;
+}
+
+.premium-dual-card-section .premium-employer-card::after {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 2 !important;
+  top: 28px !important;
+  right: 32px !important;
+  width: 122px !important;
+  height: 92px !important;
+  opacity: 0.42 !important;
+  background-image: radial-gradient(#93c5fd 2px, transparent 2px) !important;
+  background-size: 16px 16px !important;
+}
+
+.premium-dual-card-section .card-content-wrapper {
+  position: relative !important;
+  z-index: 3 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 41%) !important;
+  min-height: inherit !important;
+}
+
+.premium-dual-card-section .card-left-content,
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  width: 100% !important;
+  min-height: inherit !important;
+  padding: 52px 20px 30px 54px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: 24px !important;
+  position: relative !important;
+  z-index: 8 !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+  width: fit-content !important;
+  min-height: 62px !important;
+  padding: 12px 32px 12px 22px !important;
+  border: 1px solid rgba(16, 185, 129, 0.28) !important;
+  border-radius: 999px !important;
+  color: #058a4f !important;
+  background: rgba(255, 255, 255, 0.74) !important;
+  box-shadow: 0 12px 34px rgba(15, 81, 58, 0.07) !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge svg {
+  width: 34px !important;
+  height: 34px !important;
+  padding: 6px !important;
+  border-radius: 11px !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #5fd747, #0aa65c) !important;
+}
+
+.premium-dual-card-section .premium-card-heading,
+.premium-dual-card-section .premium-employer-card .premium-card-heading {
+  max-width: 11ch !important;
+  margin: 10px 0 0 !important;
+  color: var(--hx-dark) !important;
+  font-size: clamp(60px, 4.2vw, 72px) !important;
+  font-weight: 950 !important;
+  line-height: 1.02 !important;
+  letter-spacing: 0 !important;
+}
+
+.premium-dual-card-section .premium-card-heading span {
+  color: transparent !important;
+  background: linear-gradient(135deg, #06994e 0%, #35d64f 48%, #087949 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  text-shadow: none !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .premium-card-heading span::after {
+  content: "" !important;
+  display: block !important;
+  width: 88px !important;
+  height: 7px !important;
+  margin: 3px 0 0 5px !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, #62d545, #0aa65c) !important;
+  transform: rotate(-4deg) !important;
+}
+
+.premium-dual-card-section .premium-card-subtext {
+  max-width: 470px !important;
+  margin: 0 !important;
+  color: var(--hx-muted) !important;
+  font-size: 20px !important;
+  font-weight: 500 !important;
+  line-height: 1.62 !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  width: 526px !important;
+  max-width: calc(100vw - 90px) !important;
+  gap: 6px !important;
+  margin-top: 10px !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+  display: grid !important;
+  grid-template-columns: 46px minmax(0, 1fr) !important;
+  align-items: center !important;
+  min-height: 72px !important;
+  padding: 10px 14px !important;
+  border: 1px solid rgba(16, 185, 129, 0.15) !important;
+  border-radius: 14px !important;
+  color: #102033 !important;
+  background: rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 0 10px 30px rgba(15, 81, 58, 0.06) !important;
+  font-size: 14px !important;
+  font-weight: 650 !important;
+  line-height: 1.18 !important;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item strong {
+  display: block !important;
+  color: #07121b !important;
+  font-size: 15px !important;
+  font-weight: 950 !important;
+}
+
+.premium-dual-card-section .check-icon {
+  width: 42px !important;
+  height: 42px !important;
+  padding: 8px !important;
+  border-radius: 50% !important;
+  color: #0ca957 !important;
+  background: #e7f9ee !important;
+}
+
+.premium-dual-card-section .floating-stats-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  width: 650px !important;
+  max-width: calc(100vw - 90px) !important;
+  min-height: 122px !important;
+  gap: 0 !important;
+  margin-top: 6px !important;
+  padding: 20px 18px !important;
+  border: 1px solid rgba(16, 185, 129, 0.16) !important;
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  box-shadow: 0 18px 42px rgba(15, 81, 58, 0.08) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+.premium-dual-card-section .floating-stat-item {
+  display: grid !important;
+  grid-template-columns: 58px minmax(0, 1fr) !important;
+  align-items: center !important;
+  column-gap: 14px !important;
+  padding: 0 16px !important;
+  text-align: left !important;
+}
+
+.premium-dual-card-section .floating-stat-item + .floating-stat-item {
+  border-left: 1px solid rgba(15, 81, 58, 0.12) !important;
+}
+
+.premium-dual-card-section .floating-stat-item svg {
+  grid-row: span 2 !important;
+  width: 54px !important;
+  height: 54px !important;
+  padding: 11px !important;
+  border-radius: 50% !important;
+  color: #10a65a !important;
+  background: #e3f8eb !important;
+}
+
+.premium-dual-card-section .floating-stat-item strong {
+  color: var(--hx-dark) !important;
+  font-size: 28px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+}
+
+.premium-dual-card-section .floating-stat-item span {
+  color: #1e2f42 !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 1.18 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlights-list {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 23px !important;
+  width: 430px !important;
+  max-width: 100% !important;
+  margin-top: 40px !important;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlight-item {
+  display: grid !important;
+  grid-template-columns: 58px minmax(0, 1fr) !important;
+  align-items: center !important;
+  min-height: 58px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #07121b !important;
+  font-size: 17px !important;
+  font-weight: 900 !important;
+}
+
+.premium-dual-card-section .premium-employer-card .check-icon {
+  width: 56px !important;
+  height: 56px !important;
+  padding: 12px !important;
+  color: #1268ff !important;
+  background: #ddecff !important;
+}
+
+.premium-dual-card-section .premium-employer-card .employer-step-two {
+  color: #0ca957 !important;
+  background: #e0f8ed !important;
+}
+
+.premium-dual-card-section .premium-employer-card .employer-step-three {
+  color: #f97316 !important;
+  background: #fff0e6 !important;
+}
+
+.premium-dual-card-section .premium-luxury-btn {
+  display: grid !important;
+  grid-template-columns: 1fr 56px !important;
+  align-items: center !important;
+  justify-content: stretch !important;
+  width: calc(100% - 12px) !important;
+  max-width: 820px !important;
+  min-height: 78px !important;
+  margin-top: auto !important;
+  padding: 0 28px !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, #009a53 0%, #11b95e 58%, #075663 100%) !important;
+  box-shadow: 0 20px 38px rgba(5, 150, 105, 0.28) !important;
+  font-size: 28px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0 !important;
+  transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease !important;
+}
+
+.premium-dual-card-section .premium-luxury-btn:hover {
+  transform: translateY(-2px) scale(1.01) !important;
+  filter: saturate(1.05) !important;
+  box-shadow: 0 24px 46px rgba(5, 150, 105, 0.34) !important;
+}
+
+.premium-dual-card-section .premium-btn-label {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 18px !important;
+}
+
+.premium-dual-card-section .premium-btn-label svg {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.premium-dual-card-section .premium-btn-arrow {
+  width: 54px !important;
+  height: 54px !important;
+  padding: 13px !important;
+  border-radius: 50% !important;
+  color: #0b7457 !important;
+  background: #ffffff !important;
+}
+
+.premium-dual-card-section .premium-security-note {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  margin: -4px 0 0 !important;
+  color: #526e80 !important;
+  font-size: 17px !important;
+  font-weight: 650 !important;
+}
+
+.premium-dual-card-section .premium-security-note svg {
+  color: #18b858 !important;
+}
+
+.premium-dual-card-section .card-right-image {
+  position: relative !important;
+  z-index: 5 !important;
+  width: 100% !important;
+  min-height: inherit !important;
+  height: auto !important;
+  overflow: visible !important;
+  border-radius: 0 !important;
+}
+
+.premium-dual-card-section .premium-visual-panel {
+  min-height: inherit !important;
+  background: transparent !important;
+}
+
+.premium-dual-card-section .premium-visual-panel::before {
+  display: block !important;
+  content: "" !important;
+  position: absolute !important;
+  z-index: 1 !important;
+  right: -12% !important;
+  bottom: 8% !important;
+  width: 118% !important;
+  aspect-ratio: 1 !important;
+  border-radius: 46% 46% 0 46% !important;
+  background: linear-gradient(135deg, rgba(187, 247, 208, 0.96), rgba(45, 212, 191, 0.34)) !important;
+  transform: rotate(2deg) !important;
+}
+
+.premium-dual-card-section .premium-visual-panel::after,
+.premium-dual-card-section .image-glow-effect,
+.premium-dual-card-section .image-overlay-gradient {
+  display: none !important;
+}
+
+.premium-dual-card-section .premium-card-image {
+  position: absolute !important;
+  z-index: 3 !important;
+  object-fit: contain !important;
+  object-position: right bottom !important;
+  filter: drop-shadow(0 18px 22px rgba(15, 81, 58, 0.16)) !important;
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image {
+  width: 610px !important;
+  max-width: none !important;
+  height: 86% !important;
+  right: -42px !important;
+  bottom: 0 !important;
+}
+
+.premium-dual-card-section .employer-image.premium-card-image {
+  width: 760px !important;
+  max-width: none !important;
+  height: 82% !important;
+  right: -138px !important;
+  bottom: 0 !important;
+}
+
+.premium-dual-card-section .visual-metric,
+.premium-dual-card-section .floating-ui-card {
+  position: absolute !important;
+  z-index: 7 !important;
+  border: 1px solid rgba(16, 185, 129, 0.13) !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 16px 36px rgba(15, 81, 58, 0.11) !important;
+  backdrop-filter: blur(14px) !important;
+  animation: referenceFloatCard 4s ease-in-out infinite !important;
+}
+
+.premium-dual-card-section .visual-metric-top {
+  display: inline-flex !important;
+  top: 32% !important;
+  left: -28px !important;
+  right: auto !important;
+  width: 58px !important;
+  height: 58px !important;
+  padding: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffffff !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #48d64c, #059669) !important;
+}
+
+.premium-dual-card-section .visual-metric-top span,
+.premium-dual-card-section .visual-metric-bottom,
+.premium-dual-card-section .ui-card-2 {
+  display: none !important;
+}
+
+.premium-dual-card-section .ui-card-1 {
+  display: block !important;
+  left: -86px !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: 25% !important;
+  width: 152px !important;
+  min-height: 132px !important;
+  padding: 18px !important;
+  color: #101d2b !important;
+}
+
+.premium-dual-card-section .ui-card-1 strong {
+  display: block !important;
+  max-width: 9ch !important;
+  margin-bottom: 4px !important;
+  font-size: 15px !important;
+  font-weight: 950 !important;
+  line-height: 1.15 !important;
+}
+
+@keyframes referenceFloatCard {
+  0%, 100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 1500px) {
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: 720px !important;
+  }
+
+  .premium-dual-card-section .card-left-content,
+  .premium-dual-card-section .premium-employer-card .card-left-content {
+    padding-left: 42px !important;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    font-size: clamp(52px, 4vw, 66px) !important;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image {
+    width: 540px !important;
+  }
+
+  .premium-dual-card-section .employer-image.premium-card-image {
+    width: 660px !important;
+    right: -120px !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-section .premium-dual-card-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: 720px !important;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image {
+    right: 0 !important;
+  }
+
+  .premium-dual-card-section .employer-image.premium-card-image {
+    right: -50px !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section {
+    padding: 10px !important;
+  }
+
+  .premium-dual-card-section .premium-dual-card-grid {
+    gap: 14px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: auto !important;
+    border-radius: 24px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card::before,
+  .premium-dual-card-section .premium-candidate-card::after,
+  .premium-dual-card-section .premium-employer-card::before,
+  .premium-dual-card-section .premium-employer-card::after {
+    display: none !important;
+  }
+
+  .premium-dual-card-section .card-content-wrapper {
+    grid-template-columns: 1fr !important;
+  }
+
+  .premium-dual-card-section .card-left-content,
+  .premium-dual-card-section .premium-employer-card .card-left-content {
+    min-height: 0 !important;
+    padding: 22px !important;
+    gap: 18px !important;
+  }
+
+  .premium-dual-card-section .premium-eyebrow-badge {
+    min-height: 48px !important;
+    padding: 8px 16px 8px 12px !important;
+    font-size: 12px !important;
+  }
+
+  .premium-dual-card-section .premium-eyebrow-badge svg {
+    width: 26px !important;
+    height: 26px !important;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    max-width: 100% !important;
+    font-size: clamp(42px, 12vw, 58px) !important;
+  }
+
+  .premium-dual-card-section .premium-card-subtext {
+    font-size: 17px !important;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .feature-highlights-list,
+  .premium-dual-card-section .floating-stats-grid,
+  .premium-dual-card-section .premium-employer-card .feature-highlights-list {
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .premium-dual-card-section .floating-stat-item {
+    padding: 12px 0 !important;
+  }
+
+  .premium-dual-card-section .floating-stat-item + .floating-stat-item {
+    border-left: 0 !important;
+    border-top: 1px solid rgba(15, 81, 58, 0.12) !important;
+  }
+
+  .premium-dual-card-section .premium-luxury-btn {
+    grid-template-columns: 1fr 46px !important;
+    min-height: 66px !important;
+    width: 100% !important;
+    padding: 0 10px 0 18px !important;
+    font-size: 18px !important;
+  }
+
+  .premium-dual-card-section .premium-btn-label {
+    justify-content: flex-start !important;
+    gap: 10px !important;
+  }
+
+  .premium-dual-card-section .premium-btn-arrow {
+    width: 44px !important;
+    height: 44px !important;
+    padding: 10px !important;
+  }
+
+  .premium-dual-card-section .card-right-image {
+    min-height: 340px !important;
+    height: 340px !important;
+    overflow: hidden !important;
+  }
+
+  .premium-dual-card-section .premium-visual-panel::before {
+    right: -8% !important;
+    bottom: -3% !important;
+    width: 92% !important;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image {
+    width: 84% !important;
+    height: 100% !important;
+    right: 8px !important;
+  }
+
+  .premium-dual-card-section .employer-image.premium-card-image {
+    width: 108% !important;
+    height: 96% !important;
+    right: -42px !important;
+  }
+
+  .premium-dual-card-section .visual-metric-top,
+  .premium-dual-card-section .ui-card-1 {
+    display: none !important;
+  }
+}
+
+/* Sample-inspired candidate/employer action cards */
+.premium-dual-card-section {
+  padding: clamp(2.5rem, 5vw, 5rem) 0;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(187, 247, 208, 0.45), transparent 32%),
+    radial-gradient(circle at 92% 12%, rgba(186, 230, 253, 0.38), transparent 34%),
+    linear-gradient(180deg, #f6fffb 0%, #eefaf6 100%);
+}
+
+.premium-dual-card-section .premium-section-glow,
+.premium-dual-card-section .premium-trust-section {
+  display: none;
+}
+
+.premium-dual-card-section .shell {
+  width: min(100% - 1.5rem, 1840px);
+  max-width: 1840px;
+}
+
+.premium-dual-card-section .premium-glass-container {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.premium-dual-card-section .premium-dual-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 1.8vw, 1.5rem);
+  align-items: stretch;
+}
+
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  position: relative;
+  min-height: clamp(610px, 39vw, 760px);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  border-radius: 30px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 86% 38%, rgba(187, 247, 208, 0.8) 0 18%, transparent 36%),
+    radial-gradient(circle at 100% 95%, rgba(209, 250, 229, 0.62), transparent 30%),
+    linear-gradient(140deg, rgba(255, 255, 255, 0.99) 0%, rgba(250, 255, 253, 0.96) 58%, rgba(236, 253, 245, 0.98) 100%);
+  box-shadow: 0 24px 60px rgba(15, 81, 58, 0.1);
+  transform: none;
+}
+
+.premium-dual-card-section .premium-candidate-card::before,
+.premium-dual-card-section .premium-employer-card::before {
+  content: "";
+  position: absolute;
+  inset: 4.5rem -5rem -4rem 50%;
+  border: 2px dashed rgba(52, 211, 153, 0.35);
+  border-radius: 50%;
+  transform: rotate(-16deg);
+  pointer-events: none;
+}
+
+.premium-dual-card-section .premium-employer-card::after {
+  content: "";
+  position: absolute;
+  top: 1.7rem;
+  right: 1.8rem;
+  width: 120px;
+  height: 92px;
+  opacity: 0.38;
+  background-image: radial-gradient(#93c5fd 2px, transparent 2px);
+  background-size: 16px 16px;
+}
+
+.premium-dual-card-section .premium-candidate-card:hover,
+.premium-dual-card-section .premium-employer-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(16, 185, 129, 0.34);
+  box-shadow: 0 30px 72px rgba(15, 81, 58, 0.13);
+}
+
+.premium-dual-card-section .card-content-wrapper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 41%);
+  min-height: inherit;
+}
+
+.premium-dual-card-section .card-left-content,
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  padding: clamp(2rem, 3.4vw, 4.25rem);
+  padding-right: clamp(1rem, 1.6vw, 1.6rem) !important;
+  gap: clamp(1.05rem, 1.45vw, 1.55rem);
+}
+
+.premium-dual-card-section .premium-eyebrow-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 58px;
+  padding: 0.9rem 1.65rem;
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  border-radius: 999px;
+  color: #058a4f;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 34px rgba(15, 81, 58, 0.07);
+  font-size: clamp(0.75rem, 0.95vw, 1rem);
+  font-weight: 800;
+  letter-spacing: 0.035em;
+}
+
+.premium-dual-card-section .premium-eyebrow-badge svg {
+  width: 30px;
+  height: 30px;
+  padding: 0.35rem;
+  border-radius: 10px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #5ee04e, #059669);
+}
+
+.premium-dual-card-section .premium-card-heading,
+.premium-dual-card-section .premium-employer-card .premium-card-heading {
+  max-width: 11ch;
+  margin: 0;
+  color: #07121b;
+  font-size: clamp(3.2rem, 4.2vw, 5.3rem);
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+
+.premium-dual-card-section .premium-card-heading span {
+  color: #11a457;
+  text-shadow: 0 12px 28px rgba(16, 185, 129, 0.15);
+}
+
+.premium-dual-card-section .premium-card-subtext {
+  max-width: 34rem;
+  color: #3d5871;
+  font-size: clamp(1rem, 1.18vw, 1.28rem);
+  line-height: 1.62;
+}
+
+.premium-dual-card-section .feature-highlights-list,
+.premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 560px);
+  max-width: 560px;
+  gap: 0.45rem;
+}
+
+.premium-dual-card-section .feature-highlight-item,
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  align-items: center;
+  min-height: 68px;
+  padding: 0.65rem 0.72rem;
+  border: 1px solid rgba(16, 185, 129, 0.13);
+  border-radius: 12px;
+  color: #112030;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 10px 28px rgba(15, 81, 58, 0.055);
+  font-size: clamp(0.78rem, 0.85vw, 0.94rem);
+  font-weight: 600;
+}
+
+.premium-dual-card-section .feature-highlight-item strong {
+  display: block;
+  color: #07121b;
+  font-size: 1.02em;
+}
+
+.premium-dual-card-section .check-icon {
+  width: 38px;
+  height: 38px;
+  padding: 0.5rem;
+  border-radius: 50%;
+  color: #0ca957;
+  background: #e9f9ef;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlights-list {
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  width: min(100%, 420px);
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlight-item {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  min-height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: clamp(0.92rem, 1vw, 1.05rem);
+  font-weight: 800;
+}
+
+.premium-dual-card-section .premium-employer-card .check-icon {
+  width: 48px;
+  height: 48px;
+  color: #0b73ff;
+  background: #ddecff;
+}
+
+.premium-dual-card-section .premium-employer-card .employer-step-two {
+  color: #0ca957;
+  background: #e0f8ed;
+}
+
+.premium-dual-card-section .premium-employer-card .employer-step-three {
+  color: #f97316;
+  background: #fff0e6;
+}
+
+.premium-dual-card-section .floating-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 580px);
+  padding: 1rem 1.2rem;
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 14px 34px rgba(15, 81, 58, 0.07);
+}
+
+.premium-dual-card-section .floating-stat-item {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  column-gap: 0.75rem;
+  align-items: center;
+  padding: 0 0.8rem;
+}
+
+.premium-dual-card-section .floating-stat-item + .floating-stat-item {
+  border-left: 1px solid rgba(15, 81, 58, 0.12);
+}
+
+.premium-dual-card-section .floating-stat-item svg {
+  grid-row: span 2;
+  width: 48px;
+  height: 48px;
+  padding: 0.62rem;
+  border-radius: 50%;
+  color: #10a65a;
+  background: #e3f8eb;
+}
+
+.premium-dual-card-section .floating-stat-item strong {
+  color: #07121b;
+  font-size: clamp(1.3rem, 1.55vw, 1.8rem);
+  line-height: 1;
+}
+
+.premium-dual-card-section .floating-stat-item span {
+  color: #1e2f42;
+  font-size: clamp(0.72rem, 0.78vw, 0.92rem);
+  line-height: 1.18;
+}
+
+.premium-dual-card-section .premium-luxury-btn {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  width: min(100%, 760px);
+  min-height: 76px;
+  margin-top: auto;
+  padding: 0 1.8rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #009a53 0%, #15b461 62%, #075663 100%);
+  box-shadow: 0 18px 34px rgba(5, 150, 105, 0.24);
+  font-size: clamp(1.05rem, 1.45vw, 1.75rem);
+  font-weight: 900;
+}
+
+.premium-dual-card-section .premium-luxury-btn svg {
+  width: 48px;
+  height: 48px;
+  padding: 0.8rem;
+  border-radius: 50%;
+  color: #0d7c54;
+  background: #ffffff;
+}
+
+.premium-dual-card-section .premium-security-note {
+  justify-content: center;
+  margin: -0.2rem 0 0;
+  color: #4b657b;
+  font-size: clamp(0.85rem, 1vw, 1.05rem);
+  font-weight: 600;
+}
+
+.premium-dual-card-section .premium-security-note svg {
+  color: #18b858;
+}
+
+.premium-dual-card-section .card-right-image {
+  position: relative;
+  z-index: 3;
+  min-height: inherit;
+  height: auto;
+  overflow: visible;
+}
+
+.premium-dual-card-section .premium-visual-panel {
+  background: transparent;
+}
+
+.premium-dual-card-section .premium-visual-panel::before {
+  display: block;
+  content: "";
+  position: absolute;
+  right: -16%;
+  bottom: 6%;
+  width: 118%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(187, 247, 208, 0.85), rgba(45, 212, 191, 0.34));
+}
+
+.premium-dual-card-section .premium-visual-panel::after,
+.premium-dual-card-section .image-glow-effect,
+.premium-dual-card-section .image-overlay-gradient {
+  display: none;
+}
+
+.premium-dual-card-section .premium-card-image {
+  position: absolute;
+  z-index: 2;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 22px rgba(15, 81, 58, 0.16));
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image {
+  width: min(122%, 540px);
+  height: 83%;
+  right: -2.5rem;
+  bottom: 0;
+  object-position: right bottom;
+}
+
+.premium-dual-card-section .employer-image.premium-card-image {
+  width: min(142%, 680px);
+  height: 80%;
+  right: -7.5rem;
+  bottom: 0;
+  object-position: right bottom;
+}
+
+.premium-dual-card-section .visual-metric,
+.premium-dual-card-section .floating-ui-card {
+  position: absolute;
+  z-index: 4;
+  border: 1px solid rgba(16, 185, 129, 0.13);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 16px 36px rgba(15, 81, 58, 0.11);
+  backdrop-filter: blur(14px);
+}
+
+.premium-dual-card-section .visual-metric-top {
+  display: inline-flex;
+  top: 32%;
+  left: -2rem;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  justify-content: center;
+  color: #ffffff;
+  background: linear-gradient(135deg, #48d64c, #059669);
+}
+
+.premium-dual-card-section .visual-metric-top span,
+.premium-dual-card-section .visual-metric-bottom,
+.premium-dual-card-section .ui-card-2 {
+  display: none;
+}
+
+.premium-dual-card-section .ui-card-1 {
+  display: block;
+  left: -5.8rem;
+  bottom: 24%;
+  width: 148px;
+  padding: 1rem;
+  color: #101d2b;
+}
+
+.premium-dual-card-section .ui-card-1 strong {
+  display: block;
+  max-width: 9ch;
+  font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 1280px) {
+  .premium-dual-card-section .premium-dual-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: 660px;
+  }
+}
+
+@media (max-width: 780px) {
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: auto;
+    border-radius: 22px;
+  }
+
+  .premium-dual-card-section .premium-candidate-card::before,
+  .premium-dual-card-section .premium-employer-card::before,
+  .premium-dual-card-section .premium-employer-card::after {
+    display: none;
+  }
+
+  .premium-dual-card-section .card-content-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-dual-card-section .card-left-content,
+  .premium-dual-card-section .premium-employer-card .card-left-content {
+    padding: 1.35rem !important;
+  }
+
+  .premium-dual-card-section .premium-eyebrow-badge {
+    min-height: 48px;
+    padding: 0.72rem 1rem;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    max-width: 100%;
+    font-size: clamp(2.4rem, 11vw, 3.45rem);
+  }
+
+  .premium-dual-card-section .feature-highlights-list,
+  .premium-dual-card-section .premium-candidate-card .feature-highlights-list,
+  .premium-dual-card-section .floating-stats-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .premium-dual-card-section .floating-stat-item {
+    padding: 0.7rem 0;
+  }
+
+  .premium-dual-card-section .floating-stat-item + .floating-stat-item {
+    border-left: 0;
+    border-top: 1px solid rgba(15, 81, 58, 0.12);
+  }
+
+  .premium-dual-card-section .premium-luxury-btn {
+    min-height: 62px;
+    margin-top: 0.2rem;
+    padding: 0 0.75rem 0 1.2rem;
+  }
+
+  .premium-dual-card-section .premium-luxury-btn svg {
+    width: 42px;
+    height: 42px;
+  }
+
+  .premium-dual-card-section .card-right-image {
+    min-height: 330px;
+    height: 330px;
+    overflow: hidden;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image {
+    width: 86%;
+    height: 100%;
+    right: 0.4rem;
+  }
+
+  .premium-dual-card-section .employer-image.premium-card-image {
+    width: 108%;
+    height: 96%;
+    right: -2.4rem;
+  }
+
+  .premium-dual-card-section .visual-metric-top,
+  .premium-dual-card-section .ui-card-1 {
+    display: none;
+  }
+}
+
+/* Reference style lock: preserve existing content, fix final visual alignment */
+.premium-dual-card-section {
+  padding: clamp(2rem, 3.6vw, 3.5rem) 0 2.25rem;
+  background:
+    linear-gradient(180deg, #f7fbf9 0%, #edf8f3 100%);
+}
+
+.premium-dual-card-section .shell {
+  max-width: 1440px;
+}
+
+.premium-dual-card-section .premium-glass-container {
+  overflow: visible;
+}
+
+.premium-dual-card-section .premium-dual-card-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding: 0;
+}
+
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  min-height: clamp(620px, 55vw, 720px);
+  border-radius: 24px;
+  border: 1px solid rgba(16, 185, 129, 0.16);
+  background:
+    linear-gradient(145deg, #ffffff 0%, #fbfefd 65%, #f6fcf9 100%);
+  box-shadow: 0 24px 72px rgba(15, 81, 58, 0.08);
+}
+
+.premium-dual-card-section .card-content-wrapper {
+  position: relative;
+  display: block;
+  min-height: inherit;
+}
+
+.premium-dual-card-section .card-left-content,
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  position: relative;
+  z-index: 5;
+  width: min(67%, 510px);
+  min-height: inherit;
+  padding: clamp(2rem, 3vw, 3rem);
+  padding-right: 1rem;
+  gap: clamp(1rem, 1.45vw, 1.35rem);
+  justify-content: flex-start;
+  overflow: visible;
+}
+
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  width: min(74%, 570px);
+}
+
+.premium-dual-card-section .premium-eyebrow-badge {
+  border-radius: 14px;
+  padding: 0.68rem 1rem;
+}
+
+.premium-dual-card-section .premium-card-heading,
+.premium-dual-card-section .premium-employer-card .premium-card-heading {
+  max-width: 100%;
+  overflow: visible;
+  color: #071928;
+  font-size: clamp(3.15rem, 4.5vw, 4.85rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.premium-dual-card-section .premium-card-heading span {
+  color: #078b4f;
+}
+
+.premium-dual-card-section .premium-card-subtext {
+  max-width: 26rem;
+  color: #2f4a63;
+  font-weight: 600;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 430px);
+  max-width: 430px;
+  gap: 0.7rem;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+  display: flex;
+  min-height: 82px;
+  padding: 0.75rem 0.65rem;
+  gap: 0.5rem;
+  align-items: center;
+  overflow: visible;
+  border-radius: 14px;
+  font-size: 0.74rem;
+  line-height: 1.25;
+  text-align: left;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item .check-icon {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  padding: 0.44rem;
+}
+
+.premium-dual-card-section .premium-employer-card .feature-highlight-item {
+  display: flex;
+  min-height: 46px;
+  padding: 0;
+}
+
+.premium-dual-card-section .premium-luxury-btn {
+  width: min(100%, 340px);
+  min-height: 60px;
+}
+
+.premium-dual-card-section .card-right-image {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  width: 44%;
+  height: 42%;
+  min-height: 260px;
+  overflow: hidden;
+  border-radius: 0 0 24px 0;
+}
+
+.premium-dual-card-section .premium-visual-panel {
+  background: transparent;
+}
+
+.premium-dual-card-section .premium-visual-panel::before {
+  display: block;
+  content: "";
+  position: absolute;
+  right: -24%;
+  bottom: -20%;
+  width: 118%;
+  aspect-ratio: 1;
+  border-radius: 50% 0 0 50%;
+  background: radial-gradient(circle, rgba(188, 244, 215, 0.82), rgba(103, 216, 160, 0.34) 58%, transparent 72%);
+  z-index: 0;
+}
+
+.premium-dual-card-section .premium-visual-panel::after,
+.premium-dual-card-section .image-glow-effect,
+.premium-dual-card-section .image-overlay-gradient {
+  display: none;
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image {
+  position: absolute;
+  z-index: 2;
+  width: 88%;
+  height: 100%;
+  right: 4%;
+  bottom: -2%;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.premium-dual-card-section .employer-image.premium-card-image {
+  position: absolute;
+  z-index: 2;
+  width: 112%;
+  height: 96%;
+  right: -13%;
+  bottom: 0;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.premium-dual-card-section .premium-candidate-card .visual-metric-top {
+  display: inline-flex;
+  top: 9%;
+  left: 5%;
+  right: auto;
+  z-index: 4;
+}
+
+.premium-dual-card-section .premium-candidate-card .visual-metric-bottom,
+.premium-dual-card-section .premium-employer-card .ui-card-2 {
+  display: none;
+}
+
+.premium-dual-card-section .premium-employer-card .ui-card-1 {
+  display: grid;
+  top: 12%;
+  left: 7%;
+  right: auto;
+  z-index: 4;
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-section .premium-dual-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: 680px;
+  }
+
+  .premium-dual-card-section .card-left-content,
+  .premium-dual-card-section .premium-employer-card .card-left-content {
+    width: min(70%, 570px);
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section .premium-candidate-card,
+  .premium-dual-card-section .premium-employer-card {
+    min-height: auto;
+  }
+
+  .premium-dual-card-section .card-content-wrapper {
+    display: grid;
+    min-height: auto;
+  }
+
+  .premium-dual-card-section .card-left-content,
+  .premium-dual-card-section .premium-employer-card .card-left-content {
+    width: 100%;
+    min-height: 0;
+    padding: 1.35rem;
+  }
+
+  .premium-dual-card-section .premium-card-heading,
+  .premium-dual-card-section .premium-employer-card .premium-card-heading {
+    font-size: clamp(2.35rem, 11vw, 3.25rem);
+  }
+
+  .premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+    width: 100%;
+    max-width: none;
+    grid-template-columns: 1fr;
+  }
+
+  .premium-dual-card-section .card-right-image {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    min-height: 240px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image,
+  .premium-dual-card-section .employer-image.premium-card-image {
+    width: 74%;
+    height: 100%;
+    right: 4%;
+    bottom: 0;
+  }
+
+  .premium-dual-card-section .visual-metric,
+  .premium-dual-card-section .floating-ui-card {
+    display: none;
+  }
+}
+
+/* Layout repair: prevent heading clipping, feature overlap, and image misplacement */
+.premium-candidate-card,
+.premium-employer-card {
+  min-height: clamp(600px, 50vw, 680px);
+}
+
+.premium-candidate-card .card-content-wrapper,
+.premium-employer-card .card-content-wrapper {
+  position: relative;
+  display: block;
+  min-height: inherit;
+}
+
+.premium-candidate-card .card-left-content,
+.premium-employer-card .card-left-content {
+  width: min(68%, 520px);
+  min-height: inherit;
+  padding: clamp(2rem, 3vw, 3rem);
+  padding-right: 1.25rem;
+  justify-content: flex-start;
+  overflow: visible;
+}
+
+.premium-employer-card .card-left-content {
+  width: min(70%, 560px);
+}
+
+.premium-card-heading,
+.premium-employer-card .premium-card-heading {
+  max-width: 100%;
+  overflow: visible;
+  font-size: clamp(3rem, 4.2vw, 4.45rem);
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+
+.premium-card-subtext {
+  max-width: 26rem;
+  color: #2f4a63;
+  font-weight: 600;
+}
+
+.premium-candidate-card .feature-highlights-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.65rem;
+  width: min(100%, 430px);
+  max-width: 430px;
+}
+
+.premium-candidate-card .feature-highlight-item {
+  display: flex;
+  min-height: 92px;
+  padding: 0.78rem 0.62rem;
+  gap: 0.5rem;
+  align-items: center;
+  overflow: visible;
+  font-size: 0.76rem;
+  line-height: 1.25;
+  text-align: left;
+}
+
+.premium-candidate-card .feature-highlight-item .check-icon {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  padding: 0.45rem;
+}
+
+.premium-candidate-card .card-right-image,
+.premium-employer-card .card-right-image {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  bottom: 0;
+  width: 42%;
+  height: 42%;
+  min-height: 250px;
+  border-radius: 0 0 24px 0;
+  overflow: hidden;
+}
+
+.premium-candidate-card .candidate-image.premium-card-image {
+  width: 94%;
+  height: 100%;
+  right: 2%;
+  bottom: -4%;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.premium-employer-card .employer-image.premium-card-image {
+  width: 112%;
+  height: 94%;
+  right: -13%;
+  bottom: 0;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.premium-candidate-card .visual-metric-top,
+.premium-candidate-card .visual-metric-bottom,
+.premium-employer-card .floating-ui-card {
+  display: none;
+}
+
+@media (max-width: 1180px) {
+  .premium-candidate-card .card-left-content,
+  .premium-employer-card .card-left-content {
+    width: min(70%, 560px);
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-candidate-card,
+  .premium-employer-card {
+    min-height: auto;
+  }
+
+  .premium-candidate-card .card-content-wrapper,
+  .premium-employer-card .card-content-wrapper {
+    display: grid;
+    min-height: auto;
+  }
+
+  .premium-candidate-card .card-left-content,
+  .premium-employer-card .card-left-content {
+    width: 100%;
+    min-height: 0;
+    padding: 1.35rem;
+  }
+
+  .premium-card-heading,
+  .premium-employer-card .premium-card-heading {
+    font-size: clamp(2.35rem, 11vw, 3.25rem);
+  }
+
+  .premium-candidate-card .feature-highlights-list {
+    width: 100%;
+    max-width: none;
+    grid-template-columns: 1fr;
+  }
+
+  .premium-candidate-card .feature-highlight-item {
+    min-height: 58px;
+  }
+
+  .premium-candidate-card .card-right-image,
+  .premium-employer-card .card-right-image {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    min-height: 240px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .premium-candidate-card .candidate-image.premium-card-image,
+  .premium-employer-card .employer-image.premium-card-image {
+    width: 74%;
+    height: 100%;
+    right: 4%;
+    bottom: 0;
+  }
+}
+
+/* Clean split layout: keep CTA content and visuals in separate, non-overlapping columns. */
+.premium-dual-card-section .premium-candidate-card,
+.premium-dual-card-section .premium-employer-card {
+  min-height: clamp(600px, 50vw, 680px);
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.premium-dual-card-section .card-content-wrapper {
+  display: grid;
+  grid-template-columns: minmax(0, 58%) minmax(210px, 42%);
+  min-height: inherit;
+  align-items: stretch;
+}
+
+.premium-dual-card-section .card-left-content,
+.premium-dual-card-section .premium-employer-card .card-left-content {
+  z-index: 2;
+  width: 100%;
+  min-width: 0;
+  min-height: auto;
+  padding: clamp(2rem, 3vw, 3rem);
+  padding-right: clamp(1.25rem, 2vw, 2rem);
+  overflow: hidden;
+}
+
+.premium-dual-card-section .premium-card-heading {
+  max-width: 10ch;
+  font-size: clamp(2.75rem, 4.1vw, 4.35rem);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.premium-dual-card-section .premium-card-subtext {
+  max-width: 24rem;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  max-width: 100%;
+  gap: 0.6rem;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+  grid-template-columns: 30px minmax(0, 1fr);
+  min-height: 88px;
+  padding: 0.72rem 0.58rem;
+  gap: 0.42rem;
+  overflow: hidden;
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+.premium-dual-card-section .premium-candidate-card .feature-highlight-item svg {
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  padding: 0.4rem;
+}
+
+.premium-dual-card-section .premium-luxury-btn {
+  width: min(100%, 320px);
+}
+
+.premium-dual-card-section .card-right-image {
+  position: relative;
+  z-index: 1;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  height: auto;
+  min-height: auto;
+  border-left: 1px solid rgba(5, 150, 105, 0.08);
+  border-radius: 0 0 24px 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f8fffc 0%, #e9f8f1 100%);
+}
+
+.premium-dual-card-section .premium-visual-panel,
+.premium-dual-card-section .premium-visual-panel::before,
+.premium-dual-card-section .premium-visual-panel::after,
+.premium-dual-card-section .image-glow-effect,
+.premium-dual-card-section .image-overlay-gradient,
+.premium-dual-card-section .visual-metric,
+.premium-dual-card-section .floating-ui-card {
+  display: none;
+}
+
+.premium-dual-card-section .card-right-image {
+  display: block;
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image,
+.premium-dual-card-section .employer-image.premium-card-image {
+  display: block;
+  position: absolute;
+  inset: auto 0 0 auto;
+  width: 92%;
+  height: 72%;
+  object-fit: contain;
+  object-position: right bottom;
+  filter: drop-shadow(0 22px 26px rgba(18, 72, 53, 0.12));
+}
+
+.premium-dual-card-section .candidate-image.premium-card-image {
+  right: 4%;
+  bottom: 0;
+}
+
+.premium-dual-card-section .employer-image.premium-card-image {
+  right: 0;
+  bottom: 0;
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-section .premium-dual-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-dual-card-section .card-content-wrapper {
+    grid-template-columns: minmax(0, 60%) minmax(220px, 40%);
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section .card-content-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-dual-card-section .card-left-content,
+  .premium-dual-card-section .premium-employer-card .card-left-content {
+    padding: 1.35rem;
+  }
+
+  .premium-dual-card-section .premium-card-heading {
+    max-width: 100%;
+    font-size: clamp(2.25rem, 12vw, 3.25rem);
+  }
+
+  .premium-dual-card-section .premium-candidate-card .feature-highlights-list {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-dual-card-section .premium-candidate-card .feature-highlight-item {
+    min-height: 58px;
+    font-size: 0.82rem;
+  }
+
+  .premium-dual-card-section .card-right-image {
+    min-height: 240px;
+    border-left: 0;
+    border-top: 1px solid rgba(5, 150, 105, 0.08);
+    border-radius: 0 0 24px 24px;
+  }
+
+  .premium-dual-card-section .candidate-image.premium-card-image,
+  .premium-dual-card-section .employer-image.premium-card-image {
+    width: 76%;
+    height: 100%;
+    right: 4%;
+  }
+}
+
+/* Final override: prevent candidate/employer CTA card text, badges, and images from overlapping. */
+.premium-candidate-card,
+.premium-employer-card {
+  min-height: clamp(560px, 48vw, 640px);
+  background: linear-gradient(145deg, #ffffff 0%, #fbfefd 68%, #f7fcfa 100%);
+}
+
+.premium-candidate-card .card-content-wrapper,
+.premium-employer-card .card-content-wrapper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 32%);
+  min-height: inherit;
+}
+
+.premium-candidate-card .card-left-content,
+.premium-employer-card .card-left-content {
+  width: 100%;
+  min-height: auto;
+  padding: clamp(2rem, 3vw, 3rem);
+  padding-right: clamp(1.35rem, 2vw, 2rem);
+}
+
+.premium-candidate-card .premium-card-heading,
+.premium-employer-card .premium-card-heading {
+  max-width: 9.5ch;
+  font-size: clamp(3rem, 4.6vw, 4.75rem);
+}
+
+.premium-candidate-card .premium-card-subtext,
+.premium-employer-card .premium-card-subtext {
+  max-width: 24rem;
+}
+
+.premium-candidate-card .feature-highlights-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 390px);
+  max-width: 390px;
+  gap: 0.55rem;
+}
+
+.premium-candidate-card .feature-highlight-item {
+  grid-template-columns: 30px minmax(0, 1fr);
+  min-height: 74px;
+  padding: 0.7rem 0.55rem;
+  gap: 0.45rem;
+  font-size: 0.68rem;
+  line-height: 1.2;
+}
+
+.premium-candidate-card .feature-highlight-item .check-icon,
+.premium-candidate-card .feature-highlight-item svg {
+  flex-basis: 30px;
+  width: 30px;
+  height: 30px;
+  padding: 0.4rem;
+}
+
+.premium-candidate-card .card-right-image,
+.premium-employer-card .card-right-image {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  height: auto;
+  min-height: auto;
+  border-radius: 0 0 24px 0;
+  overflow: hidden;
+}
+
+.premium-candidate-card .premium-visual-panel,
+.premium-employer-card .premium-visual-panel {
+  background: transparent;
+}
+
+.premium-candidate-card .premium-visual-panel::before,
+.premium-candidate-card .premium-visual-panel::after,
+.premium-employer-card .premium-visual-panel::before,
+.premium-employer-card .premium-visual-panel::after {
+  display: none;
+}
+
+.premium-candidate-card .candidate-image.premium-card-image {
+  width: 118%;
+  height: 74%;
+  right: -9%;
+  bottom: 0;
+}
+
+.premium-employer-card .employer-image.premium-card-image {
+  width: 132%;
+  height: 72%;
+  right: -24%;
+  bottom: 0;
+}
+
+.premium-candidate-card .visual-metric,
+.premium-employer-card .floating-ui-card {
+  display: none;
+}
+
+@media (max-width: 1180px) {
+  .premium-candidate-card .card-content-wrapper,
+  .premium-employer-card .card-content-wrapper {
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 34%);
+  }
+
+  .premium-candidate-card .card-left-content,
+  .premium-employer-card .card-left-content {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-candidate-card .card-content-wrapper,
+  .premium-employer-card .card-content-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-candidate-card .card-left-content,
+  .premium-employer-card .card-left-content {
+    padding: 1.35rem;
+  }
+
+  .premium-candidate-card .feature-highlights-list {
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: none;
+  }
+
+  .premium-candidate-card .feature-highlight-item {
+    min-height: 58px;
+    font-size: 0.82rem;
+  }
+
+  .premium-candidate-card .card-right-image,
+  .premium-employer-card .card-right-image {
+    min-height: 230px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .premium-candidate-card .candidate-image.premium-card-image,
+  .premium-employer-card .employer-image.premium-card-image {
+    width: 76%;
+    height: 100%;
+    right: 4%;
+  }
+}
+
+/* Clean non-overlap layout for candidate/employer CTA cards */
+.premium-candidate-card,
+.premium-employer-card {
+  min-height: clamp(560px, 48vw, 640px);
+  background: linear-gradient(145deg, #ffffff 0%, #fbfefd 68%, #f7fcfa 100%);
+}
+
+.premium-candidate-card .card-content-wrapper,
+.premium-employer-card .card-content-wrapper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 32%);
+  min-height: inherit;
+}
+
+.premium-candidate-card .card-left-content,
+.premium-employer-card .card-left-content {
+  width: 100%;
+  min-height: auto;
+  padding: clamp(2rem, 3vw, 3rem);
+  padding-right: clamp(1.35rem, 2vw, 2rem);
+}
+
+.premium-candidate-card .premium-card-heading,
+.premium-employer-card .premium-card-heading {
+  max-width: 9.5ch;
+  font-size: clamp(3rem, 4.6vw, 4.75rem);
+}
+
+.premium-candidate-card .premium-card-subtext,
+.premium-employer-card .premium-card-subtext {
+  max-width: 24rem;
+}
+
+.premium-candidate-card .feature-highlights-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: min(100%, 390px);
+  max-width: 390px;
+  gap: 0.55rem;
+}
+
+.premium-candidate-card .feature-highlight-item {
+  grid-template-columns: 30px minmax(0, 1fr);
+  min-height: 74px;
+  padding: 0.7rem 0.55rem;
+  gap: 0.45rem;
+  font-size: 0.68rem;
+  line-height: 1.2;
+}
+
+.premium-candidate-card .feature-highlight-item .check-icon,
+.premium-candidate-card .feature-highlight-item svg {
+  flex-basis: 30px;
+  width: 30px;
+  height: 30px;
+  padding: 0.4rem;
+}
+
+.premium-candidate-card .card-right-image,
+.premium-employer-card .card-right-image {
+  position: relative;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  height: auto;
+  min-height: auto;
+  border-radius: 0 0 24px 0;
+  overflow: hidden;
+}
+
+.premium-candidate-card .premium-visual-panel,
+.premium-employer-card .premium-visual-panel {
+  background: transparent;
+}
+
+.premium-candidate-card .premium-visual-panel::before,
+.premium-candidate-card .premium-visual-panel::after,
+.premium-employer-card .premium-visual-panel::before,
+.premium-employer-card .premium-visual-panel::after {
+  display: none;
+}
+
+.premium-candidate-card .candidate-image.premium-card-image {
+  width: 118%;
+  height: 74%;
+  right: -9%;
+  bottom: 0;
+}
+
+.premium-employer-card .employer-image.premium-card-image {
+  width: 132%;
+  height: 72%;
+  right: -24%;
+  bottom: 0;
+}
+
+.premium-candidate-card .visual-metric,
+.premium-employer-card .floating-ui-card {
+  display: none;
+}
+
+@media (max-width: 1180px) {
+  .premium-candidate-card .card-content-wrapper,
+  .premium-employer-card .card-content-wrapper {
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 34%);
+  }
+
+  .premium-candidate-card .card-left-content,
+  .premium-employer-card .card-left-content {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-candidate-card .card-content-wrapper,
+  .premium-employer-card .card-content-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-candidate-card .card-left-content,
+  .premium-employer-card .card-left-content {
+    padding: 1.35rem;
+  }
+
+  .premium-candidate-card .feature-highlights-list {
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: none;
+  }
+
+  .premium-candidate-card .feature-highlight-item {
+    min-height: 58px;
+    font-size: 0.82rem;
+  }
+
+  .premium-candidate-card .card-right-image,
+  .premium-employer-card .card-right-image {
+    min-height: 230px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .premium-candidate-card .candidate-image.premium-card-image,
+  .premium-employer-card .employer-image.premium-card-image {
+    width: 76%;
+    height: 100%;
+    right: 4%;
+  }
+}
+
+/* Focused candidate-panel fixes: feature cards, badge position, image balance */
+.premium-candidate-card,
+.premium-employer-card {
+  min-height: clamp(620px, 54vw, 720px);
+}
+
+.premium-candidate-card .card-left-content {
+  width: 100%;
+  padding-top: clamp(2.35rem, 3vw, 3rem);
+  padding-right: clamp(2rem, 3vw, 3rem);
+  padding-bottom: clamp(2rem, 3vw, 2.75rem);
+  gap: 1.25rem;
+}
+
+.premium-candidate-card .premium-card-heading,
+.premium-candidate-card .premium-card-subtext,
+.premium-candidate-card .premium-luxury-btn,
+.premium-candidate-card .premium-security-note {
+  max-width: 340px;
+}
+
+.premium-candidate-card .premium-card-subtext {
+  color: #29445e;
+  font-weight: 600;
+}
+
+.premium-candidate-card .feature-highlights-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: min(100%, 470px);
+  max-width: 470px;
+  margin-top: 0.15rem;
+}
+
+.premium-candidate-card .feature-highlight-item {
+  min-height: 104px;
+  padding: 0.9rem 0.8rem;
+  align-items: center;
+  gap: 0.65rem;
+  overflow: visible;
+  line-height: 1.32;
+  white-space: normal;
+  word-break: normal;
+}
+
+.premium-candidate-card .feature-highlight-item .check-icon,
+.premium-candidate-card .feature-highlight-item svg {
+  flex: 0 0 40px;
+}
+
+.premium-candidate-card .visual-metric-top {
+  top: 58%;
+  right: 5%;
+  left: auto;
+  transform: translateY(-50%);
+}
+
+.premium-candidate-card .card-right-image {
+  width: 47%;
+  height: 39%;
+  min-height: 235px;
+  right: 0;
+  bottom: 0;
+}
+
+.premium-candidate-card .premium-visual-panel::before {
+  right: -18%;
+  bottom: -20%;
+  width: 112%;
+}
+
+.premium-candidate-card .candidate-image.premium-card-image {
+  width: 94%;
+  height: 104%;
+  right: 2%;
+  bottom: -3%;
+}
+
+@media (max-width: 1180px) {
+  .premium-candidate-card .card-left-content {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-candidate-card,
+  .premium-employer-card {
+    min-height: auto;
+  }
+
+  .premium-candidate-card .card-left-content {
+    padding: 1.35rem;
+  }
+
+  .premium-candidate-card .premium-card-heading,
+  .premium-candidate-card .premium-card-subtext,
+  .premium-candidate-card .premium-luxury-btn,
+  .premium-candidate-card .premium-security-note {
+    max-width: none;
+  }
+
+  .premium-candidate-card .feature-highlights-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    max-width: none;
+    gap: 0.5rem;
+  }
+
+  .premium-candidate-card .feature-highlight-item {
+    min-height: 106px;
+    padding: 0.75rem 0.5rem;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .premium-candidate-card .card-right-image {
+    width: 100%;
+    height: 230px;
+    min-height: 230px;
+  }
+
+  .premium-candidate-card .candidate-image.premium-card-image {
+    width: 76%;
+    height: 100%;
+    right: 4%;
+    bottom: -4%;
+  }
+}
+
+/* Targeted fixes: candidate feature-card overlap and bottom image whitespace */
+.premium-candidate-card .card-left-content {
+  width: min(68%, 500px);
+}
+
+.premium-candidate-card .premium-card-subtext {
+  color: #2f4a63;
+  font-weight: 600;
+}
+
+.premium-candidate-card .feature-highlights-list {
+  grid-template-columns: repeat(3, minmax(112px, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 470px;
+}
+
+.premium-candidate-card .feature-highlight-item {
+  min-width: 0;
+  min-height: 96px;
+  padding: 0.9rem 0.75rem;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.65rem;
+  overflow: visible;
+  word-break: normal;
+}
+
+.premium-candidate-card .feature-highlight-item svg {
+  flex: 0 0 40px;
+}
+
+.premium-candidate-card .visual-metric-top {
+  top: 28%;
+  left: auto;
+  right: 7%;
+}
+
+.premium-candidate-card .card-right-image {
+  height: 42%;
+  min-height: 240px;
+}
+
+.premium-candidate-card .candidate-image.premium-card-image {
+  width: 88%;
+  height: 100%;
+  right: 3%;
+  bottom: -7%;
+}
+
+@media (max-width: 1180px) {
+  .premium-candidate-card .card-left-content {
+    width: min(70%, 520px);
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-candidate-card .card-left-content {
+    width: 100%;
+  }
+
+  .premium-candidate-card .feature-highlights-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: none;
+    gap: 0.5rem;
+  }
+
+  .premium-candidate-card .feature-highlight-item {
+    min-height: 104px;
+    padding: 0.75rem 0.55rem;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .premium-candidate-card .card-right-image {
+    height: 220px;
+    min-height: 220px;
+  }
+
+  .premium-candidate-card .candidate-image.premium-card-image {
+    bottom: -5%;
+  }
+}
+
+@media (max-width: 1100px) {
+  .premium-dual-card-grid {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+    padding: 1.5rem;
+  }
+
+  .card-content-wrapper {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 36%);
+    min-height: 460px;
+  }
+
+  .premium-visual-panel {
+    min-height: 460px;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section {
+    padding: 3.5rem 0 3rem;
+  }
+
+  .premium-glass-container {
+    border-radius: 24px;
+  }
+
+  .premium-dual-card-grid {
+    padding: 1rem;
+  }
+
+  .card-content-wrapper {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .card-left-content {
+    padding: 1.35rem;
+  }
+
+  .premium-visual-panel {
+    order: -1;
+    min-height: 240px;
+  }
+
+  .premium-card-image {
+    width: min(58%, 220px);
+    transform: translateY(0);
+  }
+
+  .employer-image.premium-card-image {
+    width: min(64%, 245px);
+  }
+
+  .visual-metric,
+  .floating-ui-card {
+    display: none;
+  }
+
+  .floating-stats-grid,
+  .premium-mini-cards,
+  .premium-analytics-widget {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Final premium SaaS polish: same content, cleaner hierarchy and balance */
+.premium-dual-card-section {
+  padding: clamp(2.25rem, 4vw, 4.5rem) 0 2.75rem;
+  background:
+    linear-gradient(90deg, rgba(16, 185, 129, 0.06), transparent 18%, transparent 82%, rgba(16, 185, 129, 0.06)),
+    linear-gradient(180deg, #f8fcfa 0%, #eef8f3 100%);
+}
+
+.premium-dual-card-section .shell {
+  max-width: 1480px;
+}
+
+.premium-glass-container {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.premium-dual-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: clamp(1rem, 2vw, 1.5rem);
+  padding: 0;
+}
+
+.premium-candidate-card,
+.premium-employer-card {
+  min-height: clamp(560px, 48vw, 640px);
+  border: 1px solid rgba(5, 150, 105, 0.13);
+  border-radius: 24px;
+  background: linear-gradient(145deg, #ffffff 0%, #fbfefd 68%, #f7fcfa 100%);
+  box-shadow:
+    0 24px 72px rgba(15, 81, 58, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+}
+
+.premium-candidate-card:hover,
+.premium-employer-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(16, 185, 129, 0.22);
+  box-shadow:
+    0 30px 86px rgba(15, 81, 58, 0.11),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.card-content-wrapper {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(170px, 32%);
+  min-height: inherit;
+}
+
+.card-left-content,
+.premium-employer-card .card-left-content {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  min-height: auto;
+  padding: clamp(2rem, 3vw, 3rem);
+  padding-right: clamp(1.35rem, 2vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: clamp(1rem, 1.55vw, 1.4rem);
+}
+
+.premium-employer-card .card-left-content {
+  width: 100%;
+}
+
+.premium-eyebrow-badge {
+  width: fit-content;
+  padding: 0.68rem 1rem;
+  border: 1px solid rgba(5, 150, 105, 0.12);
+  border-radius: 14px;
+  color: #057a4d;
+  background: rgba(250, 255, 253, 0.9);
+  box-shadow: 0 10px 26px rgba(15, 81, 58, 0.045);
+  font-size: 0.72rem;
+  letter-spacing: 0.055em;
+}
+
+.premium-card-heading {
+  max-width: 9.5ch;
+  color: #071928;
+  font-size: clamp(3rem, 4.6vw, 4.75rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+.premium-employer-card .premium-card-heading {
+  max-width: 10.5ch;
+}
+
+.premium-card-heading span {
+  color: #078b4f;
+}
+
+.premium-card-subtext {
+  max-width: 25rem;
+  color: #3f5870;
+  font-size: clamp(0.98rem, 1.1vw, 1.1rem);
+  line-height: 1.65;
+}
+
+.premium-candidate-card .feature-highlights-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+  width: min(100%, 390px);
+  max-width: 390px;
+}
+
+.premium-candidate-card .feature-highlight-item {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  min-height: 74px;
+  padding: 0.7rem 0.55rem;
+  gap: 0.45rem;
+  font-size: 0.68rem;
+  line-height: 1.2;
+}
+
+.feature-highlight-item {
+  min-width: 0;
+  min-height: 96px;
+  padding: 0.8rem 0.7rem;
+  align-items: center;
+  justify-content: flex-start;
+  border: 1px solid rgba(15, 81, 58, 0.08);
+  border-radius: 14px;
+  color: #102033;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 12px 30px rgba(15, 81, 58, 0.055);
+  line-height: 1.35;
+  overflow: hidden;
+}
+
+.premium-employer-card .feature-highlight-item {
+  min-height: 46px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.check-icon {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  padding: 0.48rem;
+  background: #e9f8ef;
+  filter: none;
+}
+
+.floating-stats-grid {
+  gap: 0;
+  padding: 1rem;
+  border: 1px solid rgba(15, 81, 58, 0.09);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 16px 36px rgba(15, 81, 58, 0.06);
+}
+
+.floating-stat-item {
+  padding: 0.22rem 0.75rem;
+}
+
+.floating-stat-item strong {
+  color: #078b4f;
+  font-size: clamp(1.45rem, 1.85vw, 1.85rem);
+}
+
+.floating-stat-item span {
+  color: #304357;
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.premium-analytics-widget {
+  grid-template-columns: 1.15fr 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.analytics-item {
+  min-height: 82px;
+  align-content: center;
+  border: 1px solid rgba(15, 81, 58, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 12px 30px rgba(15, 81, 58, 0.045);
+}
+
+.premium-luxury-btn {
+  width: min(100%, 340px);
+  min-height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 16px 32px rgba(5, 150, 105, 0.22);
+  font-size: 1rem;
+}
+
+.premium-security-note {
+  justify-content: flex-start;
+  margin: -0.15rem 0 0;
+  color: #425a70;
+}
+
+.card-right-image {
+  position: relative;
+  z-index: 2;
+  right: auto;
+  bottom: auto;
+  width: 100%;
+  height: auto;
+  min-height: auto;
+  border-radius: 0 0 24px 0;
+  overflow: hidden;
+}
+
+.premium-visual-panel {
+  min-height: 0;
+  background: transparent;
+}
+
+.premium-visual-panel::before {
+  display: none;
+}
+
+.premium-visual-panel::after {
+  display: none;
+}
+
+.image-glow-effect,
+.image-overlay-gradient {
+  display: none;
+}
+
+.candidate-image.premium-card-image {
+  width: 118%;
+  height: 74%;
+  right: -9%;
+  bottom: 0;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.employer-image.premium-card-image {
+  width: 132%;
+  height: 72%;
+  right: -24%;
+  bottom: 0;
+  object-fit: contain;
+  object-position: right bottom;
+}
+
+.visual-metric,
+.floating-ui-card {
+  border: 1px solid rgba(15, 81, 58, 0.08);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 14px 32px rgba(15, 81, 58, 0.075);
+  backdrop-filter: blur(12px);
+}
+
+.visual-metric-top {
+  display: none;
+}
+
+.visual-metric-bottom,
+.ui-card-2 {
+  display: none;
+}
+
+.ui-card-1 {
+  display: none;
+}
+
+.premium-trust-section {
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.trust-section-header {
+  margin-bottom: 1rem;
+}
+
+.trust-section-header h3 {
+  font-size: 1.12rem;
+}
+
+.company-logo-item {
+  border-color: rgba(15, 81, 58, 0.08);
+  border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(15, 81, 58, 0.04);
+}
+
+@media (max-width: 1180px) {
+  .premium-dual-card-grid {
+    grid-template-columns: 1fr;
+    padding: 0;
+  }
+
+  .premium-candidate-card,
+  .premium-employer-card {
+    min-height: 660px;
+  }
+
+  .card-left-content,
+  .premium-employer-card .card-left-content {
+    width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .premium-dual-card-section {
+    padding: 2rem 0;
+  }
+
+  .premium-candidate-card,
+  .premium-employer-card {
+    min-height: auto;
+  }
+
+  .card-content-wrapper {
+    display: grid;
+    min-height: auto;
+  }
+
+  .card-left-content,
+  .premium-employer-card .card-left-content {
+    width: 100%;
+    min-height: 0;
+    padding: 1.35rem;
+  }
+
+  .premium-card-heading {
+    max-width: 100%;
+    font-size: clamp(2.25rem, 12vw, 3.25rem);
+  }
+
+  .premium-candidate-card .feature-highlights-list,
+  .floating-stats-grid,
+  .premium-analytics-widget {
+    grid-template-columns: 1fr;
+  }
+
+  .floating-stat-item + .floating-stat-item {
+    border-left: 0;
+    border-top: 1px solid rgba(15, 81, 58, 0.1);
+    padding-top: 0.75rem;
+  }
+
+  .card-right-image {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    min-height: 260px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .candidate-image.premium-card-image,
+  .employer-image.premium-card-image {
+    width: 76%;
+    height: 100%;
+    right: 4%;
+  }
+
+  .visual-metric,
+  .floating-ui-card {
+    display: none;
   }
 }

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   ArrowRight,
   BadgeCheck,
@@ -17,7 +18,12 @@ import {
   TrendingUp,
   UploadCloud,
   UserCheck,
-  Users
+  Users,
+  Utensils,
+  Bookmark,
+  Sparkles,
+  DollarSign,
+  Clock
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -25,6 +31,9 @@ import { toast } from 'react-toastify';
 import Seo from '../../components/ui/Seo';
 import Button from '../../components/ui/Button';
 import { siteContent } from '../../data/siteContent';
+import candidateCardImage from '../../assets/home/cv-img-removebg.png';
+import employerCardImage from '../../assets/home/employee-requirement-removebg.png';
+import { AreaChart, Area, ResponsiveContainer } from 'recharts';
 import './HomePage.css';
 
 const media = {
@@ -68,13 +77,87 @@ const talentFeatures = [
 ];
 
 const sampleJobs = [
-  { title: 'Software Engineer', type: 'Full-time', location: 'Colombo / Hybrid', department: 'Information Technology' },
-  { title: 'HR Executive', type: 'Full-time', location: 'Colombo', department: 'Human Resources' },
-  { title: 'Accountant', type: 'Full-time', location: 'Kandy', department: 'Banking & Finance' },
-  { title: 'Marketing Executive', type: 'Full-time', location: 'Colombo', department: 'Marketing' },
-  { title: 'Sales Executive', type: 'Full-time', location: 'Islandwide', department: 'Sales' },
-  { title: 'Civil Engineer', type: 'Contract', location: 'Project Based', department: 'Engineering' },
-  { title: 'Customer Service Executive', type: 'Full-time', location: 'Colombo', department: 'Customer Experience' }
+  {
+    title: 'Lead Software Engineer',
+    company: 'HEXORA Tech',
+    department: 'Information Technology',
+    location: 'Colombo / Hybrid',
+    salary: 'LKR 450k - 650k',
+    experience: '5+ Yrs Exp',
+    type: 'Full-time',
+    workplace: 'Hybrid',
+    logoBg: 'linear-gradient(135deg, #059669, #10b981)',
+    logoText: 'HT'
+  },
+  {
+    title: 'Senior HR Specialist',
+    company: 'HEXORA HR Consulting',
+    department: 'Human Resources',
+    location: 'Colombo / Remote',
+    salary: 'LKR 250k - 350k',
+    experience: '3+ Yrs Exp',
+    type: 'Full-time',
+    workplace: 'Remote',
+    logoBg: 'linear-gradient(135deg, #2563eb, #3b82f6)',
+    logoText: 'HC'
+  },
+  {
+    title: 'Senior Financial Analyst',
+    company: 'HEXORA Solutions',
+    department: 'Banking & Finance',
+    location: 'Kandy / Hybrid',
+    salary: 'LKR 300k - 400k',
+    experience: '4+ Yrs Exp',
+    type: 'Full-time',
+    workplace: 'Hybrid',
+    logoBg: 'linear-gradient(135deg, #7c3aed, #8b5cf6)',
+    logoText: 'HS'
+  },
+  {
+    title: 'Creative Growth Marketer',
+    company: 'HEXORA Foods',
+    department: 'Marketing',
+    location: 'Colombo / Onsite',
+    salary: 'LKR 200k - 280k',
+    experience: '2+ Yrs Exp',
+    type: 'Full-time',
+    workplace: 'Onsite',
+    logoBg: 'linear-gradient(135deg, #ea580c, #f97316)',
+    logoText: 'HF'
+  },
+  {
+    title: 'Full-Stack Developer',
+    company: 'HEXORA Tech',
+    department: 'Information Technology',
+    location: 'Colombo / Remote',
+    salary: 'LKR 320k - 450k',
+    experience: '3+ Yrs Exp',
+    type: 'Full-time',
+    workplace: 'Remote',
+    logoBg: 'linear-gradient(135deg, #059669, #10b981)',
+    logoText: 'HT'
+  },
+  {
+    title: 'Project Civil Engineer',
+    company: 'HEXORA Construction',
+    department: 'Engineering',
+    location: 'Batticaloa / Onsite',
+    salary: 'LKR 220k - 300k',
+    experience: '3+ Yrs Exp',
+    type: 'Contract',
+    workplace: 'Onsite',
+    logoBg: 'linear-gradient(135deg, #0d9488, #14b8a6)',
+    logoText: 'HE'
+  }
+];
+
+const miniChartData = [
+  { month: 'Jan', placements: 45 },
+  { month: 'Feb', placements: 52 },
+  { month: 'Mar', placements: 49 },
+  { month: 'Apr', placements: 63 },
+  { month: 'May', placements: 58 },
+  { month: 'Jun', placements: 74 }
 ];
 
 const recruitmentProcess = [
@@ -133,19 +216,27 @@ const globalTradeBenefits = [
 const divisions = [
   {
     title: 'HEXORA HR CONSULTING',
-    text: 'Strategic HR advisory, policy guidance, talent planning, and people operations support for growing organizations.'
+    text: 'Strategic HR advisory, policy guidance, talent planning, and people operations support for growing organizations.',
+    icon: Users,
+    tone: 'people'
   },
   {
     title: 'HEXORA GLOBAL TRADE',
-    text: 'International sourcing, procurement, import/export coordination, and trade partnership development.'
+    text: 'International sourcing, procurement, import/export coordination, and trade partnership development.',
+    icon: Globe2,
+    tone: 'trade'
   },
   {
     title: 'HEXORA FOODS',
-    text: 'Food-related business initiatives focused on product opportunities, distribution partnerships, and market growth.'
+    text: 'Food-related business initiatives focused on product opportunities, distribution partnerships, and market growth.',
+    icon: Utensils,
+    tone: 'foods'
   },
   {
     title: 'HEXORA BUSINESS SOLUTIONS',
-    text: 'Business support services that help companies improve operations, communication, and commercial execution.'
+    text: 'Business support services that help companies improve operations, communication, and commercial execution.',
+    icon: Briefcase,
+    tone: 'solutions'
   }
 ];
 
@@ -165,6 +256,17 @@ const testimonials = [
 export default function HomePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [savedJobs, setSavedJobs] = useState([]);
+
+  const handleSaveJob = (jobTitle) => {
+    if (savedJobs.includes(jobTitle)) {
+      setSavedJobs(savedJobs.filter(t => t !== jobTitle));
+      toast.success('Job removed from bookmarks');
+    } else {
+      setSavedJobs([...savedJobs, jobTitle]);
+      toast.success('Job added to bookmarks');
+    }
+  };
 
   const handleCvClick = () => {
     if (user && user.role === 'candidate') {
@@ -275,82 +377,423 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="media-jobs-section" id="current-openings">
-        <div className="shell media-jobs-grid">
-          <div className="image-collage">
-            <div className="image-card tall">
-              <img src={media.candidate} alt="Professional candidate" />
-              <span className="image-badge"><BadgeCheck size={15} /> Candidate Ready</span>
-            </div>
-            <div className="image-card">
-              <img src={media.teamwork} alt="Recruitment teamwork session" />
-            </div>
-            <div className="placement-card">
-              <small>Recruitment Focus</small>
-              <strong>60-70%</strong>
-              <span>Homepage emphasis on talent solutions</span>
-              <div className="growth-spark" />
-            </div>
-            <div className="image-card">
-              <img src={media.employer} alt="Employer reviewing candidate profiles" />
-            </div>
-          </div>
+      <section className="premium-recruitment-section" id="current-openings">
+        <div className="premium-bg-glow" />
+        <div className="premium-noise-overlay" />
+        <div className="shell">
+          <div className="luxury-glass-container">
+            <div className="luxury-recruitment-grid">
+              
+              {/* Left Side: Luxury Hero & Info */}
+              <div className="recruitment-left-hero">
+                <div className="premium-badge-wrapper">
+                  <span className="premium-eyebrow-badge">
+                    <Sparkles size={14} className="accent-sparkle" /> CURRENT OPENINGS
+                  </span>
+                </div>
+                
+                <h2 className="premium-headline">
+                  Find Premium Career Opportunities Through <span className="green-gradient-text">HEXORA TALENT</span>
+                </h2>
+                
+                <p className="premium-subtitle">
+                  We bridge the gap between elite professionals and leading global employers. Discover curated career pathways and accelerate your hiring journey with our AI-powered matchmaking.
+                </p>
 
-          <div className="job-highlights">
-            <p className="home-eyebrow">Current Openings</p>
-            <h2>Professional job opportunities through HEXORA TALENT</h2>
-            <div className="rating-line" aria-label="Five star rating">
-              {Array.from({ length: 5 }).map((_, index) => <Star key={index} size={17} fill="currentColor" />)}
-            </div>
-            <p>Explore sample openings across technology, finance, HR, sales, marketing, engineering, and customer support.</p>
+                {/* Floating Badges */}
+                <div className="premium-floating-badges-grid">
+                  <div className="floating-badge-item">
+                    <span className="badge-check-icon">✓</span> Verified Employers
+                  </div>
+                  <div className="floating-badge-item">
+                    <span className="badge-check-icon">✓</span> 25K+ Professionals
+                  </div>
+                  <div className="floating-badge-item">
+                    <span className="badge-check-icon">✓</span> AI Smart Matching
+                  </div>
+                  <div className="floating-badge-item">
+                    <span className="badge-check-icon">✓</span> Fast Hiring Process
+                  </div>
+                </div>
 
-            <div className="job-listing-grid">
-              {sampleJobs.map((job) => (
-                <article className="opening-card" key={job.title}>
-                  <div>
-                    <span className="company-mark">HX</span>
-                    <div>
-                      <small>{job.department}</small>
-                      <h3>{job.title}</h3>
-                      <p><MapPin size={14} /> {job.location}</p>
+                {/* Premium CTAs */}
+                <div className="premium-cta-group">
+                  <Button as={Link} to="/jobs" size="lg" className="cta-primary-luxury">
+                    Explore Jobs <ArrowRight size={18} />
+                  </Button>
+                  <Button onClick={handleCvClick} variant="secondary" size="lg" className="cta-secondary-luxury">
+                    Upload Resume <UploadCloud size={18} />
+                  </Button>
+                </div>
+
+                {/* Social Proof & Rating */}
+                <div className="premium-social-proof">
+                  <div className="rating-block">
+                    <div className="stars-row">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} size={15} fill="#eab308" color="#eab308" />
+                      ))}
+                    </div>
+                    <span className="rating-text"><strong>4.9/5 Rating</strong> · Trusted by 25K+ professionals</span>
+                  </div>
+                  
+                  <div className="company-trust-logos">
+                    <span className="trust-logo-label">TRUSTED BY LEADING ENTERPRISES:</span>
+                    <div className="logos-flex">
+                      <span className="trust-logo-item">Google</span>
+                      <span className="trust-logo-item">Microsoft</span>
+                      <span className="trust-logo-item">Amazon</span>
+                      <span className="trust-logo-item">LinkedIn</span>
                     </div>
                   </div>
-                  <footer>
-                    <span>{job.type}</span>
-                    <Button as={Link} to="/jobs" size="sm">Apply Now</Button>
-                  </footer>
-                </article>
-              ))}
-            </div>
+                </div>
 
-            <Button as={Link} to="/jobs" className="browse-jobs-btn">View All Jobs <ArrowRight size={17} /></Button>
+                {/* Visual Editorial Layout */}
+                <div className="premium-editorial-collage">
+                  <div className="collage-bg-glow" />
+                  
+                  <div className="image-wrapper-large">
+                    <img src={media.candidate} alt="Premium Professional Candidate" className="collage-img portrait" />
+                    <div className="img-glossy-overlay" />
+                    <div className="candidate-status-badge">
+                      <span className="pulse-dot" /> Candidate Active
+                    </div>
+                  </div>
+
+                  <div className="image-wrapper-medium">
+                    <img src={media.teamwork} alt="Collaborative Hiring Session" className="collage-img teamwork" />
+                    <div className="img-glossy-overlay" />
+                  </div>
+
+                  {/* Floating Analytics Card */}
+                  <div className="floating-analytics-card">
+                    <div className="analytics-header">
+                      <Sparkles size={13} className="spark-green" />
+                      <span>Smart AI Matching</span>
+                    </div>
+                    <div className="match-score">98%</div>
+                    <div className="match-bar-container">
+                      <div className="match-bar-fill" style={{ width: '98%' }} />
+                    </div>
+                    <span className="match-meta">Skills alignment verified</span>
+                  </div>
+
+                  {/* Hiring Growth Graph Card */}
+                  <div className="hiring-graph-card">
+                    <div className="graph-header">
+                      <span>Placements</span>
+                      <strong className="green-text">+24% MoM</strong>
+                    </div>
+                    <div className="mini-chart-container">
+                      <ResponsiveContainer width="100%" height={60}>
+                        <AreaChart data={miniChartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
+                          <defs>
+                            <linearGradient id="editorialChart" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#10b981" stopOpacity={0.4} />
+                              <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <Area type="monotone" dataKey="placements" stroke="#10b981" strokeWidth={2} fill="url(#editorialChart)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </div>
+
+                  {/* Premium Floating Badge Stats */}
+                  <div className="stats-badge-overlap badge-placement">
+                    <strong>94%</strong>
+                    <span>Placement Success</span>
+                  </div>
+                  
+                  <div className="stats-badge-overlap badge-speed">
+                    <strong>60-70%</strong>
+                    <span>Faster Hiring</span>
+                  </div>
+
+                  <div className="stats-badge-overlap badge-jobs">
+                    <strong>10K+</strong>
+                    <span>Active Jobs</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Right Side: Luxury Job Cards */}
+              <div className="recruitment-right-jobs">
+                <div className="jobs-panel-header">
+                  <h3>Featured Premium Roles</h3>
+                  <p>Hand-picked roles from top employers updated in real-time</p>
+                </div>
+                
+                <div className="luxury-jobs-list">
+                  {sampleJobs.map((job) => {
+                    const isSaved = savedJobs.includes(job.title);
+                    return (
+                      <article className="premium-enterprise-card" key={job.title}>
+                        <div className="card-top">
+                          <div className="company-logo-wrap" style={{ background: job.logoBg }}>
+                            {job.logoText}
+                          </div>
+                          <div className="job-title-info">
+                            <span className="card-company-name">{job.company}</span>
+                            <h4 className="card-job-title">{job.title}</h4>
+                          </div>
+                          <button 
+                            className={`save-job-btn ${isSaved ? 'is-saved' : ''}`}
+                            onClick={() => handleSaveJob(job.title)}
+                            aria-label={isSaved ? "Unsave Job" : "Save Job"}
+                          >
+                            <Bookmark size={17} fill={isSaved ? "currentColor" : "none"} />
+                          </button>
+                        </div>
+
+                        <div className="card-details">
+                          <div className="detail-tag"><MapPin size={13} /> {job.location}</div>
+                          <div className="detail-tag"><DollarSign size={13} /> {job.salary}</div>
+                          <div className="detail-tag"><Clock size={13} /> {job.experience}</div>
+                        </div>
+
+                        <div className="card-bottom">
+                          <div className="badges-group">
+                            <span className="badge-type">{job.type}</span>
+                            <span className="badge-workplace">{job.workplace}</span>
+                          </div>
+                          
+                          <Button as={Link} to="/jobs" size="sm" className="card-apply-btn">
+                            Apply Now <ArrowRight size={13} />
+                          </Button>
+                        </div>
+                      </article>
+                    );
+                  })}
+                </div>
+                
+                <div className="view-all-jobs-container">
+                  <Button as={Link} to="/jobs" className="view-all-jobs-luxury-btn">
+                    View All Opportunities <ArrowRight size={18} />
+                  </Button>
+                </div>
+              </div>
+
+            </div>
           </div>
+          
+          {/* Top Companies Hiring Ribbon */}
+          <div className="top-companies-ribbon">
+            <span className="ribbon-title">TOP COMPANIES HIRING NOW</span>
+            <div className="ribbon-slider">
+              <div className="ribbon-track">
+                <span>Google</span>
+                <span>Microsoft</span>
+                <span>Amazon</span>
+                <span>LinkedIn</span>
+                <span>Meta</span>
+                <span>Stripe</span>
+                <span>Apple</span>
+                <span>Framer</span>
+                <span>Google</span>
+                <span>Microsoft</span>
+                <span>Amazon</span>
+                <span>LinkedIn</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom CTA Banner */}
+          <div className="bottom-premium-cta-banner">
+            <div className="banner-glow" />
+            <div className="banner-content">
+              <h3>Ready to find your dream career?</h3>
+              <p>Create an account to get matched with exclusive roles and start your applications.</p>
+              <Button as={Link} to="/candidate/register" size="lg" className="banner-primary-btn">
+                Create Free Account <ArrowRight size={17} />
+              </Button>
+            </div>
+          </div>
+          
         </div>
       </section>
 
-      <section className="forms-section">
-        <div className="shell forms-grid">
-          <article className="talent-form-card" id="cv-upload">
-            <p className="home-eyebrow"><UploadCloud size={16} /> Candidate Registration</p>
-            <h2>Upload Your CV</h2>
-            <p>Share your profile with HEXORA TALENT and our recruitment team will review suitable openings.</p>
-            <div style={{ marginTop: '2.5rem', display: 'flex', justifyContent: 'center' }}>
-              <Button onClick={handleCvClick} size="lg" style={{ width: '100%', justifyContent: 'center' }}>
-                Upload Your CV <ArrowRight size={16} />
-              </Button>
-            </div>
-          </article>
+      <section className="premium-dual-card-section">
+        <div className="premium-section-glow" />
+        <div className="shell">
+          <div className="premium-glass-container">
+            <div className="premium-dual-card-grid">
+              
+              {/* Left Card - Candidate Registration */}
+              <article className="premium-candidate-card" id="cv-upload">
+                <div className="card-content-wrapper">
+                  <div className="card-left-content">
+                    <div className="premium-badge-wrapper">
+                      <span className="premium-eyebrow-badge">
+                        <UserCheck size={14} className="accent-icon" /> CANDIDATE REGISTRATION
+                      </span>
+                    </div>
+                    
+                    <h2 className="premium-card-heading">Upload Your <span>CV</span></h2>
+                    
+                    <p className="premium-card-subtext">
+                      Share your profile with HEXORA TALENT and our recruitment team will review suitable openings for you.
+                    </p>
 
-          <article className="talent-form-card" id="employer-requirements">
-            <p className="home-eyebrow"><Briefcase size={16} /> Employer Hiring Request</p>
-            <h2>Employer Requirement Form</h2>
-            <p>Tell us what role you need to fill and HEXORA TALENT will help build a qualified shortlist.</p>
-            <div style={{ marginTop: '2.5rem', display: 'flex', justifyContent: 'center' }}>
-              <Button onClick={handleEmployerClick} size="lg" style={{ width: '100%', justifyContent: 'center' }}>
-                Employer Requirement Form <ArrowRight size={16} />
-              </Button>
+                    {/* Feature Highlights */}
+                    <div className="feature-highlights-list">
+                      <div className="feature-highlight-item">
+                        <UploadCloud size={20} className="check-icon" />
+                        <span><strong>Easy & Fast</strong> Upload</span>
+                      </div>
+                      <div className="feature-highlight-item">
+                        <ShieldCheck size={20} className="check-icon" />
+                        <span><strong>100% Secure</strong> Your Data</span>
+                      </div>
+                      <div className="feature-highlight-item">
+                        <Sparkles size={20} className="check-icon" />
+                        <span><strong>Better Job</strong> Matches</span>
+                      </div>
+                    </div>
+
+                    <div className="floating-stats-grid">
+                      <div className="floating-stat-item">
+                        <UploadCloud size={20} />
+                        <strong>25K+</strong>
+                        <span>Candidates Hired</span>
+                      </div>
+                      <div className="floating-stat-item">
+                        <Users size={20} />
+                        <strong>10K+</strong>
+                        <span>Active Jobs</span>
+                      </div>
+                      <div className="floating-stat-item">
+                        <TrendingUp size={20} />
+                        <strong>94%</strong>
+                        <span>Placement Success</span>
+                      </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <Button onClick={handleCvClick} size="lg" className="premium-luxury-btn">
+                      <span className="premium-btn-label"><UploadCloud size={26} /> Upload Your CV</span>
+                      <ArrowRight className="premium-btn-arrow" size={16} />
+                    </Button>
+                    <p className="premium-security-note"><ShieldCheck size={15} /> Your information is safe and secure</p>
+                  </div>
+
+                  <div className="card-right-image premium-visual-panel candidate-visual-panel">
+                    <div className="image-glow-effect" />
+                    <img 
+                      src={candidateCardImage} 
+                      alt="Candidate profile matching visual" 
+                      className="candidate-image premium-card-image"
+                    />
+                    <div className="visual-metric visual-metric-top">
+                      <UploadCloud size={16} />
+                      <span>Smart CV Review</span>
+                    </div>
+                    <div className="visual-metric visual-metric-bottom">
+                      <BadgeCheck size={16} />
+                      <span>Verified Profile</span>
+                    </div>
+                    <div className="image-overlay-gradient" />
+                  </div>
+                </div>
+              </article>
+
+              {/* Right Card - Employer Hiring Request */}
+              <article className="premium-employer-card" id="employer-requirements">
+                <div className="card-content-wrapper">
+                  <div className="card-left-content">
+                    <div className="premium-badge-wrapper">
+                      <span className="premium-eyebrow-badge">
+                        <Briefcase size={14} className="accent-icon" /> EMPLOYER HIRING REQUEST
+                      </span>
+                    </div>
+                    
+                    <h2 className="premium-card-heading">Employer <span>Requirement</span> Form</h2>
+                    
+                    <p className="premium-card-subtext">
+                      Tell us what role you need to fill and HEXORA TALENT will help build a qualified shortlist.
+                    </p>
+
+                    {/* Premium Employer Benefits */}
+                    <div className="feature-highlights-list">
+                      <div className="feature-highlight-item">
+                        <SearchCheck size={20} className="check-icon employer-step-one" />
+                        <span>Post Your Requirement</span>
+                      </div>
+                      <div className="feature-highlight-item">
+                        <Users size={20} className="check-icon employer-step-two" />
+                        <span>Get Qualified Candidates</span>
+                      </div>
+                      <div className="feature-highlight-item">
+                        <Clock size={20} className="check-icon employer-step-three" />
+                        <span>Faster Hiring Process</span>
+                      </div>
+                    </div>
+
+                    {/* CTA Button */}
+                    <Button onClick={handleEmployerClick} size="lg" className="premium-luxury-btn">
+                      <span className="premium-btn-label"><FileCheck2 size={26} /> Employer Requirement Form</span>
+                      <ArrowRight className="premium-btn-arrow" size={16} />
+                    </Button>
+                    <p className="premium-security-note"><ShieldCheck size={15} /> Secure - Private - Trusted by 1000+ Companies</p>
+                  </div>
+
+                  <div className="card-right-image premium-visual-panel employer-visual-panel">
+                    <div className="image-glow-effect" />
+                    <img 
+                      src={employerCardImage} 
+                      alt="Employer hiring team visual" 
+                      className="employer-image premium-card-image"
+                    />
+                    <div className="image-overlay-gradient" />
+                    
+                    {/* Floating UI Cards */}
+                    <div className="floating-ui-card ui-card-1">
+                      <strong>Top Hiring Results</strong>
+                      <ResponsiveContainer width="100%" height={72}>
+                        <AreaChart data={miniChartData} margin={{ top: 8, right: 6, left: 6, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="hiringRequestChart" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="0%" stopColor="#22c55e" stopOpacity={0.34} />
+                              <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <Area type="monotone" dataKey="placements" stroke="#12a867" strokeWidth={3} fill="url(#hiringRequestChart)" />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="floating-ui-card ui-card-2">
+                      <Users size={18} className="ui-card-icon" />
+                      <span className="ui-card-text">Talent Pool</span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
             </div>
-          </article>
+          </div>
+
+          {/* Bottom Trust Section */}
+          <div className="premium-trust-section">
+            <div className="trust-section-header">
+              <h3>Trusted by Leading Companies</h3>
+              <div className="trust-rating">
+                <div className="stars-row">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} size={16} fill="#eab308" color="#eab308" />
+                  ))}
+                </div>
+                <span className="rating-text">4.9/5 Rating · Trusted by 25K+ Professionals</span>
+              </div>
+            </div>
+            
+            <div className="company-logos-grid">
+              <div className="company-logo-item">Google</div>
+              <div className="company-logo-item">Microsoft</div>
+              <div className="company-logo-item">Amazon</div>
+              <div className="company-logo-item">LinkedIn</div>
+              <div className="company-logo-item">Infosys</div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -423,7 +866,9 @@ export default function HomePage() {
           <div className="division-grid">
             {divisions.map((division) => (
               <article className="division-card" key={division.title}>
-                <span><Building2 size={21} /></span>
+                <span className={`division-icon division-icon-${division.tone}`}>
+                  <division.icon size={21} />
+                </span>
                 <h3>{division.title}</h3>
                 <p>{division.text}</p>
               </article>
