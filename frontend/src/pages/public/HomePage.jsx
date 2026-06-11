@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   ArrowRight,
   BadgeCheck,
@@ -256,6 +256,26 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [savedJobs, setSavedJobs] = useState([]);
+  const [featuredJobs, setFeaturedJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedJobs = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/jobs/featured');
+        const data = await response.json();
+        if (data.success && data.data) {
+          setFeaturedJobs(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching featured jobs:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedJobs();
+  }, []);
 
   const handleSaveJob = (jobTitle) => {
     if (savedJobs.includes(jobTitle)) {
@@ -524,46 +544,66 @@ export default function HomePage() {
                 </div>
                 
                 <div className="luxury-jobs-list">
-                  {sampleJobs.map((job) => {
-                    const isSaved = savedJobs.includes(job.title);
-                    return (
-                      <article className="premium-enterprise-card" key={job.title}>
-                        <div className="card-top">
-                          <div className="company-logo-wrap" style={{ background: job.logoBg }}>
-                            {job.logoText}
+                  {loading ? (
+                    <div className="loading-jobs">Loading featured jobs...</div>
+                  ) : featuredJobs.length > 0 ? (
+                    featuredJobs.map((job) => {
+                      const isSaved = savedJobs.includes(job._id);
+                      const logoBg = 'linear-gradient(135deg, #059669, #10b981)';
+                      const logoText = job.companyName?.substring(0, 2).toUpperCase() || 'JK';
+                      const salary = job.salaryMin && job.salaryMax 
+                        ? `LKR ${job.salaryMin.toLocaleString()} - ${job.salaryMax.toLocaleString()}`
+                        : 'Salary not specified';
+                      const experience = job.experienceLevel 
+                        ? `${job.experienceLevel.charAt(0).toUpperCase() + job.experienceLevel.slice(1)} Level`
+                        : 'Experience not specified';
+                      const hasLogo = job.image && job.image.url;
+                      
+                      return (
+                        <article className="premium-enterprise-card" key={job._id}>
+                          <div className="card-top">
+                            <div className="company-logo-wrap" style={{ background: hasLogo ? 'transparent' : logoBg }}>
+                              {hasLogo ? (
+                                <img src={job.image.url} alt={job.image.alt || job.companyName} className="company-logo-img" />
+                              ) : (
+                                logoText
+                              )}
+                            </div>
+                            <div className="job-title-info">
+                              <span className="card-company-name">{job.companyName}</span>
+                              <h4 className="card-job-title">{job.title}</h4>
+                            </div>
+                            <button 
+                              className={`save-job-btn ${isSaved ? 'is-saved' : ''}`}
+                              onClick={() => handleSaveJob(job._id)}
+                              aria-label={isSaved ? "Unsave Job" : "Save Job"}
+                            >
+                              <Bookmark size={17} fill={isSaved ? "currentColor" : "none"} />
+                            </button>
                           </div>
-                          <div className="job-title-info">
-                            <span className="card-company-name">{job.company}</span>
-                            <h4 className="card-job-title">{job.title}</h4>
-                          </div>
-                          <button 
-                            className={`save-job-btn ${isSaved ? 'is-saved' : ''}`}
-                            onClick={() => handleSaveJob(job.title)}
-                            aria-label={isSaved ? "Unsave Job" : "Save Job"}
-                          >
-                            <Bookmark size={17} fill={isSaved ? "currentColor" : "none"} />
-                          </button>
-                        </div>
 
-                        <div className="card-details">
-                          <div className="detail-tag"><MapPin size={13} /> {job.location}</div>
-                          <div className="detail-tag"><DollarSign size={13} /> {job.salary}</div>
-                          <div className="detail-tag"><Clock size={13} /> {job.experience}</div>
-                        </div>
-
-                        <div className="card-bottom">
-                          <div className="badges-group">
-                            <span className="badge-type">{job.type}</span>
-                            <span className="badge-workplace">{job.workplace}</span>
+                          <div className="card-details">
+                            <div className="detail-tag"><MapPin size={13} /> {job.location}</div>
+                            <div className="detail-tag"><DollarSign size={13} /> {salary}</div>
+                            <div className="detail-tag"><Clock size={13} /> {experience}</div>
                           </div>
-                          
-                          <Button as={Link} to="/jobs" size="sm" className="card-apply-btn">
-                            Apply Now <ArrowRight size={13} />
-                          </Button>
-                        </div>
-                      </article>
-                    );
-                  })}
+
+                          <div className="card-bottom">
+                            <div className="badges-group">
+                              <span className="badge-type">{job.jobType}</span>
+                              <span className="badge-workplace">{job.remoteFriendly ? 'Remote' : 'Onsite'}</span>
+                            </div>
+                            
+                            <Button as={Link} to={`/jobs/${job.slug}`} size="sm" className="card-apply-btn">
+                              Apply Now <ArrowRight size={13} />
+                            </Button>
+                          </div>
+                        </article>
+                      );
+                    })
+                  ) : (
+                    <div className="no-jobs">No featured jobs available at the moment.</div>
+                  )}
                 </div>
                 
                 <div className="view-all-jobs-container">
