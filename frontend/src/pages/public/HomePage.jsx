@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   ArrowRight,
   BadgeCheck,
@@ -258,6 +258,8 @@ export default function HomePage() {
   const [savedJobs, setSavedJobs] = useState([]);
   const [featuredJobs, setFeaturedJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const industryCarouselRef = useRef(null);
+  const industryDrag = useRef({ active: false, startX: 0, scrollLeft: 0 });
 
   useEffect(() => {
     const fetchFeaturedJobs = async () => {
@@ -310,6 +312,57 @@ export default function HomePage() {
     if (tradeSection) {
       tradeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+  };
+
+  const handleIndustryPointerDown = (event) => {
+    if (event.pointerType === 'touch') return;
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+
+    const carousel = industryCarouselRef.current;
+    if (!carousel) return;
+
+    industryDrag.current = {
+      active: true,
+      startX: event.clientX,
+      scrollLeft: carousel.scrollLeft
+    };
+    carousel.classList.add('is-dragging');
+    carousel.setPointerCapture?.(event.pointerId);
+  };
+
+  const handleIndustryPointerMove = (event) => {
+    const carousel = industryCarouselRef.current;
+    if (!carousel || !industryDrag.current.active) return;
+
+    event.preventDefault();
+    const walk = event.clientX - industryDrag.current.startX;
+    carousel.scrollLeft = industryDrag.current.scrollLeft - walk;
+  };
+
+  const stopIndustryDrag = (event) => {
+    const carousel = industryCarouselRef.current;
+    if (!carousel) return;
+
+    industryDrag.current.active = false;
+    carousel.classList.remove('is-dragging');
+    if (carousel.hasPointerCapture?.(event.pointerId)) {
+      carousel.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const handleIndustryKeyDown = (event) => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+
+    const carousel = industryCarouselRef.current;
+    if (!carousel) return;
+
+    event.preventDefault();
+    const firstCard = carousel.querySelector('.industry-card');
+    const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 260;
+    carousel.scrollBy({
+      left: event.key === 'ArrowRight' ? cardWidth : -cardWidth,
+      behavior: 'smooth'
+    });
   };
 
   return (
@@ -690,9 +743,21 @@ export default function HomePage() {
               <p>HEXORA TALENT supports specialist and volume hiring across high-demand industries.</p>
             </div>
           </div>
-          <div className="industry-grid">
+          <div
+            className="industry-grid"
+            ref={industryCarouselRef}
+            role="region"
+            aria-label="Industry expertise carousel"
+            tabIndex={0}
+            onKeyDown={handleIndustryKeyDown}
+            onPointerDown={handleIndustryPointerDown}
+            onPointerMove={handleIndustryPointerMove}
+            onPointerUp={stopIndustryDrag}
+            onPointerCancel={stopIndustryDrag}
+            onPointerLeave={stopIndustryDrag}
+          >
             {industries.map((industry) => (
-              <span key={industry}><CheckCircle2 size={17} /> {industry}</span>
+              <span className="industry-card" key={industry} tabIndex={0}><CheckCircle2 size={17} /> {industry}</span>
             ))}
           </div>
         </div>
@@ -814,9 +879,21 @@ export default function HomePage() {
 }
 
 function TradeList({ title, items }) {
+  const icons = {
+    Services: Globe2,
+    'Product Categories': FileCheck2,
+    Benefits: BadgeCheck
+  };
+  const TradeIcon = icons[title] || CheckCircle2;
+
   return (
     <div className="trade-list">
-      <h3>{title}</h3>
+      <h3>
+        <span className="trade-list-icon" aria-hidden="true">
+          <TradeIcon size={24} strokeWidth={2.2} />
+        </span>
+        {title}
+      </h3>
       <ul>
         {items.map((item) => <li key={item}>{item}</li>)}
       </ul>

@@ -181,7 +181,7 @@ export default function AdminOverviewPage() {
           </div>
         </Card>
 
-        <Card className="overview-card">
+        <Card className="overview-card overview-volume-card">
           <div className="overview-card-head">
             <div>
               <p className="section-eyebrow">Volume</p>
@@ -194,15 +194,32 @@ export default function AdminOverviewPage() {
             <span className="tone-registered">Registrations {registrationDaily.reduce((sum, item) => sum + Number(item.count || 0), 0)}</span>
           </div>
           <div className={`overview-volume-chart ${timeline.granularity === 'month' ? 'is-monthly' : ''}`} role="img" aria-label={`Candidate volume for ${rangeMeta.label}`}>
-            {volumeSeries.map((item) => (
-              <div key={item.key} className="overview-volume-day">
-                <div className="overview-volume-bars">
-                  <span className="bar-applied" style={{ height: `${Math.max(item.applied ? 14 : 4, (item.applied / maxVolume) * 100)}%` }} />
-                  <span className="bar-registered" style={{ height: `${Math.max(item.registrations ? 12 : 4, (item.registrations / maxVolume) * 100)}%` }} />
+            <div className="overview-volume-axis" aria-hidden="true">
+              <span>{maxVolume}</span>
+              <span>{Math.ceil(maxVolume / 2)}</span>
+              <span>0</span>
+            </div>
+            <div className="overview-volume-plot">
+              {volumeSeries.map((item) => (
+                <div
+                  key={item.key}
+                  className="overview-volume-day"
+                  data-tooltip={`${item.label}: ${item.applied} applications, ${item.registrations} registrations`}
+                >
+                  <div className="overview-volume-bars">
+                    <span
+                      className={`bar-applied ${item.applied === maxVolume && item.applied > 0 ? 'is-peak' : ''}`}
+                      style={{ height: `${Math.max(item.applied ? 14 : 4, (item.applied / maxVolume) * 100)}%` }}
+                    />
+                    <span
+                      className={`bar-registered ${item.registrations === maxVolume && item.registrations > 0 ? 'is-peak' : ''}`}
+                      style={{ height: `${Math.max(item.registrations ? 12 : 4, (item.registrations / maxVolume) * 100)}%` }}
+                    />
+                  </div>
+                  <small>{item.label}</small>
                 </div>
-                <small>{item.label}</small>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </Card>
 
