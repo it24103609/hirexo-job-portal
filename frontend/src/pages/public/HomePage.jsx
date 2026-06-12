@@ -305,6 +305,13 @@ export default function HomePage() {
     }
   };
 
+  const handleHireTalentClick = () => {
+    const tradeSection = document.getElementById('global-trade');
+    if (tradeSection) {
+      tradeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <>
       <Seo
@@ -329,9 +336,9 @@ export default function HomePage() {
               workforce planning, and candidate placement support.
             </p>
             <div className="home-hero-actions">
-              <Button as={Link} to="#current-openings" size="lg">Find Jobs <ArrowRight size={18} /></Button>
-              <Button as={Link} to="#cv-upload" variant="secondary" size="lg">Upload CV <UploadCloud size={18} /></Button>
-              <Button as={Link} to="#employer-requirements" variant="ghost" size="lg">Hire Talent <Briefcase size={18} /></Button>
+              <Button as={Link} to="/jobs" size="lg">Find Jobs <ArrowRight size={18} /></Button>
+              <Button onClick={handleCvClick} variant="secondary" size="lg">Upload CV <UploadCloud size={18} /></Button>
+              <Button onClick={handleHireTalentClick} variant="ghost" size="lg">Hire Talent <Briefcase size={18} /></Button>
               <Button as={Link} to="/contact" variant="ghost" size="lg">Contact Us <MessageCircle size={17} /></Button>
             </div>
           </div>
@@ -386,8 +393,8 @@ export default function HomePage() {
               <strong>Shortlists aligned to role, skill, and culture</strong>
             </div>
             <div className="ai-actions">
-              <Button as={Link} to="#current-openings">See open positions <ArrowRight size={16} /></Button>
-              <Button as={Link} to="#employer-requirements" variant="secondary">Request candidates</Button>
+              <Button as={Link} to="/jobs">See open positions <ArrowRight size={16} /></Button>
+              <Button as={Link} to="/employer/register" variant="secondary">Request candidates</Button>
             </div>
             <a className="whatsapp-support" href={`https://wa.me/${siteContent.contact.whatsapp}`} target="_blank" rel="noreferrer">
               <MessageCircle size={17} /> WhatsApp support available
@@ -732,7 +739,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <article className="global-trade-card">
+          <article className="global-trade-card" id="global-trade">
             <div>
               <p className="home-eyebrow"><Globe2 size={16} /> HEXORA GLOBAL TRADE</p>
               <h2>International Trade & Supply Chain Solutions</h2>
@@ -792,8 +799,8 @@ export default function HomePage() {
             and workforce solutions under HEXORA GLOBAL GROUP.
           </p>
           <div>
-            <Button as={Link} to="#current-openings" size="lg">Find Jobs <ArrowRight size={18} /></Button>
-            <Button as={Link} to="#employer-requirements" variant="ghost" size="lg">Hire Talent <Briefcase size={17} /></Button>
+            <Button as={Link} to="/jobs" size="lg">Find Jobs <ArrowRight size={18} /></Button>
+            <Button onClick={handleHireTalentClick} variant="ghost" size="lg">Hire Talent <Briefcase size={17} /></Button>
             <Button as={Link} to="/contact" variant="ghost" size="lg">Contact Us <MessageCircle size={17} /></Button>
           </div>
           <address className="contact-mini">

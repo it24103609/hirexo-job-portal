@@ -10,31 +10,36 @@ import {
   MapPin,
   MessageCircle,
   Phone,
-  Twitter
+  Twitter,
+  Globe2,
+  Clock
 } from 'lucide-react';
-import { siteContent } from '../../data/siteContent';
 import BrandIdentity from './BrandIdentity';
 
 export default function Footer() {
-  const whatsappUrl = `https://wa.me/${siteContent.contact.whatsapp}`;
-
   return (
     <footer className="site-footer">
       <div className="shell footer-grid">
         <div className="footer-brand-panel">
           <div className="footer-brand">
-            <BrandIdentity subtitle="GLOBAL GROUP" />
+            <BrandIdentity subtitle="GLOBAL GROUP (PVT) LTD" />
           </div>
           <p className="footer-summary">
-            HEXORA is a results-driven recruitment partner built for speed, precision, and impact.
-            We go beyond CVs, focusing on real business needs, team fit, and long-term success.
+            HEXORA GLOBAL GROUP (PVT) LTD is a diversified business group providing innovative solutions in 
+            Talent Acquisition, HR Consulting, Global Trade, Food Products, and Business Consulting.
+          </p>
+          <p className="footer-summary" style={{ fontWeight: 600, color: '#10b981' }}>
+            Empowering Businesses. Connecting Talent. Creating Opportunities.
           </p>
           <div className="footer-contact-list">
-            <span><Phone size={16} /> {siteContent.contact.phonePrimary} / {siteContent.contact.phoneSecondary}</span>
-            <span><Mail size={16} /> {siteContent.contact.email}</span>
-            <span><MapPin size={16} /> {siteContent.contact.address}</span>
+            <span><Phone size={16} /> +94 77 319 1832</span>
+            <span><Mail size={16} /> hrm4921@gmail.com</span>
+            <span><Globe2 size={16} /> www.hexoraglobal.com</span>
           </div>
-          <a className="footer-cta" href={whatsappUrl} target="_blank" rel="noreferrer">
+          <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+            <Clock size={13} /> Monday - Friday | 9:00 AM - 6:00 PM
+          </div>
+          <a className="footer-cta" href="https://wa.me/94773191832" target="_blank" rel="noreferrer">
             <MessageCircle size={16} /> WhatsApp us <ArrowUpRight size={15} />
           </a>
         </div>
@@ -42,10 +47,10 @@ export default function Footer() {
         <div className="footer-links-panel">
           <h3>Quick Links</h3>
           <div className="footer-links">
-            <Link to="/jobs"><BriefcaseBusiness size={16} /> Jobs</Link>
-            <Link to="/candidate/register"><FileSearch size={16} /> Candidate Register</Link>
-            <Link to="/employer/register"><BriefcaseBusiness size={16} /> Employer Register</Link>
-            <Link to="/blog"><FileSearch size={16} /> Blog</Link>
+            <Link to="/"><BriefcaseBusiness size={16} /> Home</Link>
+            <Link to="/about"><FileSearch size={16} /> About Us</Link>
+            <Link to="/services"><BriefcaseBusiness size={16} /> Services</Link>
+            <Link to="/jobs"><BriefcaseBusiness size={16} /> Careers</Link>
             <Link to="/contact"><MessageCircle size={16} /> Contact Us</Link>
           </div>
         </div>
@@ -61,6 +66,9 @@ export default function Footer() {
           <p className="footer-note">
             Recruitment made with clarity, speed, and trust.
           </p>
+          <p className="footer-note" style={{ color: '#10b981', fontSize: '0.75rem' }}>
+            Empowering Businesses. Connecting Talent. Creating Opportunities.
+          </p>
           <img
             className="footer-team-image"
             src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=700&q=85"
@@ -69,8 +77,8 @@ export default function Footer() {
         </div>
       </div>
       <div className="shell footer-bottom">
-        <span>&copy; 2025 {siteContent.brandName}. All rights reserved.</span>
-        <span>Built for a modern recruitment workflow.</span>
+        <span>&copy; 2026 HEXORA GLOBAL GROUP (PVT) LTD. All Rights Reserved.</span>
+        <span>Empowering Businesses. Connecting Talent. Creating Opportunities.</span>
       </div>
     </footer>
   );

@@ -2,252 +2,166 @@ import { Link } from 'react-router-dom';
 import {
   ArrowRight,
   BadgeCheck,
-  BriefcaseBusiness,
   CheckCircle2,
   Eye,
+  Globe2,
   Heart,
-  LockKeyhole,
+  Mail,
   MessageCircle,
-  Rocket,
-  SearchCheck,
-  ShieldCheck,
+  Phone,
   Sparkles,
-  TargetIcon,
-  TrendingUp,
-  UserCheck,
+  Star,
+  Target,
+  UploadCloud,
   Users
 } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
-import { siteContent } from '../../data/siteContent';
+import Button from '../../components/ui/Button';
 import './AboutPage.css';
 
-const images = {
-  hero: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1100&q=85',
-  jobSeeker: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=760&q=85',
-  employer: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=760&q=85',
-  team: 'https://images.unsplash.com/photo-1573497491208-6b1acb260507?auto=format&fit=crop&w=760&q=85',
-  cta: 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=900&q=85'
-};
-
 export default function AboutPage() {
-  const storyCards = [
-    { icon: TargetIcon, title: 'Our mission', text: siteContent.mission },
-    { icon: Eye, title: 'Our vision', text: siteContent.vision },
-    { icon: Heart, title: 'Our values', text: siteContent.values }
-  ];
-
-  const whoWeServe = [
-    {
-      icon: Users,
-      title: 'Job Seekers',
-      desc: 'Find roles that match your skills and career goals with a transparent, supportive hiring process.',
-      image: images.jobSeeker
-    },
-    {
-      icon: BriefcaseBusiness,
-      title: 'Employers',
-      desc: 'Access verified talent, streamline hiring workflows, and hire faster with confidence.',
-      image: images.employer
-    },
-    {
-      icon: UserCheck,
-      title: 'Recruitment Teams',
-      desc: 'Manage hiring pipelines with practical tools, structured reviews, and collaborative workflows.',
-      image: images.team
-    }
-  ];
-
-  const whyChoose = [
-    { icon: CheckCircle2, title: 'Clear workflow', desc: 'Transparent processes at every step for candidates, employers, and teams.' },
-    { icon: Rocket, title: 'Faster matching', desc: 'Intelligent matching and smart recommendations help save time.' },
-    { icon: Heart, title: 'Candidate-focused', desc: 'We prioritize experience, fairness, and long-term success.' },
-    { icon: TrendingUp, title: 'Proven results', desc: 'Track record of quality placements and successful business impact.' }
-  ];
-
-  const howItWorks = [
-    { step: 1, icon: SearchCheck, title: 'Understand needs', desc: 'We learn about your requirements, goals, and team dynamics.' },
-    { step: 2, icon: Users, title: 'Connect talent', desc: 'Smartly match people with the right roles and great opportunities.' },
-    { step: 3, icon: MessageCircle, title: 'Support process', desc: 'We guide candidates and employers through interviews and onboarding.' },
-    { step: 4, icon: ShieldCheck, title: 'Build trust', desc: 'Long-term partnerships built on transparency, quality, and results.' }
-  ];
-
-  const stats = [
-    { icon: TrendingUp, value: '250+', label: 'Active Roles' },
-    { icon: BriefcaseBusiness, value: '120+', label: 'Hiring Partners' },
-    { icon: Users, value: '15k+', label: 'Candidate Matches' },
-    { icon: BadgeCheck, value: '30+', label: 'Cities Covered' }
-  ];
-
   return (
     <>
-      <Seo title="About HEXORA" description="Learn about HEXORA's recruitment-first approach to corporate hiring and talent acquisition." />
+      <Seo title="About Us | HEXORA GLOBAL GROUP" description="Learn about HEXORA GLOBAL GROUP (PVT) LTD - a diversified Sri Lankan business group providing innovative solutions in Talent Acquisition, HR Consulting, Global Trade, Food Products, and Business Consulting." />
 
-      <section className="about-hero-shell">
-        <div className="about-hero-ambient about-hero-ambient-a" aria-hidden="true" />
-        <div className="about-hero-ambient about-hero-ambient-b" aria-hidden="true" />
+      {/* Hero Banner */}
+      <section className="about-hero-section">
+        <div className="about-hero-ambient" aria-hidden="true" />
+        <div className="shell about-hero-content">
+          <h1>HEXORA GLOBAL GROUP (PVT) LTD</h1>
+          <p className="about-hero-subtitle">Empowering Businesses. Connecting Talent. Creating Opportunities.</p>
+          <p className="about-hero-desc">
+            HEXORA GLOBAL GROUP (PVT) LTD is a diversified business group providing innovative solutions in Talent Acquisition, HR Consulting, Global Trade, Food Products, and Business Consulting.
+          </p>
+          <p className="about-hero-desc">
+            We help businesses grow through strategic workforce solutions, operational excellence, and global business partnerships.
+          </p>
+          <p className="about-hero-tagline">Your Trusted Partner for Growth & Success.</p>
+          <div className="about-hero-actions">
+            <Button as={Link} to="/contact" size="lg">Contact Us <ArrowRight size={18} /></Button>
+            <Button as={Link} to="/services" variant="secondary" size="lg">Explore Services <ArrowRight size={18} /></Button>
+          </div>
+        </div>
+      </section>
 
-        <div className="shell about-hero-grid">
-          <div className="about-hero-copy">
-            <span className="about-badge"><Sparkles size={15} /> AI-Powered Hiring</span>
-            <h1>A GLOBAL GROUP built for clarity, speed, and <span>results</span></h1>
+      {/* About Us Section */}
+      <section className="about-who-section">
+        <div className="shell about-who-grid">
+          <div className="about-who-content">
+            <div className="about-section-badge">About Us</div>
+            <h2>Who We Are</h2>
             <p>
-              We believe hiring should be transparent, fair, and efficient. HEXORA connects
-              exceptional talent with businesses that value them, every single day.
+              HEXORA GLOBAL GROUP (PVT) LTD is a Sri Lankan-based business group committed to delivering professional services and business solutions across multiple industries.
             </p>
-
-            <div className="about-hero-ctas">
-              <Link to="/jobs" className="about-btn about-btn-primary">Explore Jobs <ArrowRight size={17} /></Link>
-              <Link to="/contact" className="about-btn about-btn-soft">Contact Us</Link>
-            </div>
-
-            <div className="about-trust-row">
-              <span><BadgeCheck size={16} /> Verified Employers</span>
-              <span><LockKeyhole size={16} /> Secure & Private</span>
-              <span><Sparkles size={16} /> AI Matchmaking</span>
-            </div>
+            <p>
+              With expertise spanning recruitment, human resource management, international trade, food products, and business consulting, we support organizations in achieving sustainable growth while creating opportunities for individuals and businesses alike.
+            </p>
+            <p>
+              Our mission is to build long-term partnerships through integrity, innovation, and excellence.
+            </p>
           </div>
-
-          <div className="about-hero-visual">
-            <img src={images.hero} alt="Recruiters and candidates collaborating in a modern office" />
-            <div className="about-float-card top-match">
-              <small>Top Match</small>
-              <strong>98%</strong>
+          <div className="about-who-cards">
+            <div className="about-mission-card">
+              <span className="about-card-icon"><Target size={28} /></span>
+              <h3>Our Vision</h3>
+              <p>To become a globally recognized business group delivering innovative solutions that empower people and businesses.</p>
             </div>
-            <div className="about-float-card progress-card">
-              <small>Hiring Progress</small>
-              <strong>75%</strong>
-              <span>Shortlisted 12/16</span>
-            </div>
-            <div className="about-float-card candidate-card">
-              <img src={images.jobSeeker} alt="" />
-              <div>
-                <small>Recommended Candidate</small>
-                <strong>Sarah Johnson</strong>
-                <span>Product Designer</span>
-              </div>
-            </div>
-            <div className="about-float-card talent-pool">
-              <small>Talent Pool</small>
-              <div className="about-avatar-stack">
-                {[images.jobSeeker, images.employer, images.team].map((src) => <img src={src} alt="" key={src} />)}
-                <span>+240</span>
-              </div>
+            <div className="about-mission-card">
+              <span className="about-card-icon"><Heart size={28} /></span>
+              <h3>Our Mission</h3>
+              <p>To provide exceptional services that drive business success, create employment opportunities, and contribute to economic growth through professionalism, trust, and innovation.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="about-story-shell">
-        <div className="shell about-story-grid">
-          {storyCards.map(({ icon: Icon, title, text }) => (
-            <article className="about-story-card" key={title}>
-              <span className="about-card-icon"><Icon size={24} /></span>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="about-serve-shell">
+      {/* Why Choose HEXORA */}
+      <section className="about-why-section">
         <div className="shell">
           <div className="about-section-header">
-            <h2>Who we serve</h2>
-            <p>Supporting every participant in the recruitment journey with practical, trusted tools and support.</p>
+            <h2>WHY CHOOSE HEXORA</h2>
           </div>
-
-          <div className="about-serve-grid">
-            {whoWeServe.map(({ icon: Icon, title, desc, image }) => (
-              <article className="about-serve-card" key={title}>
-                <img src={image} alt={`${title} using HEXORA`} />
-                <div className="about-serve-content">
-                  <span className="about-card-icon"><Icon size={22} /></span>
-                  <h3>{title}</h3>
-                  <p>{desc}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="about-why-shell">
-        <div className="shell">
-          <div className="about-section-header">
-            <h2>Why choose HEXORA</h2>
-            <p>Built on a foundation of clarity, speed, practice, support, and proven results.</p>
-          </div>
-
           <div className="about-why-grid">
-            {whyChoose.map(({ icon: Icon, title, desc }) => (
-              <article className="about-why-card" key={title}>
-                <span className="about-card-icon diamond"><Icon size={21} /></span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{desc}</p>
-                </div>
-              </article>
-            ))}
+            <div className="about-why-card">
+              <div className="about-why-icon"><BadgeCheck size={28} /></div>
+              <h3>Professional Expertise</h3>
+              <p>Our team brings industry knowledge and practical experience across multiple sectors.</p>
+            </div>
+            <div className="about-why-card">
+              <div className="about-why-icon"><Users size={28} /></div>
+              <h3>Trusted Partnerships</h3>
+              <p>We focus on building long-term relationships based on transparency and trust.</p>
+            </div>
+            <div className="about-why-card">
+              <div className="about-why-icon"><Sparkles size={28} /></div>
+              <h3>Customized Solutions</h3>
+              <p>Every business is unique. We tailor our solutions to meet your specific requirements.</p>
+            </div>
+            <div className="about-why-card">
+              <div className="about-why-icon"><Globe2 size={28} /></div>
+              <h3>Global Perspective</h3>
+              <p>We help organizations explore opportunities beyond borders through our extensive network.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="about-process-shell">
+      {/* Careers Section */}
+      <section className="about-careers-section">
+        <div className="shell">
+          <div className="about-careers-content">
+            <h2>Looking for Your Next Opportunity?</h2>
+            <p>Explore exciting career opportunities with leading organizations.</p>
+            <p>Submit your CV and let our recruitment specialists connect you with the right opportunity.</p>
+            <Button as={Link} to="/candidate/register" size="lg">Upload CV <UploadCloud size={18} /></Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Clients Section */}
+      <section className="about-clients-section">
         <div className="shell">
           <div className="about-section-header">
-            <h2>How we work</h2>
-            <p>Our proven 4-step approach to connecting talent with opportunity.</p>
+            <h2>Trusted by Growing Businesses</h2>
+            <p>Partnering with startups, SMEs, and established organizations across various industries.</p>
           </div>
-
-          <div className="about-process-grid">
-            {howItWorks.map(({ step, icon: Icon, title, desc }) => (
-              <article className="about-process-card" key={title}>
-                <span className="about-step-badge">{step}</span>
-                <div>
-                  <h3>{title}</h3>
-                  <p>{desc}</p>
-                </div>
-                <span className="about-process-icon"><Icon size={32} /></span>
-              </article>
+          <div className="about-clients-strip">
+            {['IT Startups', 'SMEs', 'Corporations', 'Financial Institutions', 'Manufacturing Firms', 'Service Providers'].map((client) => (
+              <span key={client} className="about-client-tag">{client}</span>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="about-stats-shell">
-        <div className="shell about-stats-grid">
-          {stats.map(({ icon: Icon, value, label }) => (
-            <article className="about-stat-card" key={label}>
-              <span><Icon size={34} /></span>
-              <div>
-                <strong>{value}</strong>
-                <p>{label}</p>
+      {/* Testimonials */}
+      <section className="about-testimonials-section">
+        <div className="shell">
+          <div className="about-section-header">
+            <h2>What Our Clients Say</h2>
+          </div>
+          <div className="about-testimonials-grid">
+            <div className="about-testimonial-card">
+              <div className="about-stars">
+                {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} fill="#eab308" color="#eab308" />)}
               </div>
-            </article>
-          ))}
+              <p>"HEXORA helped us identify top talent quickly and efficiently."</p>
+            </div>
+            <div className="about-testimonial-card">
+              <div className="about-stars">
+                {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} fill="#eab308" color="#eab308" />)}
+              </div>
+              <p>"Their HR consulting services streamlined our operations and improved productivity."</p>
+            </div>
+            <div className="about-testimonial-card">
+              <div className="about-stars">
+                {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} fill="#eab308" color="#eab308" />)}
+              </div>
+              <p>"Professional, responsive, and reliable recruitment partner."</p>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="about-cta-shell">
-        <div className="shell about-cta-card">
-          <div className="about-cta-copy">
-            <h2>Ready to connect with the right talent?</h2>
-            <p>Join hundreds of companies and job seekers who trust HEXORA for clarity, speed, and fair recruitment.</p>
-            <div className="about-cta-buttons">
-              <Link to="/contact" className="about-btn about-btn-light">Contact Us <ArrowRight size={17} /></Link>
-              <Link to="/jobs" className="about-btn about-btn-outline">View Open Roles <ArrowRight size={17} /></Link>
-            </div>
-          </div>
-          <div className="about-cta-visual" aria-hidden="true">
-            <img src={images.cta} alt="" />
-            <div className="mini-job-card">
-              <small>Senior Product Designer</small>
-              <strong>Full-time · Remote</strong>
-              <span>Apply Now</span>
-            </div>
-          </div>
-        </div>
-      </section>
     </>
   );
 }

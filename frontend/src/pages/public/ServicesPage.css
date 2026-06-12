@@ -491,6 +491,341 @@
   line-height: 1.58;
 }
 
+/* --- HEXORA GLOBAL GROUP - ADDITIONAL STYLES --- */
+.hexora-divisions-section .shell,
+.hexora-industries-section .shell,
+.hexora-careers-section .shell,
+.hexora-clients-section .shell,
+.hexora-testimonials-section .shell,
+.hexora-cta-section .shell,
+.services-cards-shell .shell,
+.services-section-header .shell {
+  /* use global .shell styles */
+}
+
+.hexora-divisions-section {
+  padding: 5rem 0;
+  background: #f9fafb;
+}
+
+.hexora-division-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hexora-division-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+
+.hexora-division-talent { border-left: 5px solid #10b981; }
+.hexora-division-hr { border-left: 5px solid #3b82f6; }
+.hexora-division-trade { border-left: 5px solid #8b5cf6; }
+.hexora-division-foods { border-left: 5px solid #f59e0b; }
+.hexora-division-business { border-left: 5px solid #ef4444; }
+
+.hexora-division-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hexora-division-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.hexora-division-talent .hexora-division-icon { background: rgba(16,185,129,0.1); color: #10b981; }
+.hexora-division-hr .hexora-division-icon { background: rgba(59,130,246,0.1); color: #3b82f6; }
+.hexora-division-trade .hexora-division-icon { background: rgba(139,92,246,0.1); color: #8b5cf6; }
+.hexora-division-foods .hexora-division-icon { background: rgba(245,158,11,0.1); color: #f59e0b; }
+.hexora-division-business .hexora-division-icon { background: rgba(239,68,68,0.1); color: #ef4444; }
+
+.hexora-division-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #111827;
+}
+
+.hexora-division-tagline {
+  margin: 0.2rem 0 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.hexora-division-desc {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0.5rem 0;
+}
+
+.hexora-division-text {
+  color: #6b7280;
+  line-height: 1.7;
+  margin: 0 0 1.5rem;
+}
+
+.hexora-division-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.hexora-division-col h4 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #6b7280;
+  margin: 0 0 1rem;
+}
+
+.hexora-division-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.hexora-division-col li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #374151;
+  font-size: 0.95rem;
+}
+
+.hexora-division-col li svg {
+  flex-shrink: 0;
+  color: #10b981;
+}
+
+.hexora-benefits-list li svg {
+  color: #3b82f6;
+}
+
+.hexora-division-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.hexora-commitment {
+  color: #f59e0b;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.hexora-industries-section {
+  padding: 5rem 0;
+  background: #fff;
+}
+
+.hexora-industries-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hexora-industry-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(16,185,129,0.2);
+  background: rgba(16,185,129,0.05);
+  color: #065f46;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.hexora-industry-tag:hover {
+  background: rgba(16,185,129,0.1);
+  border-color: rgba(16,185,129,0.4);
+  transform: translateY(-2px);
+}
+
+.hexora-industry-tag svg {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.hexora-careers-section {
+  padding: 5rem 0;
+  color: #fff;
+  text-align: center;
+  position: relative;
+}
+
+.hexora-careers-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1920&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.hexora-careers-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%);
+  z-index: 1;
+}
+
+.hexora-careers-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.hexora-careers-content h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  margin: 0 0 0.75rem;
+}
+
+.hexora-careers-content p {
+  color: rgba(255,255,255,0.75);
+  line-height: 1.7;
+  margin: 0 0 0.5rem;
+}
+
+.hexora-careers-btn {
+  margin-top: 1.5rem !important;
+}
+
+.hexora-clients-section {
+  padding: 4rem 0;
+  background: #f9fafb;
+}
+
+.hexora-clients-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hexora-client-tag {
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.06);
+  color: #374151;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.hexora-testimonials-section {
+  padding: 5rem 0;
+  background: #fff;
+}
+
+.hexora-testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.hexora-testimonial-card {
+  padding: 2rem;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #f9fafb;
+  text-align: center;
+}
+
+.hexora-stars {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.hexora-testimonial-card p {
+  color: #374151;
+  line-height: 1.6;
+  font-style: italic;
+  margin: 0;
+}
+
+.hexora-cta-section {
+  padding: 5rem 0;
+  background: linear-gradient(135deg, #0a1a14, #0d2b1f);
+  color: #fff;
+  text-align: center;
+}
+
+.hexora-cta-content {
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.hexora-cta-content h2 {
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  margin: 0 0 1rem;
+  color: #fff;
+}
+
+.hexora-cta-content p {
+  color: rgba(255,255,255,0.75);
+  margin: 0 0 1.5rem;
+  font-size: 1.05rem;
+}
+
+.hexora-contact-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.hexora-contact-info span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: rgba(255,255,255,0.85);
+}
+
+.hexora-contact-info svg {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.hexora-hours {
+  color: rgba(255,255,255,0.6) !important;
+  font-size: 0.9rem !important;
+  margin-bottom: 2rem !important;
+}
+
+/* Keep old responsive */
 @keyframes serviceFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
@@ -529,7 +864,6 @@
   .service-card:nth-child(5) {
     grid-column: auto;
   }
-
 }
 
 @media (max-width: 720px) {
@@ -578,5 +912,33 @@
   .services-how-it-works-shell,
   .services-why-choose-shell {
     padding: 3.2rem 0;
+  }
+
+  .hexora-division-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .hexora-division-card {
+    padding: 1.5rem;
+  }
+
+  .hexora-testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hexora-contact-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hexora-industries-grid {
+    gap: 0.5rem;
+  }
+
+  .hexora-industry-tag {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.85rem;
   }
 }

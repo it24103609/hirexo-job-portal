@@ -9,6 +9,7 @@ import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import BrandIdentity from '../../components/layout/BrandIdentity';
 import LoginRecaptcha from '../../components/auth/LoginRecaptcha';
+import SocialLoginButtons from '../../components/auth/SocialLoginButtons';
 import { loginSchema } from '../../utils/validators';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -66,6 +67,7 @@ export default function EmployerLoginPage() {
               </div>
               <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Signing in...' : 'Sign in'}</Button>
             </form>
+            <SocialLoginButtons />
             <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #eee', textAlign: 'center' }}>
               <p className="text-sm" style={{ color: '#666', marginBottom: '0.75rem' }}>
                 Don't have an account?{' '}
