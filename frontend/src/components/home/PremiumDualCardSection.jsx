@@ -101,7 +101,7 @@ function ActionCard({ id, badge, heading, description, highlights, stats, cta, s
           <img
             src={image}
             alt={imageAlt}
-className={`absolute bottom-55 right-2 z-[24] scale-140 w-[120%] h-auto object-contain object-right-bottom drop-shadow-[0_8px_22px_rgba(15,81,58,0.16)]`}      
+className={`absolute bottom-10 right--2 z-[24] scale-140 w-[120%] h-auto object-contain object-right-bottom drop-shadow-[0_8px_22px_rgba(15,81,58,0.16)]`}      
           />
           {visual}
         </div>
