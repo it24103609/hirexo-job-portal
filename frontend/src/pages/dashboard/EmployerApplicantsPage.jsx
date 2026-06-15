@@ -1,6 +1,21 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { CalendarClock, CircleAlert, Download, Grip, Mail, Sparkles, Target } from 'lucide-react';
+import {
+  CalendarClock,
+  CalendarPlus,
+  ChevronDown,
+  CircleAlert,
+  Download,
+  FileText,
+  Grip,
+  Mail,
+  MessageCircle,
+  MoreHorizontal,
+  Sparkles,
+  Target,
+  Trash2,
+  UserPlus
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -346,14 +361,12 @@ export default function EmployerApplicantsPage() {
         </div>
       </section>
 
-      <Card className="employer-panel">
-        <div className="grid-4">
+      <Card className="employer-panel employer-filter-panel">
+        <div className="employer-filter-grid">
           <Input label="Keyword" value={filters.keyword} onChange={(e) => setFilters((current) => ({ ...current, keyword: e.target.value }))} placeholder="Name, email, headline" />
           <Input label="Skills" value={filters.skills} onChange={(e) => setFilters((current) => ({ ...current, skills: e.target.value }))} placeholder="React, Node.js" />
           <Input label="Min experience" type="number" value={filters.minExperience} onChange={(e) => setFilters((current) => ({ ...current, minExperience: e.target.value }))} placeholder="2" />
           <Input label="Education keyword" value={filters.education} onChange={(e) => setFilters((current) => ({ ...current, education: e.target.value }))} placeholder="B.Tech, MBA" />
-        </div>
-        <div className="grid-4">
           <Select label="Sort by" value={filters.sortBy} onChange={(e) => setFilters((current) => ({ ...current, sortBy: e.target.value }))}>
             <option value="ai">AI match score</option>
             <option value="recent">Most recent</option>
@@ -469,6 +482,8 @@ export default function EmployerApplicantsPage() {
                 const bookedSlot = (application.interviewSlots || []).find((item) => item.isBooked);
                 const planner = slotPlanners[application._id];
                 const panelOpen = Boolean(planner?.open);
+                const visibleSkills = (application.candidateProfile?.skills || []).slice(0, 4);
+                const extraSkillCount = Math.max(0, (application.candidateProfile?.skills || []).length - visibleSkills.length);
 
                 return (
                   <article
@@ -479,47 +494,28 @@ export default function EmployerApplicantsPage() {
                     onDragEnd={() => setDraggingId('')}
                   >
                     <div className="employer-applicant-top">
-                      <div>
-                        <label className="checkbox-row" style={{ marginBottom: 8 }}>
+                      <div className="employer-candidate-identity">
+                        <label className="checkbox-row employer-select-row">
                           <input type="checkbox" checked={selectedIds.includes(application._id)} onChange={() => toggleSelected(application._id)} />
                           <span>Select</span>
                         </label>
-                        <strong>{application.candidateUser?.name || 'Candidate'}</strong>
+                        <h4>{application.candidateUser?.name || 'Candidate'}</h4>
                         <p>{application.candidateUser?.email || 'No email'}</p>
                       </div>
-                      <Badge tone={application.aiMatchScore >= 80 ? 'success' : application.aiMatchScore >= 60 ? 'neutral' : 'danger'}>
+                      <Badge className="employer-match-score" tone={application.aiMatchScore >= 80 ? 'success' : application.aiMatchScore >= 60 ? 'neutral' : 'danger'}>
                         {application.aiMatchScore ?? 0}%
                       </Badge>
                     </div>
 
-                    <div className="employer-ai-summary">
-                      <p>{ai.summary || 'AI summary unavailable.'}</p>
-                      <div className="employer-ai-pills">
-                        <span>Skills {application.aiMatchBreakdown?.skills ?? 0}</span>
-                        <span>Experience {application.aiMatchBreakdown?.experience ?? 0}</span>
-                        <span>Profile {application.aiMatchBreakdown?.profile ?? 0}</span>
-                      </div>
-                    </div>
-
-                    <div className="employer-ai-list">
-                      {(ai.highlights || []).slice(0, 2).map((item) => <small key={item}>{item}</small>)}
-                      {(ai.concerns || []).slice(0, 1).map((item) => <small key={item} className="is-warning">{item}</small>)}
-                    </div>
-
-                    <div className="employer-candidate-meta">
-                      <span>{(application.candidateProfile?.skills || []).slice(0, 3).join(', ') || 'Skills not added'}</span>
+                    <div className="employer-card-snapshot">
                       <span>{application.candidateProfile?.experienceYears ?? 0} years exp</span>
+                      <span>{application.candidateProfile?.headline || 'Profile summary pending'}</span>
                     </div>
 
-                    {(application.screeningAnswers || []).length ? (
-                      <div className="employer-ai-list">
-                        {application.screeningAnswers.slice(0, 2).map((item) => (
-                          <small key={`${application._id}-${item.questionId}`}>
-                            {item.question}: {item.answer || 'No answer'}
-                          </small>
-                        ))}
-                      </div>
-                    ) : null}
+                    <div className="employer-skill-chips" aria-label="Candidate skills">
+                      {visibleSkills.length ? visibleSkills.map((skill) => <span key={`${application._id}-${skill}`}>{skill}</span>) : <span>Skills not added</span>}
+                      {extraSkillCount ? <span>+{extraSkillCount}</span> : null}
+                    </div>
 
                     {application.interviewScheduledAt ? (
                       <div className="employer-booked-slot">
@@ -537,42 +533,76 @@ export default function EmployerApplicantsPage() {
                       <Select value={application.status} onChange={async (e) => { await updateStatus(application._id, e.target.value); }}>
                         {PIPELINE_COLUMNS.map((item) => <option key={item.key} value={item.key}>{item.label}</option>)}
                       </Select>
-                      <Button size="sm" variant="secondary" onClick={() => openSlotPlanner(application)}>Slots</Button>
-                      <Button size="sm" variant="secondary" onClick={async () => { await toggleMessagePanel(application._id); }}>Message</Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={async () => {
-                          await employerApi.bulkApplicants({ action: 'add_to_talent_pool', applicationIds: [application._id] });
-                          toast.success('Candidate added to talent pool');
-                        }}
-                      >
-                        Talent
-                      </Button>
-                      <Button as={Link} to={`/employer/applicants/${application._id}`} size="sm" variant="ghost">Details</Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={async () => {
-                          const blob = await applicationsApi.downloadResume(application._id);
-                          const url = URL.createObjectURL(blob);
-                          window.open(url, '_blank', 'noopener,noreferrer');
-                          setTimeout(() => URL.revokeObjectURL(url), 1000);
-                        }}
-                      >
-                        <Download size={14} /> Resume
-                      </Button>
+                      <Button size="sm" variant="secondary" onClick={() => openSlotPlanner(application)}><CalendarPlus size={14} /> Slots</Button>
+                      <Button size="sm" variant="secondary" onClick={async () => { await toggleMessagePanel(application._id); }}><MessageCircle size={14} /> Message</Button>
+                      <details className="employer-action-menu">
+                        <summary aria-label="More candidate actions"><MoreHorizontal size={16} /></summary>
+                        <div className="employer-action-menu-list">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={async () => {
+                              await employerApi.bulkApplicants({ action: 'add_to_talent_pool', applicationIds: [application._id] });
+                              toast.success('Candidate added to talent pool');
+                            }}
+                          >
+                            <UserPlus size={14} /> Talent pool
+                          </Button>
+                          <Button as={Link} to={`/employer/applicants/${application._id}`} size="sm" variant="ghost"><FileText size={14} /> Details</Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={async () => {
+                              const blob = await applicationsApi.downloadResume(application._id);
+                              const url = URL.createObjectURL(blob);
+                              window.open(url, '_blank', 'noopener,noreferrer');
+                              setTimeout(() => URL.revokeObjectURL(url), 1000);
+                            }}
+                          >
+                            <Download size={14} /> Resume
+                          </Button>
+                        </div>
+                      </details>
                     </div>
 
-                    {application.interviewFeedback?.submittedAt ? (
-                      <div className="employer-ai-summary">
-                        <p>
-                          Interview feedback: {application.interviewFeedback.recommendation?.replace(/_/g, ' ') || 'not set'}
-                          {' · '}
-                          {formatDate(application.interviewFeedback.submittedAt)}
-                        </p>
+                    <details className="employer-card-details">
+                      <summary>Review context <ChevronDown size={14} /></summary>
+                      <div className="employer-card-details-body">
+                        <div className="employer-ai-summary">
+                          <p>{ai.summary || 'AI summary unavailable.'}</p>
+                          <div className="employer-ai-pills">
+                            <span>Skills {application.aiMatchBreakdown?.skills ?? 0}</span>
+                            <span>Experience {application.aiMatchBreakdown?.experience ?? 0}</span>
+                            <span>Profile {application.aiMatchBreakdown?.profile ?? 0}</span>
+                          </div>
+                        </div>
+
+                        <div className="employer-ai-list">
+                          {(ai.highlights || []).slice(0, 2).map((item) => <small key={item}>{item}</small>)}
+                          {(ai.concerns || []).slice(0, 1).map((item) => <small key={item} className="is-warning">{item}</small>)}
+                        </div>
+
+                        {(application.screeningAnswers || []).length ? (
+                          <div className="employer-ai-list">
+                            {application.screeningAnswers.slice(0, 2).map((item) => (
+                              <small key={`${application._id}-${item.questionId}`}>
+                                {item.question}: {item.answer || 'No answer'}
+                              </small>
+                            ))}
+                          </div>
+                        ) : null}
+
+                        {application.interviewFeedback?.submittedAt ? (
+                          <div className="employer-ai-summary">
+                            <p>
+                              Interview feedback: {application.interviewFeedback.recommendation?.replace(/_/g, ' ') || 'not set'}
+                              {' - '}
+                              {formatDate(application.interviewFeedback.submittedAt)}
+                            </p>
+                          </div>
+                        ) : null}
                       </div>
-                    ) : null}
+                    </details>
 
                     {panelOpen ? (
                       <div className="employer-slot-planner">
@@ -581,10 +611,10 @@ export default function EmployerApplicantsPage() {
                             <h4 style={{ margin: 0 }}>Interview Slot Booking</h4>
                             <p className="m-0">Share options, then confirm one slot when ready.</p>
                           </div>
-                          <Badge tone="neutral">{planner.slots.length} slots</Badge>
+                          <Badge className="employer-slot-count" tone="neutral">{planner.slots.length} slots</Badge>
                         </div>
 
-                        <div className="grid-4">
+                        <div className="employer-slot-config">
                           <Select label="Mode" value={planner.mode} onChange={(e) => updateSlotPlanner(application._id, 'mode', e.target.value)}>
                             <option value="phone">Phone</option>
                             <option value="video">Video</option>
@@ -593,22 +623,44 @@ export default function EmployerApplicantsPage() {
                           <Input label="Location / platform" value={planner.location} onChange={(e) => updateSlotPlanner(application._id, 'location', e.target.value)} placeholder="Google Meet / Office address" />
                           <Input label="Meeting link" value={planner.meetingLink} onChange={(e) => updateSlotPlanner(application._id, 'meetingLink', e.target.value)} placeholder="https://..." />
                         </div>
-                        <Textarea label="Notes" value={planner.notes} onChange={(e) => updateSlotPlanner(application._id, 'notes', e.target.value)} placeholder="Agenda, panel, prep notes" />
+                        <details className="employer-notes-drawer">
+                          <summary>Notes <ChevronDown size={14} /></summary>
+                          <Textarea label="Notes" value={planner.notes} onChange={(e) => updateSlotPlanner(application._id, 'notes', e.target.value)} placeholder="Agenda, panel, prep notes" />
+                        </details>
 
                         <div className="employer-slot-list">
+                          <div className="employer-slot-list-head" aria-hidden="true">
+                            <span>#</span>
+                            <span>Start</span>
+                            <span>End</span>
+                            <span></span>
+                          </div>
                           {planner.slots.map((slot, index) => (
                             <div key={`${application._id}-slot-${index}`} className="employer-slot-row">
-                              <Input label={`Start ${index + 1}`} type="datetime-local" value={slot.startsAt} onChange={(e) => updateSlotValue(application._id, index, 'startsAt', e.target.value)} />
+                              <span className="employer-slot-index">{index + 1}</span>
+                              <Input label="Start" type="datetime-local" value={slot.startsAt} onChange={(e) => updateSlotValue(application._id, index, 'startsAt', e.target.value)} />
                               <Input label="End" type="datetime-local" value={slot.endsAt} onChange={(e) => updateSlotValue(application._id, index, 'endsAt', e.target.value)} />
-                              <Button type="button" variant="ghost" size="sm" onClick={() => removeSlotRow(application._id, index)}>Remove</Button>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                className="employer-slot-delete"
+                                aria-label={`Remove slot ${index + 1}`}
+                                title={`Remove slot ${index + 1}`}
+                                onClick={() => removeSlotRow(application._id, index)}
+                              >
+                                <Trash2 size={14} />
+                              </Button>
                             </div>
                           ))}
                         </div>
 
-                        <div className="dashboard-actions">
-                          <Button size="sm" variant="ghost" onClick={() => addSlotRow(application._id)}>Add slot</Button>
-                          <Button size="sm" variant="secondary" onClick={async () => { await saveSlots(application._id); }}>Save slots</Button>
+                        <div className="employer-slot-action-bar">
                           <Button size="sm" variant="ghost" onClick={() => closeSlotPlanner(application._id)}>Close</Button>
+                          <div>
+                            <Button size="sm" variant="ghost" onClick={() => addSlotRow(application._id)}>Add slot</Button>
+                            <Button size="sm" variant="secondary" onClick={async () => { await saveSlots(application._id); }}>Save slots</Button>
+                          </div>
                         </div>
 
                         {(application.interviewSlots || []).length ? (
