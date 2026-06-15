@@ -245,7 +245,7 @@ const listApplications = asyncHandler(async (req, res) => {
 
   const [applications, pendingCount, reviewedCount, shortlistedCount, rejectedCount, interviewCount, hiredCount, totalCount] = await Promise.all([
     Application.find(filter)
-      .populate('job', 'title companyName')
+      .populate('job', 'title companyName image')
       .populate('candidateUser', 'name email')
       .populate('employerUser', 'name email')
       .sort({ createdAt: -1 })

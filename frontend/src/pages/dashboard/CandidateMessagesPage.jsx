@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MessageSquare, Paperclip, Search, Send, Smile } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Paperclip, Search, Send, Smile } from 'lucide-react';
 import { toast } from 'react-toastify';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
@@ -16,6 +16,18 @@ function getInitials(name = '') {
   const parts = String(name).trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return 'E';
   return parts.slice(0, 2).map((part) => part[0]?.toUpperCase() || '').join('');
+}
+
+function truncateName(name = '', maxLength = 12) {
+  const str = String(name);
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength) + '...';
+}
+
+function truncateJobTitle(title = '', maxLength = 10) {
+  const str = String(title);
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength) + '...';
 }
 
 function formatApplicationStatus(status = '') {
@@ -77,6 +89,7 @@ export default function CandidateMessagesPage() {
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
   const messagesContainerRef = useRef(null);
 
   const selectedThread = useMemo(
@@ -199,6 +212,15 @@ export default function CandidateMessagesPage() {
     }
   };
 
+  const handleThreadClick = (threadId) => {
+    setSelectedId(threadId);
+    setIsMobileChatOpen(true);
+  };
+
+  const handleBackToThreads = () => {
+    setIsMobileChatOpen(false);
+  };
+
   const composerPlaceholder = recipientRole === ROLES.ADMIN
     ? 'Reply to admin...'
     : 'Ask about next steps or interview details...';
@@ -221,7 +243,7 @@ export default function CandidateMessagesPage() {
           </Card>
         ) : (
           <div className="candidate-wa-messenger">
-            <aside className="candidate-wa-sidebar" aria-label="Application message threads">
+            <aside className={`candidate-wa-sidebar ${isMobileChatOpen ? 'is-hidden' : ''}`} aria-label="Application message threads">
               <div className="candidate-wa-sidebar-top">
                 <div className="candidate-wa-sidebar-head">
                   <h2>Inbox</h2>
@@ -251,15 +273,19 @@ export default function CandidateMessagesPage() {
                       key={item._id}
                       type="button"
                       className={`candidate-wa-thread ${item._id === selectedId ? 'is-active' : ''}`}
-                      onClick={() => setSelectedId(item._id)}
+                      onClick={() => handleThreadClick(item._id)}
                     >
                       <span className="candidate-wa-avatar" aria-hidden="true">
-                        {getInitials(companyName)}
+                        {item.job?.image?.url ? (
+                          <img src={item.job.image.url} alt={`${companyName} logo`} />
+                        ) : (
+                          getInitials(companyName)
+                        )}
                       </span>
 
                       <span className="candidate-wa-thread-body">
                         <span className="candidate-wa-thread-top">
-                          <strong>{item.job?.title || 'Application'}</strong>
+                          <strong>{truncateJobTitle(item.job?.title || 'Application', 10)}</strong>
                         </span>
                         <span className="candidate-wa-thread-role">{companyName}</span>
                         <span className="candidate-wa-thread-preview">{preview}</span>
@@ -285,17 +311,29 @@ export default function CandidateMessagesPage() {
               </div>
             </aside>
 
-            <section className="candidate-wa-chat">
+            <section className={`candidate-wa-chat ${isMobileChatOpen ? 'is-visible' : ''}`}>
               {selectedThread ? (
                 <>
                   <header className="candidate-wa-chat-header">
+                    <button
+                      type="button"
+                      className="candidate-wa-back-btn"
+                      onClick={handleBackToThreads}
+                      aria-label="Back to conversations"
+                    >
+                      <ArrowLeft size={20} />
+                    </button>
                     <div className="candidate-wa-chat-identity">
                       <span className="candidate-wa-avatar" aria-hidden="true">
-                        {getInitials(selectedThread.job?.companyName || 'Employer')}
+                        {selectedThread.job?.image?.url ? (
+                          <img src={selectedThread.job.image.url} alt={`${selectedThread.job?.companyName || 'Employer'} logo`} />
+                        ) : (
+                          getInitials(selectedThread.job?.companyName || 'Employer')
+                        )}
                       </span>
                       <div className="candidate-wa-chat-identity-info">
-                        <strong>{selectedThread.job?.title || 'Application'}</strong>
-                        <span>{selectedThread.job?.companyName || 'Employer'}</span>
+                        <strong>{truncateJobTitle(selectedThread.job?.title || 'Application', 10)}</strong>
+                        <span>{truncateName(selectedThread.job?.companyName || 'Employer', 12)}</span>
                       </div>
                     </div>
                     <span className="candidate-wa-status">

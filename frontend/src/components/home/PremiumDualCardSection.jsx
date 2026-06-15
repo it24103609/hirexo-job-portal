@@ -94,17 +94,36 @@ function ActionCard({ id, badge, heading, description, highlights, stats, cta, s
         </div>
 
         <div className="relative min-h-[230px] overflow-hidden sm:min-h-[280px] lg:min-h-[26rem]">
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -right-[20%] bottom-[2%] aspect-square w-[112%] rounded-[46%_46%_0_46%] bg-gradient-to-br from-emerald-200/90 to-teal-300/35"
-          />
-          <img
-            src={image}
-            alt={imageAlt}
-className={`absolute bottom-10 right--2 z-[24] scale-140 w-[120%] h-auto object-contain object-right-bottom drop-shadow-[0_8px_22px_rgba(15,81,58,0.16)]`}      
-          />
-          {visual}
-        </div>
+  <div
+    aria-hidden="true"
+    className="pointer-events-none absolute -right-[20%] bottom-[2%] aspect-square w-[112%] rounded-[46%_46%_0_46%] bg-gradient-to-br from-emerald-200/90 to-teal-300/35"
+  />
+
+  <img
+    src={image}
+    alt={imageAlt}
+    className="
+      absolute
+      z-[24]
+      h-auto
+      object-contain
+      object-right-bottom
+      drop-shadow-[0_8px_22px_rgba(15,81,58,0.16)]
+
+      bottom-0
+      right-0
+      w-[63%]
+      scale-100
+
+      md:bottom-10
+      md:-right-2
+      md:w-[120%]
+      md:scale-140
+    "
+  />
+
+  {visual}
+</div>
       </div>
     </article>
   );
