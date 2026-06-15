@@ -238,7 +238,7 @@ const applyForJob = asyncHandler(async (req, res) => {
 
 const getMyApplications = asyncHandler(async (req, res) => {
   const applications = await Application.find({ candidateUser: req.user._id })
-    .populate('job', 'title slug companyName status reviewStatus location jobType')
+    .populate('job', 'title slug companyName status reviewStatus location jobType image')
     .sort({ createdAt: -1 });
 
   res.json(apiResponse({
@@ -255,6 +255,7 @@ const getApplicationsByJob = asyncHandler(async (req, res) => {
 
   const applications = await Application.find({ job: job._id, employerUser: req.user._id })
     .populate('candidateUser', 'name email role status')
+    .populate('job', 'title slug companyName status reviewStatus location jobType image')
     .sort({ createdAt: -1 });
 
   res.json(apiResponse({
@@ -267,7 +268,7 @@ const getApplicationById = asyncHandler(async (req, res) => {
   const application = await Application.findById(req.params.id)
     .populate('candidateUser', 'name email role status')
     .populate('employerUser', 'name email role status')
-    .populate('job', 'title slug companyName location jobType status reviewStatus description')
+    .populate('job', 'title slug companyName location jobType status reviewStatus description image')
     .lean();
 
   if (!application) {

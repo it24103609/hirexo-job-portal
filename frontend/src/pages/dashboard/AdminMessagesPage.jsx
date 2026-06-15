@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { MessageSquare, Paperclip, Search, Send, Smile } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Paperclip, Search, Send, Smile } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
@@ -17,6 +17,18 @@ function getInitials(name = '') {
   const parts = String(name).trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return 'C';
   return parts.slice(0, 2).map((part) => part[0]?.toUpperCase() || '').join('');
+}
+
+function truncateName(name = '', maxLength = 12) {
+  const str = String(name);
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength) + '...';
+}
+
+function truncateJobTitle(title = '', maxLength = 10) {
+  const str = String(title);
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength) + '...';
 }
 
 function formatApplicationStatus(status = '') {
@@ -77,6 +89,7 @@ export default function AdminMessagesPage() {
   const [draft, setDraft] = useState('');
   const [sending, setSending] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
 
@@ -192,6 +205,15 @@ export default function AdminMessagesPage() {
     }
   };
 
+  const handleThreadClick = (threadId) => {
+    setSelectedId(threadId);
+    setIsMobileChatOpen(true);
+  };
+
+  const handleBackToThreads = () => {
+    setIsMobileChatOpen(false);
+  };
+
   if (loading) return <Loader label="Loading admin messages..." />;
 
   return (
@@ -210,7 +232,7 @@ export default function AdminMessagesPage() {
         </Card>
       ) : (
         <div className="admin-wa-messenger">
-          <aside className="admin-wa-sidebar" aria-label="Message threads">
+          <aside className={`admin-wa-sidebar ${isMobileChatOpen ? 'is-hidden' : ''}`} aria-label="Message threads">
             <div className="admin-wa-sidebar-top">
               <div className="admin-wa-sidebar-head">
                 <h2>Inbox</h2>
@@ -239,7 +261,7 @@ export default function AdminMessagesPage() {
                     key={item._id}
                     type="button"
                     className={`admin-wa-thread ${item._id === selectedId ? 'is-active' : ''}`}
-                    onClick={() => setSelectedId(item._id)}
+                    onClick={() => handleThreadClick(item._id)}
                   >
                     <span className="admin-wa-avatar" aria-hidden="true">
                       {getInitials(item.candidateUser?.name || 'Candidate')}
@@ -247,10 +269,10 @@ export default function AdminMessagesPage() {
 
                     <span className="admin-wa-thread-body">
                       <span className="admin-wa-thread-top">
-                        <strong>{item.candidateUser?.name || 'Candidate'}</strong>
+                        <strong>{truncateName(item.candidateUser?.name || 'Candidate', 12)}</strong>
                       </span>
                       <span className="admin-wa-thread-role">
-                        {item.job?.title || 'Application'} · {item.job?.companyName || 'HEXORA'}
+                        {truncateJobTitle(item.job?.title || 'Application', 10)} · {truncateName(item.job?.companyName || 'HEXORA', 12)}
                       </span>
                       <span className="admin-wa-thread-preview">{preview}</span>
                     </span>
@@ -275,17 +297,25 @@ export default function AdminMessagesPage() {
             </div>
           </aside>
 
-          <section className="admin-wa-chat">
+          <section className={`admin-wa-chat ${isMobileChatOpen ? 'is-visible' : ''}`}>
             {selectedThread ? (
               <>
                 <header className="admin-wa-chat-header">
+                  <button
+                    type="button"
+                    className="admin-wa-back-btn"
+                    onClick={handleBackToThreads}
+                    aria-label="Back to conversations"
+                  >
+                    <ArrowLeft size={20} />
+                  </button>
                   <div className="admin-wa-chat-identity">
                     <span className="admin-wa-avatar" aria-hidden="true">
                       {getInitials(selectedThread.candidateUser?.name || 'Candidate')}
                     </span>
                     <div className="admin-wa-chat-identity-info">
-                      <strong>{selectedThread.candidateUser?.name || 'Candidate'}</strong>
-                      <span>{selectedThread.job?.title || 'Application'} · {selectedThread.job?.companyName || 'HEXORA'}</span>
+                      <strong>{truncateName(selectedThread.candidateUser?.name || 'Candidate', 12)}</strong>
+                      <span>{truncateJobTitle(selectedThread.job?.title || 'Application', 10)} · {truncateName(selectedThread.job?.companyName || 'HEXORA', 12)}</span>
                     </div>
                   </div>
                   <span className="admin-wa-status">{formatApplicationStatus(selectedThread.status)}</span>
