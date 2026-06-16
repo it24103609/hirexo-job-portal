@@ -133,7 +133,7 @@
 
 .candidate-wa-search svg {
   position: absolute;
-  top: 30%;
+  top: 50%;
   left: 30px;
   transform: translateY(-50%);
   color: var(--wa-muted);
@@ -638,6 +638,140 @@
 .candidate-wa-icon-btn:hover {
   background: var(--wa-soft);
   color: var(--wa-primary);
+}
+
+.candidate-wa-icon-btn.is-active {
+  background: var(--wa-soft);
+  color: var(--wa-primary);
+}
+
+/* ── Emoji Picker ── */
+.candidate-wa-emoji-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.candidate-wa-emoji-picker {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  margin-bottom: 8px;
+  z-index: 100;
+}
+
+.candidate-wa-emoji-picker .EmojiPickerReact {
+  --epr-bg-color: #fff;
+  --epr-category-label-bg-color: #fff;
+  --epr-hover-bg-color: #dcfce7;
+  --epr-focus-bg-color: #dcfce7;
+  --epr-highlight-color: #16a34a;
+  --epr-search-border-color: #e5e7eb;
+  --epr-category-navigation-button-size: 32px;
+  border: 1px solid var(--wa-border);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+/* ── File Input (hidden) ── */
+.candidate-wa-file-input {
+  display: none;
+}
+
+/* ── File Badge (selected file indicator) ── */
+.candidate-wa-file-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  max-width: 180px;
+  padding: 0 10px 0 14px;
+  border-radius: 999px;
+  background: var(--wa-soft);
+  border: 1px solid var(--wa-active-border);
+  color: var(--wa-primary-dark);
+  font-size: 0.75rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.candidate-wa-file-badge-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+}
+
+.candidate-wa-file-badge-remove {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  display: inline-grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(22, 163, 74, 0.15);
+  color: var(--wa-primary-dark);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.candidate-wa-file-badge-remove:hover {
+  background: rgba(22, 163, 74, 0.3);
+}
+
+/* ── Attachment Display in Bubbles ── */
+.candidate-wa-bubble .candidate-wa-attachment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.04);
+  font-size: 0.8125rem;
+  border: 0;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.candidate-wa-bubble .candidate-wa-attachment:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.candidate-wa-bubble.is-outgoing .candidate-wa-attachment {
+  background: rgba(22, 163, 74, 0.08);
+}
+
+.candidate-wa-bubble.is-outgoing .candidate-wa-attachment:hover {
+  background: rgba(22, 163, 74, 0.16);
+}
+
+.candidate-wa-attachment-icon {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  display: grid;
+  place-items: center;
+}
+
+.candidate-wa-attachment-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  color: var(--wa-text);
+  font-weight: 500;
+}
+
+.candidate-wa-attachment-size {
+  flex-shrink: 0;
+  color: var(--wa-muted);
+  font-size: 0.6875rem;
 }
 
 .candidate-wa-input-bar {

@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ArrowLeft, MessageSquare, Paperclip, Search, Send, Smile } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Paperclip, Search, Send, Smile, X, FileText } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
@@ -9,6 +9,7 @@ import Loader from '../../components/ui/Loader';
 import { adminApi } from '../../services/admin.api';
 import { applicationsApi } from '../../services/applications.api';
 import { toast } from 'react-toastify';
+import EmojiPicker from 'emoji-picker-react';
 import { formatDateTime } from '../../utils/formatters';
 import { ROLES } from '../../utils/constants';
 import '../../styles/admin-messages.css';
@@ -71,12 +72,30 @@ function formatThreadTime(value) {
 function getThreadPreview(thread, messages = []) {
   const lastMessage = messages[messages.length - 1];
   if (lastMessage?.message) return lastMessage.message;
+  if (lastMessage?.attachment?.fileName) return `📎 ${lastMessage.attachment.fileName}`;
   return `${thread.job?.title || 'Application'} · ${thread.job?.companyName || 'HEXORA'}`;
 }
 
 function hasUnreadForAdmin(messages = []) {
   const lastMessage = messages[messages.length - 1];
   return Boolean(lastMessage && lastMessage.senderUser?.role !== 'admin');
+}
+
+function formatFileSize(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function getFileIcon(mimeType) {
+  if (!mimeType) return <FileText size={18} />;
+  if (mimeType.startsWith('image/')) return '🖼️';
+  if (mimeType.includes('pdf')) return '📄';
+  if (mimeType.includes('word') || mimeType.includes('document')) return '📝';
+  if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return '📊';
+  if (mimeType.includes('zip')) return '📦';
+  return '📎';
 }
 
 export default function AdminMessagesPage() {
@@ -90,6 +109,10 @@ export default function AdminMessagesPage() {
   const [sending, setSending] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
+  const emojiPickerRef = useRef(null);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
 
@@ -173,16 +196,69 @@ export default function AdminMessagesPage() {
     messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
   }, [selectedId, selectedMessages.length, sending]);
 
+  // Close emoji picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
+        setShowEmojiPicker(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const onEmojiClick = useCallback((emojiObject) => {
+    setDraft((prev) => prev + emojiObject.emoji);
+    setShowEmojiPicker(false);
+  }, []);
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('File size must be less than 10 MB');
+        return;
+      }
+      setSelectedFile(file);
+      toast.success(`File selected: ${file.name}`);
+    }
+    event.target.value = '';
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+  };
+
+  const handleDownloadAttachment = async (applicationId, messageId, fileName) => {
+    try {
+      const response = await applicationsApi.downloadMessageAttachment(applicationId, messageId);
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName || 'attachment';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success(`Downloaded: ${fileName}`);
+    } catch (error) {
+      toast.error(error.message || 'Failed to download attachment');
+    }
+  };
+
   const handleSend = async () => {
     const message = draft.trim();
-    if (!selectedId || !message) {
-      toast.error('Enter a message first');
+    if (!selectedId || (!message && !selectedFile)) {
+      toast.error('Enter a message or select a file first');
       return;
     }
 
     try {
       setSending(true);
-      await applicationsApi.sendMessage(selectedId, { message, recipientRole });
+      const payload = { message, recipientRole };
+
+      await applicationsApi.sendMessage(selectedId, payload, selectedFile);
       const refreshed = await applicationsApi.messages(selectedId);
       setMessagesByApplication((current) => ({
         ...current,
@@ -190,7 +266,12 @@ export default function AdminMessagesPage() {
       }));
       setRecipientRole(refreshed.meta?.permissions?.defaultRecipientRole || recipientRole);
       setDraft('');
-      toast.success(recipientRole === ROLES.EMPLOYER ? 'Message sent to employer' : 'Message sent to candidate');
+      setSelectedFile(null);
+      if (selectedFile) {
+        toast.success('File sent successfully');
+      } else {
+        toast.success(recipientRole === ROLES.EMPLOYER ? 'Message sent to employer' : 'Message sent to candidate');
+      }
     } catch (error) {
       toast.error(error.message || 'Failed to send admin message');
     } finally {
@@ -331,6 +412,7 @@ export default function AdminMessagesPage() {
                       : isEmployer
                         ? (item.senderUser?.name || 'Employer')
                         : (item.senderUser?.name || 'Candidate');
+                    const hasAttachment = item.attachment?.fileName;
 
                     return (
                       <div
@@ -342,7 +424,19 @@ export default function AdminMessagesPage() {
                             className={`admin-wa-bubble ${isAdmin ? 'is-outgoing' : 'is-incoming'} ${isEmployer ? 'is-employer' : ''}`}
                           >
                             {!isAdmin ? <span className="admin-wa-bubble-label">{senderLabel}</span> : null}
-                            <p>{item.message}</p>
+                            {item.message ? <p>{item.message}</p> : null}
+                              {hasAttachment ? (
+                                <button
+                                  type="button"
+                                  className="admin-wa-attachment"
+                                  onClick={() => handleDownloadAttachment(selectedId, item._id, item.attachment.fileName)}
+                                  aria-label={`Download ${item.attachment.fileName}`}
+                                >
+                                  <span className="admin-wa-attachment-icon">{getFileIcon(item.attachment.mimeType)}</span>
+                                  <span className="admin-wa-attachment-name">{item.attachment.fileName}</span>
+                                  <span className="admin-wa-attachment-size">{formatFileSize(item.attachment.size)}</span>
+                                </button>
+                              ) : null}
                           </article>
                           <time className="admin-wa-bubble-timestamp">{formatDateTime(item.createdAt)}</time>
                         </div>
@@ -372,9 +466,21 @@ export default function AdminMessagesPage() {
                     <option value={ROLES.EMPLOYER}>Employer</option>
                   </select>
 
-                  <button type="button" className="admin-wa-icon-btn" aria-label="Insert emoji">
-                    <Smile size={20} />
-                  </button>
+                  <div className="admin-wa-emoji-wrapper" ref={emojiPickerRef}>
+                    <button
+                      type="button"
+                      className={`admin-wa-icon-btn ${showEmojiPicker ? 'is-active' : ''}`}
+                      aria-label={showEmojiPicker ? 'Close emoji picker' : 'Insert emoji'}
+                      onClick={() => setShowEmojiPicker((prev) => !prev)}
+                    >
+                      <Smile size={20} />
+                    </button>
+                    {showEmojiPicker && (
+                      <div className="admin-wa-emoji-picker">
+                        <EmojiPicker onEmojiClick={onEmojiClick} />
+                      </div>
+                    )}
+                  </div>
 
                   <div className="admin-wa-input-bar">
                     <input
@@ -388,15 +494,42 @@ export default function AdminMessagesPage() {
                     />
                   </div>
 
-                  <button type="button" className="admin-wa-icon-btn" aria-label="Attach file">
-                    <Paperclip size={20} />
-                  </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    className="admin-wa-file-input"
+                    onChange={handleFileSelect}
+                    aria-label="Choose file to attach"
+                  />
+
+                  {selectedFile ? (
+                    <div className="admin-wa-file-badge">
+                      <span className="admin-wa-file-badge-name">{selectedFile.name}</span>
+                      <button
+                        type="button"
+                        className="admin-wa-file-badge-remove"
+                        onClick={handleRemoveFile}
+                        aria-label="Remove selected file"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      className="admin-wa-icon-btn"
+                      aria-label="Attach file"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Paperclip size={20} />
+                    </button>
+                  )}
 
                   <button
                     type="button"
                     className="admin-wa-send-btn"
                     onClick={handleSend}
-                    disabled={sending}
+                    disabled={sending || (!draft.trim() && !selectedFile)}
                     aria-label={sending ? 'Sending message' : 'Send message'}
                   >
                     <Send size={20} />

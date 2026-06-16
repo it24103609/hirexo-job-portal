@@ -34,6 +34,20 @@ function fileFilter(req, file, callback) {
   callback(null, true);
 }
 
+function messageFileFilter(req, file, callback) {
+  const allowedMimeTypes = new Set([
+    'application/pdf',
+    'image/jpeg', 'image/png', 'image/webp', 'image/jpg',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/plain',
+    'application/zip',
+  ]);
+  callback(null, true);
+}
+
 function imageFileFilter(req, file, callback) {
   const allowedMimeTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/jpg']);
   const allowedExtensions = /\.(jpg|jpeg|png|webp)$/i;
@@ -58,8 +72,15 @@ const profilePictureUpload = multer({
   limits: { fileSize: env.maxFileSize }
 });
 
+const messageAttachmentUpload = multer({
+  storage,
+  fileFilter: messageFileFilter,
+  limits: { fileSize: 10 * 1024 * 1024 }
+});
+
 module.exports = {
   resumeUpload,
   profilePictureUpload,
+  messageAttachmentUpload,
   uploadRoot
 };

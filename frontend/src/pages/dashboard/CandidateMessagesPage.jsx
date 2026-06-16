@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ArrowLeft, MessageSquare, Paperclip, Search, Send, Smile } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Paperclip, Search, Send, Smile, X, FileText } from 'lucide-react';
 import { toast } from 'react-toastify';
+import EmojiPicker from 'emoji-picker-react';
 import Seo from '../../components/ui/Seo';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
@@ -70,12 +71,30 @@ function formatThreadTime(value) {
 function getThreadPreview(thread, messages = []) {
   const lastMessage = messages[messages.length - 1];
   if (lastMessage?.message) return lastMessage.message;
+  if (lastMessage?.attachment?.fileName) return `📎 ${lastMessage.attachment.fileName}`;
   return `Status: ${formatApplicationStatus(thread.status)}`;
 }
 
 function hasUnreadForCandidate(messages = []) {
   const lastMessage = messages[messages.length - 1];
   return Boolean(lastMessage && lastMessage.senderUser?.role !== ROLES.CANDIDATE);
+}
+
+function formatFileSize(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function getFileIcon(mimeType) {
+  if (!mimeType) return <FileText size={18} />;
+  if (mimeType.startsWith('image/')) return '🖼️';
+  if (mimeType.includes('pdf')) return '📄';
+  if (mimeType.includes('word') || mimeType.includes('document')) return '📝';
+  if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return '📊';
+  if (mimeType.includes('zip')) return '📦';
+  return '📎';
 }
 
 export default function CandidateMessagesPage() {
@@ -90,6 +109,10 @@ export default function CandidateMessagesPage() {
   const [sending, setSending] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
+  const emojiPickerRef = useRef(null);
   const messagesContainerRef = useRef(null);
 
   const selectedThread = useMemo(
@@ -164,28 +187,81 @@ export default function CandidateMessagesPage() {
 
   useEffect(() => {
     loadMessages(selectedId);
-  }, [selectedId, messagesByApplication]);
+  }, [selectedId]);
 
   useEffect(() => {
     if (!messagesContainerRef.current) return;
     messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
   }, [selectedId, selectedMessages.length, sending]);
 
+  // Close emoji picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (emojiPickerRef.current && !emojiPickerRef.current.contains(event.target)) {
+        setShowEmojiPicker(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const onEmojiClick = useCallback((emojiObject) => {
+    setDraft((prev) => prev + emojiObject.emoji);
+    setShowEmojiPicker(false);
+  }, []);
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('File size must be less than 10 MB');
+        return;
+      }
+      setSelectedFile(file);
+      toast.success(`File selected: ${file.name}`);
+    }
+    event.target.value = '';
+  };
+
+  const handleRemoveFile = () => {
+    setSelectedFile(null);
+  };
+
+  const handleDownloadAttachment = async (applicationId, messageId, fileName) => {
+    try {
+      const response = await applicationsApi.downloadMessageAttachment(applicationId, messageId);
+      const blob = new Blob([response.data], { type: response.headers['content-type'] });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName || 'attachment';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success(`Downloaded: ${fileName}`);
+    } catch (error) {
+      toast.error(error.message || 'Failed to download attachment');
+    }
+  };
+
   const handleSend = async () => {
     const message = draft.trim();
-    if (!selectedId || !message) {
-      toast.error('Enter a message first');
+    if (!selectedId || (!message && !selectedFile)) {
+      toast.error('Enter a message or select a file first');
       return;
     }
 
     try {
       setSending(true);
       const permissions = messageMetaByApplication[selectedId] || {};
-      await applicationsApi.sendMessage(selectedId, {
+      const payload = {
         message,
         recipientRole,
         recipientUserId: recipientRole === ROLES.ADMIN ? permissions.adminReplyUserId : undefined
-      });
+      };
+
+      await applicationsApi.sendMessage(selectedId, payload, selectedFile);
       const refreshed = await applicationsApi.messages(selectedId);
       setMessagesByApplication((current) => ({
         ...current,
@@ -196,8 +272,13 @@ export default function CandidateMessagesPage() {
         [selectedId]: refreshed.meta?.permissions || {}
       }));
       setDraft('');
+      setSelectedFile(null);
       setRecipientRole(refreshed.meta?.permissions?.defaultRecipientRole || recipientRole);
-      toast.success(recipientRole === ROLES.ADMIN ? 'Message sent to admin' : 'Message sent to employer');
+      if (selectedFile) {
+        toast.success('File sent successfully');
+      } else {
+        toast.success(recipientRole === ROLES.ADMIN ? 'Message sent to admin' : 'Message sent to employer');
+      }
     } catch (error) {
       toast.error(error.message || 'Failed to send message');
     } finally {
@@ -350,6 +431,7 @@ export default function CandidateMessagesPage() {
                         : isAdmin
                           ? 'Admin'
                           : (item.senderUser?.name || 'Employer');
+                      const hasAttachment = item.attachment?.fileName;
 
                       return (
                         <div
@@ -361,7 +443,19 @@ export default function CandidateMessagesPage() {
                               className={`candidate-wa-bubble ${isCandidate ? 'is-outgoing' : 'is-incoming'} ${isAdmin ? 'is-admin' : ''}`}
                             >
                               {!isCandidate ? <span className="candidate-wa-bubble-label">{senderLabel}</span> : null}
-                              <p>{item.message}</p>
+                              {item.message ? <p>{item.message}</p> : null}
+                              {hasAttachment ? (
+                                <button
+                                  type="button"
+                                  className="candidate-wa-attachment"
+                                  onClick={() => handleDownloadAttachment(selectedId, item._id, item.attachment.fileName)}
+                                  aria-label={`Download ${item.attachment.fileName}`}
+                                >
+                                  <span className="candidate-wa-attachment-icon">{getFileIcon(item.attachment.mimeType)}</span>
+                                  <span className="candidate-wa-attachment-name">{item.attachment.fileName}</span>
+                                  <span className="candidate-wa-attachment-size">{formatFileSize(item.attachment.size)}</span>
+                                </button>
+                              ) : null}
                             </article>
                             <time className="candidate-wa-bubble-timestamp">{formatDateTime(item.createdAt)}</time>
                           </div>
@@ -395,9 +489,21 @@ export default function CandidateMessagesPage() {
                       </select>
                     ) : null}
 
-                    <button type="button" className="candidate-wa-icon-btn" aria-label="Insert emoji">
-                      <Smile size={20} />
-                    </button>
+                    <div className="candidate-wa-emoji-wrapper" ref={emojiPickerRef}>
+                      <button
+                        type="button"
+                        className={`candidate-wa-icon-btn ${showEmojiPicker ? 'is-active' : ''}`}
+                        aria-label={showEmojiPicker ? 'Close emoji picker' : 'Insert emoji'}
+                        onClick={() => setShowEmojiPicker((prev) => !prev)}
+                      >
+                        <Smile size={20} />
+                      </button>
+                      {showEmojiPicker && (
+                        <div className="candidate-wa-emoji-picker">
+                          <EmojiPicker onEmojiClick={onEmojiClick} />
+                        </div>
+                      )}
+                    </div>
 
                     <div className="candidate-wa-input-bar">
                       <input
@@ -411,15 +517,42 @@ export default function CandidateMessagesPage() {
                       />
                     </div>
 
-                    <button type="button" className="candidate-wa-icon-btn" aria-label="Attach file">
-                      <Paperclip size={20} />
-                    </button>
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="candidate-wa-file-input"
+                      onChange={handleFileSelect}
+                      aria-label="Choose file to attach"
+                    />
+
+                    {selectedFile ? (
+                      <div className="candidate-wa-file-badge">
+                        <span className="candidate-wa-file-badge-name">{selectedFile.name}</span>
+                        <button
+                          type="button"
+                          className="candidate-wa-file-badge-remove"
+                          onClick={handleRemoveFile}
+                          aria-label="Remove selected file"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="candidate-wa-icon-btn"
+                        aria-label="Attach file"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Paperclip size={20} />
+                      </button>
+                    )}
 
                     <button
                       type="button"
                       className="candidate-wa-send-btn"
                       onClick={handleSend}
-                      disabled={sending}
+                      disabled={sending || (!draft.trim() && !selectedFile)}
                       aria-label={sending ? 'Sending message' : 'Send message'}
                     >
                       <Send size={18} />
