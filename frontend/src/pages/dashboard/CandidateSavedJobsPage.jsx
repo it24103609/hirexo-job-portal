@@ -29,7 +29,7 @@ export default function CandidateSavedJobsPage() {
 
   return (
     <>
-      <Seo title="Saved Jobs | Hirexo" description="Review and manage your saved jobs." />
+      <Seo title="Saved Jobs | HEXORA" description="Review and manage your saved jobs." />
       <DashboardHeader title="Saved Jobs" description="Your curated list of opportunities to revisit and apply at the right time." />
 
       {loading ? <Loader label="Loading saved jobs..." /> : (
@@ -58,7 +58,7 @@ export default function CandidateSavedJobsPage() {
                   <article key={job._id || job.slug} className="candidate-recommended-item">
                     <div>
                       <h4>{job.title}</h4>
-                      <p>{job.companyName || 'Hirexo partner'} · {job.location?.name || job.location || 'Remote/Hybrid'}</p>
+                      <p>{job.companyName || 'HEXORA partner'} · {job.location?.name || job.location || 'Remote/Hybrid'}</p>
                     </div>
                     <Link className="btn btn-secondary btn-sm" to={`/jobs/${job.slug || job._id}`}>View</Link>
                   </article>

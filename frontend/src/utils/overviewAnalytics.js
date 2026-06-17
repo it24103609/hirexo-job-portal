@@ -185,7 +185,7 @@ export function getSourceBreakdown(applications = [], range = '30d') {
   applications
     .filter((application) => isWithinRange(application.createdAt, range))
     .forEach((application) => {
-      const source = String(application.candidateSource || 'Hirexo Portal').trim() || 'Hirexo Portal';
+      const source = String(application.candidateSource || 'HEXORA Portal').trim() || 'HEXORA Portal';
       counts.set(source, (counts.get(source) || 0) + 1);
     });
 

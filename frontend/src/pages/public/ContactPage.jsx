@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Mail, Phone, MapPin, MessageCircle, Zap, Headphones, Users, Clock } from 'lucide-react';
+import { Mail, Phone, MapPin, MessageCircle, Zap, Headphones, Users, Clock, Globe2 } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import Input from '../../components/ui/Input';
 import Textarea from '../../components/ui/Textarea';
@@ -24,8 +24,8 @@ export default function ContactPage() {
   ];
 
   return (
-    <>
-      <Seo title="Contact Hirexo" description="Contact the Hirexo team for hiring inquiries, support, and partnerships." />
+    <div>
+      <Seo title="Contact HEXORA GLOBAL GROUP" description="Contact HEXORA GLOBAL GROUP (PVT) LTD for Talent Acquisition, HR Consulting, Global Trade, Food Products, and Business Consulting inquiries." />
       
       {/* Hero Section */}
       <section className="contact-hero-shell">
@@ -34,11 +34,11 @@ export default function ContactPage() {
         
         <div className="shell">
           <div className="contact-hero-content">
-            <span className="contact-badge">Get in touch</span>
-            <h1>Let's talk about your hiring needs</h1>
+            <span className="contact-badge">HEXORA GLOBAL GROUP (PVT) LTD</span>
+            <h1>Your Trusted Partner for Growth & Success</h1>
             <p className="contact-hero-subtitle">
-              Whether you're looking to hire top talent, grow your career, or explore partnerships, 
-              our team is ready to help you succeed.
+              Empowering Businesses. Connecting Talent. Creating Opportunities.<br />
+              Get in touch with us for Talent Acquisition, HR Consulting, Global Trade, Food Products, and Business Consulting.
             </p>
           </div>
         </div>
@@ -59,32 +59,32 @@ export default function ContactPage() {
               </div>
 
               <div className="contact-info-cards">
-                {/* Email */}
-                <a href={`mailto:${siteContent.contact.email}`} className="contact-info-card contact-info-card-interactive">
-                  <span className="contact-info-icon"><Mail size={22} /></span>
-                  <div className="contact-info-content">
-                    <span className="contact-info-label">Email</span>
-                    <span className="contact-info-value">{siteContent.contact.email}</span>
-                  </div>
-                </a>
-
                 {/* Phone */}
-                <a href={`tel:${siteContent.contact.phonePrimary}`} className="contact-info-card contact-info-card-interactive">
+                <a href="tel:+94773191832" className="contact-info-card contact-info-card-interactive">
                   <span className="contact-info-icon"><Phone size={22} /></span>
                   <div className="contact-info-content">
                     <span className="contact-info-label">Phone</span>
-                    <span className="contact-info-value">{siteContent.contact.phonePrimary}</span>
+                    <span className="contact-info-value">+94 77 319 1832</span>
                   </div>
                 </a>
 
-                {/* Address */}
-                <div className="contact-info-card">
-                  <span className="contact-info-icon"><MapPin size={22} /></span>
+                {/* Email */}
+                <a href="mailto:hrm4921@gmail.com" className="contact-info-card contact-info-card-interactive">
+                  <span className="contact-info-icon"><Mail size={22} /></span>
                   <div className="contact-info-content">
-                    <span className="contact-info-label">Address</span>
-                    <span className="contact-info-value">{siteContent.contact.address}</span>
+                    <span className="contact-info-label">Email</span>
+                    <span className="contact-info-value">hrm4921@gmail.com</span>
                   </div>
-                </div>
+                </a>
+
+                {/* Website */}
+                <a href="https://www.hexoraglobal.com" target="_blank" rel="noreferrer" className="contact-info-card contact-info-card-interactive">
+                  <span className="contact-info-icon"><Globe2 size={22} /></span>
+                  <div className="contact-info-content">
+                    <span className="contact-info-label">Website</span>
+                    <span className="contact-info-value">www.hexoraglobal.com</span>
+                  </div>
+                </a>
 
                 {/* WhatsApp */}
                 <a href={whatsappUrl} target="_blank" rel="noreferrer" className="contact-info-card contact-info-card-interactive">
@@ -100,8 +100,8 @@ export default function ContactPage() {
               <div className="contact-info-hours">
                 <span className="contact-hours-icon"><Clock size={18} /></span>
                 <div>
-                  <strong>Response Time</strong>
-                  <p>We typically respond within 24 hours during business days.</p>
+                  <strong>Business Hours</strong>
+                  <p>Monday - Friday | 9:00 AM - 6:00 PM</p>
                 </div>
               </div>
             </aside>
@@ -190,6 +190,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

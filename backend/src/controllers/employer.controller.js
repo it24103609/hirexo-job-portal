@@ -607,7 +607,7 @@ const bookApplicationSlot = asyncHandler(async (req, res) => {
     subject: statusEmail.subject,
     text: statusEmail.text,
     attachments: [{
-      filename: 'hirexo-interview-invite.ics',
+      filename: 'HEXORA-interview-invite.ics',
       content: buildInterviewCalendarInvite({
         candidateName: application.candidateUser?.name,
         companyName: job?.companyName,
@@ -785,7 +785,7 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
   const attachments = [];
   if (status === APPLICATION_STATUS.INTERVIEW_SCHEDULED && application.interviewScheduledAt) {
     attachments.push({
-      filename: 'hirexo-interview-invite.ics',
+      filename: 'HEXORA-interview-invite.ics',
       content: buildInterviewCalendarInvite({
         candidateName: application.candidateUser?.name,
         companyName: job?.companyName,

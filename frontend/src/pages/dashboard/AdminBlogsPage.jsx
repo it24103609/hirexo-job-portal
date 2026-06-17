@@ -179,7 +179,7 @@ export default function AdminBlogsPage() {
 
   return (
     <>
-      <Seo title="Blogs | Hirexo" description="Admin content management for blog posts." />
+      <Seo title="Blogs | HEXORA" description="Admin content management for blog posts." />
       <DashboardHeader
         title="Blog Management"
         description="Create, edit, publish, and manage blog posts for the public site."

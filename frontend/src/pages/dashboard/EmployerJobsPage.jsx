@@ -105,7 +105,7 @@ export default function EmployerJobsPage() {
 
   return (
     <>
-      <Seo title="Jobs | Hirexo" description="Search, filter, and manage employer job postings." />
+      <Seo title="Jobs | HEXORA" description="Search, filter, and manage employer job postings." />
 
       <section className="rooster-page-head">
         <div>

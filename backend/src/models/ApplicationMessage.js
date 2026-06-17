@@ -22,9 +22,15 @@ const applicationMessageSchema = new mongoose.Schema(
     },
     message: {
       type: String,
-      required: true,
+      default: '',
       trim: true,
       maxlength: 1000
+    },
+    attachment: {
+      fileName: { type: String, default: '' },
+      filePath: { type: String, default: '' },
+      mimeType: { type: String, default: '' },
+      size: { type: Number, default: 0 }
     }
   },
   { timestamps: true }

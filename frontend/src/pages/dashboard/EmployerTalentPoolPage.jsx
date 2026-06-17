@@ -53,7 +53,7 @@ export default function EmployerTalentPoolPage() {
 
   return (
     <>
-      <Seo title="Talent Pool | Hirexo" description="Manage saved candidates, warm leads, and future-fit profiles." />
+      <Seo title="Talent Pool | HEXORA" description="Manage saved candidates, warm leads, and future-fit profiles." />
       <DashboardHeader title="Talent Pool" description="Save promising applicants, add manual leads, and keep future-fit candidates warm." />
 
       <div className="grid-2">

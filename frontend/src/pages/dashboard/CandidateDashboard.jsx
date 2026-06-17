@@ -136,7 +136,7 @@ export default function CandidateDashboard() {
 
   return (
     <>
-      <Seo title="Candidate Dashboard | Hirexo" description="Track profile completeness, saved jobs, and applications." />
+      <Seo title="Candidate Dashboard | HEXORA" description="Track profile completeness, saved jobs, and applications." />
       <DashboardHeader
         title={dashboardGreeting}
         description={profileHeadline}
@@ -248,7 +248,7 @@ export default function CandidateDashboard() {
                 <div key={item._id} className="candidate-mini-item">
                   <div>
                     <strong>{item.job?.title || 'Job opportunity'}</strong>
-                    <p>{item.job?.companyName || 'Hirexo partner'}</p>
+                    <p>{item.job?.companyName || 'HEXORA partner'}</p>
                   </div>
                   <div className="candidate-mini-meta">
                     <Badge tone={getAppTone(item.status)}>{item.status || 'applied'}</Badge>
@@ -292,7 +292,7 @@ export default function CandidateDashboard() {
                   <div className="candidate-recommended-copy">
                     <Badge tone="success" className="candidate-job-type-badge">{job.jobType?.name || job.jobType || 'Role'}</Badge>
                     <h4>{job.title}</h4>
-                    <p>{job.companyName || 'Hirexo partner'} · {job.location?.name || job.location || 'Remote/Hybrid'}</p>
+                    <p>{job.companyName || 'HEXORA partner'} · {job.location?.name || job.location || 'Remote/Hybrid'}</p>
                   </div>
                   <Link className="btn btn-secondary btn-sm candidate-recommended-action" to={`/jobs/${job.slug || job._id}`}>View details</Link>
                 </article>

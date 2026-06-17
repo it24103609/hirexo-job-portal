@@ -50,7 +50,7 @@ export default function EmployerActivityCalendarPage() {
 
   return (
     <>
-      <Seo title="Hiring Activity Calendar | Hirexo" description="Track interviews, offers, applications, approvals, and deadlines in one hiring calendar." />
+      <Seo title="Hiring Activity Calendar | HEXORA" description="Track interviews, offers, applications, approvals, and deadlines in one hiring calendar." />
       <DashboardHeader title="Hiring Activity Calendar" description="See your hiring motion across interviews, offers, applications, approvals, and role deadlines." />
 
       <div className="candidate-stat-grid mb-1">

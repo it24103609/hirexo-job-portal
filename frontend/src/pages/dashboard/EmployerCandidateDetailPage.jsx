@@ -59,10 +59,10 @@ export default function EmployerCandidateDetailPage() {
 
   return (
     <>
-      <Seo title="Candidate Details | Hirexo" description="Review a candidate profile and resume." />
+      <Seo title="Candidate Details | HEXORA" description="Review a candidate profile and resume." />
       <DashboardHeader
         title={application.candidateUser?.name || 'Candidate Details'}
-        description={`${application.job?.title || 'Application'} at ${application.job?.companyName || 'Hirexo employer'}`}
+        description={`${application.job?.title || 'Application'} at ${application.job?.companyName || 'HEXORA employer'}`}
         actions={(
           <>
             <Badge tone={['shortlisted', 'hired', 'interview_scheduled'].includes(String(application.status || '').toLowerCase()) ? 'success' : 'neutral'}>{application.status || 'pending'}</Badge>

@@ -153,7 +153,7 @@ export default function EmployerJobFormPage({ mode }) {
 
   return (
     <>
-      <Seo title={`${mode === 'edit' ? 'Edit' : 'Create'} Job | Hirexo`} description="Create or edit a job post." />
+      <Seo title={`${mode === 'edit' ? 'Edit' : 'Create'} Job | HEXORA`} description="Create or edit a job post." />
       <DashboardHeader
         title={<span className="jobform-heading">{mode === 'edit' ? 'Edit Job' : 'Post New Job'}</span>}
         description={<span className="jobform-subtitle">Build a richer hiring brief with screening questions, team ownership, and structured job requirements.</span>}

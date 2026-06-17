@@ -24,7 +24,7 @@ export default function AdminUsersPage() {
 
   return (
     <>
-      <Seo title="Manage Users | Hirexo" description="Block and unblock platform users." />
+      <Seo title="Manage Users | HEXORA" description="Block and unblock platform users." />
       <DashboardHeader title="User Management" description="Manage candidates, employers, and admins." />
       <Card>
         <div className="table-wrap">

@@ -334,7 +334,7 @@ export default function EmployerDashboard() {
 
   return (
     <div className="employer-premium-dashboard">
-      <Seo title="Employer Dashboard | Hirexo" description="Premium employer hiring command center." />
+      <Seo title="Employer Dashboard | HEXORA" description="Premium employer hiring command center." />
 
       <header className="employer-command-header">
         <div>
@@ -633,7 +633,7 @@ export default function EmployerDashboard() {
                     <Badge tone={badge.tone}>{badge.label}</Badge>
                   </div>
                   <h4>{job.title}</h4>
-                  <p>{job.company || 'Hirexo Employer'} · Posted {formatDate(job.createdAt)}</p>
+                  <p>{job.company || 'HEXORA Employer'} · Posted {formatDate(job.createdAt)}</p>
                   <div className="employer-job-card-metrics">
                     <span>{applicantCount} applicants</span>
                     <span>{job.salaryMin || job.salaryMax ? `${job.salaryMin || ''}-${job.salaryMax || ''}` : 'Salary hidden'}</span>

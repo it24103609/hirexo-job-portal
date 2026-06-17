@@ -16,7 +16,7 @@ export default function CandidateRegisterPage() {
 
   return (
     <>
-      <Seo title="Candidate Register | Hirexo" description="Create a candidate account and start applying to jobs." />
+      <Seo title="Candidate Register | HEXORA" description="Create a candidate account and start applying to jobs." />
       <section className="section-block">
         <div className="shell">
           <Card className="form-card">

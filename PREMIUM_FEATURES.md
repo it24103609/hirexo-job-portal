@@ -1,7 +1,7 @@
 # Premium Features Implementation Guide
 
 ## Overview
-This document outlines the complete premium feature system for Hirexo job portal, including subscription management, featured jobs, analytics, and candidate verification.
+This document outlines the complete premium feature system for HEXORA job portal, including subscription management, featured jobs, analytics, and candidate verification.
 
 ---
 
@@ -396,7 +396,7 @@ schedule.scheduleJob('0 9 * * 1', async () => {
 ## 📞 Support
 
 For questions or issues related to premium features:
-- Email: support@hirexo.com
+- Email: support@HEXORA.com
 - Slack: #premium-features
 - Jira: PRE project
 

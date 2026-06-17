@@ -6,6 +6,7 @@ import App from './App';
 import { AuthProvider } from './contexts/AuthContext';
 import GoogleAnalytics from './components/analytics/GoogleAnalytics';
 import './styles/globals.css';
+import './styles/responsive-overrides.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(

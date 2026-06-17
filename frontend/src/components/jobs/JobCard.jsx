@@ -110,7 +110,7 @@ export default function JobCard({ job, variant = 'default' }) {
           {imageUrl ? <img src={imageUrl} alt={job.image?.alt || job.title} loading="lazy" /> : <span>{getInitials(job.companyName)}</span>}
         </div>
 
-        <p className="job-home-company">{job.companyName || 'Hirexo Hiring'}</p>
+        <p className="job-home-company">{job.companyName || 'HEXORA Hiring'}</p>
         <h3 className="job-home-title">{job.title}</h3>
         <p className="job-home-location"><MapPin size={14} /> {locationLabel}</p>
 

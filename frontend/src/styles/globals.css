@@ -19,6 +19,7 @@
   --radius-lg: 20px;
   --radius-md: 14px;
   --shell: min(1180px, calc(100vw - 2.2rem));
+  --public-header-offset: clamp(6.5rem, 8vw, 8.25rem);
 }
 
 * { box-sizing: border-box; }
@@ -49,6 +50,10 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 input, select, textarea { min-height: 44px; }
 main { min-height: 60vh; }
 
+.public-page-with-fixed-header {
+  padding-top: var(--public-header-offset);
+}
+
 .shell {
   width: var(--shell);
   margin: 0 auto;
@@ -69,6 +74,7 @@ main { min-height: 60vh; }
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 1.45rem;
+  margin-top: 0px;
   position: relative;
   padding: 0.92rem 1.08rem 0.92rem 1.12rem;
   border: 1px solid rgba(18, 112, 74, 0.16);

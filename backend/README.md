@@ -1,6 +1,6 @@
-# Hirexo Backend
+# HEXORA Backend
 
-Express + MongoDB backend scaffold for the recruitment platform.
+Express + MongoDB backend scaffold for the GLOBAL GROUP.
 
 ## Setup
 

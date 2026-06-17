@@ -1,6 +1,6 @@
-const TOKEN_KEY = 'hirexo_access_token';
-const REFRESH_KEY = 'hirexo_refresh_token';
-const USER_KEY = 'hirexo_user';
+const TOKEN_KEY = 'HEXORA_access_token';
+const REFRESH_KEY = 'HEXORA_refresh_token';
+const USER_KEY = 'HEXORA_user';
 
 export function setSession({ token, refreshToken, user }) {
   if (token) localStorage.setItem(TOKEN_KEY, token);

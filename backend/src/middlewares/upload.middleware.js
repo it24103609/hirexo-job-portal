@@ -1,4 +1,4 @@
-const { resumeUpload, profilePictureUpload } = require('../config/multer');
+const { resumeUpload, profilePictureUpload, messageAttachmentUpload } = require('../config/multer');
 const AppError = require('../utils/AppError');
 
 function handleUploadErrors(err, req, res, next) {
@@ -20,5 +20,6 @@ function handleUploadErrors(err, req, res, next) {
 module.exports = {
   resumeUpload,
   profilePictureUpload,
+  messageAttachmentUpload,
   handleUploadErrors
 };

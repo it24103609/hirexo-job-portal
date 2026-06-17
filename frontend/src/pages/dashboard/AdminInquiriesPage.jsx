@@ -166,7 +166,7 @@ export default function AdminInquiriesPage() {
 
   return (
     <>
-      <Seo title="Inquiries | Hirexo" description="Contact and lead inquiry management." />
+      <Seo title="Inquiries | HEXORA" description="Contact and lead inquiry management." />
       <DashboardHeader
         title="Inquiries"
         description="Review contact submissions, reply to leads, and manage status changes."

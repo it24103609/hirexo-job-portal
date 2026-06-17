@@ -1,6 +1,6 @@
-# Hirexo Job Portal
+# HEXORA Job Portal
 
-Full-stack recruitment platform with separate workflows for candidate, employer, and admin users.
+Full-stack GLOBAL GROUP with separate workflows for candidate, employer, and admin users.
 
 ## Monorepo Structure
 
@@ -53,4 +53,4 @@ Full-stack recruitment platform with separate workflows for candidate, employer,
 
 - Upload directory (`backend/uploads/`) is ignored for privacy and local-only file handling.
 - Root-level requirement/source documents are ignored from git tracking.
-- Public repository: https://github.com/it24103609/hirexo-job-portal
+- Public repository: https://github.com/it24103609/HEXORA-job-portal

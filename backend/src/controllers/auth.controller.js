@@ -37,7 +37,7 @@ function createAuthPayload(user) {
   };
 }
 
-const OAUTH_STATE_COOKIE = 'hirexo_oauth_state';
+const OAUTH_STATE_COOKIE = 'HEXORA_oauth_state';
 
 function getCookieOptions(maxAge) {
   return {
@@ -215,13 +215,13 @@ const registerCandidate = asyncHandler(async (req, res) => {
   await createNotification({
     userId: user._id,
     type: NOTIFICATION_TYPES.REGISTRATION,
-    title: 'Welcome to Hirexo',
+    title: 'Welcome to HEXORA',
     message: 'Your candidate account has been created successfully.'
   });
 
   await sendEmail({
     to: user.email,
-    subject: 'Welcome to Hirexo',
+    subject: 'Welcome to HEXORA',
     text: 'Your candidate account is ready. Complete your profile and start applying for jobs.',
     html: welcomeEmail({
       roleLabel: 'Candidate',
@@ -402,7 +402,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 
     const emailResult = await sendEmail({
       to: user.email,
-      subject: 'Reset your Hirexo password',
+      subject: 'Reset your HEXORA password',
       text: `Use this link to reset your password: ${resetUrl}. This link expires in ${env.passwordResetExpiresMinutes} minutes.`,
       html: passwordResetEmail({
         name: user.name,

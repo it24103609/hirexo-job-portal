@@ -96,7 +96,7 @@ function buildActivityFeed({ applications, jobs, contacts, blogs, notifications,
       id: `registration-${entry.date}`,
       type: 'candidate',
       title: `${entry.count} candidate${entry.count === 1 ? '' : 's'} registered`,
-      description: 'New signups joined the Hirexo talent network.',
+      description: 'New signups joined the HEXORA talent network.',
       date: entry.date,
       timestamp: new Date(entry.date).getTime() || 0
     }));
@@ -105,7 +105,7 @@ function buildActivityFeed({ applications, jobs, contacts, blogs, notifications,
     id: `application-${item._id}`,
     type: 'application',
     title: `${item.candidateUser?.name || 'A candidate'} applied`,
-    description: `${item.job?.title || 'Job'} at ${item.job?.companyName || 'Hirexo employer'}.`,
+    description: `${item.job?.title || 'Job'} at ${item.job?.companyName || 'HEXORA employer'}.`,
     date: item.createdAt,
     timestamp: new Date(item.createdAt).getTime() || 0
   }));
@@ -349,7 +349,7 @@ export default function AdminDashboard() {
 
   return (
     <>
-      <Seo title="Premium Admin Dashboard | Hirexo" description="Luxury SaaS command center for moderation, analytics, communication, and operations." />
+      <Seo title="Premium Admin Dashboard | HEXORA" description="Luxury SaaS command center for moderation, analytics, communication, and operations." />
 
       <motion.div className="premium-admin-dashboard" initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.35 }}>
         <motion.header className="premium-admin-header premium-glass" variants={fadeUp} transition={{ duration: 0.4, delay: 0.05 }}>

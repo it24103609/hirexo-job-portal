@@ -2,6 +2,7 @@ const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 const apiResponse = require('../utils/apiResponse');
 const Job = require('../models/Job');
+const FeaturedJob = require('../models/FeaturedJob');
 const EmployerProfile = require('../models/EmployerProfile');
 const { createUniqueSlug } = require('../utils/slug');
 const { JOB_REVIEW_STATUS, JOB_STATUS, ROLES } = require('../utils/constants');
@@ -127,9 +128,16 @@ const getJobBySlug = asyncHandler(async (req, res) => {
 });
 
 const featuredJobs = asyncHandler(async (req, res) => {
-  const jobs = await Job.find({ reviewStatus: JOB_REVIEW_STATUS.APPROVED, status: JOB_STATUS.ACTIVE })
-    .sort({ publishedAt: -1 })
-    .limit(6);
+  const featuredJobs = await FeaturedJob.find({ 
+    status: 'ACTIVE',
+    featuredUntil: { $gte: new Date() }
+  })
+  .populate('job')
+  .populate('employer', 'name email')
+  .sort({ displayPriority: 1, createdAt: -1 })
+  .limit(6);
+
+  const jobs = featuredJobs.map(fj => fj.job).filter(job => job);
 
   res.json(apiResponse({
     message: 'Featured jobs fetched successfully',

@@ -22,7 +22,7 @@ export default function ResetPasswordPage() {
 
   return (
     <>
-      <Seo title="Reset Password | Hirexo" description="Set a new password for your Hirexo account." />
+      <Seo title="Reset Password | HEXORA" description="Set a new password for your HEXORA account." />
       <section className="section-block">
         <div className="shell">
           <Card className="form-card">

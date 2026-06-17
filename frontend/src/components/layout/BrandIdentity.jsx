@@ -4,7 +4,7 @@ import clsx from 'clsx';
 export default function BrandIdentity({
   to = '/',
   className,
-  subtitle = 'Recruitment Platform',
+  subtitle = 'GLOBAL GROUP',
   compact = false,
   showSubtitle = true,
   as = Link
@@ -12,12 +12,12 @@ export default function BrandIdentity({
   const Component = as;
 
   return (
-    <Component className={clsx('brand', compact && 'brand-compact', className)} to={to} aria-label="Hirexo home">
+    <Component className={clsx('brand', compact && 'brand-compact', className)} to={to} aria-label="HEXORA home">
       <span className="brand-logo-wrap" aria-hidden="true">
-        <img src="/brand-logo.jpg" alt="Hirexo" className="brand-logo" />
+        <img src="/brand-logo.jpg" alt="HEXORA" className="brand-logo" />
       </span>
       <span className="brand-copy">
-        <strong>Hirexo</strong>
+        <strong>HEXORA</strong>
         {showSubtitle ? <small>{subtitle}</small> : null}
       </span>
     </Component>

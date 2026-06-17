@@ -208,7 +208,7 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
           <div className="admin-sidebar-top">
             <div className="candidate-avatar admin-sidebar-avatar" aria-hidden="true">{initials}</div>
             <div className="admin-sidebar-copy">
-              <strong>{user?.name || 'Hirexo Admin'}</strong>
+              <strong>{user?.name || 'HEXORA Admin'}</strong>
               <span className="admin-sidebar-role">System Admin</span>
             </div>
           </div>
@@ -223,7 +223,7 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
             </div>
             <div>
               <strong>{user?.name || 'Candidate'}</strong>
-              <p>{user?.email || 'candidate@hirexo.com'}</p>
+              <p>{user?.email || 'candidate@HEXORA.com'}</p>
             </div>
           </div>
 

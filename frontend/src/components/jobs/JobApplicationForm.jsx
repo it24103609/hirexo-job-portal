@@ -53,7 +53,7 @@ export default function JobApplicationForm({ onSubmit, disabled = false, screeni
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(schema),
-    defaultValues: { candidateSource: 'Hirexo Portal', coverLetter: '', screeningAnswers: defaultAnswers }
+    defaultValues: { candidateSource: 'HEXORA Portal', coverLetter: '', screeningAnswers: defaultAnswers }
   });
 
   return (

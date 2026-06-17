@@ -1,7 +1,7 @@
-# Hirexo Job Portal – Testing Report
+# HEXORA Job Portal – Testing Report
 
 **Date:** 2026-05-28  
-**Repository:** `it24103609/hirexo-job-portal`  
+**Repository:** `it24103609/HEXORA-job-portal`  
 **Branch:** `full-project-2026-04-17`  
 **Prepared by:** QA Review Draft
 
@@ -9,7 +9,7 @@
 
 ## 1) Project Summary (இப்போ என்ன வேலை நடக்குது)
 
-Hirexo project ஒரு 3-role job portal:
+HEXORA project ஒரு 3-role job portal:
 
 - **Candidate**: register/login, profile update, jobs browse, apply, notifications பார்க்க
 - **Employer**: job post/create, applications review, interview schedule, candidate communication

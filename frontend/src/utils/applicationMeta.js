@@ -1,5 +1,5 @@
 export const CANDIDATE_SOURCE_OPTIONS = [
-  'Hirexo Portal',
+  'HEXORA Portal',
   'LinkedIn',
   'Referral',
   'Website',

@@ -82,7 +82,7 @@ export default function AdminMasterDataPage() {
 
   return (
     <>
-      <Seo title="Master Data | Hirexo" description="Manage categories, industries, locations, and job types." />
+      <Seo title="Master Data | HEXORA" description="Manage categories, industries, locations, and job types." />
       <DashboardHeader title="Master Data" description="Maintain platform-wide lists used across forms and filters." />
       <Card className="mb-1">
         <h3 style={{ marginTop: 0 }}>AI Candidate Scoring</h3>

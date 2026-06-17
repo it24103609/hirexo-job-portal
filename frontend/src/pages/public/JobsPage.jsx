@@ -98,7 +98,7 @@ export default function JobsPage() {
 
   return (
     <>
-      <Seo title="Find Jobs | Hirexo" description="Explore top recruitment opportunities with premium companies and consulting firms." />
+      <Seo title="Find Jobs | HEXORA" description="Explore top recruitment opportunities with premium companies and consulting firms." />
       
       <section className="jobs-hero-shell">
         <div className="jobs-hero-ambient jobs-hero-ambient-a" aria-hidden="true" />

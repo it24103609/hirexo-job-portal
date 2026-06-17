@@ -30,7 +30,7 @@ export default function CandidateLoginPage() {
 
   return (
     <>
-      <Seo title="Candidate Login | Hirexo" description="Sign in to manage applications and your profile." />
+      <Seo title="Candidate Login | HEXORA" description="Sign in to manage applications and your profile." />
       <section className="section-block">
         <div className="shell">
           <Card className="form-card">

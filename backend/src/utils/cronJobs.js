@@ -88,7 +88,7 @@ class CronJobs {
           if (user) {
             await emailService.send({
               to: user.email,
-              subject: 'Your Hirexo Premium Subscription Expired',
+              subject: 'Your HEXORA Premium Subscription Expired',
               html: subscriptionCancelledEmail({
                 name: user.name,
                 tier: subscription.tier,
@@ -136,7 +136,7 @@ class CronJobs {
             try {
               await emailService.send({
                 to: user.email,
-                subject: 'Your Hirexo Premium Subscription Renews Soon',
+                subject: 'Your HEXORA Premium Subscription Renews Soon',
                 html: renewalReminderEmail({
                   name: user.name,
                   tier: subscription.tier,
@@ -207,7 +207,7 @@ class CronJobs {
               const { analyticsReportEmail } = require('../utils/emailTemplates');
               await emailService.send({
                 to: user.email,
-                subject: 'Your Weekly Analytics Report - Hirexo',
+                subject: 'Your Weekly Analytics Report - HEXORA',
                 html: analyticsReportEmail({
                   userName: user.name,
                   role: subscription.role,

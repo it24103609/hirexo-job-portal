@@ -19,8 +19,8 @@ const { sendEmail } = require('../services/email.service');
 const { applicationConfirmationEmail, employerNewApplicationEmail, statusUpdateEmail } = require('../utils/emailTemplates');
 
 function normalizeCandidateSource(value) {
-  const allowed = ['Hirexo Portal', 'LinkedIn', 'Referral', 'Website', 'Agency'];
-  return allowed.includes(value) ? value : 'Hirexo Portal';
+  const allowed = ['HEXORA Portal', 'LinkedIn', 'Referral', 'Website', 'Agency'];
+  return allowed.includes(value) ? value : 'HEXORA Portal';
 }
 
 function buildStatusEmail(status, interviewAt) {
@@ -220,7 +220,7 @@ const applyForJob = asyncHandler(async (req, res) => {
     await sendEmail({
       to: employerRecipient.email,
       subject: `New application for ${job.title}`,
-      text: `${req.user.name} applied for ${job.title}. Review the candidate in your Hirexo dashboard.`,
+      text: `${req.user.name} applied for ${job.title}. Review the candidate in your HEXORA dashboard.`,
       html: employerNewApplicationEmail({
         employerName: employerRecipient.name,
         candidateName: req.user.name,
@@ -238,7 +238,7 @@ const applyForJob = asyncHandler(async (req, res) => {
 
 const getMyApplications = asyncHandler(async (req, res) => {
   const applications = await Application.find({ candidateUser: req.user._id })
-    .populate('job', 'title slug companyName status reviewStatus location jobType')
+    .populate('job', 'title slug companyName status reviewStatus location jobType image')
     .sort({ createdAt: -1 });
 
   res.json(apiResponse({
@@ -255,6 +255,7 @@ const getApplicationsByJob = asyncHandler(async (req, res) => {
 
   const applications = await Application.find({ job: job._id, employerUser: req.user._id })
     .populate('candidateUser', 'name email role status')
+    .populate('job', 'title slug companyName status reviewStatus location jobType image')
     .sort({ createdAt: -1 });
 
   res.json(apiResponse({
@@ -267,7 +268,7 @@ const getApplicationById = asyncHandler(async (req, res) => {
   const application = await Application.findById(req.params.id)
     .populate('candidateUser', 'name email role status')
     .populate('employerUser', 'name email role status')
-    .populate('job', 'title slug companyName location jobType status reviewStatus description')
+    .populate('job', 'title slug companyName location jobType status reviewStatus description image')
     .lean();
 
   if (!application) {
@@ -445,7 +446,7 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
   const attachments = [];
   if (req.body.status === APPLICATION_STATUS.INTERVIEW_SCHEDULED && application.interviewScheduledAt) {
     attachments.push({
-      filename: 'hirexo-interview-invite.ics',
+      filename: 'HEXORA-interview-invite.ics',
       content: buildInterviewCalendarInvite({
         candidateName: application.candidateUser?.name,
         companyName: job?.companyName,
@@ -620,7 +621,7 @@ const bookInterviewSlot = asyncHandler(async (req, res) => {
     subject: 'Interview slot confirmed',
     text: `Your interview for ${application.job?.title || 'the role'} is confirmed on ${application.interviewScheduledAt?.toISOString()}.`,
     attachments: [{
-      filename: 'hirexo-interview-invite.ics',
+      filename: 'HEXORA-interview-invite.ics',
       content: buildInterviewCalendarInvite({
         candidateName: application.candidateUser?.name,
         companyName: application.job?.companyName,
@@ -694,8 +695,9 @@ const requestInterviewReschedule = asyncHandler(async (req, res) => {
 
 const sendApplicationMessage = asyncHandler(async (req, res) => {
   const text = String(req.body.message || '').trim();
-  if (!text) {
-    throw new AppError('Message is required', 400);
+  const hasAttachment = req.file && req.file.filename;
+  if (!text && !hasAttachment) {
+    throw new AppError('Message or file attachment is required', 400);
   }
 
   const application = await Application.findById(req.params.id)
@@ -753,18 +755,34 @@ const sendApplicationMessage = asyncHandler(async (req, res) => {
 
   const senderName = req.user.name || (senderIsCandidate ? application.candidateUser?.name : application.employerUser?.name) || 'User';
 
+  const attachmentData = {};
+  if (req.file) {
+    attachmentData.attachment = {
+      fileName: req.file.originalname,
+      filePath: req.file.path,
+      mimeType: req.file.mimetype,
+      size: req.file.size
+    };
+  }
+
   const message = await ApplicationMessage.create({
     application: application._id,
     senderUser: req.user._id,
     recipientUser: recipient._id,
-    message: text
+    message: text,
+    ...attachmentData
   });
+
+  const hasFile = Boolean(req.file);
+  const notificationMsg = hasFile
+    ? `${senderName} sent a file: ${req.file.originalname}`
+    : `${senderName}: ${text.slice(0, 120)}`;
 
   await createNotification({
     userId: recipient._id,
     type: NOTIFICATION_TYPES.MESSAGE,
-    title: 'New application message',
-    message: `${senderName}: ${text.slice(0, 120)}`,
+    title: hasFile ? 'New file received' : 'New application message',
+    message: notificationMsg,
     metadata: {
       applicationId: application._id,
       jobId: application.job?._id
@@ -772,10 +790,14 @@ const sendApplicationMessage = asyncHandler(async (req, res) => {
   });
 
   if (recipient.email) {
+    const emailText = hasFile
+      ? `${senderName} sent you a file: ${req.file.originalname}\n\nMessage: ${text || '(no text)'}`
+      : `${senderName} sent you a message:\n\n${text}`;
+
     await sendEmail({
       to: recipient.email,
       subject: `New message about ${application.job?.title || 'your application'}`,
-      text: `${senderName} sent you a message:\n\n${text}`
+      text: emailText
     });
   }
 
@@ -789,6 +811,30 @@ const sendApplicationMessage = asyncHandler(async (req, res) => {
   }));
 });
 
+const downloadMessageAttachment = asyncHandler(async (req, res) => {
+  const { id, messageId } = req.params;
+
+  const application = await Application.findById(id);
+  if (!application) {
+    throw new AppError('Application not found', 404);
+  }
+
+  if (!userCanAccessApplication(application, req.user)) {
+    throw new AppError('You cannot access this attachment', 403);
+  }
+
+  const message = await ApplicationMessage.findById(messageId);
+  if (!message || String(message.application) !== String(id)) {
+    throw new AppError('Message not found', 404);
+  }
+
+  if (!message.attachment?.filePath || !fs.existsSync(message.attachment.filePath)) {
+    throw new AppError('Attachment file not found', 404);
+  }
+
+  res.download(path.resolve(message.attachment.filePath), message.attachment.fileName || 'attachment');
+});
+
 module.exports = {
   applyForJob,
   getMyApplications,
@@ -799,5 +845,6 @@ module.exports = {
   getApplicationMessages,
   bookInterviewSlot,
   requestInterviewReschedule,
-  sendApplicationMessage
+  sendApplicationMessage,
+  downloadMessageAttachment
 };

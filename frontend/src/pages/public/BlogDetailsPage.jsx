@@ -44,7 +44,7 @@ export default function BlogDetailsPage() {
   return (
     <>
       <Seo
-        title={`${post?.title || 'Blog'} | Hirexo`}
+        title={`${post?.title || 'Blog'} | HEXORA`}
         description={post?.excerpt || 'Blog details'}
         image={imageUrl}
         type="article"
@@ -58,7 +58,7 @@ export default function BlogDetailsPage() {
           dateModified: post?.updatedAt || post?.publishedAt || post?.createdAt,
           publisher: {
             '@type': 'Organization',
-            name: 'Hirexo'
+            name: 'HEXORA'
           }
         }}
       />

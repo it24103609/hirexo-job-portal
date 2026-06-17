@@ -14,7 +14,7 @@ const createContact = asyncHandler(async (req, res) => {
   await sendEmail({
     to: req.body.email,
     subject: 'We received your message',
-    text: `Hi ${req.body.name}, thank you for contacting Hirexo. We will respond to your inquiry shortly.`,
+    text: `Hi ${req.body.name}, thank you for contacting HEXORA. We will respond to your inquiry shortly.`,
     html: contactAckEmail({ name: req.body.name })
   });
 

@@ -150,7 +150,7 @@ class PaymentService {
       const user = await User.findById(userId);
       await emailService.send({
         to: user.email,
-        subject: `Welcome to Hirexo ${tier} Plan!`,
+        subject: `Welcome to HEXORA ${tier} Plan!`,
         html: subscriptionSuccessEmail({
           name: user.name,
           tier,

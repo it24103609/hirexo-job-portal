@@ -47,7 +47,7 @@ export default function EmployerApprovalsPage() {
 
   return (
     <>
-      <Seo title="Requests & Approvals | Hirexo" description="Manage hiring requests, sign-offs, and approval decisions." />
+      <Seo title="Requests & Approvals | HEXORA" description="Manage hiring requests, sign-offs, and approval decisions." />
       <DashboardHeader title="Requests & Approvals" description="Track budget sign-offs, offer approvals, reschedule decisions, and internal hiring requests." />
 
       <div className="grid-2">
