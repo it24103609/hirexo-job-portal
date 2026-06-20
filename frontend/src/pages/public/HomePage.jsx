@@ -46,10 +46,10 @@ const media = {
 };
 
 const stats = [
-  { value: '250+', label: 'Active Openings', icon: Briefcase },
-  { value: '120+', label: 'Hiring Partners', icon: Building2 },
-  { value: '15K+', label: 'Candidate Profiles', icon: UserCheck },
-  { value: '10+', label: 'Industry Verticals', icon: Globe2 }
+  { value: '5', label: 'Business Divisions', icon: Building2 },
+  { value: '25K+', label: 'Professionals', icon: Users },
+  { value: 'Global', label: 'Presence', icon: Globe2 },
+  { value: '8+', label: 'Years Experience', icon: TrendingUp }
 ];
 
 const talentFeatures = [
@@ -214,6 +214,13 @@ const globalTradeBenefits = [
 
 const divisions = [
   {
+    title: 'HEXORA TALENT',
+    text: 'Primary recruitment and workforce solutions division connecting employers with qualified professionals through staffing, talent acquisition, and candidate placement support.',
+    icon: Users,
+    tone: 'talent',
+    link: '/jobs'
+  },
+  {
     title: 'HEXORA HR CONSULTING',
     text: 'Strategic HR advisory, policy guidance, talent planning, and people operations support for growing organizations.',
     icon: Users,
@@ -368,8 +375,8 @@ export default function HomePage() {
   return (
     <>
       <Seo
-        title="HEXORA TALENT | Recruitment & Workforce Solutions"
-        description="HEXORA TALENT by HEXORA GLOBAL GROUP delivers recruitment, staffing, talent acquisition, and workforce solutions for employers and job seekers."
+        title="HEXORA GLOBAL GROUP | Diversified Business Ecosystem"
+        description="HEXORA GLOBAL GROUP is a diversified holding company with 5 business divisions spanning recruitment, HR consulting, global trade, foods, and business solutions."
       />
 
       <section className="home-hero">
@@ -381,18 +388,17 @@ export default function HomePage() {
 
         <div className="shell home-hero-grid">
           <div className="home-hero-copy">
-            <p className="home-eyebrow"><Users size={16} /> HEXORA TALENT</p>
-            <h1>Recruitment & Workforce Solutions for Growing Businesses</h1>
+            <p className="home-eyebrow"><Building2 size={16} /> HEXORA GLOBAL GROUP</p>
+            <h1>Building Global Talent, Trade & Innovation Across Industries</h1>
             <p>
-              HEXORA TALENT is the primary recruitment division of HEXORA GLOBAL GROUP (PVT) LTD,
-              connecting companies with qualified professionals through staffing, talent acquisition,
-              workforce planning, and candidate placement support.
+              HEXORA GLOBAL GROUP is a diversified holding company with 5 strategic business divisions
+              spanning recruitment, HR consulting, global trade, foods, and business solutions.
+              We connect talent with opportunity and businesses with growth.
             </p>
             <div className="home-hero-actions">
-              <Button as={Link} to="/jobs" size="lg">Find Jobs <ArrowRight size={18} /></Button>
-              <Button onClick={handleCvClick} variant="secondary" size="lg">Upload CV <UploadCloud size={18} /></Button>
-              <Button onClick={handleHireTalentClick} variant="ghost" size="lg">Hire Talent <Briefcase size={18} /></Button>
-              <Button as={Link} to="/contact" variant="ghost" size="lg">Contact Us <MessageCircle size={17} /></Button>
+              <Button as={Link} to="/jobs" size="lg">Explore Talent Division <ArrowRight size={18} /></Button>
+              <Button onClick={() => document.getElementById('divisions-section')?.scrollIntoView({ behavior: 'smooth' })} variant="secondary" size="lg">View Group Companies <Building2 size={18} /></Button>
+              <Button as={Link} to="/contact" variant="ghost" size="lg">Contact Group <MessageCircle size={17} /></Button>
             </div>
           </div>
         </div>
@@ -415,11 +421,11 @@ export default function HomePage() {
       <section className="why-section">
         <div className="shell why-grid">
           <div>
-            <p className="home-eyebrow">Why Choose HEXORA TALENT</p>
-            <h2>Focused recruitment support built around business outcomes</h2>
+            <p className="home-eyebrow">Why Choose HEXORA GLOBAL GROUP</p>
+            <h2>Building success across diversified business ecosystems</h2>
             <p className="section-copy">
-              We help employers hire with confidence and help professionals access meaningful opportunities
-              across specialist, operational, technical, and commercial roles.
+              HEXORA GLOBAL GROUP delivers value through strategic business divisions, each focused on
+              excellence in their domain while leveraging shared expertise and resources.
             </p>
             <div className="feature-grid">
               {talentFeatures.map(({ title, text, icon: Icon }) => (
@@ -433,26 +439,59 @@ export default function HomePage() {
           </div>
 
           <aside className="ai-card">
-            <span className="ai-pill">Talent Acquisition Engine</span>
+            <span className="ai-pill">Group-Wide Excellence</span>
             <div className="ai-orbit">
               <span className="ai-orb" />
               <span className="orbit-dot dot-a" />
               <span className="orbit-dot dot-b" />
               <span className="orbit-dot dot-c" />
             </div>
-            <div className="ai-side-card side-left"><FileCheck2 size={20} /> CV Screening</div>
-            <div className="ai-side-card side-right"><BadgeCheck size={20} /> Employer Matching</div>
+            <div className="ai-side-card side-left"><Building2 size={20} /> 5 Divisions</div>
+            <div className="ai-side-card side-right"><Globe2 size={20} /> Global Reach</div>
             <div className="accuracy-card">
-              <strong>Shortlists aligned to role, skill, and culture</strong>
+              <strong>Integrated business solutions across industries</strong>
             </div>
             <div className="ai-actions">
-              <Button as={Link} to="/jobs">See open positions <ArrowRight size={16} /></Button>
-              <Button as={Link} to="/employer/register" variant="secondary">Request candidates</Button>
+              <Button onClick={() => document.getElementById('divisions-section')?.scrollIntoView({ behavior: 'smooth' })}>Explore Divisions <ArrowRight size={16} /></Button>
+              <Button as={Link} to="/contact" variant="secondary">Partner With Us</Button>
             </div>
             <a className="whatsapp-support" href={`https://wa.me/${siteContent.contact.whatsapp}`} target="_blank" rel="noreferrer">
               <MessageCircle size={17} /> WhatsApp support available
             </a>
           </aside>
+        </div>
+      </section>
+
+      <section className="divisions-section" id="divisions-section">
+        <div className="shell">
+          <div className="section-topline">
+            <div>
+              <p className="home-eyebrow">Our Business Divisions</p>
+              <h2>Five Strategic Divisions Driving Global Growth</h2>
+              <p>Each division operates with focused expertise while contributing to the strength of HEXORA GLOBAL GROUP.</p>
+            </div>
+          </div>
+
+          <div className="division-grid">
+            {divisions.map((division) => (
+              <article className="division-card" key={division.title}>
+                <span className={`division-icon division-icon-${division.tone}`}>
+                  <division.icon size={28} />
+                </span>
+                <h3>{division.title}</h3>
+                <p>{division.text}</p>
+                {division.link ? (
+                  <Button as={Link} to={division.link} size="sm" className="division-explore-btn">
+                    Explore <ArrowRight size={14} />
+                  </Button>
+                ) : (
+                  <Button size="sm" variant="secondary" className="division-explore-btn">
+                    Coming Soon
+                  </Button>
+                )}
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -767,59 +806,71 @@ export default function HomePage() {
         <div className="shell corporate-grid">
           <div>
             <p className="home-eyebrow">About HEXORA GLOBAL GROUP</p>
-            <h2>A diversified corporate group led by recruitment excellence</h2>
+            <h2 className="corporate-light-heading">A diversified corporate group driving excellence across industries</h2>
             <p>
-              HEXORA GLOBAL GROUP (PVT) LTD operates through focused business divisions, with HEXORA TALENT
-              serving as the company&apos;s primary revenue-generating recruitment and workforce solutions arm.
-              The group also supports clients through HR consulting, global trade, foods, and business solutions.
+              HEXORA GLOBAL GROUP (PVT) LTD operates through five strategic business divisions, each focused on
+              delivering excellence in their domain while contributing to the group's overall success.
             </p>
-          </div>
-          <aside className="corporate-note">
-            <strong>Primary Division</strong>
-            <h3>HEXORA TALENT</h3>
-            <p>Recruitment, staffing, talent acquisition, workforce solutions, and job portal services.</p>
-          </aside>
-        </div>
-      </section>
-
-      <section className="divisions-section">
-        <div className="shell">
-          <div className="section-topline">
-            <div>
-              <p className="home-eyebrow">Business Divisions</p>
-              <h2>Supporting divisions under HEXORA GLOBAL GROUP</h2>
-              <p>These divisions remain visible as part of the wider corporate ecosystem.</p>
+            <div className="corporate-icons-row">
+              <span className="corporate-icon-item"><Users size={20} /></span>
+              <span className="corporate-icon-item"><Globe2 size={20} /></span>
+              <span className="corporate-icon-item"><Utensils size={20} /></span>
+              <span className="corporate-icon-item"><Briefcase size={20} /></span>
+              <span className="corporate-icon-item"><Building2 size={20} /></span>
+            </div>
+            <div className="vision-mission-grid">
+              <div className="vision-card">
+                <h3>Our Vision</h3>
+                <p>To be a leading diversified business group recognized for excellence, innovation, and sustainable growth across multiple industries.</p>
+              </div>
+              <div className="mission-card">
+                <h3>Our Mission</h3>
+                <p>To deliver exceptional value through our specialized divisions, connecting talent with opportunity, businesses with solutions, and markets with products.</p>
+              </div>
             </div>
           </div>
-
-          <div className="division-grid">
-            {divisions.map((division) => (
-              <article className="division-card" key={division.title}>
-                <span className={`division-icon division-icon-${division.tone}`}>
-                  <division.icon size={21} />
-                </span>
-                <h3>{division.title}</h3>
-                <p>{division.text}</p>
-              </article>
-            ))}
+          <div className="corporate-divisions-grid">
+            <aside className="corporate-note corporate-note-talent">
+              <div className="corporate-note-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=85)' }} />
+              <div className="corporate-note-content">
+                <strong>Primary Division</strong>
+                <h3>HEXORA TALENT</h3>
+                <p>Recruitment, staffing, talent acquisition, workforce solutions, and job portal services.</p>
+              </div>
+            </aside>
+            <aside className="corporate-note corporate-note-hr">
+              <div className="corporate-note-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=400&q=85)' }} />
+              <div className="corporate-note-content">
+                <strong>HR Consulting</strong>
+                <h3>HEXORA HR CONSULTING</h3>
+                <p>Strategic HR advisory, policy guidance, talent planning, and people operations support.</p>
+              </div>
+            </aside>
+            <aside className="corporate-note corporate-note-trade">
+              <div className="corporate-note-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=85)' }} />
+              <div className="corporate-note-content">
+                <strong>Global Trade</strong>
+                <h3>HEXORA GLOBAL TRADE</h3>
+                <p>International sourcing, procurement, import/export coordination, and trade partnerships.</p>
+              </div>
+            </aside>
+            <aside className="corporate-note corporate-note-foods">
+              <div className="corporate-note-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=85)' }} />
+              <div className="corporate-note-content">
+                <strong>Food Products</strong>
+                <h3>HEXORA FOODS</h3>
+                <p>Food-related business initiatives focused on product opportunities and distribution.</p>
+              </div>
+            </aside>
+            <aside className="corporate-note corporate-note-solutions">
+              <div className="corporate-note-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=400&q=85)' }} />
+              <div className="corporate-note-content">
+                <strong>Business Solutions</strong>
+                <h3>HEXORA BUSINESS SOLUTIONS</h3>
+                <p>Business support services for operations, communication, and commercial execution.</p>
+              </div>
+            </aside>
           </div>
-
-          <article className="global-trade-card" id="global-trade">
-            <div>
-              <p className="home-eyebrow"><Globe2 size={16} /> HEXORA GLOBAL TRADE</p>
-              <h2>International Trade & Supply Chain Solutions</h2>
-              <p>
-                HEXORA GLOBAL TRADE supports businesses in sourcing, importing, exporting, and distributing
-                products across international markets. We help organizations build reliable supply chains,
-                identify qualified suppliers, and expand global business opportunities through strategic trade partnerships.
-              </p>
-            </div>
-            <div className="trade-columns">
-              <TradeList title="Services" items={globalTradeServices} />
-              <TradeList title="Product Categories" items={globalTradeProducts} />
-              <TradeList title="Benefits" items={globalTradeBenefits} />
-            </div>
-          </article>
         </div>
       </section>
 
@@ -853,20 +904,20 @@ export default function HomePage() {
 
       <section className="final-cta" id="contact">
         <div className="cta-pattern" />
-        <img className="cta-person cta-left" src={media.ctaLeft} alt="Recruiter working with candidates" />
-        <img className="cta-person cta-right" src={media.ctaRight} alt="Professional candidate smiling" />
-        <div className="floating-stat cta-stat-left"><Users size={17} /> Talent shortlists ready</div>
-        <div className="floating-stat cta-stat-right"><strong>250+</strong> Open Positions</div>
+        <img className="cta-person cta-left" src={media.ctaLeft} alt="Business professionals collaborating" />
+        <img className="cta-person cta-right" src={media.ctaRight} alt="Global team working together" />
+        <div className="floating-stat cta-stat-left"><Building2 size={17} /> 5 Divisions</div>
+        <div className="floating-stat cta-stat-right"><strong>25K+</strong> Professionals</div>
         <div className="shell final-cta-inner">
-          <h2>Ready to find talent or your next career opportunity?</h2>
+          <h2>Ready to explore opportunities with HEXORA GLOBAL GROUP?</h2>
           <p>
-            Contact HEXORA TALENT for recruitment support, candidate registration, employer requirements,
-            and workforce solutions under HEXORA GLOBAL GROUP.
+            Discover how our five strategic divisions can support your business growth or career journey.
+            From recruitment to global trade, we deliver excellence across industries.
           </p>
           <div>
-            <Button as={Link} to="/jobs" size="lg">Find Jobs <ArrowRight size={18} /></Button>
-            <Button onClick={handleHireTalentClick} variant="ghost" size="lg">Hire Talent <Briefcase size={17} /></Button>
-            <Button as={Link} to="/contact" variant="ghost" size="lg">Contact Us <MessageCircle size={17} /></Button>
+            <Button onClick={() => document.getElementById('divisions-section')?.scrollIntoView({ behavior: 'smooth' })} size="lg">Explore Our Divisions <ArrowRight size={18} /></Button>
+            <Button as={Link} to="/contact" variant="ghost" size="lg">Partner With Us <Briefcase size={17} /></Button>
+            <Button as={Link} to="/contact" variant="ghost" size="lg">Contact Group <MessageCircle size={17} /></Button>
           </div>
           <address className="contact-mini">
             <span><Phone size={15} /> {siteContent.contact.phonePrimary}</span>
