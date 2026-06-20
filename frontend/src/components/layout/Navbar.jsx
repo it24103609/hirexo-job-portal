@@ -9,7 +9,7 @@ const publicLinks = [
   { to: '/', label: 'Home' },
   { to: '/jobs', label: 'Find Jobs' },
   { to: '/blog', label: 'Blog' },
-  { to: '/services', label: 'Services' },
+  { to: '/services', label: 'Companies' },
   { to: '/about', label: 'About' },
   { to: '/contact', label: 'Contact' }
 ];

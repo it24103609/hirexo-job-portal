@@ -12,7 +12,10 @@ import {
   Phone,
   Twitter,
   Globe2,
-  Clock
+  Clock,
+  Users,
+  Utensils,
+  Building2
 } from 'lucide-react';
 import BrandIdentity from './BrandIdentity';
 
@@ -52,6 +55,17 @@ export default function Footer() {
             <Link to="/services"><BriefcaseBusiness size={16} /> Services</Link>
             <Link to="/jobs"><BriefcaseBusiness size={16} /> Careers</Link>
             <Link to="/contact"><MessageCircle size={16} /> Contact Us</Link>
+          </div>
+        </div>
+
+        <div className="footer-links-panel">
+          <h3>Our Divisions</h3>
+          <div className="footer-links">
+            <Link to="/jobs"><Users size={16} /> HEXORA TALENT</Link>
+            <Link to="#"><Users size={16} /> HEXORA HR CONSULTING</Link>
+            <Link to="#"><Globe2 size={16} /> HEXORA GLOBAL TRADE</Link>
+            <Link to="#"><Utensils size={16} /> HEXORA FOODS</Link>
+            <Link to="#"><Building2 size={16} /> HEXORA BUSINESS SOLUTIONS</Link>
           </div>
         </div>
 

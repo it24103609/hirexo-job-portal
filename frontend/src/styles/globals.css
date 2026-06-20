@@ -855,7 +855,7 @@ main { min-height: 60vh; }
 }
 
 .footer-grid {
-  grid-template-columns: 1.1fr 0.9fr 0.95fr;
+  grid-template-columns: 1.1fr 0.8fr 0.9fr 0.95fr;
   gap: 1.25rem;
 }
 
@@ -1345,6 +1345,11 @@ main { min-height: 60vh; }
   .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .dashboard-mobile-bar { display: block; }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .dashboard-shell {
     margin-top: 0.85rem;
     height: auto;

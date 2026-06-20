@@ -958,6 +958,10 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .division-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .cta-person,
   .floating-stat {
     opacity: 0.34;
@@ -2072,9 +2076,56 @@
   font-size: 1.7rem;
 }
 
+.corporate-light-heading {
+  font-weight: 100;
+}
+
+.corporate-icons-row {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  color: #059669;
+}
+
+.corporate-icon-item {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #d1fae5, #e5f8ee);
+  box-shadow: 0 8px 20px rgba(5, 150, 105, 0.15);
+}
+
+.corporate-divisions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.corporate-note {
+  position: relative;
+  overflow: hidden;
+  min-height: 180px;
+}
+
+.corporate-note-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+.corporate-note-content {
+  position: relative;
+  z-index: 1;
+}
+
 .division-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -2093,6 +2144,11 @@
   border-radius: 14px;
   color: #0f7c4f;
   background: #e5f8ee;
+}
+
+.division-icon-talent {
+  color: #059669;
+  background: #d1fae5;
 }
 
 .division-icon-people {
@@ -2119,6 +2175,42 @@
 .trade-list h3 {
   margin: 0;
   color: #17251f;
+}
+
+.division-explore-btn {
+  margin-top: 0.5rem;
+  width: fit-content;
+}
+
+.vision-mission-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.vision-card,
+.mission-card {
+  padding: 1.2rem;
+  border-radius: 16px;
+  border: 1px solid rgba(26, 138, 86, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 18px 42px rgba(20, 61, 46, 0.09);
+}
+
+.vision-card h3,
+.mission-card h3 {
+  margin: 0 0 0.5rem;
+  color: #059669;
+  font-size: 1.1rem;
+}
+
+.vision-card p,
+.mission-card p {
+  margin: 0;
+  color: #5d7869;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .global-trade-card {
@@ -2226,6 +2318,10 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .vision-mission-grid {
+    grid-template-columns: 1fr;
+  }
+
   .trade-columns {
     grid-template-columns: 1fr;
   }
@@ -2241,7 +2337,8 @@
   .industry-grid,
   .division-grid,
   .client-strip,
-  .testimonial-grid {
+  .testimonial-grid,
+  .vision-mission-grid {
     grid-template-columns: 1fr;
   }
 
