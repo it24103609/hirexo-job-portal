@@ -7,7 +7,7 @@
     "dev": "vite",
     "sitemap": "node scripts/generate-sitemap.mjs",
     "prebuild": "npm run sitemap",
-    "build": "vite build",
+    "build": "vite build --configLoader runner",
     "preview": "vite preview"
   },
   "dependencies": {
