@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
   BadgeCheck,
@@ -27,6 +27,7 @@ import Seo from '../../components/ui/Seo';
 import Button from '../../components/ui/Button';
 import { siteContent } from '../../data/siteContent';
 import PremiumDualCardSection from '../../components/home/PremiumDualCardSection';
+import Carousel from '../../components/home/Carousel';
 import './HomePage.css';
 
 const media = {
@@ -231,6 +232,157 @@ const divisions = [
   }
 ];
 
+const corporateDivisions = [
+  {
+    label: 'Primary Division',
+    title: 'HEXORA TALENT',
+    text: 'Recruitment, staffing, talent acquisition, workforce solutions, and job portal services.',
+    className: 'corporate-note-talent',
+    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=85',
+  },
+  {
+    label: 'HR Consulting',
+    title: 'HEXORA HR CONSULTING',
+    text: 'Strategic HR advisory, policy guidance, talent planning, and people operations support.',
+    className: 'corporate-note-hr',
+    image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=400&q=85',
+  },
+  {
+    label: 'Global Trade',
+    title: 'HEXORA GLOBAL TRADE',
+    text: 'International sourcing, procurement, import/export coordination, and trade partnerships.',
+    className: 'corporate-note-trade',
+    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=85',
+  },
+  {
+    label: 'Food Products',
+    title: 'HEXORA FOODS',
+    text: 'Food-related business initiatives focused on product opportunities and distribution.',
+    className: 'corporate-note-foods',
+    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=85',
+  },
+  {
+    label: 'Business Solutions',
+    title: 'HEXORA BUSINESS SOLUTIONS',
+    text: 'Business support services for operations, communication, and commercial execution.',
+    className: 'corporate-note-solutions',
+    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=400&q=85',
+  },
+];
+
+function CorporateDivisionsCarousel({ cards }) {
+  const startIndex = cards.length + 2;
+  const carouselRef = useRef(null);
+  const [trackIndex, setTrackIndex] = useState(startIndex);
+  const [isResetting, setIsResetting] = useState(false);
+  const [metrics, setMetrics] = useState({ cardWidth: 180, gap: 16, viewportWidth: 980 });
+  const carouselCards = [...cards, ...cards, ...cards];
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setTrackIndex((current) => current + 1);
+    }, 2000);
+
+    return () => window.clearInterval(timer);
+  }, [cards.length]);
+
+  useEffect(() => {
+    const updateMetrics = () => {
+      if (!carouselRef.current) return;
+
+      const viewportWidth = carouselRef.current.getBoundingClientRect().width;
+      const visibleCards = viewportWidth <= 620 ? 1 : viewportWidth <= 1100 ? 3 : 5;
+      const gap = viewportWidth <= 620 ? 12 : 16;
+      const cardWidth = (viewportWidth - gap * (visibleCards - 1)) / visibleCards;
+
+      setMetrics({ cardWidth, gap, viewportWidth });
+    };
+
+    updateMetrics();
+    window.addEventListener('resize', updateMetrics);
+
+    return () => window.removeEventListener('resize', updateMetrics);
+  }, []);
+
+  const getPosition = (index) => {
+    const half = Math.floor(cards.length / 2);
+    let position = index - (trackIndex % cards.length);
+
+    if (position > half) position -= cards.length;
+    if (position < -half) position += cards.length;
+
+    return position;
+  };
+
+  const handleTransitionEnd = () => {
+    if (trackIndex < cards.length * 2) return;
+
+    setIsResetting(true);
+    setTrackIndex(cards.length + (trackIndex % cards.length));
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => setIsResetting(false));
+    });
+  };
+
+  const trackOffset = (metrics.viewportWidth / 2)
+    - (metrics.cardWidth / 2)
+    - (trackIndex * (metrics.cardWidth + metrics.gap));
+
+  return (
+    <div className="corporate-divisions-grid corporate-divisions-carousel" ref={carouselRef} aria-label="HEXORA business divisions carousel">
+      <div
+        className={`corporate-carousel-track${isResetting ? ' is-resetting' : ''}`}
+        style={{
+          '--corporate-card-width': `${metrics.cardWidth}px`,
+          '--corporate-card-gap': `${metrics.gap}px`,
+          transform: `translate3d(${trackOffset}px, 0, 0)`,
+        }}
+        onTransitionEnd={handleTransitionEnd}
+      >
+        {carouselCards.map((card, index) => {
+          const originalIndex = index % cards.length;
+          const position = getPosition(originalIndex);
+          const distance = Math.abs(position);
+          const isActive = index === trackIndex;
+          const scale = isActive ? 1.18 : distance === 1 ? 0.94 : 0.88;
+          const opacity = distance === 0 ? 1 : distance === 1 ? 0.72 : 0.48;
+          const yOffset = distance === 0 ? '-14px' : distance === 1 ? '8px' : '20px';
+          const blur = distance === 0 ? '0px' : distance === 1 ? '0.2px' : '0.8px';
+          const saturation = distance === 0 ? 1.18 : distance === 1 ? 0.9 : 0.76;
+          const brightness = distance === 0 ? 1.08 : distance === 1 ? 0.94 : 0.88;
+
+          return (
+            <aside
+              className={`corporate-note ${card.className} corporate-carousel-card${isActive ? ' is-active' : ''}${distance === 1 ? ' is-near' : ''}${distance > 1 ? ' is-far' : ''}`}
+              key={`${card.title}-${index}`}
+              style={{
+                '--position': `${position}`,
+                '--distance': `${distance}`,
+                '--scale': `${scale}`,
+                '--card-opacity': `${opacity}`,
+                '--y-offset': yOffset,
+                '--soft-blur': blur,
+                '--z-offset': `${(2 - distance) * 28}px`,
+                '--rotate-y': `${position * -4.5}deg`,
+                '--bg-scale': `${1.04 + (2 - distance) * 0.035}`,
+                '--saturate': `${saturation}`,
+                '--brightness': `${brightness}`,
+              }}
+            >
+              <div className="corporate-note-bg" style={{ backgroundImage: `url(${card.image})` }} />
+              <div className="corporate-note-content">
+                <strong>{card.label}</strong>
+                <h3>{card.title}</h3>
+                <p>{card.text}</p>
+              </div>
+            </aside>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 const clients = ['IT Startups', 'Finance Teams', 'Construction Firms', 'Manufacturers', 'Retail Brands', 'Service Providers'];
 
 const testimonials = [
@@ -426,26 +578,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="division-grid">
-            {divisions.map((division) => (
-              <article className="division-card" key={division.title}>
-                <span className={`division-icon division-icon-${division.tone}`}>
-                  <division.icon size={28} />
-                </span>
-                <h3>{division.title}</h3>
-                <p>{division.text}</p>
-                {division.link ? (
-                  <Button as={Link} to={division.link} size="sm" className="division-explore-btn">
-                    Explore <ArrowRight size={14} />
-                  </Button>
-                ) : (
-                  <Button size="sm" variant="secondary" className="division-explore-btn">
-                    Coming Soon
-                  </Button>
-                )}
-              </article>
-            ))}
-          </div>
+          <Carousel cards={divisions} />
         </div>
       </section>
 
@@ -527,48 +660,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          <div className="corporate-divisions-grid">
-            <aside className="corporate-note corporate-note-talent">
-              <div className="corporate-note-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=85)' }} />
-              <div className="corporate-note-content">
-                <strong>Primary Division</strong>
-                <h3>HEXORA TALENT</h3>
-                <p>Recruitment, staffing, talent acquisition, workforce solutions, and job portal services.</p>
-              </div>
-            </aside>
-            <aside className="corporate-note corporate-note-hr">
-              <div className="corporate-note-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=400&q=85)' }} />
-              <div className="corporate-note-content">
-                <strong>HR Consulting</strong>
-                <h3>HEXORA HR CONSULTING</h3>
-                <p>Strategic HR advisory, policy guidance, talent planning, and people operations support.</p>
-              </div>
-            </aside>
-            <aside className="corporate-note corporate-note-trade">
-              <div className="corporate-note-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=85)' }} />
-              <div className="corporate-note-content">
-                <strong>Global Trade</strong>
-                <h3>HEXORA GLOBAL TRADE</h3>
-                <p>International sourcing, procurement, import/export coordination, and trade partnerships.</p>
-              </div>
-            </aside>
-            <aside className="corporate-note corporate-note-foods">
-              <div className="corporate-note-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=85)' }} />
-              <div className="corporate-note-content">
-                <strong>Food Products</strong>
-                <h3>HEXORA FOODS</h3>
-                <p>Food-related business initiatives focused on product opportunities and distribution.</p>
-              </div>
-            </aside>
-            <aside className="corporate-note corporate-note-solutions">
-              <div className="corporate-note-bg" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=400&q=85)' }} />
-              <div className="corporate-note-content">
-                <strong>Business Solutions</strong>
-                <h3>HEXORA BUSINESS SOLUTIONS</h3>
-                <p>Business support services for operations, communication, and commercial execution.</p>
-              </div>
-            </aside>
-          </div>
+          <CorporateDivisionsCarousel cards={corporateDivisions} />
         </div>
       </section>
 
