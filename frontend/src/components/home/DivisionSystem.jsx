@@ -74,7 +74,8 @@ export default function DivisionSystem() {
       <div className="shell">
         <div className="divisions-header">
           <p className="divisions-eyebrow">DIVISION SYSTEM</p>
-          <h2 className="divisions-sub">One Group. Five Specialized Business Divisions.</h2>
+          <h2 className="divisions-title">Our Business Divisions</h2>
+          <p className="divisions-copy">Specialized expertise. Shared values. One mission - your growth.</p>
         </div>
 
         <div className="divisions-row" ref={rootRef}>

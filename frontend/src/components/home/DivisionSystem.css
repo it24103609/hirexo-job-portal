@@ -17,11 +17,20 @@
   margin-bottom: 0.35rem;
 }
 
-.divisions-sub {
+.divisions-title {
+  margin: 0.35rem 0 0.45rem;
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  color: #072e24;
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.divisions-copy {
   margin: 0;
-  font-size: 1.1rem;
-  color: #0f5a39;
-  font-weight: 600;
+  color: #4b6b5f;
+  font-size: 0.98rem;
+  font-weight: 500;
+  opacity: 0.92;
 }
 
 .divisions-row {
