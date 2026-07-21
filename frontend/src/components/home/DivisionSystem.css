@@ -1,0 +1,131 @@
+.divisions-section {
+  padding: 3.25rem 0 3.5rem;
+  background: linear-gradient(180deg, rgba(228, 253, 247, 0.6), rgba(245, 255, 250, 0.6));
+}
+
+.divisions-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.divisions-eyebrow {
+  display: inline-block;
+  color: #10b981;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.divisions-sub {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #0f5a39;
+  font-weight: 600;
+}
+
+.divisions-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  align-items: stretch;
+}
+
+.division-card {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255,255,255,0.6);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(8, 64, 46, 0.08);
+  transition: transform 260ms cubic-bezier(.2,.9,.2,1), box-shadow 260ms;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.6);
+  min-height: 420px;
+}
+
+.division-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 26px 50px rgba(6, 76, 46, 0.12);
+}
+
+.division-image {
+  height: 220px;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.division-body {
+  padding: 1.15rem 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  flex: 1 1 auto;
+}
+
+.division-eyebrow {
+  color: #0b8a50;
+  font-weight: 800;
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.division-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #073826;
+}
+
+.division-desc {
+  margin: 0;
+  color: #395b4b;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  flex: 1 1 auto;
+}
+
+.division-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.division-badge {
+  display: inline-block;
+  padding: 0.45rem 0.6rem;
+  background: rgba(15, 85, 56, 0.06);
+  color: #0b6f45;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.division-cta {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: linear-gradient(90deg, #0f6f45, #0fb06d);
+  color: #fff;
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+/* fade-up animation */
+.division-card { opacity: 0; transform: translateY(12px); }
+.division-card.in-view { opacity: 1; transform: translateY(0); transition: opacity 520ms ease, transform 520ms cubic-bezier(.2,.9,.2,1); }
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .divisions-row { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 760px) {
+  .divisions-row { grid-auto-flow: column; grid-auto-columns: calc(80%); overflow-x: auto; display: grid; padding-bottom: 8px; gap: 1rem; }
+  .division-card { min-width: 78%; }
+}

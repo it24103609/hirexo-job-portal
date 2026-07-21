@@ -27,7 +27,7 @@ import Seo from '../../components/ui/Seo';
 import Button from '../../components/ui/Button';
 import { siteContent } from '../../data/siteContent';
 import PremiumDualCardSection from '../../components/home/PremiumDualCardSection';
-import Carousel from '../../components/home/Carousel';
+import DivisionSystem from '../../components/home/DivisionSystem';
 import './HomePage.css';
 
 const media = {
@@ -39,13 +39,6 @@ const media = {
   ctaLeft: 'https://images.unsplash.com/photo-1562788869-4ed32648eb72?auto=format&fit=crop&w=760&q=85',
   ctaRight: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=760&q=85'
 };
-
-const stats = [
-  { value: '5', label: 'Business Divisions', icon: Building2 },
-  { value: '25K+', label: 'Professionals', icon: Users },
-  { value: 'Global', label: 'Presence', icon: Globe2 },
-  { value: '8+', label: 'Years Experience', icon: TrendingUp }
-];
 
 const talentFeatures = [
   {
@@ -198,191 +191,6 @@ const globalTradeBenefits = [
   'Strategic Business Partnerships'
 ];
 
-const divisions = [
-  {
-    title: 'HEXORA TALENT',
-    text: 'Primary recruitment and workforce solutions division connecting employers with qualified professionals through staffing, talent acquisition, and candidate placement support.',
-    icon: Users,
-    tone: 'talent',
-    link: '/jobs'
-  },
-  {
-    title: 'HEXORA HR CONSULTING',
-    text: 'Strategic HR advisory, policy guidance, talent planning, and people operations support for growing organizations.',
-    icon: Users,
-    tone: 'people'
-  },
-  {
-    title: 'HEXORA GLOBAL TRADE',
-    text: 'International sourcing, procurement, import/export coordination, and trade partnership development.',
-    icon: Globe2,
-    tone: 'trade'
-  },
-  {
-    title: 'HEXORA FOODS',
-    text: 'Food-related business initiatives focused on product opportunities, distribution partnerships, and market growth.',
-    icon: Utensils,
-    tone: 'foods'
-  },
-  {
-    title: 'HEXORA BUSINESS SOLUTIONS',
-    text: 'Business support services that help companies improve operations, communication, and commercial execution.',
-    icon: Briefcase,
-    tone: 'solutions'
-  }
-];
-
-const corporateDivisions = [
-  {
-    label: 'Primary Division',
-    title: 'HEXORA TALENT',
-    text: 'Recruitment, staffing, talent acquisition, workforce solutions, and job portal services.',
-    className: 'corporate-note-talent',
-    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=85',
-  },
-  {
-    label: 'HR Consulting',
-    title: 'HEXORA HR CONSULTING',
-    text: 'Strategic HR advisory, policy guidance, talent planning, and people operations support.',
-    className: 'corporate-note-hr',
-    image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=400&q=85',
-  },
-  {
-    label: 'Global Trade',
-    title: 'HEXORA GLOBAL TRADE',
-    text: 'International sourcing, procurement, import/export coordination, and trade partnerships.',
-    className: 'corporate-note-trade',
-    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=400&q=85',
-  },
-  {
-    label: 'Food Products',
-    title: 'HEXORA FOODS',
-    text: 'Food-related business initiatives focused on product opportunities and distribution.',
-    className: 'corporate-note-foods',
-    image: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=85',
-  },
-  {
-    label: 'Business Solutions',
-    title: 'HEXORA BUSINESS SOLUTIONS',
-    text: 'Business support services for operations, communication, and commercial execution.',
-    className: 'corporate-note-solutions',
-    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=400&q=85',
-  },
-];
-
-function CorporateDivisionsCarousel({ cards }) {
-  const startIndex = cards.length + 2;
-  const carouselRef = useRef(null);
-  const [trackIndex, setTrackIndex] = useState(startIndex);
-  const [isResetting, setIsResetting] = useState(false);
-  const [metrics, setMetrics] = useState({ cardWidth: 180, gap: 16, viewportWidth: 980 });
-  const carouselCards = [...cards, ...cards, ...cards];
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setTrackIndex((current) => current + 1);
-    }, 2000);
-
-    return () => window.clearInterval(timer);
-  }, [cards.length]);
-
-  useEffect(() => {
-    const updateMetrics = () => {
-      if (!carouselRef.current) return;
-
-      const viewportWidth = carouselRef.current.getBoundingClientRect().width;
-      const visibleCards = viewportWidth <= 620 ? 1 : viewportWidth <= 1100 ? 3 : 5;
-      const gap = viewportWidth <= 620 ? 12 : 16;
-      const cardWidth = (viewportWidth - gap * (visibleCards - 1)) / visibleCards;
-
-      setMetrics({ cardWidth, gap, viewportWidth });
-    };
-
-    updateMetrics();
-    window.addEventListener('resize', updateMetrics);
-
-    return () => window.removeEventListener('resize', updateMetrics);
-  }, []);
-
-  const getPosition = (index) => {
-    const half = Math.floor(cards.length / 2);
-    let position = index - (trackIndex % cards.length);
-
-    if (position > half) position -= cards.length;
-    if (position < -half) position += cards.length;
-
-    return position;
-  };
-
-  const handleTransitionEnd = () => {
-    if (trackIndex < cards.length * 2) return;
-
-    setIsResetting(true);
-    setTrackIndex(cards.length + (trackIndex % cards.length));
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => setIsResetting(false));
-    });
-  };
-
-  const trackOffset = (metrics.viewportWidth / 2)
-    - (metrics.cardWidth / 2)
-    - (trackIndex * (metrics.cardWidth + metrics.gap));
-
-  return (
-    <div className="corporate-divisions-grid corporate-divisions-carousel" ref={carouselRef} aria-label="HEXORA business divisions carousel">
-      <div
-        className={`corporate-carousel-track${isResetting ? ' is-resetting' : ''}`}
-        style={{
-          '--corporate-card-width': `${metrics.cardWidth}px`,
-          '--corporate-card-gap': `${metrics.gap}px`,
-          transform: `translate3d(${trackOffset}px, 0, 0)`,
-        }}
-        onTransitionEnd={handleTransitionEnd}
-      >
-        {carouselCards.map((card, index) => {
-          const originalIndex = index % cards.length;
-          const position = getPosition(originalIndex);
-          const distance = Math.abs(position);
-          const isActive = index === trackIndex;
-          const scale = isActive ? 1.18 : distance === 1 ? 0.94 : 0.88;
-          const opacity = distance === 0 ? 1 : distance === 1 ? 0.72 : 0.48;
-          const yOffset = distance === 0 ? '-14px' : distance === 1 ? '8px' : '20px';
-          const blur = distance === 0 ? '0px' : distance === 1 ? '0.2px' : '0.8px';
-          const saturation = distance === 0 ? 1.18 : distance === 1 ? 0.9 : 0.76;
-          const brightness = distance === 0 ? 1.08 : distance === 1 ? 0.94 : 0.88;
-
-          return (
-            <aside
-              className={`corporate-note ${card.className} corporate-carousel-card${isActive ? ' is-active' : ''}${distance === 1 ? ' is-near' : ''}${distance > 1 ? ' is-far' : ''}`}
-              key={`${card.title}-${index}`}
-              style={{
-                '--position': `${position}`,
-                '--distance': `${distance}`,
-                '--scale': `${scale}`,
-                '--card-opacity': `${opacity}`,
-                '--y-offset': yOffset,
-                '--soft-blur': blur,
-                '--z-offset': `${(2 - distance) * 28}px`,
-                '--rotate-y': `${position * -4.5}deg`,
-                '--bg-scale': `${1.04 + (2 - distance) * 0.035}`,
-                '--saturate': `${saturation}`,
-                '--brightness': `${brightness}`,
-              }}
-            >
-              <div className="corporate-note-bg" style={{ backgroundImage: `url(${card.image})` }} />
-              <div className="corporate-note-content">
-                <strong>{card.label}</strong>
-                <h3>{card.title}</h3>
-                <p>{card.text}</p>
-              </div>
-            </aside>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 const clients = ['IT Startups', 'Finance Teams', 'Construction Firms', 'Manufacturers', 'Retail Brands', 'Service Providers'];
 
 const testimonials = [
@@ -494,13 +302,9 @@ export default function HomePage() {
 
         <div className="shell home-hero-grid">
           <div className="home-hero-copy">
-            <p className="home-eyebrow"><Building2 size={16} /> HEXORA GLOBAL GROUP</p>
-            <h1>Building Global Talent, Trade & Innovation Across Industries</h1>
-            <p>
-              HEXORA GLOBAL GROUP is a diversified holding company with 5 strategic business divisions
-              spanning recruitment, HR consulting, global trade, foods, and business solutions.
-              We connect talent with opportunity and businesses with growth.
-            </p>
+            <h1 className="hero-main-heading">HEXORA GLOBAL GROUP (PVT) LTD</h1>
+            <p className="hero-subheading">A diversified global enterprise delivering talent, trade, HR, food, and business solutions worldwide.</p>
+            <div className="hero-separator" />
             <div className="home-hero-actions">
               <Button as={Link} to="/jobs" size="lg">Explore Talent Division <ArrowRight size={18} /></Button>
               <Button onClick={() => document.getElementById('divisions-section')?.scrollIntoView({ behavior: 'smooth' })} variant="secondary" size="lg">View Group Companies <Building2 size={18} /></Button>
@@ -509,20 +313,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      <section className="stats-section">
-        <div className="shell stats-grid">
-          {stats.map(({ value, label, icon: Icon }) => (
-            <div className="premium-stat-card" key={label}>
-              <span><Icon size={28} /></span>
-              <div>
-                <strong>{value}</strong>
-                <p>{label}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      <DivisionSystem />
 
       <section className="why-section">
         <div className="shell why-grid">
@@ -565,20 +356,6 @@ export default function HomePage() {
               <MessageCircle size={17} /> WhatsApp support available
             </a>
           </aside>
-        </div>
-      </section>
-
-      <section className="divisions-section" id="divisions-section">
-        <div className="shell">
-          <div className="section-topline">
-            <div>
-              <p className="home-eyebrow">Our Business Divisions</p>
-              <h2>Five Strategic Divisions Driving Global Growth</h2>
-              <p>Each division operates with focused expertise while contributing to the strength of HEXORA GLOBAL GROUP.</p>
-            </div>
-          </div>
-
-          <Carousel cards={divisions} />
         </div>
       </section>
 
@@ -633,7 +410,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="corporate-section">
+      <section className="corporate-section" id="divisions-section">
         <div className="shell corporate-grid">
           <div>
             <p className="home-eyebrow">About HEXORA GLOBAL GROUP</p>
@@ -660,18 +437,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          <CorporateDivisionsCarousel cards={corporateDivisions} />
-        </div>
-      </section>
 
-      <section className="clients-section">
-        <div className="shell">
-          <div className="section-topline">
-            <div>
-              <p className="home-eyebrow">Clients</p>
-              <h2>Built for employers across growing sectors</h2>
-            </div>
-          </div>
           <div className="client-strip">
             {clients.map((client) => <span key={client}>{client}</span>)}
           </div>
