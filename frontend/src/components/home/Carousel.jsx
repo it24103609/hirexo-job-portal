@@ -60,8 +60,8 @@ const Carousel = ({ cards }) => {
         <div className="carousel-track">
           {visibleCards.map(({ card, index, position }) => (
             <div
-              key={`${index}-${position}`}
-              className={`carousel-card carousel-card-${position === centerPosition ? 'active' : 'side'} carousel-card-pos-${position}`}
+              key={index}
+              className={`carousel-card carousel-card-${position === centerPosition ? 'active' : 'side'}`}
               style={{
                 '--position': position,
                 '--visible-count': visibleCount

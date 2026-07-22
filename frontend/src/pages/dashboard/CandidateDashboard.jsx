@@ -137,12 +137,13 @@ export default function CandidateDashboard() {
   return (
     <>
       <Seo title="Candidate Dashboard | HEXORA" description="Track profile completeness, saved jobs, and applications." />
-      <DashboardHeader
-        title={dashboardGreeting}
-        description={profileHeadline}
-        className="candidate-premium-header"
-        actions={(
-          <div className="candidate-hero-side">
+      <div className="candidate-premium-dashboard">
+        <DashboardHeader
+          title={dashboardGreeting}
+          description={profileHeadline}
+          className="candidate-premium-header"
+          actions={(
+            <div className="candidate-hero-side">
             <div className="candidate-hero-summary-card candidate-glass-card">
               <div className="candidate-hero-summary-top">
                 <div className="candidate-hero-summary-profile">
@@ -360,6 +361,7 @@ export default function CandidateDashboard() {
           </div>
         </Card>
       </div>
+    </div>
     </>
   );
 }
