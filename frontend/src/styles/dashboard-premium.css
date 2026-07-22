@@ -13,39 +13,46 @@
   box-shadow: none;
 }
 
-.dashboard-shell.admin-portal-shell {
+/* ============================================
+   ALL DASHBOARD SHELLS - FULL SCREEN, NO GAPS
+   ============================================ */
+.dashboard-shell.admin-portal-shell,
+.dashboard-shell.candidate-portal-shell,
+.dashboard-shell.employer-portal-shell {
   grid-template-columns: 300px minmax(0, 1fr);
-  gap: 1.4rem;
-  padding: 24px;
-  height: calc(100vh - 88px);
-  width: 100vw;
-  max-width: none;
+  gap: 0;
+  padding: 0;
   margin: 0;
+  width: 100vw;
+  min-width: 100vw;
+  max-width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
   position: relative;
+  border-radius: 0;
+  background: linear-gradient(180deg, #f4faf4 0%, #eaf7f0 48%, #f8fbf8 100%);
 }
 
-.dashboard-shell.admin-portal-shell .dashboard-sidebar {
+/* ============================================
+   SIDEBAR - FIXED ON DESKTOP, FULL HEIGHT
+   ============================================ */
+.dashboard-shell.admin-portal-shell .dashboard-sidebar,
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 300px;
   min-width: 300px;
   max-width: 300px;
-}
-
-.dashboard-main.admin-portal-main {
-  min-height: calc(100vh - 88px);
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
   overflow-y: auto;
-  padding: 24px;
-  width: 100%;
-  max-width: none;
+  z-index: 40;
 }
 
-.dashboard-shell.admin-portal-shell .dashboard-sidebar-admin {
-  margin: 0;
-}
-
-.dashboard-shell.admin-portal-shell .dashboard-main {
-  margin: 0;
-}
-
+/* Sidebar inner styles */
 .dashboard-sidebar-admin {
   padding: 1.3rem;
   border-radius: 28px;
@@ -146,30 +153,36 @@
   border-bottom: 1px solid rgba(22, 114, 74, 0.1);
 }
 
-.dashboard-topbar {
-  position: sticky;
-  top: 1rem;
-  z-index: 30;
+/* ============================================
+   TOPBAR / HEADER - STICKY, NO GAPS
+   ============================================ */
+ .dashboard-topbar {
+   
+  top: 5px;
+  left: 100px;
+  right: 0;
+  z-index: 1000;
+
   display: flex;
   justify-content: space-between;
-  gap: 1rem;
   align-items: center;
-  margin-bottom: 1.4rem;
-  padding: 1rem 1.1rem;
-  border-radius: 26px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(22, 114, 74, 0.14);
-  box-shadow: 0 24px 48px rgba(12, 52, 35, 0.1);
-  backdrop-filter: blur(20px);
+  gap: 0.75rem;
+  margin-bottom: 7px;
+
+  
 }
 
 .dashboard-topbar-search {
-  flex: 1 1 420px;
-  min-width: 0;
-  padding: 1rem 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: 1 1 320px;
+  min-width: 140px;
+  padding: 0.4rem 1rem;
   border-radius: 999px;
   border: 1px solid rgba(22, 114, 74, 0.16);
   background: rgba(235, 250, 240, 0.92);
+  color: var(--primary-dark);
 }
 
 .dashboard-topbar-search input {
@@ -184,89 +197,227 @@
 .dashboard-topbar-actions {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
+  gap: 0.65rem;
   flex-wrap: wrap;
 }
 
 .dashboard-icon-btn {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
   border: 1px solid rgba(22, 114, 74, 0.14);
   background: rgba(255, 255, 255, 0.92);
   color: #0f7a4f;
   display: grid;
   place-items: center;
-  position: relative;
+  flex: 0 0 auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
 .dashboard-icon-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(13, 79, 42, 0.08);
+  box-shadow: 0 8px 18px rgba(13, 79, 42, 0.08);
 }
 
 .dashboard-icon-btn span {
   position: absolute;
+  top: -4px;
   right: -4px;
-  top: -6px;
-  min-width: 19px;
-  height: 19px;
+  min-width: 18px;
+  height: 18px;
   border-radius: 999px;
   background: linear-gradient(145deg, #f85757, #d81f1f);
   color: #fff;
-  font-size: 0.67rem;
+  font-size: 0.65rem;
   font-weight: 800;
   display: grid;
   place-items: center;
-  padding: 0 0.35rem;
+  padding: 0 0.3rem;
+}
+
+/* ============================================
+   MAIN CONTENT - SCROLLS, NO GAPS
+   ============================================ */
+.dashboard-main {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.candidate-portal-main,
+.employer-portal-main,
+.dashboard-main.admin-portal-main {
+  margin-left: 300px;
+  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  width: calc(100vw - 300px);
+  max-width: calc(100vw - 300px);
+  padding-top: 88px;
+}
+
+/* ============================================
+   PROFILE PILL DROPDOWN
+   ============================================ */
+.dashboard-profile-pill-wrapper {
+  position: relative;
+  flex: 0 0 auto;
 }
 
 .dashboard-profile-pill {
-  min-width: 0;
-  gap: 0.85rem;
-  padding: 0.85rem 1rem;
-  border-radius: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+  border-radius: 999px;
   border: 1px solid rgba(22, 114, 74, 0.14);
   background: rgba(249, 253, 250, 0.96);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  line-height: inherit;
+  width: auto;
 }
 
-.dashboard-profile-pill span {
-  width: 46px;
-  height: 46px;
-  border-radius: 16px;
+.dashboard-profile-pill:hover {
+  background: rgba(234, 247, 240, 0.95);
+  border-color: rgba(22, 114, 74, 0.25);
+  box-shadow: 0 4px 12px rgba(20, 73, 45, 0.08);
+  transform: translateY(-1px);
+}
+
+.dashboard-profile-pill:focus-visible {
+  outline: 2px solid rgba(22, 114, 74, 0.4);
+  outline-offset: 2px;
+}
+
+.dashboard-profile-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
   background: linear-gradient(145deg, #dff4e8, #b7efd0);
   color: #0f5a39;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 0.9rem;
+  flex: 0 0 auto;
 }
 
-.dashboard-profile-pill strong {
+.dashboard-profile-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.dashboard-profile-info strong {
   display: block;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
-.dashboard-profile-pill small {
+.dashboard-profile-info small {
   color: #5f7d6a;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
 }
 
-.dashboard-profile-pill {
-  min-width: 0;
-  gap: 0.85rem;
-  padding: 0.85rem 1rem;
-  border-radius: 22px;
+.dashboard-profile-chevron {
+  color: #5f7d6a;
+  transition: transform 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.dashboard-profile-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.dashboard-profile-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  background: #ffffff;
   border: 1px solid rgba(22, 114, 74, 0.14);
-  background: rgba(249, 253, 250, 0.96);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(20, 73, 45, 0.12);
+  padding: 0.5rem;
+  z-index: 100;
+  animation: dashboardDropdownFadeIn 0.15s ease;
 }
 
-.dashboard-profile-pill span {
-  width: 46px;
-  height: 46px;
-  border-radius: 16px;
-  background: linear-gradient(145deg, #dff4e8, #b7efd0);
-  color: #0f5a39;
-  font-weight: 800;
-  font-size: 1rem;
+@keyframes dashboardDropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-profile-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #1f2937;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left;
+}
+
+.dashboard-profile-dropdown-item:hover {
+  background: rgba(234, 247, 240, 0.8);
+}
+
+.dashboard-profile-dropdown-item:focus-visible {
+  outline: 2px solid rgba(22, 114, 74, 0.4);
+  outline-offset: -2px;
+}
+
+.dashboard-profile-dropdown-item svg {
+  color: #0f7a4f;
+  flex: 0 0 auto;
+}
+
+.dashboard-profile-dropdown-item--danger {
+  color: #dc2626;
+}
+
+.dashboard-profile-dropdown-item--danger svg {
+  color: #dc2626;
+}
+
+.dashboard-profile-dropdown-item--danger:hover {
+  background: rgba(254, 226, 226, 0.6);
+}
+
+.dashboard-profile-dropdown-divider {
+  height: 1px;
+  margin: 0.25rem 0.5rem;
+  background: rgba(22, 114, 74, 0.1);
 }
 
 .dashboard-sidebar-admin .sidebar-group-label {
@@ -280,30 +431,6 @@
 .dashboard-icons-pill {
   min-width: 108px;
   text-align: right;
-}
-
-.dashboard-sidebar,
-.dashboard-main {
-  background: var(--dashboard-surface);
-  border: 1px solid var(--dashboard-border);
-  box-shadow: var(--dashboard-shadow-soft);
-}
-
-.dashboard-sidebar {
-  padding: 1.2rem;
-  border-radius: 24px;
-  max-height: calc(100vh - 88px);
-  overflow-y: auto;
-  backdrop-filter: blur(18px);
-  background: rgba(255, 255, 255, 0.9);
-}
-
-.dashboard-sidebar::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 24px;
-  pointer-events: none;
 }
 
 .dashboard-sidebar-mobile-head {
@@ -349,116 +476,6 @@
   color: var(--primary);
 }
 
-.dashboard-topbar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  align-items: center;
-  margin-bottom: 1.2rem;
-  padding: 0.95rem 1rem;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.96);
-  border: 1px solid rgba(22, 114, 74, 0.12);
-  box-shadow: 0 12px 28px rgba(20, 73, 45, 0.06);
-  backdrop-filter: blur(18px);
-}
-
-.dashboard-topbar-search {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.8rem;
-  flex: 1 1 380px;
-  min-width: 0;
-  padding: 0.9rem 1rem;
-  border-radius: 999px;
-  border: 1px solid rgba(22, 114, 74, 0.16);
-  background: rgba(234, 247, 240, 0.85);
-  color: var(--primary-dark);
-}
-
-.dashboard-topbar-search input {
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #153d2d;
-  font-weight: 600;
-}
-
-.dashboard-topbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  flex-wrap: wrap;
-}
-
-.dashboard-icon-btn {
-  position: relative;
-  width: 52px;
-  height: 52px;
-  border-radius: 18px;
-  border: 1px solid rgba(22, 114, 74, 0.14);
-  background: rgba(255, 255, 255, 0.88);
-  color: var(--primary-dark);
-  display: grid;
-  place-items: center;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.dashboard-icon-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 24px rgba(20, 73, 45, 0.12);
-}
-
-.dashboard-icon-btn span {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 20px;
-  height: 20px;
-  border-radius: 999px;
-  background: #15803d;
-  color: white;
-  font-size: 0.75rem;
-  display: grid;
-  place-items: center;
-}
-
-.dashboard-profile-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 0.85rem 1rem;
-  border-radius: 20px;
-  border: 1px solid rgba(22, 114, 74, 0.12);
-  background: rgba(246, 251, 247, 0.95);
-}
-
-.dashboard-profile-pill span {
-  width: 44px;
-  height: 44px;
-  border-radius: 14px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(145deg, #dff4e8, #b7efd0);
-  color: #0f5a39;
-  font-weight: 700;
-  font-size: 1rem;
-}
-
-.dashboard-profile-pill strong {
-  display: block;
-  font-size: 0.95rem;
-}
-
-.dashboard-profile-pill small {
-  color: #5f7d6a;
-  font-size: 0.8rem;
-}
-
 .premium-admin-dashboard,
 .employer-premium-dashboard,
 .candidate-dashboard-grid,
@@ -486,23 +503,126 @@
   border-radius: 999px;
 }
 
-@media (max-width: 1080px) {
-  .dashboard-shell {
-    grid-template-columns: minmax(0, 1fr);
+/* ============================================
+   RESPONSIVE - TABLET & BELOW
+   ============================================ */
+@media (max-width: 1024px) {
+  .dashboard-shell.admin-portal-shell,
+  .dashboard-shell.candidate-portal-shell,
+  .dashboard-shell.employer-portal-shell {
+    grid-template-columns: 1fr;
     height: auto;
+    min-height: 100vh;
+    width: 100vw;
+    min-width: 100vw;
+    max-width: 100vw;
+  }
+
+  .dashboard-shell.admin-portal-shell .dashboard-sidebar,
+  .dashboard-shell.candidate-portal-shell .dashboard-sidebar,
+  .dashboard-shell.employer-portal-shell .dashboard-sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+    height: 100vh;
+    z-index: 100;
+    transition: left 0.3s ease;
+    border-radius: 0;
+  }
+
+  .dashboard-sidebar.is-open,
+  .dashboard-shell.mobile-nav-open .dashboard-sidebar {
+    left: 0;
+  }
+
+  .candidate-portal-main,
+  .employer-portal-main,
+  .dashboard-main.admin-portal-main {
+    margin-left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: visible;
+    overflow-x: hidden;
   }
 
   .dashboard-topbar {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0.6rem 1rem;
   }
 
   .dashboard-topbar-search {
     width: 100%;
+    flex-basis: 100%;
+    order: 1;
   }
 
-  .dashboard-main {
-    min-height: auto;
+  .dashboard-topbar-actions {
+    flex: 1;
+    order: 2;
+    justify-content: flex-end;
+  }
+  .dashboard-topbar{
+    left:0;
+    width:100%;
+}
+}
+
+@media (max-width: 768px) {
+  .dashboard-topbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .dashboard-topbar-search {
+    flex-basis: 100%;
+    order: 1;
+    padding: 0.6rem 0.85rem;
+  }
+
+  .dashboard-topbar-actions {
+    flex: 1;
+    order: 2;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .dashboard-icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dashboard-profile-pill {
+    padding: 0.35rem 0.5rem 0.35rem 0.35rem;
+  }
+
+  .dashboard-profile-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 0.8rem;
+  }
+
+  .dashboard-profile-info strong {
+    font-size: 0.78rem;
+    max-width: 80px;
+  }
+
+  .dashboard-profile-info small {
+    font-size: 0.65rem;
+    max-width: 80px;
+  }
+
+  .dashboard-profile-dropdown {
+    right: 0;
+    min-width: 200px;
   }
 }
 
@@ -614,37 +734,6 @@
   .employer-premium-dashboard .employer-hero-cta-row {
     grid-template-columns: 1fr;
   }
-}
-
-/* Candidate and employer dashboards adopt admin shell layout */
-.dashboard-shell.candidate-portal-shell,
-.dashboard-shell.employer-portal-shell {
-  grid-template-columns: 300px minmax(0, 1fr);
-  gap: 1.4rem;
-  padding: 24px;
-  height: calc(100vh - 88px);
-  width: 100vw;
-  max-width: none;
-  margin: 0;
-  position: relative;
-  background: linear-gradient(180deg, #f4faf4 0%, #eaf7f0 48%, #f8fbf8 100%);
-  border-radius: 0;
-}
-
-.dashboard-shell.candidate-portal-shell .dashboard-sidebar,
-.dashboard-shell.employer-portal-shell .dashboard-sidebar {
-  width: 300px;
-  min-width: 300px;
-  max-width: 300px;
-}
-
-.candidate-portal-main,
-.employer-portal-main {
-  min-height: calc(100vh - 88px);
-  overflow-y: auto;
-  padding: 24px;
-  width: 100%;
-  max-width: none;
 }
 
 .employer-admin-style-dashboard .employer-command-header {

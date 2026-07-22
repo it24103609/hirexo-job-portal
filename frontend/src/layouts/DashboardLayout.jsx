@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { Outlet, Navigate, useLocation } from 'react-router-dom';
-import { Menu, X, Search, Bell, Settings } from 'lucide-react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { Outlet, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { Menu, X, Search, Bell, Settings, User, LogOut, ChevronDown } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';
 import { useAuth } from '../contexts/AuthContext';
 import Loader from '../components/ui/Loader';
@@ -11,7 +11,10 @@ import '../styles/dashboard-premium.css';
 export default function DashboardLayout({ role }) {
   const { loading, isAuthenticated, user } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     document.body.classList.toggle('dashboard-nav-open', sidebarOpen);
@@ -25,6 +28,7 @@ export default function DashboardLayout({ role }) {
 
   useEffect(() => {
     setSidebarOpen(false);
+    setProfileDropdownOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -51,8 +55,51 @@ export default function DashboardLayout({ role }) {
     return () => window.removeEventListener('keydown', onEscape);
   }, [sidebarOpen]);
 
+  // Close dropdown on click outside
+  useEffect(() => {
+    if (!profileDropdownOpen) return;
+
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setProfileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [profileDropdownOpen]);
+
+  const handleProfileClick = useCallback(() => {
+    setProfileDropdownOpen((prev) => !prev);
+  }, []);
+
+  const handleProfileNavigation = useCallback((path) => {
+    setProfileDropdownOpen(false);
+    navigate(path);
+  }, [navigate]);
+
   if (loading) return <Loader label="Loading dashboard..." />;
   if (!isAuthenticated || user?.role !== role) return <Navigate to="/" replace />;
+
+  const getDashboardPath = (r) => {
+    if (r === 'employer') return '/employer/profile';
+    if (r === 'candidate') return '/candidate/profile';
+    if (r === 'admin') return '/admin/profile';
+    return '/';
+  };
+
+  const getNotificationsPath = (r) => `/${r}/notifications`;
+  const getSettingsPath = (r) => `/${r}/policies`;
 
   return (
     <>
@@ -95,19 +142,80 @@ export default function DashboardLayout({ role }) {
               />
             </div>
             <div className="dashboard-topbar-actions">
-              <button type="button" className="dashboard-icon-btn" aria-label="Open notifications">
+              <button
+                type="button"
+                className="dashboard-icon-btn"
+                aria-label="Open notifications"
+                onClick={() => navigate(getNotificationsPath(role))}
+              >
                 <Bell size={18} />
                 <span>4</span>
               </button>
-              <button type="button" className="dashboard-icon-btn" aria-label="Open settings">
+              <button
+                type="button"
+                className="dashboard-icon-btn"
+                aria-label="Open settings"
+                onClick={() => navigate(getSettingsPath(role))}
+              >
                 <Settings size={18} />
               </button>
-              <div className="dashboard-profile-pill">
-                <span>{String(user?.name || 'U').slice(0, 1).toUpperCase()}</span>
-                <div>
-                  <strong>{user?.name || 'User'}</strong>
-                  <small>{user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Member'}</small>
-                </div>
+              <div className="dashboard-profile-pill-wrapper" ref={dropdownRef}>
+                <button
+                  type="button"
+                  className="dashboard-profile-pill"
+                  onClick={handleProfileClick}
+                  aria-expanded={profileDropdownOpen}
+                  aria-haspopup="true"
+                  aria-label="Profile menu"
+                >
+                  <span className="dashboard-profile-avatar">
+                    {String(user?.name || 'U').slice(0, 1).toUpperCase()}
+                  </span>
+                  <div className="dashboard-profile-info">
+                    <strong>{user?.name || 'User'}</strong>
+                    <small>{user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Member'}</small>
+                  </div>
+                  <ChevronDown
+                    size={14}
+                    className={`dashboard-profile-chevron ${profileDropdownOpen ? 'is-open' : ''}`}
+                  />
+                </button>
+
+                {profileDropdownOpen && (
+                  <div className="dashboard-profile-dropdown" role="menu">
+                    <button
+                      type="button"
+                      className="dashboard-profile-dropdown-item"
+                      onClick={() => handleProfileNavigation(getDashboardPath(role))}
+                      role="menuitem"
+                    >
+                      <User size={16} />
+                      <span>My Profile</span>
+                    </button>
+                    <button
+                      type="button"
+                      className="dashboard-profile-dropdown-item"
+                      onClick={() => handleProfileNavigation(`/${role}/settings`)}
+                      role="menuitem"
+                    >
+                      <Settings size={16} />
+                      <span>Settings</span>
+                    </button>
+                    <div className="dashboard-profile-dropdown-divider" />
+                    <button
+                      type="button"
+                      className="dashboard-profile-dropdown-item dashboard-profile-dropdown-item--danger"
+                      onClick={() => {
+                        setProfileDropdownOpen(false);
+                        navigate('/logout');
+                      }}
+                      role="menuitem"
+                    >
+                      <LogOut size={16} />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>

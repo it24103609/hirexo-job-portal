@@ -1,8 +1,9 @@
 .dashboard-shell.candidate-portal-shell {
   position: relative;
   isolation: isolate;
-  min-height: calc(100vh - 1.5rem);
-  padding: 1rem;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
   background:
     radial-gradient(circle at 76% 14%, rgba(95, 198, 145, 0.24), transparent 24rem),
     radial-gradient(circle at 28% 78%, rgba(172, 226, 197, 0.18), transparent 22rem),
@@ -22,15 +23,17 @@
 
 .dashboard-shell.candidate-portal-shell {
   grid-template-columns: 300px minmax(0, 1fr);
-  gap: 1.1rem;
+  gap: 0;
 }
 
 .dashboard-sidebar-candidate {
   position: sticky;
-  top: 1rem;
+  top: 0;
   align-self: start;
-  min-height: calc(100vh - 2rem);
-  border-radius: 32px;
+  min-height: 100vh;
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid rgba(26, 138, 86, 0.18);
   background:
     radial-gradient(circle at 28% 0%, rgba(255, 255, 255, 0.96), transparent 16rem),
     linear-gradient(160deg, rgba(255, 255, 255, 0.86), rgba(243, 251, 247, 0.72));
@@ -3840,8 +3843,9 @@
 .dashboard-shell.candidate-portal-shell {
   position: relative;
   isolation: isolate;
-  min-height: calc(100vh - 1.5rem);
-  padding: 1rem;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
   background:
     radial-gradient(circle at 72% 16%, rgba(95, 198, 145, 0.28), transparent 28rem),
     radial-gradient(circle at 36% 76%, rgba(172, 226, 197, 0.2), transparent 24rem),
@@ -3861,8 +3865,8 @@
 
 .candidate-portal-main {
   position: relative;
-  border: 1px solid rgba(26, 138, 86, 0.16);
-  border-radius: 30px;
+  border: none;
+  border-radius: 0;
   background: rgba(255, 255, 255, 0.42);
   box-shadow: 0 26px 70px rgba(12, 52, 35, 0.12);
   backdrop-filter: blur(22px);
@@ -3886,14 +3890,15 @@
 
 .dashboard-sidebar-candidate {
   position: sticky;
-  top: 1rem;
+  top: 0;
   align-self: start;
-  min-height: calc(100vh - 2rem);
-  border-radius: 30px;
+  min-height: 100vh;
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid rgba(26, 138, 86, 0.18);
   background:
     radial-gradient(circle at 28% 0%, rgba(255, 255, 255, 0.96), transparent 16rem),
     linear-gradient(160deg, rgba(255, 255, 255, 0.82), rgba(243, 251, 247, 0.68));
-  border: 1px solid rgba(26, 138, 86, 0.18);
   box-shadow: 0 26px 64px rgba(12, 52, 35, 0.12);
   backdrop-filter: blur(24px);
 }

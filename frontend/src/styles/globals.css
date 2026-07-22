@@ -39,8 +39,10 @@ body.dashboard-nav-open {
   overflow: hidden;
 }
 
-body.dashboard-layout-active {
-  overflow: hidden;
+@media (min-width: 1025px) {
+  body.dashboard-layout-active {
+    overflow: hidden;
+  }
 }
 
 a { color: inherit; text-decoration: none; }
