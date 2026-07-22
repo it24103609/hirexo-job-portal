@@ -333,10 +333,10 @@ export default function EmployerDashboard() {
   if (state.loading) return <Loader label="Loading premium employer dashboard..." />;
 
   return (
-    <div className="employer-premium-dashboard">
+    <div className="employer-premium-dashboard employer-admin-style-dashboard">
       <Seo title="Employer Dashboard | HEXORA" description="Premium employer hiring command center." />
 
-      <header className="employer-command-header">
+      <header className="employer-command-header employer-admin-dashboard-header">
         <div>
           <span className="employer-command-kicker"><Sparkles size={14} /> Enterprise HR Command Center</span>
           <h1>Welcome back, {user?.name || 'Employer'} 👋</h1>

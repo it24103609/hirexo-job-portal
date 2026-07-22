@@ -40,8 +40,11 @@
   position: relative;
   z-index: 3;
   display: grid;
-  grid-template-columns: minmax(0, 760px);
+  grid-template-columns: 1fr;
+  justify-items: center;
   align-items: center;
+  max-width: 100%;
+  margin: 0 auto;
 }
 
 .home-hero-copy h1,
@@ -52,6 +55,17 @@
   margin: 0;
   line-height: 1.04;
   letter-spacing: 0;
+}
+
+.home-hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  max-width: 1000px;
+  padding: 0 1rem;
 }
 
 .home-hero-copy h1 {
@@ -68,6 +82,43 @@
   line-height: 1.75;
 }
 
+.hero-main-heading {
+  max-width: 100%;
+  margin: 0 0 1rem 0;
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 50%, #a8e6cf 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center;
+  text-shadow: 0 0 30px rgba(69, 229, 154, 0.3);
+  filter: drop-shadow(0 0 25px rgba(69, 229, 154, 0.2));
+}
+
+.hero-subheading {
+  max-width: 800px;
+  margin: 1.5rem auto 0;
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+.hero-separator {
+  width: 60px;
+  height: 3px;
+  margin: 2rem auto 2.5rem;
+  background: linear-gradient(90deg, transparent, #45e59a, transparent);
+  border-radius: 999px;
+  box-shadow: 0 0 20px rgba(69, 229, 154, 0.5);
+}
+
 .home-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -82,9 +133,13 @@
 
 .home-hero-actions {
   display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-top: 2rem;
+  margin-top: 0;
+  padding: 0;
+  width: 100%;
 }
 
 .home-hero .btn-ghost,
@@ -3893,8 +3948,11 @@
 }
 
 .divisions-section .shell {
-  width: var(--shell);
-  max-width: var(--shell);
+  /* make the divisions section full-bleed so cards can expand to screen edges */
+  width: 100%;
+  max-width: none;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 
 .divisions-section .section-topline {

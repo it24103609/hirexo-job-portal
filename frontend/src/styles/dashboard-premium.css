@@ -1,0 +1,741 @@
+:root {
+  --dashboard-bg: #eef8f1;
+  --dashboard-surface: rgba(255, 255, 255, 0.95);
+  --dashboard-surface-soft: rgba(234, 247, 240, 0.88);
+  --dashboard-border: rgba(22, 114, 74, 0.16);
+  --dashboard-shadow: 0 20px 40px rgba(20, 73, 45, 0.08);
+  --dashboard-shadow-soft: 0 12px 28px rgba(20, 73, 45, 0.06);
+}
+
+.dashboard-shell {
+  background: linear-gradient(180deg, #f4faf4 0%, #eaf7f0 48%, #f8fbf8 100%);
+  border: none;
+  box-shadow: none;
+}
+
+.dashboard-shell.admin-portal-shell {
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 1.4rem;
+  padding: 24px;
+  height: calc(100vh - 88px);
+  width: 100vw;
+  max-width: none;
+  margin: 0;
+  position: relative;
+}
+
+.dashboard-shell.admin-portal-shell .dashboard-sidebar {
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+.dashboard-main.admin-portal-main {
+  min-height: calc(100vh - 88px);
+  overflow-y: auto;
+  padding: 24px;
+  width: 100%;
+  max-width: none;
+}
+
+.dashboard-shell.admin-portal-shell .dashboard-sidebar-admin {
+  margin: 0;
+}
+
+.dashboard-shell.admin-portal-shell .dashboard-main {
+  margin: 0;
+}
+
+.dashboard-sidebar-admin {
+  padding: 1.3rem;
+  border-radius: 28px;
+  border: 1px solid rgba(22, 114, 74, 0.18);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(236, 250, 241, 0.92));
+  box-shadow: 0 28px 60px rgba(13, 79, 42, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+.dashboard-sidebar-admin::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  pointer-events: none;
+}
+
+.dashboard-sidebar-admin .sidebar-brand {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(22, 114, 74, 0.1);
+}
+
+.dashboard-sidebar-admin .sidebar-link {
+  border-radius: 18px;
+  padding: 0.96rem 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  color: #2c5b47;
+  border: 1px solid transparent;
+}
+
+.dashboard-sidebar-admin .sidebar-link:hover {
+  background: rgba(19, 146, 82, 0.1);
+  border-color: rgba(22, 114, 74, 0.14);
+  box-shadow: 0 14px 26px rgba(13, 79, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.dashboard-sidebar-admin .sidebar-link.active {
+  color: #0f523a;
+  background: linear-gradient(135deg, rgba(22, 114, 74, 0.18), rgba(108, 203, 157, 0.14));
+  border-color: rgba(22, 114, 74, 0.22);
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar {
+  padding: 1.3rem;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(236, 250, 241, 0.92));
+  border: 1px solid rgba(22, 114, 74, 0.18);
+  box-shadow: 0 28px 60px rgba(13, 79, 42, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar::before,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  pointer-events: none;
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar .sidebar-link,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar .sidebar-link,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar .employer-sidebar-link {
+  border-radius: 18px;
+  padding: 0.96rem 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  color: #2c5b47;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar .sidebar-link:hover,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar .employer-sidebar-link:hover {
+  background: rgba(19, 146, 82, 0.1);
+  border-color: rgba(22, 114, 74, 0.14);
+  box-shadow: 0 14px 26px rgba(13, 79, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar .sidebar-link.active,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar .employer-sidebar-link.active {
+  color: #0f523a;
+  background: linear-gradient(135deg, rgba(22, 114, 74, 0.18), rgba(108, 203, 157, 0.14));
+  border-color: rgba(22, 114, 74, 0.22);
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar .sidebar-link-icon,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar .sidebar-link-icon {
+  color: #157649;
+}
+
+.dashboard-sidebar-candidate .sidebar-brand,
+.dashboard-sidebar-employer .sidebar-brand,
+.dashboard-sidebar-admin .sidebar-brand {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(22, 114, 74, 0.1);
+}
+
+.dashboard-topbar {
+  position: sticky;
+  top: 1rem;
+  z-index: 30;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.4rem;
+  padding: 1rem 1.1rem;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(22, 114, 74, 0.14);
+  box-shadow: 0 24px 48px rgba(12, 52, 35, 0.1);
+  backdrop-filter: blur(20px);
+}
+
+.dashboard-topbar-search {
+  flex: 1 1 420px;
+  min-width: 0;
+  padding: 1rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(22, 114, 74, 0.16);
+  background: rgba(235, 250, 240, 0.92);
+}
+
+.dashboard-topbar-search input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #254d3a;
+  font-weight: 600;
+}
+
+.dashboard-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-icon-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  border: 1px solid rgba(22, 114, 74, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f7a4f;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.dashboard-icon-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(13, 79, 42, 0.08);
+}
+
+.dashboard-icon-btn span {
+  position: absolute;
+  right: -4px;
+  top: -6px;
+  min-width: 19px;
+  height: 19px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #f85757, #d81f1f);
+  color: #fff;
+  font-size: 0.67rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  padding: 0 0.35rem;
+}
+
+.dashboard-profile-pill {
+  min-width: 0;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(22, 114, 74, 0.14);
+  background: rgba(249, 253, 250, 0.96);
+}
+
+.dashboard-profile-pill span {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #dff4e8, #b7efd0);
+  color: #0f5a39;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.dashboard-profile-pill strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.dashboard-profile-pill small {
+  color: #5f7d6a;
+  font-size: 0.8rem;
+}
+
+.dashboard-profile-pill {
+  min-width: 0;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(22, 114, 74, 0.14);
+  background: rgba(249, 253, 250, 0.96);
+}
+
+.dashboard-profile-pill span {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #dff4e8, #b7efd0);
+  color: #0f5a39;
+  font-weight: 800;
+  font-size: 1rem;
+}
+
+.dashboard-sidebar-admin .sidebar-group-label {
+  color: #4d6f5f;
+}
+
+.dashboard-sidebar-admin .sidebar-link-icon {
+  color: #157649;
+}
+
+.dashboard-icons-pill {
+  min-width: 108px;
+  text-align: right;
+}
+
+.dashboard-sidebar,
+.dashboard-main {
+  background: var(--dashboard-surface);
+  border: 1px solid var(--dashboard-border);
+  box-shadow: var(--dashboard-shadow-soft);
+}
+
+.dashboard-sidebar {
+  padding: 1.2rem;
+  border-radius: 24px;
+  max-height: calc(100vh - 88px);
+  overflow-y: auto;
+  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.dashboard-sidebar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  pointer-events: none;
+}
+
+.dashboard-sidebar-mobile-head {
+  background: rgba(250, 255, 252, 0.9);
+  border: 1px solid rgba(22, 114, 74, 0.12);
+  border-radius: 20px;
+}
+
+.sidebar-brand {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(22, 114, 74, 0.1);
+}
+
+.sidebar-group-stack,
+.employer-sidebar-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.sidebar-link,
+.employer-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.9rem 0.95rem;
+  border-radius: 18px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.72);
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sidebar-link:hover,
+.employer-sidebar-link:hover,
+.sidebar-link.active,
+.employer-sidebar-link.active {
+  background: rgba(21, 146, 78, 0.12);
+  color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.sidebar-link-icon,
+.employer-sidebar-link .sidebar-link-icon {
+  color: var(--primary);
+}
+
+.dashboard-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.2rem;
+  padding: 0.95rem 1rem;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(22, 114, 74, 0.12);
+  box-shadow: 0 12px 28px rgba(20, 73, 45, 0.06);
+  backdrop-filter: blur(18px);
+}
+
+.dashboard-topbar-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex: 1 1 380px;
+  min-width: 0;
+  padding: 0.9rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(22, 114, 74, 0.16);
+  background: rgba(234, 247, 240, 0.85);
+  color: var(--primary-dark);
+}
+
+.dashboard-topbar-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #153d2d;
+  font-weight: 600;
+}
+
+.dashboard-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-icon-btn {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  border: 1px solid rgba(22, 114, 74, 0.14);
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--primary-dark);
+  display: grid;
+  place-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-icon-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px rgba(20, 73, 45, 0.12);
+}
+
+.dashboard-icon-btn span {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: #15803d;
+  color: white;
+  font-size: 0.75rem;
+  display: grid;
+  place-items: center;
+}
+
+.dashboard-profile-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(22, 114, 74, 0.12);
+  background: rgba(246, 251, 247, 0.95);
+}
+
+.dashboard-profile-pill span {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #dff4e8, #b7efd0);
+  color: #0f5a39;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.dashboard-profile-pill strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.dashboard-profile-pill small {
+  color: #5f7d6a;
+  font-size: 0.8rem;
+}
+
+.premium-admin-dashboard,
+.employer-premium-dashboard,
+.candidate-dashboard-grid,
+.candidate-stat-grid {
+  width: 100%;
+}
+
+.premium-panel,
+.premium-stat-card,
+.premium-action-card,
+.employer-premium-panel,
+.employer-premium-stat-card,
+.employer-dashboard-group-card,
+.candidate-list-card,
+.candidate-completion-card {
+  border-radius: 24px;
+  border: 1px solid rgba(22, 114, 74, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--dashboard-shadow-soft);
+}
+
+.premium-btn,
+.btn,
+.btn-sm {
+  border-radius: 999px;
+}
+
+@media (max-width: 1080px) {
+  .dashboard-shell {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+
+  .dashboard-topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-topbar-search {
+    width: 100%;
+  }
+
+  .dashboard-main {
+    min-height: auto;
+  }
+}
+
+/* Candidate / Employer Admin-style dashboard visuals */
+.candidate-premium-dashboard,
+.employer-premium-dashboard {
+  width: 100%;
+  display: grid;
+  gap: 1.5rem;
+  background: transparent;
+  color: #123c2b;
+}
+
+.candidate-premium-dashboard .dashboard-header,
+.employer-premium-dashboard .dashboard-header {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1.4rem;
+  align-items: center;
+  padding: clamp(1.1rem, 1.8vw, 1.55rem);
+  border-radius: 28px;
+  border: 1px solid rgba(31, 133, 87, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 20px 40px rgba(20, 73, 45, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+.candidate-premium-dashboard .dashboard-header h1,
+.employer-premium-dashboard .dashboard-header h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 2.8vw, 2.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.candidate-premium-dashboard .dashboard-header .section-description,
+.employer-premium-dashboard .dashboard-header .section-description {
+  margin-top: 0.75rem;
+  color: #4c7162;
+  line-height: 1.7;
+  max-width: 66ch;
+}
+
+.candidate-premium-dashboard .candidate-hero-side,
+.employer-premium-dashboard .employer-hero-side {
+  display: grid;
+  gap: 1rem;
+}
+
+.candidate-premium-dashboard .candidate-hero-summary-card,
+.employer-premium-dashboard .employer-premium-panel,
+.employer-premium-dashboard .employer-premium-job-card,
+.employer-premium-dashboard .employer-premium-bar-column,
+.employer-premium-dashboard .employer-action-tile,
+.candidate-premium-dashboard .candidate-glass-card {
+  border-radius: 24px;
+  border: 1px solid rgba(31, 133, 87, 0.14);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 24px 48px rgba(20, 73, 45, 0.07);
+  backdrop-filter: blur(16px);
+}
+
+.candidate-premium-dashboard .candidate-stat-grid,
+.employer-premium-dashboard .employer-stat-grid,
+.employer-premium-dashboard .employer-hero-live-grid,
+.employer-premium-dashboard .employer-action-matrix,
+.employer-premium-dashboard .employer-job-list {
+  gap: 1rem;
+}
+
+.candidate-premium-dashboard .candidate-stat-card,
+.employer-premium-dashboard .employer-stat-card,
+.employer-premium-dashboard .employer-quick-action-card,
+.employer-premium-dashboard .employer-pipeline-card {
+  border-radius: 22px;
+  border: 1px solid rgba(31, 133, 87, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 16px 30px rgba(20, 73, 45, 0.06);
+}
+
+.candidate-premium-dashboard .candidate-hero-actions,
+.employer-premium-dashboard .employer-hero-cta-row,
+.employer-premium-dashboard .employer-premium-bars,
+.employer-premium-dashboard .employer-quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+}
+
+.candidate-premium-dashboard .candidate-progress-track {
+  background: linear-gradient(90deg, rgba(26, 138, 86, 0.18), rgba(95, 198, 145, 0.2));
+  box-shadow: inset 0 1px 3px rgba(12, 52, 35, 0.08);
+}
+
+.candidate-premium-dashboard .candidate-quick-actions .btn,
+.employer-premium-dashboard .employer-action-tile,
+.employer-premium-dashboard .employer-panel-head a,
+.employer-premium-dashboard .employer-job-card-actions a {
+  border-radius: 14px;
+}
+
+@media (max-width: 980px) {
+  .candidate-premium-dashboard .dashboard-header,
+  .employer-premium-dashboard .dashboard-header {
+    grid-template-columns: 1fr;
+  }
+
+  .candidate-premium-dashboard .candidate-hero-actions,
+  .employer-premium-dashboard .employer-hero-cta-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Candidate and employer dashboards adopt admin shell layout */
+.dashboard-shell.candidate-portal-shell,
+.dashboard-shell.employer-portal-shell {
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 1.4rem;
+  padding: 24px;
+  height: calc(100vh - 88px);
+  width: 100vw;
+  max-width: none;
+  margin: 0;
+  position: relative;
+  background: linear-gradient(180deg, #f4faf4 0%, #eaf7f0 48%, #f8fbf8 100%);
+  border-radius: 0;
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar {
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+.candidate-portal-main,
+.employer-portal-main {
+  min-height: calc(100vh - 88px);
+  overflow-y: auto;
+  padding: 24px;
+  width: 100%;
+  max-width: none;
+}
+
+.employer-admin-style-dashboard .employer-command-header {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1.4rem;
+  align-items: center;
+  padding: clamp(1.1rem, 1.8vw, 1.55rem);
+  border-radius: 28px;
+  border: 1px solid rgba(31, 133, 87, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 20px 40px rgba(20, 73, 45, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+.employer-admin-style-dashboard .employer-command-side {
+  display: grid;
+  gap: 1rem;
+}
+
+.employer-admin-style-dashboard .employer-command-tools {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.employer-admin-style-dashboard .employer-command-search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(31, 133, 87, 0.14);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.employer-admin-style-dashboard .employer-command-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-weight: 600;
+  color: #254d3a;
+}
+
+.employer-admin-style-dashboard .employer-command-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  border: 1px solid rgba(31, 133, 87, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f7a4f;
+  display: grid;
+  place-items: center;
+}
+
+.employer-admin-style-dashboard .employer-command-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(31, 133, 87, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.employer-admin-style-dashboard .employer-command-profile span {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #dff4e8, #b7efd0);
+  color: #0f5a39;
+}
+
+.employer-admin-style-dashboard .employer-command-profile strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.employer-admin-style-dashboard .employer-command-profile small {
+  color: #5f7d6a;
+  font-size: 0.8rem;
+}
+
+.employer-admin-style-dashboard .employer-command-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+}
+
+.employer-admin-style-dashboard .employer-command-actions .btn {
+  border-radius: 14px;
+}

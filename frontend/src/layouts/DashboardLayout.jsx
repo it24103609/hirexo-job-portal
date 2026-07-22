@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Search, Bell, Settings } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';
 import { useAuth } from '../contexts/AuthContext';
 import Loader from '../components/ui/Loader';
 import FloatingWhatsAppButton from '../components/ui/FloatingWhatsAppButton';
 import '../styles/candidate-portal.css';
+import '../styles/dashboard-premium.css';
 
 export default function DashboardLayout({ role }) {
   const { loading, isAuthenticated, user } = useAuth();
@@ -72,6 +73,44 @@ export default function DashboardLayout({ role }) {
       <div className={`dashboard-shell ${role === 'candidate' ? 'candidate-portal-shell' : ''} ${role === 'employer' ? 'employer-portal-shell' : ''} ${role === 'admin' ? 'admin-portal-shell' : ''} ${sidebarOpen ? 'mobile-nav-open' : ''}`}>
         <Sidebar role={role} isOpen={sidebarOpen} onNavigate={() => setSidebarOpen(false)} />
         <div className={`dashboard-main ${role === 'candidate' ? 'candidate-portal-main' : ''} ${role === 'employer' ? 'employer-portal-main' : ''} ${role === 'admin' ? 'admin-portal-main' : ''}`}>
+          <div className="dashboard-topbar">
+            <div className="dashboard-topbar-search">
+              <Search size={18} aria-hidden="true" />
+              <input
+                type="search"
+                placeholder={
+                  role === 'admin'
+                    ? 'Search the admin console'
+                    : role === 'employer'
+                      ? 'Search employer workspace'
+                      : 'Search candidate dashboard'
+                }
+                aria-label={
+                  role === 'admin'
+                    ? 'Search the admin console'
+                    : role === 'employer'
+                      ? 'Search employer workspace'
+                      : 'Search candidate dashboard'
+                }
+              />
+            </div>
+            <div className="dashboard-topbar-actions">
+              <button type="button" className="dashboard-icon-btn" aria-label="Open notifications">
+                <Bell size={18} />
+                <span>4</span>
+              </button>
+              <button type="button" className="dashboard-icon-btn" aria-label="Open settings">
+                <Settings size={18} />
+              </button>
+              <div className="dashboard-profile-pill">
+                <span>{String(user?.name || 'U').slice(0, 1).toUpperCase()}</span>
+                <div>
+                  <strong>{user?.name || 'User'}</strong>
+                  <small>{user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : 'Member'}</small>
+                </div>
+              </div>
+            </div>
+          </div>
           <Outlet />
         </div>
       </div>

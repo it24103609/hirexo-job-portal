@@ -341,292 +341,302 @@ export default function AdminDashboard() {
   const notificationCards = [
     { label: 'Unread alerts', value: state.unreadNotifications, icon: Bell },
     { label: 'System updates', value: state.notifications.length, icon: Wrench },
-    { label: 'Policy updates', value: metrics.publishedBlogs, icon: FileText },
-    { label: 'Maintenance alerts', value: state.contactStats.new || 0, icon: Activity }
+    { label: 'Policy updates', value: metrics.totalBlogs, icon: FileText },
+    { label: 'New inquiries', value: state.contactStats.new || 0, icon: Activity }
   ];
 
   if (state.loading) return <Loader label="Loading admin dashboard..." />;
 
   return (
     <>
-      <Seo title="Premium Admin Dashboard | HEXORA" description="Luxury SaaS command center for moderation, analytics, communication, and operations." />
+      <Seo title="Premium Admin Dashboard | HEXORA" description="Modern enterprise command center for HEXORA administration." />
 
-      <motion.div className="premium-admin-dashboard" initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.35 }}>
-        <motion.header className="premium-admin-header premium-glass" variants={fadeUp} transition={{ duration: 0.4, delay: 0.05 }}>
-          <div className="premium-admin-header-copy">
-            <p className="premium-kicker">Admin Command Center</p>
-            <h1>Welcome back, Admin 👋</h1>
-            <p>Monitor jobs, employers, moderation, analytics, and platform activity.</p>
-            <div className="premium-header-subline">
-              <span>Live platform oversight</span>
-              <span>Moderation ready</span>
-              <span>Real-time updates</span>
+      <motion.div className="premium-admin-dashboard admin-dashboard-page" initial="hidden" animate="show" variants={fadeUp} transition={{ duration: 0.35 }}>
+        <section className="admin-hero-block premium-glass" aria-labelledby="admin-hero-title">
+          <div className="admin-hero-copy">
+            <p className="premium-kicker">ADMIN COMMAND CENTER</p>
+            <h1 id="admin-hero-title">Welcome back, Admin</h1>
+            <p>Monitor jobs, employers, candidates, applications, analytics, moderation and platform activity from one premium command view.</p>
+            <div className="admin-hero-tags">
+              <span>Live platform overview</span>
+              <span>Real-time intelligence</span>
+              <span>Operational control</span>
             </div>
-          </div>
-
-          <div className="premium-admin-header-actions">
-            <div className="premium-header-toprow">
-              <label className="premium-search" htmlFor="admin-dashboard-search">
-                <Search size={16} />
-                <input
-                  id="admin-dashboard-search"
-                  type="search"
-                  placeholder="Search anything..."
-                  value={searchValue}
-                  onChange={(event) => setSearchValue(event.target.value)}
-                />
-              </label>
-
-              <button type="button" className="premium-icon-btn" aria-label="Open notifications">
-                <Bell size={18} />
-                {state.unreadNotifications > 0 ? <span>{state.unreadNotifications}</span> : null}
-              </button>
-
-              <div className="premium-profile-pill">
-                <div className="premium-profile-avatar">{String(user?.name || 'Admin').trim().charAt(0).toUpperCase()}</div>
-                <div>
-                  <strong>{user?.name || 'Admin User'}</strong>
-                  <small>Super Admin</small>
-                </div>
-              </div>
-            </div>
-
-            <div className="premium-actions-row">
+            <div className="admin-hero-actions">
               <Link to="/admin/jobs" className="premium-btn premium-btn-soft"><BriefcaseBusiness size={16} /> Add Job</Link>
               <Link to="/admin/blogs/new" className="premium-btn premium-btn-soft"><PencilLine size={16} /> Add Blog</Link>
               <Link to="/admin/reports" className="premium-btn premium-btn-soft"><FileDown size={16} /> Export Report</Link>
               <Link to="/admin/messages" className="premium-btn premium-btn-primary"><Mail size={16} /> New Chat</Link>
             </div>
           </div>
-        </motion.header>
 
-        <motion.section className="premium-admin-hero" variants={fadeUp} transition={{ duration: 0.45, delay: 0.08 }}>
-          <div className="premium-admin-hero-content">
-            <p className="premium-kicker">Admin Workspace</p>
-            <h2>Moderation, reporting, and communication in one operational view</h2>
-            <p>
-              Monitor jobs, employers, moderation queue, analytics, and notifications in real time.
-            </p>
-            <div className="premium-hero-cta-row">
-              <Link to="/admin/notifications" className="premium-btn premium-btn-primary">View Notifications</Link>
-              <Link to="/admin/reports" className="premium-btn premium-btn-ghost">View Reports</Link>
-            </div>
-          </div>
-
-          <div className="premium-admin-hero-visual">
-            <div className="premium-screen-mock premium-glass">
-              <div className="premium-screen-head">
-                <span />
-                <span />
-                <span />
-              </div>
-              <div className="premium-screen-chart">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={applicationTrendData} margin={{ top: 8, right: 8, left: -15, bottom: 0 }}>
-                    <defs>
-                      <linearGradient id="heroChart" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#79f1bc" stopOpacity={0.85} />
-                        <stop offset="100%" stopColor="#79f1bc" stopOpacity={0} />
-                      </linearGradient>
-                    </defs>
-                    <Area dataKey="value" stroke="#91ffd2" strokeWidth={2} fill="url(#heroChart)" />
-                  </AreaChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            <div className="premium-float-cards">
+          <div className="admin-hero-panel">
+            <div className="admin-hero-stats">
               {heroStats.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <motion.article key={item.label} className="premium-float-card" whileHover={{ y: -3 }} transition={{ duration: 0.2 }}>
-                    <span><Icon size={14} /></span>
+                  <article key={item.label} className="admin-hero-stat-card">
+                    <span className="admin-hero-stat-icon"><Icon size={18} /></span>
                     <div>
-                      <small>{item.label}</small>
                       <strong>{item.value}</strong>
+                      <p>{item.label}</p>
                     </div>
-                  </motion.article>
+                  </article>
                 );
               })}
             </div>
+            <div className="admin-hero-chart-wrap">
+              <ResponsiveContainer width="100%" height={240}>
+                <AreaChart data={applicationTrendData} margin={{ top: 12, right: 12, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="heroAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#22c55e" stopOpacity={0.32} />
+                      <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid stroke="#d9e8df" strokeDasharray="4 6" vertical={false} />
+                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#4f6f5f' }} />
+                  <YAxis axisLine={false} tickLine={false} tick={{ fill: '#4f6f5f' }} />
+                  <Tooltip contentStyle={{ borderRadius: 20, borderColor: '#d9e8df' }} />
+                  <Area type="monotone" dataKey="value" stroke="#15803d" strokeWidth={3} fill="url(#heroAreaGradient)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </motion.section>
+        </section>
 
-        <section className="premium-stats-grid">
-          {statCards.map((card, index) => {
+        <section className="admin-stat-grid">
+          {statCards.slice(0, 6).map((card, index) => {
             const Icon = card.icon;
             return (
               <motion.article
                 key={card.label}
-                className="premium-stat-card premium-glass"
+                className="premium-stat-card"
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: 0.03 * index }}
+                transition={{ duration: 0.35, delay: 0.04 * index }}
               >
-                <div className="premium-stat-head">
-                  <p>{card.label}</p>
-                  <span className="premium-stat-icon"><Icon size={18} /></span>
+                <div className="premium-stat-row">
+                  <span className="premium-stat-badge"><Icon size={18} /></span>
+                  <div>
+                    <p>{card.label}</p>
+                    <strong>{card.value}</strong>
+                  </div>
                 </div>
-                <strong>{card.value}</strong>
-                <div className="premium-stat-foot">
-                  <span>{card.subtitle}</span>
-                  <em>{card.growth}</em>
-                </div>
+                <small>{card.subtitle}</small>
               </motion.article>
             );
           })}
         </section>
 
         <section className="premium-main-grid">
-          <article className="premium-panel premium-panel-wide premium-glass">
-            <div className="premium-panel-head">
-              <div>
-                <p className="premium-kicker">Moderation Queue</p>
-                <h3>Pending Moderation Workspace</h3>
+          <div className="premium-left-column">
+            <article className="premium-panel premium-glass">
+              <div className="premium-panel-head">
+                <div>
+                  <p className="premium-kicker">Platform summary</p>
+                  <h3>Operational overview</h3>
+                </div>
+                <span className="premium-status-pill">Live data</span>
               </div>
-              <Link to="/admin/jobs" className="premium-btn premium-btn-soft">Review All</Link>
-            </div>
+              <div className="premium-summary-grid">
+                <div>
+                  <strong>{metrics.totalJobs}</strong>
+                  <p>Total jobs</p>
+                </div>
+                <div>
+                  <strong>{metrics.totalEmployers}</strong>
+                  <p>Total employers</p>
+                </div>
+                <div>
+                  <strong>{metrics.totalCandidates}</strong>
+                  <p>Total candidates</p>
+                </div>
+                <div>
+                  <strong>{metrics.totalApplications}</strong>
+                  <p>Total applications</p>
+                </div>
+                <div>
+                  <strong>{state.applicationCounts.interview_scheduled || 0}</strong>
+                  <p>Interviews scheduled</p>
+                </div>
+                <div>
+                  <strong>{state.unreadNotifications}</strong>
+                  <p>Unread alerts</p>
+                </div>
+              </div>
+            </article>
 
-            {moderationList.length ? (
-              <div className="premium-moderation-list">
-                {moderationList.map((job) => {
-                  const ageHours = Math.max(1, Math.round((Date.now() - new Date(job.createdAt).getTime()) / (1000 * 60 * 60)));
-                  const priority = ageHours > 72 ? 'High Priority' : ageHours > 24 ? 'Priority' : 'Normal';
-
-                  return (
-                    <article key={job._id} className="premium-moderation-item">
-                      <div className="premium-moderation-main">
-                        <div className="premium-moderation-title">
-                          <h4>{job.title}</h4>
-                          <span className={`premium-status-badge ${getBadgeTone(job.reviewStatus)}`}>{job.reviewStatus || 'pending'}</span>
-                        </div>
-                        <p>{job.companyName || job.employerUser?.name || 'Employer account'}</p>
-                        <div className="premium-moderation-meta">
-                          <span>Submitted {formatDate(job.createdAt)}</span>
-                          <span>{priority}</span>
-                          <span>{job.employerUser?.email || 'Employer details available in moderation view'}</span>
-                        </div>
+            <article className="premium-panel premium-glass">
+              <div className="premium-panel-head">
+                <div>
+                  <p className="premium-kicker">Recent activity</p>
+                  <h3>Platform timeline</h3>
+                </div>
+                <Link to="/admin/reports" className="premium-link">View all</Link>
+              </div>
+              <div className="premium-timeline">
+                {activityFeed.length ? activityFeed.map((item) => (
+                  <article key={item.id} className="premium-timeline-item">
+                    <span className={`premium-dot dot-${item.type}`} aria-hidden="true" />
+                    <div>
+                      <div className="premium-timeline-top">
+                        <strong>{item.title}</strong>
+                        <small>{getRelativeTime(item.date)}</small>
                       </div>
+                      <p>{item.description}</p>
+                    </div>
+                  </article>
+                )) : <div className="premium-empty">Recent activity will appear once events happen.</div>}
+              </div>
+            </article>
 
-                      <div className="premium-moderation-actions">
-                        <Link to="/admin/jobs" className="premium-btn premium-btn-ghost">Review</Link>
-                        <button
-                          type="button"
-                          className="premium-btn premium-btn-primary"
-                          disabled={actioningJobId === job._id}
-                          onClick={() => handleModerationAction(job._id, 'approve')}
-                        >
-                          {actioningJobId === job._id ? 'Saving...' : 'Approve'}
-                        </button>
-                        <button
-                          type="button"
-                          className="premium-btn premium-btn-soft"
-                          disabled={actioningJobId === job._id}
-                          onClick={() => handleModerationAction(job._id, 'reject')}
-                        >
-                          Reject
-                        </button>
+            <article className="premium-panel premium-glass">
+              <div className="premium-panel-head">
+                <div>
+                  <p className="premium-kicker">Moderation queue</p>
+                  <h3>Pending reviews</h3>
+                </div>
+                <Link to="/admin/jobs" className="premium-link">Review all</Link>
+              </div>
+              <div className="premium-review-list">
+                {moderationList.length ? moderationList.map((job) => (
+                  <article key={job._id} className="premium-review-item">
+                    <div>
+                      <strong>{job.title}</strong>
+                      <small>{job.companyName || job.employerUser?.name || 'Employer account'}</small>
+                    </div>
+                    <div className="premium-review-meta">
+                      <span className={`premium-badge ${getBadgeTone(job.reviewStatus)}`}>{job.reviewStatus || 'pending'}</span>
+                      <span>{formatDate(job.createdAt)}</span>
+                    </div>
+                  </article>
+                )) : <div className="premium-empty">No moderation tasks at the moment.</div>}
+              </div>
+            </article>
+
+            <article className="premium-panel premium-glass">
+              <div className="premium-panel-head">
+                <div>
+                  <p className="premium-kicker">Notifications</p>
+                  <h3>System alerts</h3>
+                </div>
+                <Link to="/admin/notifications" className="premium-link">Open alerts</Link>
+              </div>
+              <div className="premium-notification-card-grid">
+                {notificationCards.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <article key={item.label} className="premium-notification-card">
+                      <span><Icon size={16} /></span>
+                      <div>
+                        <strong>{item.value}</strong>
+                        <p>{item.label}</p>
                       </div>
                     </article>
                   );
                 })}
               </div>
-            ) : (
-              <div className="premium-empty">Moderation queue is clear. New jobs requiring review will appear here.</div>
-            )}
-          </article>
+            </article>
+          </div>
 
-          <article className="premium-panel premium-glass">
-            <div className="premium-panel-head compact">
-              <div>
-                <p className="premium-kicker">Analytics</p>
-                <h3>Job Status</h3>
+          <div className="premium-right-column">
+            <article className="premium-panel premium-glass premium-chart-panel">
+              <div className="premium-panel-head">
+                <div>
+                  <p className="premium-kicker">Analytics</p>
+                  <h3>Application trend</h3>
+                </div>
               </div>
-            </div>
-            <div className="premium-chart-wrap">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={jobStatusData} margin={{ top: 8, right: 6, left: -18, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.09)" />
-                  <XAxis dataKey="name" tick={{ fill: '#d3f9e7', fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#d3f9e7', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <Tooltip />
-                  <Bar dataKey="value" fill="#7bf0bc" radius={[10, 10, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </article>
+              <div className="premium-chart-wrap">
+                <ResponsiveContainer width="100%" height={320}>
+                  <LineChart data={applicationTrendData} margin={{ top: 14, right: 14, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="applicationTrendGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#22c55e" stopOpacity={0.35} />
+                        <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid stroke="#d9e8df" strokeDasharray="4 6" vertical={false} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#4f6f5f' }} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#4f6f5f' }} />
+                    <Tooltip contentStyle={{ borderRadius: 20, borderColor: '#d9e8df' }} />
+                    <Line type="monotone" dataKey="value" stroke="#15803d" strokeWidth={3} dot={{ r: 4, fill: '#22c55e' }} />
+                    <Area type="monotone" dataKey="value" stroke="none" fill="url(#applicationTrendGradient)" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </article>
 
-          <article className="premium-panel premium-glass">
-            <div className="premium-panel-head compact">
-              <div>
-                <p className="premium-kicker">Analytics</p>
-                <h3>User Growth</h3>
+            <article className="premium-panel premium-glass premium-chart-panel">
+              <div className="premium-panel-head">
+                <div>
+                  <p className="premium-kicker">Job growth</p>
+                  <h3>Status distribution</h3>
+                </div>
               </div>
-            </div>
-            <div className="premium-chart-wrap">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={userGrowthData.length ? userGrowthData : fallbackGrowth} margin={{ top: 8, right: 6, left: -18, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="userGrowth" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#67e6ab" stopOpacity={0.8} />
-                      <stop offset="100%" stopColor="#67e6ab" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.08)" />
-                  <XAxis dataKey="name" tick={{ fill: '#d3f9e7', fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#d3f9e7', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <Tooltip />
-                  <Area type="monotone" dataKey="users" stroke="#81ffd0" strokeWidth={2} fill="url(#userGrowth)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </article>
+              <div className="premium-chart-wrap">
+                <ResponsiveContainer width="100%" height={320}>
+                  <BarChart data={jobStatusData} margin={{ top: 14, right: 14, left: 0, bottom: 0 }}>
+                    <CartesianGrid stroke="#d9e8df" strokeDasharray="4 6" vertical={false} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#4f6f5f' }} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#4f6f5f' }} />
+                    <Tooltip cursor={{ fill: 'rgba(33, 150, 83, 0.08)' }} contentStyle={{ borderRadius: 20, borderColor: '#d9e8df' }} />
+                    <Bar dataKey="value" fill="#22c55e" radius={[12, 12, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </article>
 
-          <article className="premium-panel premium-glass">
-            <div className="premium-panel-head compact">
-              <div>
-                <p className="premium-kicker">Analytics</p>
-                <h3>Platform Activity</h3>
+            <article className="premium-panel premium-glass premium-chart-panel">
+              <div className="premium-panel-head">
+                <div>
+                  <p className="premium-kicker">Platform health</p>
+                  <h3>Live performance</h3>
+                </div>
               </div>
-            </div>
-            <div className="premium-chart-wrap">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={platformActivityData} margin={{ top: 8, right: 6, left: -18, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.08)" />
-                  <XAxis dataKey="name" tick={{ fill: '#d3f9e7', fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#d3f9e7', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="value" stroke="#a6ffdb" strokeWidth={2.2} dot={{ r: 3 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </article>
+              <div className="premium-chart-wrap">
+                <ResponsiveContainer width="100%" height={320}>
+                  <AreaChart data={platformActivityData} margin={{ top: 14, right: 14, left: 0, bottom: 0 }}>
+                    <defs>
+                      <linearGradient id="platformActivityGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#86efac" stopOpacity={0.38} />
+                        <stop offset="100%" stopColor="#86efac" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid stroke="#d9e8df" strokeDasharray="4 6" vertical={false} />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#4f6f5f' }} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fill: '#4f6f5f' }} />
+                    <Tooltip contentStyle={{ borderRadius: 20, borderColor: '#d9e8df' }} />
+                    <Area type="monotone" dataKey="value" stroke="#15803d" strokeWidth={3} fill="url(#platformActivityGradient)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </article>
 
-          <article className="premium-panel premium-glass">
-            <div className="premium-panel-head compact">
-              <div>
-                <p className="premium-kicker">Analytics</p>
-                <h3>Applications Trend</h3>
+            <article className="premium-panel premium-glass premium-performance-panel">
+              <div className="premium-panel-head">
+                <div>
+                  <p className="premium-kicker">Performance metrics</p>
+                  <h3>Operational pulse</h3>
+                </div>
               </div>
-            </div>
-            <div className="premium-chart-wrap">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={applicationTrendData} margin={{ top: 8, right: 6, left: -18, bottom: 0 }}>
-                  <defs>
-                    <linearGradient id="applicationTrend" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#96fdd2" stopOpacity={0.78} />
-                      <stop offset="100%" stopColor="#96fdd2" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="2 6" stroke="rgba(255,255,255,0.08)" />
-                  <XAxis dataKey="name" tick={{ fill: '#d3f9e7', fontSize: 12 }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fill: '#d3f9e7', fontSize: 11 }} axisLine={false} tickLine={false} />
-                  <Tooltip />
-                  <Area type="monotone" dataKey="value" stroke="#afffe0" strokeWidth={2.1} fill="url(#applicationTrend)" />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </article>
+              <div className="premium-performance-grid">
+                {notificationCards.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <article key={item.label} className="premium-performance-card">
+                      <div className="premium-performance-icon"><Icon size={16} /></div>
+                      <div>
+                        <strong>{item.value}</strong>
+                        <p>{item.label}</p>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </article>
+          </div>
         </section>
 
         <section className="premium-grid-two">
