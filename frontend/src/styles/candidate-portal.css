@@ -997,6 +997,331 @@
   box-shadow: 0 0 0 4px rgba(26, 138, 86, 0.14);
 }
 
+/* Employer Candidates Card Grid */
+.employer-candidates-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .employer-candidates-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .employer-candidates-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Employer Candidate Card */
+.employer-candidate-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 6px 18px rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(26, 138, 86, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  position: relative;
+}
+
+.employer-candidate-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08), 0 20px 40px rgba(15, 23, 42, 0.06);
+  border-color: rgba(26, 138, 86, 0.25);
+}
+
+/* Card Header */
+.employer-candidate-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.employer-candidate-identity {
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  min-width: 0;
+  flex: 1;
+}
+
+.employer-candidate-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #fff;
+  background: linear-gradient(140deg, #1a8a56, #52bf8a);
+  flex: 0 0 auto;
+  box-shadow: 0 4px 12px rgba(26, 138, 86, 0.25);
+}
+
+.employer-candidate-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.employer-candidate-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.employer-candidate-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #0f3d2e;
+  text-decoration: none;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.employer-candidate-name:hover {
+  color: #1a8a56;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.employer-candidate-status {
+  display: inline-flex;
+  width: fit-content;
+}
+
+.employer-candidate-menu {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #5f786b;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.employer-candidate-menu:hover {
+  background: rgba(26, 138, 86, 0.08);
+  border-color: rgba(26, 138, 86, 0.18);
+  color: #1a8a56;
+}
+
+/* Skills */
+.employer-candidate-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.employer-skill-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  background: rgba(26, 138, 86, 0.1);
+  color: #1a5c3a;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid rgba(26, 138, 86, 0.12);
+  transition: all 0.2s ease;
+}
+
+.employer-skill-pill:hover {
+  background: rgba(26, 138, 86, 0.18);
+  border-color: rgba(26, 138, 86, 0.25);
+}
+
+.employer-no-skills {
+  color: #8a9b93;
+  font-size: 0.84rem;
+  font-style: italic;
+}
+
+/* Applied Job */
+.employer-candidate-job {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem;
+  background: rgba(26, 138, 86, 0.04);
+  border-radius: 10px;
+  border: 1px solid rgba(26, 138, 86, 0.08);
+}
+
+.employer-job-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #5f786b;
+}
+
+.employer-job-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0f3d2e;
+  text-decoration: none;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.employer-job-title:hover {
+  color: #1a8a56;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Date */
+.employer-candidate-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #5f786b;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.employer-candidate-date svg {
+  color: #1a8a56;
+}
+
+/* Footer */
+.employer-candidate-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(26, 138, 86, 0.1);
+  margin-top: auto;
+}
+
+/* ATS Score Ring */
+.employer-ats-score {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.employer-score-ring {
+  width: 48px;
+  height: 48px;
+  transform: rotate(-90deg);
+}
+
+.employer-score-bg {
+  fill: none;
+  stroke: rgba(26, 138, 86, 0.1);
+  stroke-width: 3;
+}
+
+.employer-score-fill {
+  fill: none;
+  stroke: #1a8a56;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.6s ease;
+}
+
+.employer-score-text {
+  fill: #1a5c3a;
+  font-size: 0.5rem;
+  font-weight: 800;
+  text-anchor: middle;
+  transform: rotate(90deg);
+  transform-origin: center;
+}
+
+.employer-score-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #5f786b;
+  white-space: nowrap;
+}
+
+/* Resume Action */
+.employer-resume-action {
+  display: flex;
+  align-items: center;
+}
+
+.employer-resume-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(26, 138, 86, 0.2);
+  background: rgba(26, 138, 86, 0.08);
+  color: #1a5c3a;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.employer-resume-button:hover {
+  background: rgba(26, 138, 86, 0.16);
+  border-color: rgba(26, 138, 86, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 138, 86, 0.15);
+}
+
+.employer-no-resume {
+  font-size: 0.84rem;
+  color: #8a9b93;
+  font-weight: 600;
+  font-style: italic;
+}
+
+/* No Candidates State */
+.employer-no-candidates {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #5f786b;
+}
+
+.employer-no-candidates p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Table tools responsive */
+@media (max-width: 640px) {
+  .rooster-table-tools {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.75rem;
+  }
+
+  .rooster-table-tools .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 .candidate-switch[aria-checked="true"] {
   color: #0f8050;
 }

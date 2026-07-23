@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Download, Plus, Save, Search } from 'lucide-react';
+import { Download, Plus, Save, Search, MoreVertical, Calendar } from 'lucide-react';
 import { toast } from 'react-toastify';
 import Seo from '../../components/ui/Seo';
 import Badge from '../../components/ui/Badge';
@@ -226,56 +226,104 @@ export default function EmployerCandidatesPage() {
             Add candidate
           </Button>
         </div>
-        <div className="table-wrap">
-          <table className="table rooster-candidate-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Tags</th>
-                <th>Applied for</th>
-                <th>Applied on</th>
-                <th>Score</th>
-                <th>Resume</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredApplications.length ? filteredApplications.map((application) => {
-                const candidate = getCandidate(application);
-                const candidateName = candidate.name || candidate.email || 'Candidate';
-                return (
-                  <tr key={application._id}>
-                    <td>
-                      <Link to={`/employer/applicants/${application._id}`} className="rooster-candidate-link">
-                        {candidateName}
-                      </Link>
-                    </td>
-                    <td><Badge tone={stageTone(application.status)}>{stageLabel(application.status)}</Badge></td>
-                    <td>{application.jobTags?.length ? application.jobTags.slice(0, 2).join(', ') : '-'}</td>
-                    <td>
-                      <Link to={`/employer/jobs/${application.jobId}/applicants`} className="link-button">
-                        {application.jobTitle || 'Job'}
-                      </Link>
-                    </td>
-                    <td>{formatDate(application.createdAt)}</td>
-                    <td>{getScore(application)}</td>
-                    <td>
+
+        {filteredApplications.length ? (
+          <div className="employer-candidates-grid">
+            {filteredApplications.map((application) => {
+              const candidate = getCandidate(application);
+              const candidateName = candidate.name || candidate.email || 'Candidate';
+              const score = getScore(application);
+              const scoreValue = score === '-' ? 0 : Number(score.replace('%', ''));
+              const initials = candidateName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+              const appliedDate = application.createdAt ? new Date(application.createdAt) : null;
+
+              return (
+                <div key={application._id} className="employer-candidate-card">
+                  <div className="employer-candidate-card-header">
+                    <div className="employer-candidate-identity">
+                      <div className="employer-candidate-avatar">
+                        {candidate.profilePicture ? (
+                          <img src={candidate.profilePicture} alt={candidateName} className="employer-candidate-avatar-img" />
+                        ) : (
+                          <span>{initials}</span>
+                        )}
+                      </div>
+                      <div className="employer-candidate-info">
+                        <Link to={`/employer/applicants/${application._id}`} className="employer-candidate-name">
+                          {candidateName}
+                        </Link>
+                        <Badge tone={stageTone(application.status)} className="employer-candidate-status">
+                          {stageLabel(application.status)}
+                        </Badge>
+                      </div>
+                    </div>
+                    <button type="button" className="employer-candidate-menu" aria-label="More actions">
+                      <MoreVertical size={18} />
+                    </button>
+                  </div>
+
+                  <div className="employer-candidate-skills">
+                    {application.jobTags?.length ? application.jobTags.slice(0, 5).map((tag) => (
+                      <span key={tag} className="employer-skill-pill">{tag}</span>
+                    )) : (
+                      <span className="employer-no-skills">No skills listed</span>
+                    )}
+                  </div>
+
+                  <div className="employer-candidate-job">
+                    <span className="employer-job-label">Applied For</span>
+                    <Link to={`/employer/jobs/${application.jobId}/applicants`} className="employer-job-title">
+                      {application.jobTitle || 'Unknown Position'}
+                    </Link>
+                  </div>
+
+                  <div className="employer-candidate-date">
+                    <Calendar size={14} />
+                    <span>{appliedDate ? formatDate(application.createdAt) : 'N/A'}</span>
+                  </div>
+
+                  <div className="employer-candidate-footer">
+                    <div className="employer-ats-score" title={`ATS Score: ${score}`}>
+                      <svg viewBox="0 0 36 36" className="employer-score-ring">
+                        <path
+                          className="employer-score-bg"
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <path
+                          className="employer-score-fill"
+                          strokeDasharray={`${scoreValue}, 100`}
+                          d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        />
+                        <text x="18" y="20.35" className="employer-score-text">{scoreValue}%</text>
+                      </svg>
+                      <span className="employer-score-label">ATS Score</span>
+                    </div>
+
+                    <div className="employer-resume-action">
                       {hasResume(application) ? (
-                        <button type="button" className="rooster-icon-link" onClick={() => downloadResume(application)} aria-label={`Download ${candidateName} resume`}>
+                        <button
+                          type="button"
+                          className="employer-resume-button"
+                          onClick={() => downloadResume(application)}
+                          aria-label={`Download ${candidateName} resume`}
+                        >
                           <Download size={16} />
+                          <span>Resume</span>
                         </button>
                       ) : (
-                        <span className="muted-text">No resume</span>
+                        <span className="employer-no-resume">No Resume</span>
                       )}
-                    </td>
-                  </tr>
-                );
-              }) : (
-                <tr><td colSpan="7">No candidates match these filters.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="employer-no-candidates">
+            <p>No candidates match these filters.</p>
+          </div>
+        )}
       </section>
     </>
   );
