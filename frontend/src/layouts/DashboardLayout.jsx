@@ -228,7 +228,11 @@ export default function DashboardLayout({ role }) {
         onClick={() => setSidebarOpen(false)}
         aria-label="Close dashboard menu"
       />
-      <FloatingWhatsAppButton />
+         
+      
+      {location.pathname !== '/employer/messages' && (
+  <FloatingWhatsAppButton />
+)}
     </>
   );
 }
