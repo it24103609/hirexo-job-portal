@@ -1374,7 +1374,7 @@
 .premium-glass-container {
   position: relative;
   border: 1px solid rgba(26, 138, 86, 0.15);
-  border-radius: 32px;
+  border-radius: 0px;
   background: rgba(255, 255, 255, 0.74);
   backdrop-filter: blur(24px);
   box-shadow:

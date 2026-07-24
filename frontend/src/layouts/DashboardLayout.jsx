@@ -92,7 +92,7 @@ export default function DashboardLayout({ role }) {
   if (!isAuthenticated || user?.role !== role) return <Navigate to="/" replace />;
 
   const getDashboardPath = (r) => {
-    if (r === 'employer') return '/employer/profile';
+    if (r === 'employer') return '/employer/company-profile';
     if (r === 'candidate') return '/candidate/profile';
     if (r === 'admin') return '/admin/profile';
     return '/';

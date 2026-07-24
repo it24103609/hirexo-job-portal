@@ -99,13 +99,20 @@
 .dashboard-shell.candidate-portal-shell .dashboard-sidebar,
 .dashboard-shell.employer-portal-shell .dashboard-sidebar {
   padding: 1.3rem;
-  border-radius: 28px;
+  border-radius: 0px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(236, 250, 241, 0.92));
   border: 1px solid rgba(22, 114, 74, 0.18);
   box-shadow: 0 28px 60px rgba(13, 79, 42, 0.08);
   backdrop-filter: blur(20px);
 }
-
+.dashboard-main.candidate-portal-main {
+    border: none !important;
+    border-radius: 0 !important;
+}
+.dashboard-main.employer-portal-main {
+    border: none !important;
+    border-radius: 0 !important;
+}
 .dashboard-shell.candidate-portal-shell .dashboard-sidebar::before,
 .dashboard-shell.employer-portal-shell .dashboard-sidebar::before {
   content: '';
@@ -118,12 +125,15 @@
 .dashboard-shell.candidate-portal-shell .dashboard-sidebar .sidebar-link,
 .dashboard-shell.employer-portal-shell .dashboard-sidebar .sidebar-link,
 .dashboard-shell.employer-portal-shell .dashboard-sidebar .employer-sidebar-link {
-  border-radius: 18px;
   padding: 0.96rem 1rem;
-  background: rgba(255, 255, 255, 0.8);
+  border-radius: 10px;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+
   color: #2c5b47;
-  border: 1px solid transparent;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  transition: color .2s ease, background .2s ease;
 }
 
 .dashboard-shell.candidate-portal-shell .dashboard-sidebar .sidebar-link:hover,

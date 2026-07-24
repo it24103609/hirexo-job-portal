@@ -217,7 +217,7 @@
 }
 
 .candidate-portal-main {
-  padding: 1.2rem;
+  padding: 1.2rem 0;
 }
 
 .candidate-portal-main .dashboard-header {
@@ -4349,9 +4349,16 @@
   font-size: 0.95rem;
   line-height: 1.65;
 }
+.candidate-hero-side {
+    margin-left: auto;
+}
+@media (max-width: 991px) {
+  .candidate-hero {
+    flex-direction: column;
+  }
 
- @media (max-width: 768px) {
   .candidate-hero-side {
+    margin-left: 0;
     width: 100%;
   }
 }
@@ -5853,7 +5860,7 @@
   gap: 1rem;
   min-height: calc(100vh - 1.5rem);
   padding: 1rem;
-  border-radius: 32px;
+  border-radius: 0;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(236, 248, 241, 0.86)),
     var(--employer-bg);
