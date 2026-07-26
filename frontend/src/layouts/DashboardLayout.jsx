@@ -1,10 +1,13 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { Outlet, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Search, Bell, Settings, User, LogOut, ChevronDown } from 'lucide-react';
 import Sidebar from '../components/layout/Sidebar';
 import { useAuth } from '../contexts/AuthContext';
 import Loader from '../components/ui/Loader';
 import FloatingWhatsAppButton from '../components/ui/FloatingWhatsAppButton';
+import { candidateApi } from '../services/candidate.api';
+import { notificationsApi } from '../services/notifications.api';
+import { useCandidateProfilePicture } from '../hooks/useCandidateProfilePicture';
 import '../styles/candidate-portal.css';
 import '../styles/dashboard-premium.css';
 
@@ -12,9 +15,12 @@ export default function DashboardLayout({ role }) {
   const { loading, isAuthenticated, user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [candidateProfile, setCandidateProfile] = useState(null);
   const location = useLocation();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const candidateAvatarUrl = useCandidateProfilePicture(candidateProfile?.profilePicture);
 
   useEffect(() => {
     document.body.classList.toggle('dashboard-nav-open', sidebarOpen);
@@ -54,6 +60,46 @@ export default function DashboardLayout({ role }) {
     window.addEventListener('keydown', onEscape);
     return () => window.removeEventListener('keydown', onEscape);
   }, [sidebarOpen]);
+
+  const loadUnreadCount = useCallback(async () => {
+    try {
+      const response = await notificationsApi.mine({ limit: 1 });
+      setUnreadCount(response.meta?.unreadCount || 0);
+    } catch {
+      setUnreadCount(0);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (loading || !isAuthenticated || user?.role !== role) return undefined;
+
+    loadUnreadCount();
+    const intervalId = window.setInterval(loadUnreadCount, 60000);
+    return () => window.clearInterval(intervalId);
+  }, [loading, isAuthenticated, loadUnreadCount, location.pathname, role, user?.role]);
+
+  useEffect(() => {
+    if (role !== 'candidate') {
+      setCandidateProfile(null);
+      return undefined;
+    }
+
+    let active = true;
+
+    candidateApi.profile()
+      .then((response) => {
+        if (!active) return;
+        setCandidateProfile(response.data || null);
+      })
+      .catch(() => {
+        if (!active) return;
+        setCandidateProfile(null);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [role, user?.id]);
 
   // Close dropdown on click outside
   useEffect(() => {
@@ -113,6 +159,12 @@ export default function DashboardLayout({ role }) {
 
   const getNotificationsPath = (r) => `/${r}/notifications`;
   const getSettingsPath = (r) => `/${r}/policies`;
+  const profileImageSrc = useMemo(() => {
+    if (user?.profileImage) return user.profileImage;
+    if (role === 'candidate' && candidateAvatarUrl) return candidateAvatarUrl;
+    return '';
+  }, [candidateAvatarUrl, role, user?.profileImage]);
+  const profileInitial = String(user?.name || user?.email || 'U').trim().charAt(0).toUpperCase() || 'U';
 
   return (
     <>
@@ -162,7 +214,7 @@ export default function DashboardLayout({ role }) {
                 onClick={() => navigate(getNotificationsPath(role))}
               >
                 <Bell size={18} />
-                <span>4</span>
+                <span>{unreadCount > 99 ? '99+' : unreadCount}</span>
               </button>
               <button
                 type="button"
@@ -182,7 +234,11 @@ export default function DashboardLayout({ role }) {
                   aria-label="Profile menu"
                 >
                   <span className="dashboard-profile-avatar">
-                    {String(user?.name || 'U').slice(0, 1).toUpperCase()}
+                    {profileImageSrc ? (
+                      <img src={profileImageSrc} alt="" aria-hidden="true" />
+                    ) : (
+                      profileInitial
+                    )}
                   </span>
                   <div className="dashboard-profile-info">
                     <strong>{user?.name || 'User'}</strong>
