@@ -9,7 +9,7 @@ import '../styles/candidate-portal.css';
 import '../styles/dashboard-premium.css';
 
 export default function DashboardLayout({ role }) {
-  const { loading, isAuthenticated, user } = useAuth();
+  const { loading, isAuthenticated, user, logout } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const location = useLocation();
@@ -87,6 +87,19 @@ export default function DashboardLayout({ role }) {
     setProfileDropdownOpen(false);
     navigate(path);
   }, [navigate]);
+
+  const handleLogout = useCallback(() => {
+    setProfileDropdownOpen(false);
+    logout();
+    navigate(
+      role === 'admin'
+        ? '/admin/login'
+        : role === 'employer'
+          ? '/employer/login'
+          : '/candidate/login',
+      { replace: true }
+    );
+  }, [logout, navigate, role]);
 
   if (loading) return <Loader label="Loading dashboard..." />;
   if (!isAuthenticated || user?.role !== role) return <Navigate to="/" replace />;
@@ -205,10 +218,7 @@ export default function DashboardLayout({ role }) {
                     <button
                       type="button"
                       className="dashboard-profile-dropdown-item dashboard-profile-dropdown-item--danger"
-                      onClick={() => {
-                        setProfileDropdownOpen(false);
-                        navigate('/logout');
-                      }}
+                      onClick={handleLogout}
                       role="menuitem"
                     >
                       <LogOut size={16} />
