@@ -183,7 +183,7 @@
 
 .sidebar-help-card svg {
   color: var(--primary);
-  margin-top: 0.15rem;
+  margin: 0.35rem;
 }
 .sidebar-help-card strong {
   color: var(--primary-dark);

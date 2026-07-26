@@ -312,8 +312,7 @@ export default function CandidateMessagesPage() {
     <>
       <Seo title="Candidate Messages | HEXORA" description="Message employers about your applications." />
       <div className="candidate-wa-page">
-        <DashboardHeader title="Messages" description="Follow up on your applications and interview updates." />
-
+ 
         {!threads.length ? (
           <Card>
             <EmptyState
