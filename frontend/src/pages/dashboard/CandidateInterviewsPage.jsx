@@ -116,28 +116,7 @@ export default function CandidateInterviewsPage() {
   return (
     <>
       <Seo title="My Interviews | HEXORA" description="Track interview rounds, book slots, and request changes." />
-      <section className="candidate-interviews-hero candidate-glass-card">
-        <div className="candidate-interviews-hero-copy">
-          <p className="candidate-interviews-eyebrow">Candidate</p>
-          <h1>My Interviews</h1>
-          <p>Stay on top of interview rounds, panel details, reminders, and any reschedule requests.</p>
-        </div>
-        <div className="candidate-interviews-hero-panel" aria-hidden="true">
-          <span className="candidate-interviews-hero-orb candidate-interviews-hero-orb-a" />
-          <span className="candidate-interviews-hero-orb candidate-interviews-hero-orb-b" />
-          <div className="candidate-interviews-hero-chip">
-            <Sparkles size={16} />
-            <span>Interview flow</span>
-          </div>
-          <div className="candidate-interviews-hero-card">
-            <div className="candidate-interviews-hero-card-icon"><CalendarClock size={18} /></div>
-            <div>
-              <strong>{stats.total} rounds</strong>
-              <p>{stats.upcoming} upcoming · {stats.reschedule} reschedules</p>
-            </div>
-          </div>
-        </div>
-      </section>
+       
 
       <div className="candidate-interviews-stats">
         <article className="candidate-interviews-stat-card candidate-glass-card">

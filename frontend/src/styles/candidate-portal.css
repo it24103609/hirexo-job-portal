@@ -718,7 +718,8 @@
 .candidate-upload-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.65rem;
+  gap: 1rem;
+  margin-top: 0.25rem;
 }
 
 .candidate-slot-option {

@@ -230,7 +230,8 @@ export default function DashboardLayout({ role }) {
       />
          
       
-      {location.pathname !== '/employer/messages' && (
+      {location.pathname !== '/employer/messages' &&
+ location.pathname !== '/candidate/messages' && (
   <FloatingWhatsAppButton />
 )}
     </>

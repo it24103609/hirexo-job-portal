@@ -196,37 +196,7 @@ export default function CandidateApplicationsPage() {
   return (
     <>
       <Seo title="Applied Jobs | HEXORA" description="Track your submitted applications." />
-      <DashboardHeader
-        title="Applied Jobs"
-        description="See the jobs you’ve applied for and their current status."
-        className="candidate-premium-header"
-        actions={(
-          <div className="candidate-hero-side">
-            <div className="candidate-hero-summary-card candidate-glass-card">
-              <div className="candidate-hero-summary-top">
-                <div className="candidate-hero-summary-profile">
-                  <div className="candidate-dashboard-profile-visual" aria-hidden="true">
-                    {profileImageUrl ? (
-                      <img src={profileImageUrl} alt="" />
-                    ) : (
-                      <span>{(user?.name || 'You').slice(0, 1).toUpperCase()}</span>
-                    )}
-                  </div>
-                  <div>
-                    <strong>{user?.name || 'Candidate'}</strong>
-                    <p>{profile?.location || 'Candidate workspace'}</p>
-                  </div>
-                </div>
-                <span className="candidate-hero-summary-status">Active</span>
-              </div>
-            </div>
-            <div className="candidate-hero-actions">
-              <Link className="btn btn-secondary btn-sm" to="/candidate/applications"><Mail size={14} /> Open Messages</Link>
-              <Link className="btn btn-primary btn-sm" to="/jobs"><BriefcaseBusiness size={14} /> Browse jobs</Link>
-            </div>
-          </div>
-        )}
-      />
+      
 
       {!loading ? (
         <div className="candidate-stat-grid mb-1">

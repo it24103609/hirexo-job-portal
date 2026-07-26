@@ -55,8 +55,7 @@ export default function CandidateResumePage() {
   return (
     <>
       <Seo title="Resume | HEXORA" description="Upload and manage your resume." />
-      <DashboardHeader title="My Resume" description="PDF only. Keep your resume ready for applications." />
-
+ 
       <Card className="candidate-resume-upload-card">
         <form className="form-grid" onSubmit={async (e) => {
           e.preventDefault();

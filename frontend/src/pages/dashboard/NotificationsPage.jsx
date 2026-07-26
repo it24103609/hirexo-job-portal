@@ -89,8 +89,7 @@ export default function NotificationsPage() {
     <>
       <Seo title="Notifications | HEXORA" description="Track job approvals, application updates, and interview schedules." />
       <DashboardHeader
-        title="Notifications"
-        description="Job approval alerts, application updates, and interview schedules."
+        
         actions={(
           <div className="dashboard-actions">
             <Button
