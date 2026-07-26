@@ -270,6 +270,10 @@
   padding-top: 88px;
 }
 
+.dashboard-main.admin-portal-main {
+  padding-top: 12px;
+}
+
 /* ============================================
    PROFILE PILL DROPDOWN
    ============================================ */
