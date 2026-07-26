@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ArrowLeft, MessageSquare, Paperclip, Search, Send, Smile, X, FileText } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
-import DashboardHeader from '../../components/layout/DashboardHeader';
 import Card from '../../components/ui/Card';
 import EmptyState from '../../components/ui/EmptyState';
 import Loader from '../../components/ui/Loader';
@@ -301,8 +300,6 @@ export default function AdminMessagesPage() {
     <>
       <Seo title="Admin Messages | HEXORA" description="Monitor employer and candidate application conversations." />
       <div className="admin-wa-page">
-      <DashboardHeader title="Messages" description="Read application conversations across the platform." />
-
       {!threads.length ? (
         <Card>
           <EmptyState

@@ -1,12 +1,12 @@
 import { useAuth } from '../../contexts/AuthContext';
 
-export default function DashboardHeader({ title, description, actions = null, className = '' }) {
+export default function DashboardHeader({ title, description, actions = null, className = '', showEyebrow = true }) {
   const { user } = useAuth();
 
   return (
     <header className={`dashboard-header ${className}`.trim()}>
       <div>
-        <p className="section-eyebrow">{user?.role || 'dashboard'}</p>
+        {showEyebrow ? <p className="section-eyebrow">{user?.role || 'dashboard'}</p> : null}
         <h1>{title}</h1>
         {description ? <p className="section-description">{description}</p> : null}
       </div>
