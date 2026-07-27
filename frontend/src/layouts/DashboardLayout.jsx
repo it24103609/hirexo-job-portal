@@ -264,7 +264,7 @@ export default function DashboardLayout({ role }) {
                     <button
                       type="button"
                       className="dashboard-profile-dropdown-item"
-                      onClick={() => handleProfileNavigation(`/${role}/settings`)}
+                      onClick={() => handleProfileNavigation(`/${role}/policies`)}
                       role="menuitem"
                     >
                       <Settings size={16} />
