@@ -42,16 +42,11 @@
 }
 
 .division-card {
-  display: flex;
-  flex-direction: column;
-  background: rgba(255,255,255,0.6);
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 8px 30px rgba(8, 64, 46, 0.08);
-  transition: transform 260ms cubic-bezier(.2,.9,.2,1), box-shadow 260ms;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.6);
-  min-height: 420px;
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .division-card:hover {
@@ -130,11 +125,181 @@
 .division-card.in-view { opacity: 1; transform: translateY(0); transition: opacity 520ms ease, transform 520ms cubic-bezier(.2,.9,.2,1); }
 
 /* Responsive */
+/* ===========================
+   Responsive
+=========================== */
+
+/* Large Tablet / Small Laptop */
 @media (max-width: 1100px) {
-  .divisions-row { grid-template-columns: repeat(3, 1fr); }
+  .divisions-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .division-card {
+    min-height: 410px;
+  }
 }
 
-@media (max-width: 760px) {
-  .divisions-row { grid-auto-flow: column; grid-auto-columns: calc(80%); overflow-x: auto; display: grid; padding-bottom: 8px; gap: 1rem; }
-  .division-card { min-width: 78%; }
+/* Tablet */
+@media (max-width: 900px) {
+  .divisions-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .division-card {
+    min-height: 400px;
+  }
+
+  .division-image {
+    height: 210px;
+  }
 }
+
+/* Mobile */
+@media (max-width: 768px) {
+
+  .divisions-section {
+    padding: 2.5rem 0;
+  }
+
+  .divisions-header {
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .divisions-title {
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+
+  .divisions-copy {
+    font-size: 0.95rem;
+  }
+
+
+
+  .divisions-row{
+    display:flex;
+    overflow-x:auto;
+    overflow-y:hidden;
+
+    gap:16px;
+    padding:0 16px 12px;
+
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+
+    scrollbar-width:none;
+  }
+
+  .divisions-row::-webkit-scrollbar{
+    display:none;
+  }
+
+  .division-card{
+    flex:0 0 320px;      /* card width */
+    scroll-snap-align:start;
+    min-height:auto;
+  }
+
+
+  .division-image {
+    height: 200px;
+  }
+
+  .division-body {
+    padding: 1rem;
+  }
+
+  .division-title {
+    font-size: 1.05rem;
+  }
+
+  .division-desc {
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .division-actions {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .division-cta {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Small Phones (Samsung A52s, A54, iPhone 12/13/14 etc.) */
+@media (max-width: 480px) {
+
+  .divisions-section {
+    padding: 2rem 0;
+  }
+
+  .divisions-row {
+    grid-auto-columns: 94%;
+    gap: 14px;
+    padding: 0 12px 12px;
+  }
+
+  .division-card {
+    border-radius: 16px;
+  }
+
+  .division-image {
+    height: 185px;
+  }
+
+  .division-body {
+    padding: 0.95rem;
+    gap: 0.65rem;
+  }
+
+  .division-eyebrow {
+    font-size: 0.72rem;
+  }
+
+  .division-title {
+    font-size: 1rem;
+  }
+
+  .division-desc {
+    font-size: 0.88rem;
+  }
+
+  .division-badge {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .division-cta {
+    font-size: 0.88rem;
+    padding: 0.65rem;
+  }
+}
+
+/* Very Small Phones */
+@media (max-width: 360px) {
+
+  .divisions-row {
+    grid-auto-columns: 96%;
+  }
+
+  .division-image {
+    height: 170px;
+  }
+
+  .division-title {
+    font-size: 0.95rem;
+  }
+
+  .division-desc {
+    font-size: 0.85rem;
+  }
+}
+ 

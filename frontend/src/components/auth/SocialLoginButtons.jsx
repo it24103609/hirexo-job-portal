@@ -35,9 +35,9 @@ export default function SocialLoginButtons() {
   return (
     <div style={{ display: 'grid', gap: '0.75rem', marginTop: '1rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#64748b', fontSize: '0.875rem' }}>
-        <span style={{ flex: 1, height: 1, background: '#e2e8f0' }} />
+        <span style={{ flex: 1, height: 1, background: 'rgba(26, 138, 86, 0.18)' }} />
         <span>or continue with</span>
-        <span style={{ flex: 1, height: 1, background: '#e2e8f0' }} />
+        <span style={{ flex: 1, height: 1, background: 'rgba(26, 138, 86, 0.18)' }} />
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '0.75rem' }}>
         <button
@@ -48,10 +48,10 @@ export default function SocialLoginButtons() {
             alignItems: 'center',
             justifyContent: 'center',
             gap: '0.5rem',
-            border: '1px solid #dbe3ef',
-            borderRadius: '8px',
-            background: '#fff',
-            color: '#0f172a',
+            border: '1px solid rgba(26, 138, 86, 0.18)',
+            borderRadius: '14px',
+            background: 'rgba(255, 255, 255, 0.9)',
+            color: '#17392c',
             cursor: 'pointer',
             fontWeight: 700,
             padding: '0.8rem 1rem'
@@ -67,10 +67,10 @@ export default function SocialLoginButtons() {
             alignItems: 'center',
             justifyContent: 'center',
             gap: '0.5rem',
-            border: '1px solid #dbe3ef',
-            borderRadius: '8px',
-            background: '#111827',
-            color: '#fff',
+            border: '1px solid rgba(26, 138, 86, 0.18)',
+            borderRadius: '14px',
+            background: 'rgba(242, 251, 245, 0.98)',
+            color: '#17392c',
             cursor: 'pointer',
             fontWeight: 700,
             padding: '0.8rem 1rem'

@@ -9,6 +9,19 @@ import Button from '../../components/ui/Button';
 import BrandIdentity from '../../components/layout/BrandIdentity';
 import { authApi } from '../../services/auth.api';
 import { forgotPasswordSchema } from '../../utils/validators';
+import './ForgotPasswordPage.css';
+
+const recoveryPoints = [
+  { value: '01', label: 'Enter email' },
+  { value: '02', label: 'Check inbox' },
+  { value: '03', label: 'Reset password' }
+];
+
+const recoveryNotes = [
+  'A clean, calm recovery flow that keeps you moving quickly.',
+  'Your reset link goes only to the email on your HEXORA account.',
+  'Return to signing in with a fresh password in just a few steps.'
+];
 
 export default function ForgotPasswordPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
@@ -18,29 +31,71 @@ export default function ForgotPasswordPage() {
   return (
     <>
       <Seo title="Forgot Password | HEXORA" description="Request a password reset link for your HEXORA account." />
-      <section className="section-block">
-        <div className="shell">
-          <Card className="form-card">
-            <BrandIdentity className="auth-brand" subtitle="Password recovery" />
-            <h1>Forgot your password?</h1>
-            <p className="form-meta">Enter your registered email and we&apos;ll send you a reset link.</p>
-            <form className="form-grid" onSubmit={handleSubmit(async (values) => {
+      <section className="section-block forgot-password-shell">
+        <div className="shell forgot-password-shell-inner">
+          <Card className="form-card forgot-password-card">
+            <div className="forgot-password-grid">
+              <aside className="forgot-password-hero">
+                <div className="forgot-password-badge">Password recovery</div>
+                <BrandIdentity className="auth-brand forgot-password-brand" subtitle="Password recovery" />
+                <h1>Reset your access without the clutter</h1>
+                <p className="forgot-password-copy">
+                  Use the same polished green-first experience to quickly get back into your HEXORA account.
+                </p>
+
+                <div className="forgot-password-points">
+                  {recoveryPoints.map((item) => (
+                    <article key={item.label} className="forgot-password-point">
+                      <strong>{item.value}</strong>
+                      <span>{item.label}</span>
+                    </article>
+                  ))}
+                </div>
+
+                <ul className="forgot-password-notes">
+                  {recoveryNotes.map((note) => (
+                    <li key={note}>{note}</li>
+                  ))}
+                </ul>
+              </aside>
+
+              <div className="forgot-password-form-panel">
+                <div className="forgot-password-form-header">
+                  <span className="forgot-password-eyebrow">Secure reset</span>
+                  <h2>Request a password reset link</h2>
+                  <p className="form-meta forgot-password-meta">
+                    Enter the email linked to your account and we&apos;ll send the reset instructions there.
+                  </p>
+                </div>
+
+                <form className="form-grid" onSubmit={handleSubmit(async (values) => {
               const response = await authApi.forgotPassword(values);
               toast.success(response.message || 'Reset link sent');
-            })}>
-              <Input label="Email" type="email" placeholder="name@example.com" error={errors.email?.message} {...register('email')} />
-              <Button type="submit" disabled={isSubmitting}>{isSubmitting ? 'Sending link...' : 'Send reset link'}</Button>
-            </form>
-            <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #eee', textAlign: 'center' }}>
-              <p className="text-sm" style={{ color: '#666', marginBottom: '0.75rem' }}>
-                Remembered your password? <Link to="/candidate/login" style={{ color: '#0066cc', textDecoration: 'none', fontWeight: '600' }}>Candidate sign in</Link>
-              </p>
-              <p className="text-sm" style={{ color: '#999', marginBottom: '0.75rem' }}>
-                Employer account? <Link to="/employer/login" style={{ color: '#0066cc', textDecoration: 'none' }}>Employer sign in</Link>
-              </p>
-              <Link to="/auth" style={{ color: '#0066cc', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '500' }}>
-                ← Back to authentication
-              </Link>
+                })}>
+                  <Input label="Email" type="email" placeholder="name@example.com" error={errors.email?.message} {...register('email')} />
+                  <Button type="submit" disabled={isSubmitting} className="forgot-password-submit">
+                    {isSubmitting ? 'Sending link...' : 'Send reset link'}
+                  </Button>
+                </form>
+
+                <div className="forgot-password-footer">
+                  <p className="text-sm">
+                    Remembered your password?{' '}
+                    <Link to="/candidate/login" className="forgot-password-link forgot-password-link-strong">
+                      Candidate sign in
+                    </Link>
+                  </p>
+                  <p className="text-sm forgot-password-secondary">
+                    Employer account?{' '}
+                    <Link to="/employer/login" className="forgot-password-link">
+                      Employer sign in
+                    </Link>
+                  </p>
+                  <Link to="/auth" className="forgot-password-back-link">
+                    ← Back to authentication
+                  </Link>
+                </div>
+              </div>
             </div>
           </Card>
         </div>

@@ -11,6 +11,19 @@ import BrandIdentity from '../../components/layout/BrandIdentity';
 import LoginRecaptcha from '../../components/auth/LoginRecaptcha';
 import { loginSchema } from '../../utils/validators';
 import { useAuth } from '../../contexts/AuthContext';
+import './AdminLoginPage.css';
+
+const adminPillars = [
+  { value: 'Secure', label: 'Access control' },
+  { value: 'Audited', label: 'Activity logging' },
+  { value: 'Priority', label: 'Operations only' }
+];
+
+const adminChecklist = [
+  'Restricted entry for platform administrators only.',
+  'Quick access to moderation, reports, and system controls.',
+  'A sharper visual layer that signals high-trust access.'
+];
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
@@ -30,15 +43,44 @@ export default function AdminLoginPage() {
   return (
     <>
       <Seo title="Admin Login | HEXORA" description="Sign in to access admin dashboard and manage platform resources." />
-      <section className="section-block">
-        <div className="shell">
-          <Card className="form-card">
-            <BrandIdentity className="auth-brand" subtitle="Admin portal" />
-            <h1>Admin sign in</h1>
-            <p className="form-meta text-sm" style={{ color: '#666', marginBottom: '1.5rem' }}>
-              Admin access only. Unauthorized access attempts are monitored.
-            </p>
-            <form className="form-grid" onSubmit={handleSubmit(async (values) => {
+      <section className="section-block admin-login-shell">
+        <div className="shell admin-login-shell-inner">
+          <Card className="form-card admin-login-card">
+            <div className="admin-login-grid">
+              <aside className="admin-login-hero">
+                <div className="admin-login-badge">Secure access</div>
+                <BrandIdentity className="auth-brand admin-login-brand" subtitle="Admin portal" />
+                <h1>Admin access with a security-first feel</h1>
+                <p className="admin-login-copy">
+                  This workspace is designed to feel controlled, calm, and high-trust for platform operators.
+                </p>
+
+                <div className="admin-login-pillars">
+                  {adminPillars.map((item) => (
+                    <article key={item.label} className="admin-login-pillar">
+                      <strong>{item.value}</strong>
+                      <span>{item.label}</span>
+                    </article>
+                  ))}
+                </div>
+
+                <ul className="admin-login-checklist">
+                  {adminChecklist.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </aside>
+
+              <div className="admin-login-form-panel">
+                <div className="admin-login-form-header">
+                  <span className="admin-login-eyebrow">Restricted entry</span>
+                  <h2>Sign in to manage the platform</h2>
+                  <p className="form-meta admin-login-meta">
+                    Use your administrator account to access moderation, analytics, and system controls.
+                  </p>
+                </div>
+
+                <form className="form-grid" onSubmit={handleSubmit(async (values) => {
               if (!recaptchaToken) {
                 setError('recaptchaToken', { type: 'manual', message: 'Please complete the reCAPTCHA verification.' });
                 return;
@@ -59,37 +101,40 @@ export default function AdminLoginPage() {
                 setRecaptchaToken('');
               }
             })}>
-              <Input 
-                label="Email" 
-                type="email" 
-                placeholder="admin@HEXORA.com" 
-                error={errors.email?.message} 
-                {...register('email')} 
-              />
-              <Input 
-                label="Password" 
-                type="password" 
-                placeholder="Enter password" 
-                error={errors.password?.message} 
-                {...register('password')} 
-              />
-              <LoginRecaptcha
-                captchaRef={captchaRef}
-                error={errors.recaptchaToken?.message}
-                onChange={handleRecaptchaChange}
-                onExpired={() => setRecaptchaToken('')}
-              />
-              <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Signing in...' : 'Sign in'}
-              </Button>
-            </form>
-            <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #eee', textAlign: 'center' }}>
-              <p className="text-sm" style={{ color: '#666', marginBottom: '1rem' }}>
-                Not an admin? Return to public site.
-              </p>
-              <Link to="/" style={{ color: '#0066cc', textDecoration: 'none', fontSize: '0.875rem', fontWeight: '500' }}>
-                Back to home
-              </Link>
+                  <Input
+                    label="Email"
+                    type="email"
+                    placeholder="admin@HEXORA.com"
+                    error={errors.email?.message}
+                    {...register('email')}
+                  />
+                  <Input
+                    label="Password"
+                    type="password"
+                    placeholder="Enter password"
+                    error={errors.password?.message}
+                    {...register('password')}
+                  />
+                  <LoginRecaptcha
+                    captchaRef={captchaRef}
+                    error={errors.recaptchaToken?.message}
+                    onChange={handleRecaptchaChange}
+                    onExpired={() => setRecaptchaToken('')}
+                  />
+                  <Button type="submit" disabled={isSubmitting} className="admin-login-submit">
+                    {isSubmitting ? 'Signing in...' : 'Sign in'}
+                  </Button>
+                </form>
+
+                <div className="admin-login-footer">
+                  <p className="text-sm admin-login-footer-copy">
+                    Not an admin? Return to the public site.
+                  </p>
+                  <Link to="/" className="admin-login-back-link">
+                    Back to home
+                  </Link>
+                </div>
+              </div>
             </div>
           </Card>
         </div>
