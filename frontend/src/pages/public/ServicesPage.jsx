@@ -101,7 +101,7 @@ export default function ServicesPage() {
           </div>
 
           {/* HEXORA TALENT */}
-          <div className="hexora-division-card hexora-division-talent">
+          <div id="talent" className="hexora-division-card hexora-division-talent">
             <div className="hexora-division-header">
               <span className="hexora-division-icon"><Briefcase size={32} /></span>
               <div>
@@ -146,7 +146,7 @@ export default function ServicesPage() {
           </div>
 
           {/* HEXORA HR CONSULTING */}
-          <div className="hexora-division-card hexora-division-hr">
+          <div id="hr" className="hexora-division-card hexora-division-hr">
             <div className="hexora-division-header">
               <span className="hexora-division-icon"><Users size={32} /></span>
               <div>
@@ -186,7 +186,7 @@ export default function ServicesPage() {
           </div>
 
           {/* HEXORA GLOBAL TRADE */}
-          <div className="hexora-division-card hexora-division-trade">
+          <div id="trade" className="hexora-division-card hexora-division-trade">
             <div className="hexora-division-header">
               <span className="hexora-division-icon"><Globe2 size={32} /></span>
               <div>
@@ -225,7 +225,7 @@ export default function ServicesPage() {
           </div>
 
           {/* HEXORA FOODS */}
-          <div className="hexora-division-card hexora-division-foods">
+          <div id="foods" className="hexora-division-card hexora-division-foods">
             <div className="hexora-division-header">
               <span className="hexora-division-icon"><Utensils size={32} /></span>
               <div>
@@ -256,7 +256,7 @@ export default function ServicesPage() {
           </div>
 
           {/* HEXORA BUSINESS SOLUTIONS */}
-          <div className="hexora-division-card hexora-division-business">
+          <div id="business" className="hexora-division-card hexora-division-business">
             <div className="hexora-division-header">
               <span className="hexora-division-icon"><TrendingUp size={32} /></span>
               <div>

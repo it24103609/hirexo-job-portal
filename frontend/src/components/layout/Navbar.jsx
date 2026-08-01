@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { ArrowRight, Menu, X, LayoutDashboard, LogOut, LogIn } from 'lucide-react';
+import { ArrowRight, Menu, X, LayoutDashboard, LogOut, LogIn, ChevronDown } from 'lucide-react';
 import Button from '../ui/Button';
 import BrandIdentity from './BrandIdentity';
 import { useAuth } from '../../contexts/AuthContext';
@@ -9,18 +9,27 @@ const publicLinks = [
   { to: '/', label: 'Home' },
   { to: '/jobs', label: 'Find Jobs' },
   { to: '/blog', label: 'Blog' },
-  { to: '/services', label: 'Companies' },
   { to: '/about', label: 'About' },
   { to: '/contact', label: 'Contact' }
 ];
 
+const companiesSubLinks = [
+  { to: '/companies/talent', label: 'TALENT' },
+  { to: '/companies/hr-consulting', label: 'HR CONSULTING' },
+  { to: '/companies/global-trade', label: 'GLOBAL TRADE' },
+  { to: '/companies/foods', label: 'FOODS' },
+  { to: '/companies/business-solutions', label: 'BUSINESS SOLUTIONS' }
+];
+
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [companiesOpen, setCompaniesOpen] = useState(false);
   const { user, logout, isAuthenticated } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
     setOpen(false);
+    setCompaniesOpen(false);
   }, [location.pathname]);
 
   const dashboardPath = user?.role === 'admin'
@@ -36,7 +45,37 @@ export default function Navbar() {
 
         <div className={`nav-panel ${open ? 'is-open' : ''}`}>
           <div className="nav-links">
-            {publicLinks.map((link) => (
+            {publicLinks.slice(0, 2).map((link) => (
+              <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)}>
+                {link.label}
+              </NavLink>
+            ))}
+
+            {/* Companies dropdown - centered between Find Jobs and Blog */}
+            <div className={`nav-dropdown ${companiesOpen ? 'is-open' : ''}`}>
+              <button
+                type="button"
+                className="nav-dropdown-trigger"
+                onClick={() => setCompaniesOpen((value) => !value)}
+                aria-expanded={companiesOpen}
+                aria-haspopup="true"
+              >
+                Companies <ChevronDown size={15} className="nav-dropdown-chevron" />
+              </button>
+              <div className="nav-dropdown-menu">
+                {companiesSubLinks.map((sub) => (
+                  <Link
+                    key={sub.to}
+                    to={sub.to}
+                    onClick={() => { setOpen(false); setCompaniesOpen(false); }}
+                  >
+                    {sub.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {publicLinks.slice(2).map((link) => (
               <NavLink key={link.to} to={link.to} onClick={() => setOpen(false)}>
                 {link.label}
               </NavLink>

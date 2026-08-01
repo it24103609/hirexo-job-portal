@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
   BadgeCheck,
@@ -15,27 +14,20 @@ import {
   ShieldCheck,
   Star,
   TrendingUp,
-  UserCheck,
   Users,
   Utensils,
   Sparkles,
 } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 import Seo from '../../components/ui/Seo';
 import Button from '../../components/ui/Button';
 import { siteContent } from '../../data/siteContent';
-import PremiumDualCardSection from '../../components/home/PremiumDualCardSection';
 import DivisionSystem from '../../components/home/DivisionSystem';
 import './HomePage.css';
 
 const media = {
   heroVideo: '/hero-video.mp4',
   heroFallback: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1800&q=85',
-  candidate: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=760&q=85',
-  teamwork: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=900&q=85',
-  employer: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=760&q=85',
   ctaLeft: 'https://images.unsplash.com/photo-1562788869-4ed32648eb72?auto=format&fit=crop&w=760&q=85',
   ctaRight: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=760&q=85'
 };
@@ -63,134 +55,6 @@ const talentFeatures = [
   }
 ];
 
-const sampleJobs = [
-  {
-    title: 'Lead Software Engineer',
-    company: 'HEXORA Tech',
-    department: 'Information Technology',
-    location: 'Colombo / Hybrid',
-    salary: 'LKR 450k - 650k',
-    experience: '5+ Yrs Exp',
-    type: 'Full-time',
-    workplace: 'Hybrid',
-    logoBg: 'linear-gradient(135deg, #059669, #10b981)',
-    logoText: 'HT'
-  },
-  {
-    title: 'Senior HR Specialist',
-    company: 'HEXORA HR Consulting',
-    department: 'Human Resources',
-    location: 'Colombo / Remote',
-    salary: 'LKR 250k - 350k',
-    experience: '3+ Yrs Exp',
-    type: 'Full-time',
-    workplace: 'Remote',
-    logoBg: 'linear-gradient(135deg, #2563eb, #3b82f6)',
-    logoText: 'HC'
-  },
-  {
-    title: 'Senior Financial Analyst',
-    company: 'HEXORA Solutions',
-    department: 'Banking & Finance',
-    location: 'Kandy / Hybrid',
-    salary: 'LKR 300k - 400k',
-    experience: '4+ Yrs Exp',
-    type: 'Full-time',
-    workplace: 'Hybrid',
-    logoBg: 'linear-gradient(135deg, #7c3aed, #8b5cf6)',
-    logoText: 'HS'
-  },
-  {
-    title: 'Creative Growth Marketer',
-    company: 'HEXORA Foods',
-    department: 'Marketing',
-    location: 'Colombo / Onsite',
-    salary: 'LKR 200k - 280k',
-    experience: '2+ Yrs Exp',
-    type: 'Full-time',
-    workplace: 'Onsite',
-    logoBg: 'linear-gradient(135deg, #ea580c, #f97316)',
-    logoText: 'HF'
-  },
-  {
-    title: 'Full-Stack Developer',
-    company: 'HEXORA Tech',
-    department: 'Information Technology',
-    location: 'Colombo / Remote',
-    salary: 'LKR 320k - 450k',
-    experience: '3+ Yrs Exp',
-    type: 'Full-time',
-    workplace: 'Remote',
-    logoBg: 'linear-gradient(135deg, #059669, #10b981)',
-    logoText: 'HT'
-  },
-  {
-    title: 'Project Civil Engineer',
-    company: 'HEXORA Construction',
-    department: 'Engineering',
-    location: 'Batticaloa / Onsite',
-    salary: 'LKR 220k - 300k',
-    experience: '3+ Yrs Exp',
-    type: 'Contract',
-    workplace: 'Onsite',
-    logoBg: 'linear-gradient(135deg, #0d9488, #14b8a6)',
-    logoText: 'HE'
-  }
-];
-
-const recruitmentProcess = [
-  'Requirement Analysis',
-  'Candidate Sourcing',
-  'Screening & Shortlisting',
-  'Interviews & Assessments',
-  'Client Selection',
-  'Offer Management',
-  'Onboarding Support'
-];
-
-const industries = [
-  'Information Technology',
-  'Banking & Finance',
-  'Healthcare',
-  'Engineering',
-  'Construction',
-  'Manufacturing',
-  'Retail & FMCG',
-  'Logistics & Supply Chain',
-  'Hospitality',
-  'Telecommunications'
-];
-
-const globalTradeServices = [
-  'Import & Export Management',
-  'International Product Sourcing',
-  'Supplier & Manufacturer Identification',
-  'Procurement Solutions',
-  'Customs Documentation Support',
-  'Supply Chain Coordination',
-  'Trade Partner Development',
-  'International Market Entry Support',
-  'Logistics Coordination'
-];
-
-const globalTradeProducts = [
-  'Consumer Goods',
-  'Agricultural Products',
-  'Industrial Equipment',
-  'FMCG Products',
-  'Food Ingredients',
-  'Raw Materials',
-  'Packaging Materials'
-];
-
-const globalTradeBenefits = [
-  'Reliable Global Supplier Network',
-  'Cost-Effective Sourcing Solutions',
-  'End-to-End Trade Support',
-  'International Market Expertise',
-  'Strategic Business Partnerships'
-];
-
 const clients = ['IT Startups', 'Finance Teams', 'Construction Firms', 'Manufacturers', 'Retail Brands', 'Service Providers'];
 
 const testimonials = [
@@ -205,87 +69,6 @@ const testimonials = [
 ];
 
 export default function HomePage() {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const industryCarouselRef = useRef(null);
-  const industryDrag = useRef({ active: false, startX: 0, scrollLeft: 0 });
-
-  const handleCvClick = () => {
-    if (user && user.role === 'candidate') {
-      navigate('/candidate/resume');
-    } else {
-      toast.info('Register Candidate');
-      navigate('/candidate/register');
-    }
-  };
-
-  const handleEmployerClick = () => {
-    if (user && user.role === 'employer') {
-      navigate('/employer/jobs/new');
-    } else {
-      toast.info('Register Employer');
-      navigate('/employer/register');
-    }
-  };
-
-  const handleHireTalentClick = () => {
-    const tradeSection = document.getElementById('global-trade');
-    if (tradeSection) {
-      tradeSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  const handleIndustryPointerDown = (event) => {
-    if (event.pointerType === 'touch') return;
-    if (event.pointerType === 'mouse' && event.button !== 0) return;
-
-    const carousel = industryCarouselRef.current;
-    if (!carousel) return;
-
-    industryDrag.current = {
-      active: true,
-      startX: event.clientX,
-      scrollLeft: carousel.scrollLeft
-    };
-    carousel.classList.add('is-dragging');
-    carousel.setPointerCapture?.(event.pointerId);
-  };
-
-  const handleIndustryPointerMove = (event) => {
-    const carousel = industryCarouselRef.current;
-    if (!carousel || !industryDrag.current.active) return;
-
-    event.preventDefault();
-    const walk = event.clientX - industryDrag.current.startX;
-    carousel.scrollLeft = industryDrag.current.scrollLeft - walk;
-  };
-
-  const stopIndustryDrag = (event) => {
-    const carousel = industryCarouselRef.current;
-    if (!carousel) return;
-
-    industryDrag.current.active = false;
-    carousel.classList.remove('is-dragging');
-    if (carousel.hasPointerCapture?.(event.pointerId)) {
-      carousel.releasePointerCapture(event.pointerId);
-    }
-  };
-
-  const handleIndustryKeyDown = (event) => {
-    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-
-    const carousel = industryCarouselRef.current;
-    if (!carousel) return;
-
-    event.preventDefault();
-    const firstCard = carousel.querySelector('.industry-card');
-    const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 260;
-    carousel.scrollBy({
-      left: event.key === 'ArrowRight' ? cardWidth : -cardWidth,
-      behavior: 'smooth'
-    });
-  };
-
   return (
     <>
       <Seo
@@ -359,57 +142,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      <PremiumDualCardSection onCvClick={handleCvClick} onEmployerClick={handleEmployerClick} />
-
-      <section className="process-section">
-        <div className="shell">
-          <div className="section-topline">
-            <div>
-              <p className="home-eyebrow">Recruitment Process</p>
-              <h2>Structured hiring from requirement to onboarding</h2>
-              <p>Our workflow keeps employers, candidates, and recruiters aligned at each decision point.</p>
-            </div>
-          </div>
-          <div className="process-timeline">
-            {recruitmentProcess.map((step, index) => (
-              <article className="process-step" key={step}>
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <h3>{step}</h3>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="industry-section">
-        <div className="shell">
-          <div className="section-topline">
-            <div>
-              <p className="home-eyebrow">Industry Expertise</p>
-              <h2>Recruitment coverage across key business sectors</h2>
-              <p>HEXORA TALENT supports specialist and volume hiring across high-demand industries.</p>
-            </div>
-          </div>
-          <div
-            className="industry-grid"
-            ref={industryCarouselRef}
-            role="region"
-            aria-label="Industry expertise carousel"
-            tabIndex={0}
-            onKeyDown={handleIndustryKeyDown}
-            onPointerDown={handleIndustryPointerDown}
-            onPointerMove={handleIndustryPointerMove}
-            onPointerUp={stopIndustryDrag}
-            onPointerCancel={stopIndustryDrag}
-            onPointerLeave={stopIndustryDrag}
-          >
-            {industries.map((industry) => (
-              <span className="industry-card" key={industry} tabIndex={0}><CheckCircle2 size={17} /> {industry}</span>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section className="corporate-section" id="divisions-section">
         <div className="shell corporate-grid">
           <div>
@@ -451,7 +183,7 @@ export default function HomePage() {
               <div className="rating-line" aria-label="Five star rating">
                 {Array.from({ length: 5 }).map((_, index) => <Star key={index} size={16} fill="currentColor" />)}
               </div>
-              <p>&quot;{testimonial.quote}&quot;</p>
+              <p>"{testimonial.quote}"</p>
               <strong>{testimonial.name}</strong>
             </article>
           ))}

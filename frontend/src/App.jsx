@@ -25,6 +25,11 @@ const ResetPasswordPage = lazy(() => import('./pages/public/ResetPasswordPage'))
 const BlogListPage = lazy(() => import('./pages/public/BlogListPage'));
 const BlogDetailsPage = lazy(() => import('./pages/public/BlogDetailsPage'));
 const ContactPage = lazy(() => import('./pages/public/ContactPage'));
+const TalentPage = lazy(() => import('./pages/public/TalentPage'));
+const HrConsultingPage = lazy(() => import('./pages/public/HrConsultingPage'));
+const GlobalTradePage = lazy(() => import('./pages/public/GlobalTradePage'));
+const FoodsPage = lazy(() => import('./pages/public/FoodsPage'));
+const BusinessSolutionsPage = lazy(() => import('./pages/public/BusinessSolutionsPage'));
 const CandidateDashboard = lazy(() => import('./pages/dashboard/CandidateDashboard'));
 const CandidateProfilePage = lazy(() => import('./pages/dashboard/CandidateProfilePage'));
 const CandidateResumePage = lazy(() => import('./pages/dashboard/CandidateResumePage'));
@@ -86,6 +91,11 @@ export default function App() {
           <Route path="blog" element={<BlogListPage />} />
           <Route path="blog/:slug" element={<BlogDetailsPage />} />
           <Route path="contact" element={<ContactPage />} />
+          <Route path="companies/talent" element={<TalentPage />} />
+          <Route path="companies/hr-consulting" element={<HrConsultingPage />} />
+          <Route path="companies/global-trade" element={<GlobalTradePage />} />
+          <Route path="companies/foods" element={<FoodsPage />} />
+          <Route path="companies/business-solutions" element={<BusinessSolutionsPage />} />
         </Route>
 
         <Route element={<ProtectedRoute />}>
