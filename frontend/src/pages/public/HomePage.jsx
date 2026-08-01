@@ -34,24 +34,24 @@ const media = {
 
 const talentFeatures = [
   {
-    title: 'End-to-end talent acquisition',
-    text: 'From role intake to onboarding, HEXORA TALENT manages a clear and accountable recruitment process.',
-    icon: ClipboardCheck
+    title: 'Professional Expertise',
+    text: 'Our team brings industry knowledge and practical experience across multiple sectors.',
+    icon: BadgeCheck
   },
   {
-    title: 'Fast, practical shortlisting',
-    text: 'We reduce hiring noise by matching skills, salary expectations, availability, and culture fit.',
-    icon: SearchCheck
+    title: 'Trusted Partnerships',
+    text: 'We focus on building long-term relationships based on transparency and trust.',
+    icon: Users
   },
   {
-    title: 'Workforce solutions for growth',
-    text: 'Permanent recruitment, contract staffing, project hiring, and role-based workforce planning.',
-    icon: TrendingUp
+    title: 'Customized Solutions',
+    text: 'Every business is unique. We tailor our solutions to meet your specific requirements.',
+    icon: Sparkles
   },
   {
-    title: 'Verified employer and candidate support',
-    text: 'A structured experience for job seekers and companies with responsive communication at every step.',
-    icon: ShieldCheck
+    title: 'Global Perspective',
+    text: 'We help organizations explore opportunities beyond borders through our extensive network.',
+    icon: Globe2
   }
 ];
 
@@ -101,7 +101,7 @@ export default function HomePage() {
       <section className="why-section">
         <div className="shell why-grid">
           <div>
-            <p className="home-eyebrow">Why Choose HEXORA GLOBAL GROUP</p>
+            <p className="home-eyebrow">WHY CHOOSE HEXORA</p>
             <h2>Building success across diversified business ecosystems</h2>
             <p className="section-copy">
               HEXORA GLOBAL GROUP delivers value through strategic business divisions, each focused on

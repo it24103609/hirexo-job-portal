@@ -1,4 +1,4 @@
-import { TrendingUp } from 'lucide-react';
+import { BarChart3, Lightbulb, Target, TrendingUp } from 'lucide-react';
 import DivisionPage from './DivisionPage';
 
 const config = {
@@ -10,10 +10,33 @@ const config = {
   spanTitle: 'BUSINESS SOLUTIONS',
   tagline: 'Consulting & Business Advisory',
   icon: TrendingUp,
-  accentClass: 'division-hero-business',
-  hexoraClass: 'hexora-division-business',
   desc: 'Strategic solutions for sustainable business growth.',
   text: 'We assist startups, SMEs, and established organizations in overcoming challenges and achieving their business objectives.',
+  heroImage: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1920&q=85',
+  heroImageAlt: 'Business strategy and consulting',
+  ctaImage: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1920&q=85',
+  stats: [
+    { value: '150+', label: 'Projects Delivered' },
+    { value: '85%', label: 'Client Growth Rate' },
+    { value: '24/7', label: 'Advisory Support' }
+  ],
+  highlights: [
+    {
+      icon: Target,
+      title: 'Strategy Blueprint',
+      text: 'Custom business strategies aligned with your goals, market position, and growth ambitions.'
+    },
+    {
+      icon: BarChart3,
+      title: 'Process Optimization',
+      text: 'Streamline operations, reduce costs, and improve efficiency with data-driven improvements.'
+    },
+    {
+      icon: Lightbulb,
+      title: 'Market Research',
+      text: 'Deep market insights and competitive analysis to guide informed business decisions.'
+    }
+  ],
   servicesHeading: 'Services',
   services: [
     'Business Consulting',

@@ -1,4 +1,4 @@
-import { Globe2 } from 'lucide-react';
+import { Globe2, ShieldCheck, Ship } from 'lucide-react';
 import DivisionPage from './DivisionPage';
 
 const config = {
@@ -10,10 +10,33 @@ const config = {
   spanTitle: 'GLOBAL TRADE',
   tagline: 'Import, Export & Trading Solutions',
   icon: Globe2,
-  accentClass: 'division-hero-trade',
-  hexoraClass: 'hexora-division-trade',
   desc: 'Connecting businesses to global markets.',
   text: 'HEXORA GLOBAL TRADE facilitates international trade partnerships and sourcing solutions, helping businesses expand their reach and access quality products worldwide.',
+  heroImage: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1920&q=85',
+  heroImageAlt: 'Global trade and logistics',
+  ctaImage: 'https://images.unsplash.com/photo-1494412574643-ff11b0a5c1ea?auto=format&fit=crop&w=1920&q=85',
+  stats: [
+    { value: '50+', label: 'Global Markets' },
+    { value: '200+', label: 'Verified Suppliers' },
+    { value: '99%', label: 'On-Time Delivery' }
+  ],
+  highlights: [
+    {
+      icon: Globe2,
+      title: 'Global Sourcing Network',
+      text: 'Access verified suppliers and buyers across continents with our established trade partnerships.'
+    },
+    {
+      icon: ShieldCheck,
+      title: 'Trade Compliance',
+      text: 'Navigate customs, documentation, and regulatory requirements with expert guidance at every step.'
+    },
+    {
+      icon: Ship,
+      title: 'End-to-End Logistics',
+      text: 'From supplier identification to delivery — seamless import, export, and procurement coordination.'
+    }
+  ],
   servicesHeading: 'Services',
   services: [
     'Import & Export Services',

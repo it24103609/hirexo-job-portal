@@ -1,4 +1,4 @@
-import { Users } from 'lucide-react';
+import { BookOpen, ClipboardList, Users, Wallet } from 'lucide-react';
 import DivisionPage from './DivisionPage';
 
 const config = {
@@ -10,10 +10,33 @@ const config = {
   spanTitle: 'HR CONSULTING',
   tagline: 'HR & Payroll Solutions',
   icon: Users,
-  accentClass: 'division-hero-hr',
-  hexoraClass: 'hexora-division-hr',
   desc: 'Helping organizations build high-performing workplaces.',
   text: 'We provide comprehensive HR consulting services designed to streamline operations, improve employee engagement, and ensure compliance.',
+  heroImage: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1920&q=85',
+  heroImageAlt: 'HR consulting and team collaboration',
+  ctaImage: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1920&q=85',
+  stats: [
+    { value: '500+', label: 'Clients Served' },
+    { value: '10K+', label: 'Payrolls Managed' },
+    { value: '100%', label: 'Compliance Rate' }
+  ],
+  highlights: [
+    {
+      icon: Wallet,
+      title: 'Payroll Automation',
+      text: 'Accurate, timely payroll processing with full statutory compliance and reporting.'
+    },
+    {
+      icon: BookOpen,
+      title: 'Policy Framework',
+      text: 'Employee handbooks, HR policies, and governance structures tailored to your organization.'
+    },
+    {
+      icon: ClipboardList,
+      title: 'Workforce Development',
+      text: 'Performance management, training programs, and organizational development support.'
+    }
+  ],
   servicesHeading: 'Services',
   services: [
     'HR Strategy Development',
