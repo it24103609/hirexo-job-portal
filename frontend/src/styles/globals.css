@@ -1324,6 +1324,11 @@ main { min-height: 60vh; }
   box-shadow: 0 18px 32px rgba(21, 153, 71, 0.4);
 }
 
+.floating-whatsapp-icon {
+  color: #ffffff;
+  display: block;
+}
+
 .floating-whatsapp-badge {
   position: absolute;
   top: -2px;
