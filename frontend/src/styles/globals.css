@@ -168,7 +168,7 @@ main { min-height: 60vh; }
 }
 
 .nav-links a:hover {
-  background: rgba(224, 136, 4, 0.08);
+  background: rgba(246, 247, 246, 0.821);
   color: var(--primary-dark);
 }
 

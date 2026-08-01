@@ -45,12 +45,8 @@
   }
 }
 @media (min-width: 769px) {
-  .nav-links {
-    gap: 0.4rem; /* 1.5rem இருந்தா இதை 0.8rem அல்லது 0.5rem ஆக்குங்க */
-  }
-  .nav-dropdown-trigger {
-  padding: 0.3rem 0.4rem;
-}
+  
+   
 .nav-dropdown-menu a {
      
     font-size: 0.80rem;
