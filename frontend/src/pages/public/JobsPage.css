@@ -3,9 +3,9 @@
   overflow: hidden;
   padding: 8.2rem 0 4.2rem;
   background:
-    radial-gradient(circle at 0% 24%, rgba(45, 190, 117, 0.22), transparent 32%),
-    radial-gradient(circle at 100% 0%, rgba(113, 213, 181, 0.24), transparent 36%),
-    linear-gradient(180deg, #eff8f4 0%, #ffffff 100%);
+    radial-gradient(circle at 4% 30%, rgba(45, 190, 117, 0.16), transparent 34%),
+    radial-gradient(circle at 100% 4%, rgba(113, 213, 181, 0.18), transparent 38%),
+    linear-gradient(180deg, #f3fbf8 0%, #ffffff 72%);
 }
 
 .jobs-hero-shell::before {
@@ -14,8 +14,8 @@
   inset: 0;
   opacity: 0.28;
   background:
-    linear-gradient(115deg, transparent 0 48%, rgba(26, 138, 86, 0.14) 49% 50%, transparent 51%),
-    radial-gradient(circle at 18% 60%, transparent 0 95px, rgba(26, 138, 86, 0.22) 96px 97px, transparent 98px);
+    linear-gradient(115deg, transparent 0 48%, rgba(26, 138, 86, 0.09) 49% 50%, transparent 51%),
+    radial-gradient(circle at 18% 58%, transparent 0 102px, rgba(26, 138, 86, 0.16) 103px 104px, transparent 105px);
 }
 
 .jobs-hero-ambient {
@@ -60,6 +60,15 @@
   pointer-events: none;
 }
 
+.jobs-hero-visual-left {
+  right: auto;
+  left: -8.2rem;
+  top: -0.9rem;
+  width: 420px;
+  height: 286px;
+  opacity: 0.86;
+}
+
 .jobs-hero-visual > img {
   width: 100%;
   height: 100%;
@@ -67,6 +76,12 @@
   border-radius: 34px;
   mask-image: linear-gradient(90deg, transparent 0%, #000 35%);
   box-shadow: 0 30px 70px rgba(20, 61, 46, 0.14);
+}
+
+.jobs-hero-visual-left > img {
+  object-position: center 48%;
+  mask-image: linear-gradient(90deg, #000 0%, #000 54%, transparent 100%);
+  box-shadow: 0 32px 78px rgba(6, 78, 59, 0.18), 0 10px 28px rgba(16, 185, 129, 0.12);
 }
 
 .jobs-eyebrow {
@@ -264,6 +279,12 @@
     right: -12rem;
     opacity: 0.45;
   }
+
+  .jobs-hero-visual-left {
+    right: auto;
+    left: -13rem;
+    top: -0.6rem;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -293,7 +314,8 @@
     padding: 7.4rem 0 3rem;
   }
 
-  .jobs-hero-visual {
+  .jobs-hero-visual,
+  .jobs-hero-visual-left {
     display: none;
   }
 
