@@ -7,6 +7,7 @@ import Loader from '../../components/ui/Loader';
 import EmptyState from '../../components/ui/EmptyState';
 import Pagination from '../../components/ui/Pagination';
 import { jobsApi } from '../../services/jobs.api';
+import heroWorker from '../../assets/home/woker.png';
 import './JobsPage.css';
 
 const defaultFilters = { keyword: '', category: '', location: '', jobType: '' };
@@ -108,7 +109,7 @@ export default function JobsPage() {
           <div className="jobs-hero-content">
             <div className="jobs-hero-visual" aria-hidden="true">
               <img
-                src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=920&q=85"
+                src={heroWorker}
                 alt=""
               />
             </div>
