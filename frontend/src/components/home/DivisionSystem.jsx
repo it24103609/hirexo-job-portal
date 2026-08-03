@@ -5,6 +5,17 @@ import './DivisionSystem.css';
 const publicPath = '/assets/divisions';
 
 const divisions = [
+  
+   {
+    id: 'talent',
+    eyebrow: 'HEXORA',
+    title: 'TALENT',
+    img: `${publicPath}/talent.png`,
+    fallback: 'https://images.unsplash.com/photo-1542223616-22d8b5c3b8d7?auto=format&fit=crop&w=1200&q=80',
+    desc: 'Primary recruitment and workforce solutions division connecting employers with qualified professionals through staffing, talent acquisition, and candidate placement support.',
+    cta: { text: 'Explore', to: '/jobs' }
+  },
+  
   {
     id: 'trade',
     eyebrow: 'HEXORA',
@@ -32,15 +43,7 @@ const divisions = [
     desc: 'Business support services that help companies improve operations, communication, and commercial execution.',
     badge: 'Coming Soon'
   },
-  {
-    id: 'talent',
-    eyebrow: 'HEXORA',
-    title: 'TALENT',
-    img: `${publicPath}/talent.png`,
-    fallback: 'https://images.unsplash.com/photo-1542223616-22d8b5c3b8d7?auto=format&fit=crop&w=1200&q=80',
-    desc: 'Primary recruitment and workforce solutions division connecting employers with qualified professionals through staffing, talent acquisition, and candidate placement support.',
-    cta: { text: 'Explore', to: '/jobs' }
-  },
+  
   {
     id: 'hr',
     eyebrow: 'HEXORA',
