@@ -89,12 +89,6 @@ export default function Footer() {
             <a className="footer-cta" href="https://wa.me/94773191832" target="_blank" rel="noreferrer">
               <MessageCircle size={16} /> WhatsApp us <ArrowUpRight size={15} />
             </a>
-
-            <img
-              className="footer-team-image"
-              src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=700&q=85"
-              alt=""
-            />
           </div>
         </div>
 

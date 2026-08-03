@@ -612,8 +612,10 @@
   }
 
   .footer-cta {
+    width: 100%;
+    justify-content: center;
     font-size: 0.84rem;
-    padding: 0.5rem 0.85rem;
+    padding: 0.6rem 0.95rem;
   }
 
   .footer-links a {
@@ -623,10 +625,6 @@
   .social-links a {
     width: 36px;
     height: 36px;
-  }
-
-  .footer-team-image {
-    height: 96px;
   }
 
   .footer-bottom {

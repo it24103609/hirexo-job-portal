@@ -15,7 +15,7 @@ export default function PublicLayout() {
     '/employer/login',
     '/admin/login'
   ];
-  const showTopOffset = offsetPages.includes(pathname) || pathname.startsWith('/blog');
+  const showTopOffset = offsetPages.includes(pathname) || pathname.startsWith('/blog') || pathname.startsWith('/jobs');
 
   return (
     <>
