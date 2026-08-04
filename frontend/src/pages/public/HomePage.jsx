@@ -58,6 +58,37 @@ const talentFeatures = [
 
 const clients = ['IT Startups', 'Finance Teams', 'Construction Firms', 'Manufacturers', 'Retail Brands', 'Service Providers'];
 
+const successStories = [
+  {
+    title: 'Building High-Performance Teams',
+    description: 'We helped a fast-growing technology company hire 50+ skilled professionals, enabling rapid business growth with quality talent.',
+    icon: Users,
+    metric: '50+',
+    label: 'skilled hires'
+  },
+  {
+    title: 'Connecting Global Talent',
+    description: 'We connect skilled professionals with international opportunities, helping businesses build stronger global teams.',
+    icon: Globe2,
+    metric: 'Global',
+    label: 'talent reach'
+  },
+  {
+    title: 'Strategic HR Partnership',
+    description: 'Our HR and recruitment solutions streamline hiring, improve efficiency, and strengthen workforce quality.',
+    icon: ShieldCheck,
+    metric: 'HR',
+    label: 'consulting'
+  },
+  {
+    title: 'Empowering Business Growth',
+    description: 'We support organizations with tailored talent solutions that drive sustainable growth and long-term success.',
+    icon: TrendingUp,
+    metric: 'Growth',
+    label: 'focused'
+  }
+];
+
 const testimonials = [
   {
     quote: siteContent.testimonial,
@@ -177,6 +208,43 @@ export default function HomePage() {
 
           <div className="client-strip">
             {clients.map((client) => <span key={client}>{client}</span>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="success-stories-section" aria-labelledby="success-stories-title">
+        <div className="success-ambient success-ambient-left" aria-hidden="true" />
+        <div className="success-ambient success-ambient-right" aria-hidden="true" />
+        <div className="shell success-stories-shell">
+          <div className="success-stories-header">
+            <p className="home-eyebrow">Proven Outcomes</p>
+            <h2 id="success-stories-title">Our Success Stories</h2>
+            <p>Delivering exceptional results through talent, innovation, and trusted partnerships.</p>
+          </div>
+
+          <div className="success-stories-grid">
+            {successStories.map(({ title, description, icon: Icon, metric, label }) => (
+              <article className="success-story-card" key={title}>
+                <div className="success-card-visual" aria-hidden="true">
+                  <div className="success-visual-orbit">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <div className="success-visual-icon">
+                    <Icon size={34} strokeWidth={1.8} />
+                  </div>
+                  <div className="success-visual-metric">
+                    <strong>{metric}</strong>
+                    <span>{label}</span>
+                  </div>
+                </div>
+                <div className="success-card-copy">
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
