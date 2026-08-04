@@ -23,6 +23,7 @@ import Seo from '../../components/ui/Seo';
 import Button from '../../components/ui/Button';
 import { siteContent } from '../../data/siteContent';
 import DivisionSystem from '../../components/home/DivisionSystem';
+import corporateTeamImage from '../../assets/home/T22.png';
 import './HomePage.css';
 
 const media = {
@@ -168,6 +169,10 @@ export default function HomePage() {
                 <p>To deliver exceptional value through our specialized divisions, connecting talent with opportunity, businesses with solutions, and markets with products.</p>
               </div>
             </div>
+          </div>
+
+          <div className="corporate-visual" aria-hidden="true">
+            <img src={corporateTeamImage} alt="" />
           </div>
 
           <div className="client-strip">
