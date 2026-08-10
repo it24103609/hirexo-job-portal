@@ -17,15 +17,15 @@ export default function ContactPage() {
   const whatsappUrl = `https://wa.me/${siteContent.contact.whatsapp}`;
 
   const supportItems = [
-    { icon: Zap, label: 'Quick Response', desc: 'Typically reply within 24 hours' },
-    { icon: Headphones, label: 'Expert Support', desc: 'Dedicated team for hiring needs' },
-    { icon: Users, label: 'Candidate Help', desc: 'Full support throughout your journey' },
+    { icon: Zap, label: 'Group Response', desc: 'We aim to respond within 24 hours' },
+    { icon: Headphones, label: 'Business Support', desc: 'Dedicated team for partnership and inquiry needs' },
+    { icon: Users, label: 'Division Guidance', desc: 'Help finding the right HEXORA business division' },
     { icon: MessageCircle, label: 'WhatsApp Available', desc: 'Chat with us anytime' }
   ];
 
   return (
     <div>
-      <Seo title="Contact HEXORA GLOBAL GROUP" description="Contact HEXORA GLOBAL GROUP (PVT) LTD for Talent Acquisition, HR Consulting, Global Trade, Food Products, and Business Consulting inquiries." />
+      <Seo title="Contact HEXORA GLOBAL GROUP" description="Contact HEXORA GLOBAL GROUP (PVT) LTD for questions about talent, HR consulting, global trade, foods, and business solutions." />
       
       {/* Hero Section */}
       <section className="contact-hero-shell">
@@ -35,10 +35,12 @@ export default function ContactPage() {
         <div className="shell">
           <div className="contact-hero-content">
             <span className="contact-badge">HEXORA GLOBAL GROUP (PVT) LTD</span>
-            <h1>Your Trusted Partner for Growth & Success</h1>
+            <h1>Let's start the right conversation</h1>
             <p className="contact-hero-subtitle">
-              Empowering Businesses. Connecting Talent. Creating Opportunities.<br />
-              Get in touch with us for Talent Acquisition, HR Consulting, Global Trade, Food Products, and Business Consulting.
+              HEXORA GLOBAL GROUP is a diversified Sri Lankan business group building and operating businesses
+              across talent, human resources, trade, consumer products, and business solutions.
+              <br />
+              Reach out for partnership inquiries, division-specific questions, or general group information.
             </p>
           </div>
         </div>
@@ -51,10 +53,10 @@ export default function ContactPage() {
             {/* Left Column - Contact Info */}
             <aside className="contact-info-panel">
               <div className="contact-info-intro">
-                <h2>Reach out to us</h2>
+                <h2>Reach out to HEXORA</h2>
                 <p>
-                  Have questions? We'd love to hear from you. Send us a message and our team will 
-                  respond as quickly as possible.
+                  Have a question about one of our divisions, a partnership opportunity, or a general group inquiry?
+                  Send us a message and our team will respond as quickly as possible.
                 </p>
               </div>
 
@@ -86,6 +88,15 @@ export default function ContactPage() {
                   </div>
                 </a>
 
+                {/* Address */}
+                <div className="contact-info-card">
+                  <span className="contact-info-icon"><MapPin size={22} /></span>
+                  <div className="contact-info-content">
+                    <span className="contact-info-label">Address</span>
+                    <span className="contact-info-value">{siteContent.contact.address}</span>
+                  </div>
+                </div>
+
                 {/* WhatsApp */}
                 <a href={whatsappUrl} target="_blank" rel="noreferrer" className="contact-info-card contact-info-card-interactive">
                   <span className="contact-info-icon"><MessageCircle size={22} /></span>
@@ -109,14 +120,14 @@ export default function ContactPage() {
             {/* Right Column - Contact Form */}
             <div className="contact-form-panel">
               <div className="contact-form-header">
-                <h2>Send us a message</h2>
-                <p>Fill out the form below and we'll get back to you shortly.</p>
+                <h2>Send a group inquiry</h2>
+                <p>Fill out the form below and we will get back to you shortly.</p>
               </div>
 
               <form className="contact-form" onSubmit={handleSubmit(async (values) => {
                 try {
                   await contactApi.submit(values);
-                  toast.success('Inquiry sent successfully! We\'ll be in touch soon.');
+                  toast.success('Inquiry sent successfully. We will be in touch soon.');
                   reset();
                 } catch (error) {
                   toast.error(error.message || 'Failed to send inquiry');
@@ -164,6 +175,7 @@ export default function ContactPage() {
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>
               </form>
+              <p className="contact-form-note">For division-specific questions, mention the business unit in your message.</p>
             </div>
           </div>
         </div>

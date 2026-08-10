@@ -7,18 +7,17 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const publicLinks = [
   { to: '/', label: 'Home' },
-  { to: '/jobs', label: 'Find Jobs' },
-  { to: '/blog', label: 'Blog' },
-  { to: '/about', label: 'About' },
+  { to: '/about', label: 'About Hexora Group' },
+  { to: '/jobs', label: 'Careers ' },
   { to: '/contact', label: 'Contact' }
 ];
 
 const companiesSubLinks = [
-  { to: '/companies/talent', label: 'TALENT' },
-  { to: '/companies/hr-consulting', label: 'HR CONSULTING' },
-  { to: '/companies/global-trade', label: 'GLOBAL TRADE' },
-  { to: '/companies/foods', label: 'FOODS' },
-  { to: '/companies/business-solutions', label: 'BUSINESS SOLUTIONS' }
+  { to: '/companies/talent', label: 'HEXORA TALENT' },
+  { to: '/companies/hr-consulting', label: 'HEXORA HR CONSULTING' },
+  { to: '/companies/global-trade', label: 'HEXORA GLOBAL TRADE' },
+  { to: '/companies/foods', label: 'HEXORA FOODS' },
+  { to: '/companies/business-solutions', label: 'HEXORA BUSINESS SOLUTIONS' }
 ];
 
 export default function Navbar() {
@@ -51,16 +50,24 @@ export default function Navbar() {
               </NavLink>
             ))}
 
-            {/* Companies dropdown - centered between Find Jobs and Blog */}
-            <div className={`nav-dropdown ${companiesOpen ? 'is-open' : ''}`}>
+            {/* Business divisions dropdown */}
+            <div className={`nav-dropdown nav-dropdown--split ${companiesOpen ? 'is-open' : ''}`}>
+              <NavLink
+                to="/services"
+                className="nav-dropdown-trigger nav-dropdown-trigger-link"
+                onClick={() => { setOpen(false); setCompaniesOpen(false); }}
+              >
+                Our Businesses
+              </NavLink>
               <button
                 type="button"
-                className="nav-dropdown-trigger"
+                className="nav-dropdown-toggle"
                 onClick={() => setCompaniesOpen((value) => !value)}
                 aria-expanded={companiesOpen}
                 aria-haspopup="true"
+                aria-label="Toggle business divisions menu"
               >
-                Companies <ChevronDown size={15} className="nav-dropdown-chevron" />
+                <ChevronDown size={15} className="nav-dropdown-chevron" />
               </button>
               <div className="nav-dropdown-menu">
                 {companiesSubLinks.map((sub) => (

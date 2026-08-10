@@ -78,7 +78,7 @@ const Carousel = ({ cards }) => {
                 </Button>
               ) : (
                 <Button size="sm" variant="secondary" className="division-explore-btn">
-                  Coming Soon
+                  LAUNCHING SOON
                 </Button>
               )}
             </div>

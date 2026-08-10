@@ -3,11 +3,9 @@ import {
   ArrowUpRight,
   BriefcaseBusiness,
   Facebook,
-  FileSearch,
   Instagram,
   Linkedin,
   Mail,
-  MapPin,
   MessageCircle,
   Phone,
   Twitter,
@@ -18,6 +16,7 @@ import {
   Building2
 } from 'lucide-react';
 import BrandIdentity from './BrandIdentity';
+import { siteContent } from '../../data/siteContent';
 
 export default function Footer() {
   return (
@@ -29,20 +28,20 @@ export default function Footer() {
               <BrandIdentity subtitle="GLOBAL GROUP (PVT) LTD" compact />
             </div>
             <p className="footer-summary">
-              HEXORA GLOBAL GROUP (PVT) LTD is a diversified business group providing innovative solutions in 
-              Talent Acquisition, HR Consulting, Global Trade, Food Products, and Business Consulting.
-            </p>
-            <p className="footer-slogan">
-              Empowering Businesses. Connecting Talent. Creating Opportunities.
+              HEXORA GLOBAL GROUP (PVT) LTD is a diversified Sri Lankan business group operating across talent,
+              human resources, trade, consumer products, and business solutions.
             </p>
             <div className="footer-contact-list">
-              <span><Phone size={16} /> +94 77 319 1832</span>
-              <span><Mail size={16} /> hrm4921@gmail.com</span>
+              <span><Phone size={16} /> {siteContent.contact.phonePrimary}</span>
+              <span><Mail size={16} /> {siteContent.contact.email}</span>
               <span><Globe2 size={16} /> www.hexoraglobal.com</span>
             </div>
             <div className="footer-hours">
               <Clock size={13} /> Monday - Friday | 9:00 AM - 6:00 PM
             </div>
+            <p className="footer-slogan">
+              One Group. Multiple Businesses. Global Opportunities.
+            </p>
           </div>
 
           <div className="footer-column footer-middle">
@@ -50,8 +49,8 @@ export default function Footer() {
               <h3>Quick Links</h3>
               <div className="footer-links">
                 <Link to="/"><BriefcaseBusiness size={16} /> Home</Link>
-                <Link to="/about"><FileSearch size={16} /> About Us</Link>
-                <Link to="/services"><BriefcaseBusiness size={16} /> Services</Link>
+                <Link to="/about"><BriefcaseBusiness size={16} /> About Hexora Group</Link>
+                <Link to="/#divisions-section"><BriefcaseBusiness size={16} /> Our Businesses</Link>
                 <Link to="/jobs"><BriefcaseBusiness size={16} /> Careers</Link>
                 <Link to="/contact"><MessageCircle size={16} /> Contact Us</Link>
               </div>
@@ -60,11 +59,11 @@ export default function Footer() {
             <div className="footer-group">
               <h3>Our Divisions</h3>
               <div className="footer-links">
-                <Link to="/jobs"><Users size={16} /> HEXORA TALENT</Link>
-                <Link to="#"><Users size={16} /> HEXORA HR CONSULTING</Link>
-                <Link to="#"><Globe2 size={16} /> HEXORA GLOBAL TRADE</Link>
-                <Link to="#"><Utensils size={16} /> HEXORA FOODS</Link>
-                <Link to="#"><Building2 size={16} /> HEXORA BUSINESS SOLUTIONS</Link>
+                <Link to="/companies/talent"><Users size={16} /> HEXORA TALENT</Link>
+                <Link to="/companies/hr-consulting"><Users size={16} /> HEXORA HR CONSULTING</Link>
+                <Link to="/companies/global-trade"><Globe2 size={16} /> HEXORA GLOBAL TRADE</Link>
+                <Link to="/companies/foods"><Utensils size={16} /> HEXORA FOODS</Link>
+                <Link to="/companies/business-solutions"><Building2 size={16} /> HEXORA BUSINESS SOLUTIONS</Link>
               </div>
             </div>
           </div>
@@ -79,10 +78,7 @@ export default function Footer() {
                 <a href="https://facebook.com" aria-label="Facebook" target="_blank" rel="noreferrer"><Facebook size={18} /></a>
               </div>
               <p className="footer-note">
-                Recruitment made with clarity, speed, and trust.
-              </p>
-              <p className="footer-note footer-slogan-small">
-                Empowering Businesses. Connecting Talent. Creating Opportunities.
+                Building connected businesses with clarity, trust, and long-term value.
               </p>
             </div>
 
@@ -96,7 +92,7 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <span className="footer-copyright">&copy; 2026 HEXORA GLOBAL GROUP (PVT) LTD. All Rights Reserved.</span>
-          <span className="footer-bottom-slogan">Empowering Businesses. Connecting Talent. Creating Opportunities.</span>
+          <span className="footer-bottom-slogan">HEXORA GLOBAL GROUP is a diversified Sri Lankan business group building and operating businesses across talent, human resources, trade, consumer products, and business solutions.</span>
         </div>
       </div>
     </footer>

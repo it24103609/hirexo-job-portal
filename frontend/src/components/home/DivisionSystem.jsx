@@ -23,7 +23,7 @@ const divisions = [
     img: `${publicPath}/global trade.png`,
     fallback: 'https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=1200&q=80',
     desc: 'International sourcing, procurement, import/export coordination, and trade partnership development.',
-    badge: 'Coming Soon'
+    badge: 'LAUNCHING SOON'
   },
   {
     id: 'foods',
@@ -32,7 +32,7 @@ const divisions = [
     img: `${publicPath}/foods.png`,
     fallback: 'https://images.unsplash.com/photo-1502741126161-b048400d6f00?auto=format&fit=crop&w=1200&q=80',
     desc: 'Food-related business initiatives focused on product opportunities, distribution partnerships, and market growth.',
-    badge: 'Coming Soon'
+    badge: 'LAUNCHING SOON'
   },
   {
     id: 'solutions',
@@ -41,7 +41,7 @@ const divisions = [
     img: `${publicPath}/business solutions.png`,
     fallback: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1200&q=80',
     desc: 'Business support services that help companies improve operations, communication, and commercial execution.',
-    badge: 'Coming Soon'
+    badge: 'LAUNCHING SOON'
   },
   
   {
@@ -51,7 +51,7 @@ const divisions = [
     img: `${publicPath}/hr consulting.png`,
     fallback: 'https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80',
     desc: 'Strategic HR advisory, policy guidance, talent planning, and people operations support for growing organizations.',
-    badge: 'Coming Soon'
+    badge: 'LAUNCHING SOON'
   }
 ];
 

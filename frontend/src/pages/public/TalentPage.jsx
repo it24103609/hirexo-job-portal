@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle2, Mail, Phone, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, MessageCircle, Sparkles } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../contexts/AuthContext';
 import Seo from '../../components/ui/Seo';
@@ -10,14 +10,13 @@ import servicesHeroVideo from '../../assets/videos/services-hero-bg.mp4';
 import './ServicesPage.css';
 import './DivisionPage.css';
 
-const recruitmentProcess = [
-  'Requirement Analysis',
-  'Candidate Sourcing',
-  'Screening & Shortlisting',
-  'Interviews & Assessments',
-  'Client Selection',
-  'Offer Management',
-  'Onboarding Support'
+const talentJourney = [
+  'Understand the requirement',
+  'Map the role and hiring needs',
+  'Source and review candidates',
+  'Shortlist and coordinate interviews',
+  'Support offer and selection decisions',
+  'Guide onboarding and next steps'
 ];
 
 const industries = [
@@ -43,7 +42,7 @@ export default function TalentPage() {
     if (user && user.role === 'candidate') {
       navigate('/candidate/resume');
     } else {
-      toast.info('Register Candidate');
+      toast.info('Register as a candidate');
       navigate('/candidate/register');
     }
   };
@@ -52,7 +51,7 @@ export default function TalentPage() {
     if (user && user.role === 'employer') {
       navigate('/employer/jobs/new');
     } else {
-      toast.info('Register Employer');
+      toast.info('Register as an employer');
       navigate('/employer/register');
     }
   };
@@ -111,11 +110,10 @@ export default function TalentPage() {
   return (
     <>
       <Seo
-        title="HEXORA TALENT | Recruitment & Staffing Solutions"
-        description="Permanent recruitment, executive search, contract staffing, and talent acquisition solutions. Upload your CV or post your requirement today."
+        title="HEXORA TALENT | Talent & Staffing Division"
+        description="HEXORA TALENT is the talent and staffing division of HEXORA GLOBAL GROUP, supporting employers and candidates with structured hiring solutions."
       />
 
-      {/* Hero - background video */}
       <section className="services-hero-shell">
         <video
           className="services-hero-bg"
@@ -129,28 +127,33 @@ export default function TalentPage() {
 
         <div className="shell services-hero-grid">
           <div className="services-hero-copy">
-            <span className="services-badge"><Sparkles size={15} /> HEXORA TALENT</span>
-            <h1>Empowering Businesses. <span>Connecting Talent.</span> Creating Opportunities.</h1>
-            <p className="division-tagline">Recruitment & Staffing Solutions</p>
+            <span className="services-badge">
+              <Sparkles size={15} /> HEXORA TALENT
+            </span>
+            <h1>Connecting talent with opportunity, under HEXORA GLOBAL GROUP.</h1>
+            <p className="division-tagline">Talent & Staffing Division</p>
             <p className="division-desc">
-              HEXORA TALENT specializes in permanent recruitment, executive search, contract staffing, and
-              talent acquisition solutions across various industries. Connecting exceptional talent with outstanding employers.
+              HEXORA TALENT is the talent and staffing division of HEXORA GLOBAL GROUP. We support employers
+              with structured hiring and help candidates move toward the right next step in their careers.
             </p>
             <div className="services-hero-ctas">
-              <Button onClick={handleCvClick} size="lg">Upload Your CV <ArrowRight size={17} /></Button>
-              <Button onClick={handleEmployerClick} variant="secondary" size="lg">Post Your Requirement <ArrowRight size={17} /></Button>
+              <Button onClick={handleCvClick} size="lg">
+                Upload Your CV <ArrowRight size={17} />
+              </Button>
+              <Button onClick={handleEmployerClick} variant="secondary" size="lg">
+                Hire Through HEXORA <ArrowRight size={17} />
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Overview - YouTube embed */}
       <section className="services-cards-shell" style={{ paddingTop: '2rem' }}>
         <div className="shell">
           <div className="services-section-header">
             <span className="services-section-badge">Overview</span>
             <h2>Watch Our <span>Company Overview</span></h2>
-            <p>Learn more about HEXORA TALENT and our business divisions.</p>
+            <p>Learn more about HEXORA TALENT and the wider HEXORA GLOBAL GROUP.</p>
           </div>
           <div className="services-overview-block">
             <div className="services-video-card services-overview-video" aria-label="HEXORA company overview video">
@@ -163,36 +166,36 @@ export default function TalentPage() {
             </div>
             <div className="services-overview-copy">
               <span>About Us</span>
-              <h3>A diversified business group delivering excellence</h3>
+              <h3>One group, with one focused talent division</h3>
               <p>
-                HEXORA GLOBAL GROUP (PVT) LTD operates through focused business divisions, providing
-                comprehensive solutions across multiple industries.
+                HEXORA GLOBAL GROUP operates through focused business divisions, and HEXORA TALENT carries the
+                recruitment and staffing responsibility for the group.
               </p>
               <ul>
-                <li><CheckCircle2 size={17} /> Talent Acquisition & Recruitment</li>
-                <li><CheckCircle2 size={17} /> Candidate & Employer Solutions</li>
-                <li><CheckCircle2 size={17} /> HR Consulting, Trade & Foods</li>
+                <li><CheckCircle2 size={17} /> Talent Acquisition and Recruitment</li>
+                <li><CheckCircle2 size={17} /> Candidate and Employer Solutions</li>
+                <li><CheckCircle2 size={17} /> Hiring support for growing businesses</li>
               </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Candidate Registration + Employer Requirement */}
       <PremiumDualCardSection onCvClick={handleCvClick} onEmployerClick={handleEmployerClick} />
 
-      {/* Recruitment Process */}
       <section className="process-section talent-process">
         <div className="shell">
           <div className="section-topline">
             <div>
-              <p className="home-eyebrow">Recruitment Process</p>
-              <h2>Structured hiring from requirement to onboarding</h2>
-              <p>Our workflow keeps employers, candidates, and recruiters aligned at each decision point.</p>
+              <p className="home-eyebrow">Talent Journey</p>
+              <h2>Structured hiring from first brief to final onboarding</h2>
+              <p>
+                Our workflow keeps employers, candidates, and recruiters aligned at every step.
+              </p>
             </div>
           </div>
           <div className="process-timeline">
-            {recruitmentProcess.map((step, index) => (
+            {talentJourney.map((step, index) => (
               <article className="process-step" key={step}>
                 <span>{String(index + 1).padStart(2, '0')}</span>
                 <h3>{step}</h3>
@@ -202,12 +205,11 @@ export default function TalentPage() {
         </div>
       </section>
 
-      {/* Industry Expertise */}
       <section className="industry-section talent-industry">
         <div className="shell">
           <div className="section-topline">
             <div>
-              <p className="home-eyebrow">Industry Expertise</p>
+              <p className="home-eyebrow">Industries We Support</p>
               <h2>Recruitment coverage across key business sectors</h2>
               <p>HEXORA TALENT supports specialist and volume hiring across high-demand industries.</p>
             </div>
@@ -226,22 +228,33 @@ export default function TalentPage() {
             onPointerLeave={stopIndustryDrag}
           >
             {industries.map((industry) => (
-              <span className="industry-card" key={industry} tabIndex={0}><CheckCircle2 size={17} /> {industry}</span>
+              <span className="industry-card" key={industry} tabIndex={0}>
+                <CheckCircle2 size={17} /> {industry}
+              </span>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="division-cta">
-        <div className="shell division-cta-inner">
-          <h2>Get In Touch</h2>
-          <p>Ready to grow your business with HEXORA GLOBAL GROUP?</p>
-          <div className="division-contact-info">
-            <span><Phone size={16} /> +94 77 319 1832</span>
-            <span><Mail size={16} /> hrm4921@gmail.com</span>
+      <section className="process-section talent-process">
+        <div className="shell">
+          <div className="section-topline">
+            <div>
+              <p className="home-eyebrow">Next Step</p>
+              <h2>Looking for talent or looking for work?</h2>
+              <p>
+                HEXORA TALENT can help you move forward with a clear, structured, and professional process.
+              </p>
+            </div>
+            <div className="services-hero-ctas">
+              <Button as={Link} to="/contact" size="lg">
+                Talk to the Group <MessageCircle size={17} />
+              </Button>
+              <Button as={Link} to="/about" variant="secondary" size="lg">
+                About HEXORA Group <ArrowRight size={17} />
+              </Button>
+            </div>
           </div>
-          <Button as={Link} to="/contact" size="lg">Contact Us <ArrowRight size={18} /></Button>
         </div>
       </section>
     </>

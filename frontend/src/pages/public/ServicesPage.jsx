@@ -5,28 +5,143 @@ import {
   Briefcase,
   CheckCircle2,
   Globe2,
-  Mail,
+  Heart,
   MessageCircle,
-  Phone,
-  Star,
-  UploadCloud,
-  Users,
-  Utensils,
-  Search,
+  Sparkles,
   TrendingUp,
-  Sparkles
+  Users,
+  Utensils
 } from 'lucide-react';
 import Seo from '../../components/ui/Seo';
 import Button from '../../components/ui/Button';
 import servicesHeroVideo from '../../assets/videos/services-hero-bg.mp4';
+import groupHeroImage from '../../assets/home/T22.png';
+import talentImage from '../../assets/home/talent.png';
+import hrImage from '../../assets/home/hr consulting.png';
+import tradeImage from '../../assets/home/global trade.png';
+import foodsImage from '../../assets/home/foods.png';
+import businessImage from '../../assets/home/business solutions.png';
 import './ServicesPage.css';
+
+const divisions = [
+  {
+    id: 'talent',
+    title: 'HEXORA TALENT',
+    subtitle: 'Talent & Staffing Division',
+    image: talentImage,
+    icon: Users,
+    route: '/companies/talent',
+    accent: 'accent-talent',
+    description:
+      'Recruitment and staffing solutions that connect employers with the right people, at the right time.',
+    points: [
+      'Permanent recruitment',
+      'Executive search',
+      'Contract staffing',
+      'Talent acquisition support'
+    ],
+    cta: 'Explore Talent'
+  },
+  {
+    id: 'hr',
+    title: 'HEXORA HR CONSULTING',
+    subtitle: 'HR & Payroll Support',
+    image: hrImage,
+    icon: Heart,
+    route: '/companies/hr-consulting',
+    accent: 'accent-hr',
+    description:
+      'HR consulting, payroll support, outsourcing, and compliance services built for modern organizations.',
+    points: [
+      'HR policy support',
+      'Payroll management',
+      'HR outsourcing',
+      'Workforce guidance'
+    ],
+    cta: 'Coming Soon'
+  },
+  {
+    id: 'trade',
+    title: 'HEXORA GLOBAL TRADE',
+    subtitle: 'Import, Export & Sourcing',
+    image: tradeImage,
+    icon: Globe2,
+    route: '/companies/global-trade',
+    accent: 'accent-trade',
+    description:
+      'International trade support for businesses looking to source, supply, and expand into new markets.',
+    points: [
+      'Import and export',
+      'Sourcing support',
+      'Trade facilitation',
+      'Market expansion'
+    ],
+    cta: 'Coming Soon'
+  },
+  {
+    id: 'foods',
+    title: 'HEXORA FOODS',
+    subtitle: 'Consumer Products',
+    image: foodsImage,
+    icon: Utensils,
+    route: '/companies/foods',
+    accent: 'accent-foods',
+    description:
+      'Quality consumer food products developed around consistency, trust, and long-term brand value.',
+    points: [
+      'Food product development',
+      'Quality control',
+      'Brand building',
+      'Consumer market focus'
+    ],
+    cta: 'Coming Soon'
+  },
+  {
+    id: 'business',
+    title: 'HEXORA BUSINESS SOLUTIONS',
+    subtitle: 'Business Advisory',
+    image: businessImage,
+    icon: TrendingUp,
+    route: '/companies/business-solutions',
+    accent: 'accent-business',
+    description:
+      'Business consulting and digital support services that help organizations scale with clarity.',
+    points: [
+      'Business strategy',
+      'Process improvement',
+      'Market research',
+      'Expansion planning'
+    ],
+    cta: 'Coming Soon'
+  }
+];
+
+const benefits = [
+  {
+    icon: BadgeCheck,
+    title: 'One Group Structure',
+    text: 'Each division has a clear role, while the whole group shares standards and direction.'
+  },
+  {
+    icon: Sparkles,
+    title: 'Professional Presentation',
+    text: 'The page is built to feel premium, organized, and easy to understand from the first glance.'
+  },
+  {
+    icon: Briefcase,
+    title: 'Business-Focused',
+    text: 'Visitors can quickly see what each division does and where the group is expanding.'
+  }
+];
 
 export default function ServicesPage() {
   return (
     <>
-      <Seo title="Services | HEXORA GLOBAL GROUP" description="Explore our comprehensive business divisions including Talent Recruitment, HR Consulting, Global Trade, Foods, and Business Solutions." />
+      <Seo
+        title="Our Businesses | HEXORA GLOBAL GROUP"
+        description="Explore the five business divisions of HEXORA GLOBAL GROUP, presented in a green premium layout with clear division visuals."
+      />
 
-      {/* Hero Section - Old Layout with Video */}
       <section className="services-hero-shell">
         <video
           className="services-hero-bg"
@@ -40,33 +155,47 @@ export default function ServicesPage() {
 
         <div className="shell services-hero-grid">
           <div className="services-hero-copy">
-            <span className="services-badge"><Sparkles size={15} /> HEXORA GLOBAL GROUP</span>
-            <h1>Empowering Businesses. <span>Connecting Talent.</span> Creating Opportunities.</h1>
+            <span className="services-badge">
+              <Sparkles size={15} /> HEXORA GLOBAL GROUP
+            </span>
+            <h1>Our Businesses, designed as one connected green ecosystem.</h1>
             <p>
-              HEXORA GLOBAL GROUP (PVT) LTD is a diversified business group providing innovative solutions 
-              in Talent Acquisition, HR Consulting, Global Trade, Food Products, and Business Consulting.
+              HEXORA GLOBAL GROUP brings together talent, HR support, global trade, foods, and business
+              solutions under one premium brand structure.
             </p>
-            <p>
-              We help businesses grow through strategic workforce solutions, operational excellence, and global business partnerships.
-              <br />
-              <strong style={{ color: '#87f0ba' }}>Your Trusted Partner for Growth & Success.</strong>
+            <p className="services-hero-note">
+              Click the name to open the services hub. Use the dropdown to jump into each division.
             </p>
             <div className="services-hero-ctas">
-              <Link to="/contact" className="services-btn services-btn-primary">Contact Us <ArrowRight size={17} /></Link>
-              <Link to="/contact" className="services-btn services-btn-light">Submit Your Requirement <ArrowRight size={17} /></Link>
+              <Button as={Link} to="/contact" size="lg">
+                Partner With Us <MessageCircle size={17} />
+              </Button>
+              <Button as={Link} to="/about" variant="secondary" size="lg">
+                About HEXORA Group <ArrowRight size={17} />
+              </Button>
+            </div>
+          </div>
+
+          <div className="services-hero-visual">
+            <div className="services-hero-visual-card">
+              <img src={groupHeroImage} alt="HEXORA group visual" />
+              
             </div>
           </div>
         </div>
       </section>
 
-      {/* Video Overview - YouTube Embed */}
-      <section className="services-cards-shell" style={{ paddingTop: '2rem' }}>
+      <section className="services-overview-shell">
         <div className="shell">
           <div className="services-section-header">
             <span className="services-section-badge">Overview</span>
-            <h2>Watch Our <span>Company Overview</span></h2>
-            <p>Learn more about HEXORA GLOBAL GROUP and our business divisions.</p>
+            <h2>A single group, with five focused business divisions</h2>
+            <p>
+              Each division has its own identity and capability, while staying connected to the wider HEXORA
+              brand.
+            </p>
           </div>
+
           <div className="services-overview-block">
             <div className="services-video-card services-overview-video" aria-label="HEXORA company overview video">
               <iframe
@@ -78,321 +207,91 @@ export default function ServicesPage() {
             </div>
             <div className="services-overview-copy">
               <span>About Us</span>
-              <h3>A diversified business group delivering excellence</h3>
+              <h3>Built for growth across industries</h3>
               <p>
-                HEXORA GLOBAL GROUP (PVT) LTD operates through focused business divisions, providing 
-                comprehensive solutions across multiple industries.
+                HEXORA GLOBAL GROUP is structured to operate across multiple markets with shared standards,
+                premium presentation, and long-term partnership thinking.
               </p>
               <ul>
-                <li><CheckCircle2 size={17} /> Talent Acquisition & Recruitment</li>
-                <li><CheckCircle2 size={17} /> HR Consulting & Payroll</li>
-                <li><CheckCircle2 size={17} /> Global Trade & Sourcing</li>
+                <li><CheckCircle2 size={17} /> Talent acquisition and staffing</li>
+                <li><CheckCircle2 size={17} /> HR consulting and payroll support</li>
+                <li><CheckCircle2 size={17} /> Trade, foods, and business solutions</li>
               </ul>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Our Business Divisions */}
-      <section className="hexora-divisions-section">
+      <section className="services-benefits-shell">
         <div className="shell">
           <div className="services-section-header">
-            <h2>OUR BUSINESS DIVISIONS</h2>
+            <h2>Why the structure works</h2>
+            <p>Green, clear, and organized around what the group is actually building.</p>
+          </div>
+          <div className="services-benefits-grid">
+            {benefits.map(({ icon: Icon, title, text }) => (
+              <article className="services-benefit-card" key={title}>
+                <span className="services-benefit-icon"><Icon size={22} /></span>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="services-divisions-shell">
+        <div className="shell">
+          <div className="services-section-header">
+            <h2>Our Business Divisions</h2>
+            <p>Each division now gets its own image, identity, and focused message.</p>
           </div>
 
-          {/* HEXORA TALENT */}
-          <div id="talent" className="hexora-division-card hexora-division-talent">
-            <div className="hexora-division-header">
-              <span className="hexora-division-icon"><Briefcase size={32} /></span>
-              <div>
-                <h3>HEXORA TALENT</h3>
-                <p className="hexora-division-tagline">Recruitment & Staffing Solutions</p>
-              </div>
-            </div>
-            <p className="hexora-division-desc">Connecting exceptional talent with outstanding employers.</p>
-            <p className="hexora-division-text">
-              HEXORA TALENT specializes in permanent recruitment, executive search, contract staffing, and talent acquisition solutions across various industries.
-            </p>
-            <div className="hexora-division-grid">
-              <div className="hexora-division-col">
-                <h4>Services</h4>
-                <ul>
-                  <li><CheckCircle2 size={16} /> Permanent Recruitment</li>
-                  <li><CheckCircle2 size={16} /> Executive Search & Headhunting</li>
-                  <li><CheckCircle2 size={16} /> Contract Staffing</li>
-                  <li><CheckCircle2 size={16} /> Bulk Hiring Solutions</li>
-                  <li><CheckCircle2 size={16} /> IT Recruitment</li>
-                  <li><CheckCircle2 size={16} /> Finance & Accounting Recruitment</li>
-                  <li><CheckCircle2 size={16} /> Engineering & Technical Recruitment</li>
-                  <li><CheckCircle2 size={16} /> Sales & Marketing Recruitment</li>
-                  <li><CheckCircle2 size={16} /> Recruitment Process Outsourcing (RPO)</li>
-                </ul>
-              </div>
-              <div className="hexora-division-col">
-                <h4>Why Choose Us</h4>
-                <ul className="hexora-benefits-list">
-                  <li><BadgeCheck size={16} /> Experienced Recruiters</li>
-                  <li><BadgeCheck size={16} /> Fast Turnaround Time</li>
-                  <li><BadgeCheck size={16} /> Extensive Talent Network</li>
-                  <li><BadgeCheck size={16} /> Industry-Specific Expertise</li>
-                  <li><BadgeCheck size={16} /> Quality Candidate Screening</li>
-                </ul>
-                <div className="hexora-division-actions">
-                  <Button as={Link} to="/candidate/register" variant="secondary" size="sm">Submit CV <UploadCloud size={16} /></Button>
-                  <Button as={Link} to="/employer/register" size="sm">Hire Talent <Search size={16} /></Button>
+          <div className="services-divisions-grid">
+            {divisions.map(({ id, title, subtitle, image, icon: Icon, route, accent, description, points, cta }) => (
+              <article className={`division-card ${accent}`} key={id}>
+                <div className="division-card-image">
+                  <img src={image} alt={title} />
+                 
                 </div>
-              </div>
-            </div>
-          </div>
-
-          {/* HEXORA HR CONSULTING */}
-          <div id="hr" className="hexora-division-card hexora-division-hr">
-            <div className="hexora-division-header">
-              <span className="hexora-division-icon"><Users size={32} /></span>
-              <div>
-                <h3>HEXORA HR CONSULTING</h3>
-                <p className="hexora-division-tagline">HR & Payroll Solutions</p>
-              </div>
-            </div>
-            <p className="hexora-division-desc">Helping organizations build high-performing workplaces.</p>
-            <p className="hexora-division-text">
-              We provide comprehensive HR consulting services designed to streamline operations, improve employee engagement, and ensure compliance.
-            </p>
-            <div className="hexora-division-grid">
-              <div className="hexora-division-col">
-                <h4>Services</h4>
-                <ul>
-                  <li><CheckCircle2 size={16} /> HR Strategy Development</li>
-                  <li><CheckCircle2 size={16} /> Payroll Management</li>
-                  <li><CheckCircle2 size={16} /> HR Outsourcing</li>
-                  <li><CheckCircle2 size={16} /> Performance Management Systems</li>
-                  <li><CheckCircle2 size={16} /> Employee Handbook Development</li>
-                  <li><CheckCircle2 size={16} /> HR Policy Formulation</li>
-                  <li><CheckCircle2 size={16} /> Recruitment Support</li>
-                  <li><CheckCircle2 size={16} /> Organizational Development</li>
-                  <li><CheckCircle2 size={16} /> Training & Development</li>
-                </ul>
-              </div>
-              <div className="hexora-division-col">
-                <h4>Benefits</h4>
-                <ul className="hexora-benefits-list">
-                  <li><BadgeCheck size={16} /> Cost Effective HR Solutions</li>
-                  <li><BadgeCheck size={16} /> Compliance Management</li>
-                  <li><BadgeCheck size={16} /> Improved Workforce Productivity</li>
-                  <li><BadgeCheck size={16} /> Professional HR Guidance</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* HEXORA GLOBAL TRADE */}
-          <div id="trade" className="hexora-division-card hexora-division-trade">
-            <div className="hexora-division-header">
-              <span className="hexora-division-icon"><Globe2 size={32} /></span>
-              <div>
-                <h3>HEXORA GLOBAL TRADE</h3>
-                <p className="hexora-division-tagline">Import, Export & Trading Solutions</p>
-              </div>
-            </div>
-            <p className="hexora-division-desc">Connecting businesses to global markets.</p>
-            <p className="hexora-division-text">
-              HEXORA GLOBAL TRADE facilitates international trade partnerships and sourcing solutions, helping businesses expand their reach and access quality products worldwide.
-            </p>
-            <div className="hexora-division-grid">
-              <div className="hexora-division-col">
-                <h4>Services</h4>
-                <ul>
-                  <li><CheckCircle2 size={16} /> Import & Export Services</li>
-                  <li><CheckCircle2 size={16} /> International Sourcing</li>
-                  <li><CheckCircle2 size={16} /> Trade Facilitation</li>
-                  <li><CheckCircle2 size={16} /> Supplier Identification</li>
-                  <li><CheckCircle2 size={16} /> Product Procurement</li>
-                  <li><CheckCircle2 size={16} /> Market Expansion Support</li>
-                  <li><CheckCircle2 size={16} /> Business Matching Services</li>
-                </ul>
-              </div>
-              <div className="hexora-division-col">
-                <h4>Industries</h4>
-                <ul>
-                  <li><BadgeCheck size={16} /> Consumer Goods</li>
-                  <li><BadgeCheck size={16} /> Industrial Products</li>
-                  <li><BadgeCheck size={16} /> Agricultural Products</li>
-                  <li><BadgeCheck size={16} /> FMCG</li>
-                  <li><BadgeCheck size={16} /> Raw Materials</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* HEXORA FOODS */}
-          <div id="foods" className="hexora-division-card hexora-division-foods">
-            <div className="hexora-division-header">
-              <span className="hexora-division-icon"><Utensils size={32} /></span>
-              <div>
-                <h3>HEXORA FOODS</h3>
-                <p className="hexora-division-tagline">Quality Food Products</p>
-              </div>
-            </div>
-            <p className="hexora-division-desc">Delivering trusted and high-quality packaged food products to consumers.</p>
-            <p className="hexora-division-text">
-              HEXORA FOODS is committed to providing nutritious, affordable, and quality food products that meet international standards.
-            </p>
-            <div className="hexora-division-grid">
-              <div className="hexora-division-col">
-                <h4>Product Categories</h4>
-                <ul>
-                  <li><CheckCircle2 size={16} /> Spices & Seasonings</li>
-                  <li><CheckCircle2 size={16} /> Packaged Food Products</li>
-                  <li><CheckCircle2 size={16} /> Dry Foods</li>
-                  <li><CheckCircle2 size={16} /> Food Ingredients</li>
-                  <li><CheckCircle2 size={16} /> Specialty Food Products</li>
-                </ul>
-              </div>
-              <div className="hexora-division-col">
-                <h4>Our Commitment</h4>
-                <p className="hexora-commitment">Quality | Freshness | Trust | Customer Satisfaction</p>
-              </div>
-            </div>
-          </div>
-
-          {/* HEXORA BUSINESS SOLUTIONS */}
-          <div id="business" className="hexora-division-card hexora-division-business">
-            <div className="hexora-division-header">
-              <span className="hexora-division-icon"><TrendingUp size={32} /></span>
-              <div>
-                <h3>HEXORA BUSINESS SOLUTIONS</h3>
-                <p className="hexora-division-tagline">Consulting & Business Advisory</p>
-              </div>
-            </div>
-            <p className="hexora-division-desc">Strategic solutions for sustainable business growth.</p>
-            <p className="hexora-division-text">
-              We assist startups, SMEs, and established organizations in overcoming challenges and achieving their business objectives.
-            </p>
-            <div className="hexora-division-grid">
-              <div className="hexora-division-col">
-                <h4>Services</h4>
-                <ul>
-                  <li><CheckCircle2 size={16} /> Business Consulting</li>
-                  <li><CheckCircle2 size={16} /> Startup Advisory</li>
-                  <li><CheckCircle2 size={16} /> Process Improvement</li>
-                  <li><CheckCircle2 size={16} /> Business Strategy Development</li>
-                  <li><CheckCircle2 size={16} /> Market Research</li>
-                  <li><CheckCircle2 size={16} /> Business Planning</li>
-                  <li><CheckCircle2 size={16} /> Corporate Advisory</li>
-                  <li><CheckCircle2 size={16} /> Growth & Expansion Planning</li>
-                </ul>
-              </div>
-              <div className="hexora-division-col">
-                <h4>Why Work With Us</h4>
-                <ul className="hexora-benefits-list">
-                  <li><BadgeCheck size={16} /> Practical Business Solutions</li>
-                  <li><BadgeCheck size={16} /> Industry Expertise</li>
-                  <li><BadgeCheck size={16} /> Customized Strategies</li>
-                  <li><BadgeCheck size={16} /> Long-Term Partnership Approach</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Industries We Serve */}
-      <section className="hexora-industries-section">
-        <div className="shell">
-          <div className="services-section-header">
-            <h2>INDUSTRIES WE SERVE</h2>
-          </div>
-          <div className="hexora-industries-grid">
-            {[
-              'Information Technology',
-              'Banking & Financial Services',
-              'FinTech',
-              'Healthcare',
-              'Manufacturing',
-              'Engineering',
-              'Construction',
-              'Retail & FMCG',
-              'Logistics & Supply Chain',
-              'Hospitality',
-              'Telecommunications',
-              'Professional Services'
-            ].map((industry) => (
-              <span key={industry} className="hexora-industry-tag">
-                <CheckCircle2 size={16} /> {industry}
-              </span>
+                <div className="division-card-content">
+                  <span className="division-card-kicker">{subtitle}</span>
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+                  <ul className="division-card-points">
+                    {points.map((point) => (
+                      <li key={point}><CheckCircle2 size={16} /> {point}</li>
+                    ))}
+                  </ul>
+                  <div className="division-card-actions">
+                    <Button as={Link} to={route} variant="secondary" size="sm">
+                      {title === 'HEXORA TALENT' ? cta : 'View Division'}
+                    </Button>
+                    <Button as={Link} to="/contact" size="sm">
+                      Contact Group <ArrowRight size={15} />
+                    </Button>
+                  </div>
+                </div>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Careers */}
-      <section className="hexora-careers-section">
-        <div className="shell">
-          <div className="hexora-careers-content">
-            <h2>Looking for Your Next Opportunity?</h2>
-            <p>Explore exciting career opportunities with leading organizations.</p>
-            <p>Submit your CV and let our recruitment specialists connect you with the right opportunity.</p>
-            <Button as={Link} to="/candidate/register" size="lg" className="hexora-careers-btn">Upload CV <UploadCloud size={18} /></Button>
+      <section className="services-final-shell">
+        <div className="shell services-final-content">
+          <h2>Need help choosing the right division?</h2>
+          <p>
+            Tell us what you are looking for and we will point you to the right HEXORA business unit.
+          </p>
+          <div className="services-final-actions">
+            <Button as={Link} to="/contact" size="lg">
+              Talk to HEXORA <MessageCircle size={17} />
+            </Button>
+            <Button as={Link} to="/companies/talent" variant="secondary" size="lg">
+              Start with Talent <ArrowRight size={17} />
+            </Button>
           </div>
-        </div>
-      </section>
-
-      {/* Clients Section */}
-      <section className="hexora-clients-section">
-        <div className="shell">
-          <div className="services-section-header">
-            <h2>Trusted by Growing Businesses</h2>
-            <p>Partnering with startups, SMEs, and established organizations across various industries.</p>
-          </div>
-          <div className="hexora-clients-strip">
-            {['IT Startups', 'SMEs', 'Corporations', 'Financial Institutions', 'Manufacturing Firms', 'Service Providers'].map((client) => (
-              <span key={client} className="hexora-client-tag">{client}</span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials */}
-      <section className="hexora-testimonials-section">
-        <div className="shell">
-          <div className="services-section-header">
-            <h2>What Our Clients Say</h2>
-          </div>
-          <div className="hexora-testimonials-grid">
-            <div className="hexora-testimonial-card">
-              <div className="hexora-stars">
-                {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} fill="#eab308" color="#eab308" />)}
-              </div>
-              <p>"HEXORA helped us identify top talent quickly and efficiently."</p>
-            </div>
-            <div className="hexora-testimonial-card">
-              <div className="hexora-stars">
-                {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} fill="#eab308" color="#eab308" />)}
-              </div>
-              <p>"Their HR consulting services streamlined our operations and improved productivity."</p>
-            </div>
-            <div className="hexora-testimonial-card">
-              <div className="hexora-stars">
-                {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} fill="#eab308" color="#eab308" />)}
-              </div>
-              <p>"Professional, responsive, and reliable recruitment partner."</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="hexora-cta-section">
-        <div className="shell hexora-cta-content">
-          <h2>Get In Touch</h2>
-          <p>Ready to grow your business with HEXORA GLOBAL GROUP?</p>
-          <div className="hexora-contact-info">
-            <span><Phone size={16} /> +94 77 319 1832</span>
-            <span><Mail size={16} /> hrm4921@gmail.com</span>
-            <span><Globe2 size={16} /> www.hexoraglobal.com</span>
-          </div>
-          <p className="hexora-hours">Monday - Friday | 9:00 AM - 6:00 PM</p>
-          <Button as={Link} to="/contact" size="lg">Contact Us <ArrowRight size={18} /></Button>
         </div>
       </section>
     </>

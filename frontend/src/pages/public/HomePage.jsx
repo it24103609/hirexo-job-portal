@@ -3,20 +3,15 @@ import {
   BadgeCheck,
   Briefcase,
   Building2,
-  CheckCircle2,
-  ClipboardCheck,
-  FileCheck2,
   Globe2,
+  Heart,
   Mail,
   MessageCircle,
   Phone,
-  SearchCheck,
-  ShieldCheck,
   Star,
   TrendingUp,
   Users,
-  Utensils,
-  Sparkles,
+  Utensils
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Seo from '../../components/ui/Seo';
@@ -33,70 +28,96 @@ const media = {
   ctaRight: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=760&q=85'
 };
 
-const talentFeatures = [
+const groupStrengths = [
   {
-    title: 'Professional Expertise',
-    text: 'Our team brings industry knowledge and practical experience across multiple sectors.',
+    title: 'Diversified Expertise',
+    text: 'Each division is built around a clear market need, while the group shares a common standard of quality.',
     icon: BadgeCheck
   },
   {
-    title: 'Trusted Partnerships',
-    text: 'We focus on building long-term relationships based on transparency and trust.',
+    title: 'One Connected Ecosystem',
+    text: 'Our businesses work independently, but benefit from shared systems, strategy, and support.',
+    icon: Building2
+  },
+  {
+    title: 'People and Partnership Driven',
+    text: 'We believe strong relationships create better business outcomes across clients, teams, and markets.',
     icon: Users
   },
   {
-    title: 'Customized Solutions',
-    text: 'Every business is unique. We tailor our solutions to meet your specific requirements.',
-    icon: Sparkles
-  },
-  {
-    title: 'Global Perspective',
-    text: 'We help organizations explore opportunities beyond borders through our extensive network.',
-    icon: Globe2
+    title: 'Growth Focused',
+    text: 'From talent to trade, we pursue opportunities that create sustainable, long-term value.',
+    icon: TrendingUp
   }
 ];
 
-const clients = ['IT Startups', 'Finance Teams', 'Construction Firms', 'Manufacturers', 'Retail Brands', 'Service Providers'];
+const divisionPillars = [
+  {
+    title: 'HEXORA TALENT',
+    text: 'Recruitment and staffing solutions for organizations that need the right people at the right time.',
+    icon: Users
+  },
+  {
+    title: 'HEXORA HR CONSULTING',
+    text: 'HR advisory, payroll support, outsourcing, and compliance solutions for modern teams.',
+    icon: Heart
+  },
+  {
+    title: 'HEXORA GLOBAL TRADE',
+    text: 'Import, export, sourcing, and international market support for expanding business reach.',
+    icon: Globe2
+  },
+  {
+    title: 'HEXORA FOODS',
+    text: 'Consumer food products designed with quality, consistency, and brand value in mind.',
+    icon: Utensils
+  },
+  {
+    title: 'HEXORA BUSINESS SOLUTIONS',
+    text: 'Business consulting and digital support services that help organizations scale with clarity.',
+    icon: Briefcase
+  }
+];
 
-const successStories = [
+const groupOutcomes = [
   {
-    title: 'Building High-Performance Teams',
-    description: 'We helped a fast-growing technology company hire 50+ skilled professionals, enabling rapid business growth with quality talent.',
+    title: 'Stronger hiring pipelines',
+    description: 'HEXORA TALENT helps employers move from brief to shortlist with structure and speed.',
     icon: Users,
-    metric: '50+',
-    label: 'skilled hires'
+    metric: 'Talent',
+    label: 'focus'
   },
   {
-    title: 'Connecting Global Talent',
-    description: 'We connect skilled professionals with international opportunities, helping businesses build stronger global teams.',
-    icon: Globe2,
-    metric: 'Global',
-    label: 'talent reach'
-  },
-  {
-    title: 'Strategic HR Partnership',
-    description: 'Our HR and recruitment solutions streamline hiring, improve efficiency, and strengthen workforce quality.',
-    icon: ShieldCheck,
+    title: 'Better operational support',
+    description: 'HEXORA HR CONSULTING is designed to reduce admin load and improve workforce processes.',
+    icon: Heart,
     metric: 'HR',
-    label: 'consulting'
+    label: 'support'
   },
   {
-    title: 'Empowering Business Growth',
-    description: 'We support organizations with tailored talent solutions that drive sustainable growth and long-term success.',
-    icon: TrendingUp,
-    metric: 'Growth',
-    label: 'focused'
+    title: 'Commercial expansion',
+    description: 'HEXORA GLOBAL TRADE opens pathways for sourcing, supply, and market reach.',
+    icon: Globe2,
+    metric: 'Trade',
+    label: 'growth'
+  },
+  {
+    title: 'New product and service value',
+    description: 'HEXORA FOODS and HEXORA BUSINESS SOLUTIONS extend the group into new markets.',
+    icon: Building2,
+    metric: 'Group',
+    label: 'expansion'
   }
 ];
 
 const testimonials = [
   {
-    quote: siteContent.testimonial,
-    name: 'Corporate HR Partner'
+    quote: 'HEXORA feels like a structured group partner, not just a service vendor.',
+    name: 'Business Partner'
   },
   {
-    quote: 'HEXORA TALENT helped us move from role brief to qualified shortlists with speed, structure, and strong communication.',
-    name: 'Employer Client'
+    quote: 'The group positioning is clear, premium, and easy to understand across all divisions.',
+    name: 'Client Stakeholder'
   }
 ];
 
@@ -105,7 +126,7 @@ export default function HomePage() {
     <>
       <Seo
         title="HEXORA GLOBAL GROUP | Diversified Business Ecosystem"
-        description="HEXORA GLOBAL GROUP is a diversified holding company with 5 business divisions spanning recruitment, HR consulting, global trade, foods, and business solutions."
+        description="HEXORA GLOBAL GROUP is a diversified business group with 5 divisions spanning talent, HR consulting, global trade, foods, and business solutions."
       />
 
       <section className="home-hero">
@@ -118,31 +139,44 @@ export default function HomePage() {
         <div className="shell home-hero-grid">
           <div className="home-hero-copy">
             <h1 className="hero-main-heading">HEXORA GLOBAL GROUP (PVT) LTD</h1>
-            <p className="hero-subheading">A diversified global enterprise delivering talent, trade, HR, food, and business solutions worldwide.</p>
+            <h3 className="hero-subheading">One Group. Multiple Businesses. Global Opportunities.</h3>
+            <p className="hero-description">
+              A diversified Sri Lankan business group building and operating businesses across talent, human
+              resources, trade, consumer products, and business solutions.
+            </p>
             <div className="hero-separator" />
             <div className="home-hero-actions">
-              <Button as={Link} to="/jobs" size="lg">Explore Talent Division <ArrowRight size={18} /></Button>
-              <Button onClick={() => document.getElementById('divisions-section')?.scrollIntoView({ behavior: 'smooth' })} variant="secondary" size="lg">View Group Companies <Building2 size={18} /></Button>
-              <Button as={Link} to="/contact" variant="ghost" size="lg">Contact Group <MessageCircle size={17} /></Button>
+              <Button
+                onClick={() => document.getElementById('divisions-section')?.scrollIntoView({ behavior: 'smooth' })}
+                size="lg"
+              >
+                Explore Divisions <ArrowRight size={18} />
+              </Button>
+              <Button as={Link} to="/contact" variant="ghost" size="lg">
+                Partner With Us <MessageCircle size={17} />
+              </Button>
             </div>
           </div>
         </div>
       </section>
+
       <DivisionSystem />
 
       <section className="why-section">
         <div className="shell why-grid">
           <div>
-            <p className="home-eyebrow">WHY CHOOSE HEXORA</p>
-            <h2>Building success across diversified business ecosystems</h2>
+            <p className="home-eyebrow">Why HEXORA</p>
+            <h2>Building success across a diversified business ecosystem</h2>
             <p className="section-copy">
-              HEXORA GLOBAL GROUP delivers value through strategic business divisions, each focused on
-              excellence in their domain while leveraging shared expertise and resources.
+              HEXORA GLOBAL GROUP creates value through specialized divisions that work with one shared standard:
+              practical execution, trusted partnerships, and long-term growth.
             </p>
             <div className="feature-grid">
-              {talentFeatures.map(({ title, text, icon: Icon }) => (
+              {groupStrengths.map(({ title, text, icon: Icon }) => (
                 <article className="feature-card" key={title}>
-                  <span><Icon size={20} /></span>
+                  <span>
+                    <Icon size={20} />
+                  </span>
                   <strong>{title}</strong>
                   <p>{text}</p>
                 </article>
@@ -158,14 +192,24 @@ export default function HomePage() {
               <span className="orbit-dot dot-b" />
               <span className="orbit-dot dot-c" />
             </div>
-            <div className="ai-side-card side-left"><Building2 size={20} /> 5 Divisions</div>
-            <div className="ai-side-card side-right"><Globe2 size={20} /> Global Reach</div>
+            <div className="ai-side-card side-left">
+              <Building2 size={20} /> 5 Divisions
+            </div>
+            <div className="ai-side-card side-right">
+              <Globe2 size={20} /> Global Reach
+            </div>
             <div className="accuracy-card">
               <strong>Integrated business solutions across industries</strong>
             </div>
             <div className="ai-actions">
-              <Button onClick={() => document.getElementById('divisions-section')?.scrollIntoView({ behavior: 'smooth' })}>Explore Divisions <ArrowRight size={16} /></Button>
-              <Button as={Link} to="/contact" variant="secondary">Partner With Us</Button>
+              <Button
+                onClick={() => document.getElementById('divisions-section')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                Explore Divisions <ArrowRight size={16} />
+              </Button>
+              <Button as={Link} to="/contact" variant="secondary">
+                Partner With Us
+              </Button>
             </div>
             <a className="whatsapp-support" href={`https://wa.me/${siteContent.contact.whatsapp}`} target="_blank" rel="noreferrer">
               <MessageCircle size={17} /> WhatsApp support available
@@ -180,8 +224,8 @@ export default function HomePage() {
             <p className="home-eyebrow">About HEXORA GLOBAL GROUP</p>
             <h2 className="corporate-light-heading">A diversified corporate group driving excellence across industries</h2>
             <p>
-              HEXORA GLOBAL GROUP (PVT) LTD operates through five strategic business divisions, each focused on
-              delivering excellence in their domain while contributing to the group's overall success.
+              HEXORA GLOBAL GROUP operates through five strategic business divisions, each focused on delivering
+              excellence in its own market while contributing to the group's overall strength.
             </p>
             <div className="corporate-icons-row">
               <span className="corporate-icon-item"><Users size={20} /></span>
@@ -193,11 +237,17 @@ export default function HomePage() {
             <div className="vision-mission-grid">
               <div className="vision-card">
                 <h3>Our Vision</h3>
-                <p>To be a leading diversified business group recognized for excellence, innovation, and sustainable growth across multiple industries.</p>
+                <p>
+                  To be a leading diversified business group recognized for excellence, innovation, and sustainable
+                  growth across multiple industries.
+                </p>
               </div>
               <div className="mission-card">
                 <h3>Our Mission</h3>
-                <p>To deliver exceptional value through our specialized divisions, connecting talent with opportunity, businesses with solutions, and markets with products.</p>
+                <p>
+                  To deliver exceptional value through our specialized divisions, connecting talent, products,
+                  services, and market opportunities.
+                </p>
               </div>
             </div>
           </div>
@@ -207,7 +257,9 @@ export default function HomePage() {
           </div>
 
           <div className="client-strip">
-            {clients.map((client) => <span key={client}>{client}</span>)}
+            {['Talent Solutions', 'HR Support', 'Global Trade', 'Foods', 'Business Advisory', 'Digital Services'].map((item) => (
+              <span key={item}>{item}</span>
+            ))}
           </div>
         </div>
       </section>
@@ -218,12 +270,12 @@ export default function HomePage() {
         <div className="shell success-stories-shell">
           <div className="success-stories-header">
             <p className="home-eyebrow">Proven Outcomes</p>
-            <h2 id="success-stories-title">Our Success Stories</h2>
-            <p>Delivering exceptional results through talent, innovation, and trusted partnerships.</p>
+            <h2 id="success-stories-title">Our Group Impact</h2>
+            <p>Each division supports growth through focused delivery and clear outcomes.</p>
           </div>
 
           <div className="success-stories-grid">
-            {successStories.map(({ title, description, icon: Icon, metric, label }) => (
+            {groupOutcomes.map(({ title, description, icon: Icon, metric, label }) => (
               <article className="success-story-card" key={title}>
                 <div className="success-card-visual" aria-hidden="true">
                   <div className="success-visual-orbit">
@@ -254,7 +306,9 @@ export default function HomePage() {
           {testimonials.map((testimonial) => (
             <article className="testimonial-card" key={testimonial.name}>
               <div className="rating-line" aria-label="Five star rating">
-                {Array.from({ length: 5 }).map((_, index) => <Star key={index} size={16} fill="currentColor" />)}
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <Star key={index} size={16} fill="currentColor" />
+                ))}
               </div>
               <p>"{testimonial.quote}"</p>
               <strong>{testimonial.name}</strong>
@@ -267,48 +321,40 @@ export default function HomePage() {
         <div className="cta-pattern" />
         <img className="cta-person cta-left" src={media.ctaLeft} alt="Business professionals collaborating" />
         <img className="cta-person cta-right" src={media.ctaRight} alt="Global team working together" />
-        <div className="floating-stat cta-stat-left"><Building2 size={17} /> 5 Divisions</div>
-        <div className="floating-stat cta-stat-right"><strong>25K+</strong> Professionals</div>
+        <div className="floating-stat cta-stat-left">
+          <Building2 size={17} /> 5 Divisions
+        </div>
+        <div className="floating-stat cta-stat-right">
+          <strong>One</strong> Group
+        </div>
         <div className="shell final-cta-inner">
           <h2>Ready to explore opportunities with HEXORA GLOBAL GROUP?</h2>
           <p>
-            Discover how our five strategic divisions can support your business growth or career journey.
-            From recruitment to global trade, we deliver excellence across industries.
+            Discover how our five strategic divisions can support your business growth or partnership goals.
+            From talent to trade, we deliver value across industries.
           </p>
           <div>
-            <Button onClick={() => document.getElementById('divisions-section')?.scrollIntoView({ behavior: 'smooth' })} size="lg">Explore Our Divisions <ArrowRight size={18} /></Button>
-            <Button as={Link} to="/contact" variant="ghost" size="lg">Partner With Us <Briefcase size={17} /></Button>
-            <Button as={Link} to="/contact" variant="ghost" size="lg">Contact Group <MessageCircle size={17} /></Button>
+            <Button
+              onClick={() => document.getElementById('divisions-section')?.scrollIntoView({ behavior: 'smooth' })}
+              size="lg"
+            >
+              Explore Our Divisions <ArrowRight size={18} />
+            </Button>
+            <Button as={Link} to="/contact" variant="ghost" size="lg">
+              Partner With Us <Briefcase size={17} />
+            </Button>
+            
           </div>
           <address className="contact-mini">
-            <span><Phone size={15} /> {siteContent.contact.phonePrimary}</span>
-            <span><Mail size={15} /> {siteContent.contact.email}</span>
+            <span>
+              <Phone size={15} /> {siteContent.contact.phonePrimary}
+            </span>
+            <span>
+              <Mail size={15} /> {siteContent.contact.email}
+            </span>
           </address>
         </div>
       </section>
     </>
-  );
-}
-
-function TradeList({ title, items }) {
-  const icons = {
-    Services: Globe2,
-    'Product Categories': FileCheck2,
-    Benefits: BadgeCheck
-  };
-  const TradeIcon = icons[title] || CheckCircle2;
-
-  return (
-    <div className="trade-list">
-      <h3>
-        <span className="trade-list-icon" aria-hidden="true">
-          <TradeIcon size={24} strokeWidth={2.2} />
-        </span>
-        {title}
-      </h3>
-      <ul>
-        {items.map((item) => <li key={item}>{item}</li>)}
-      </ul>
-    </div>
   );
 }

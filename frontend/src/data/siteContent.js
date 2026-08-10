@@ -1,51 +1,51 @@
 export const siteContent = {
-  brandName: 'HEXORA',
-  aboutIntro: 'HEXORA is a results-driven recruitment partner built for speed, precision, and impact. We go beyond CVs, focusing on real business needs, team fit, and long-term success.',
-  mission: 'To connect businesses with the right talent through efficient, reliable, and people-focused recruitment solutions.',
-  vision: 'To become a trusted global partner in delivering top talent with speed and precision.',
-  values: 'We act with integrity, move with speed, and focus on results, building lasting relationships through trust and excellence.',
-  testimonial: 'HEXORA demonstrated a clear understanding of our hiring needs and consistently delivered candidates aligned with our culture and expectations. Their professionalism, speed, and responsiveness made the recruitment process smooth and efficient.',
+  brandName: 'HEXORA GLOBAL GROUP',
+  aboutIntro: 'HEXORA GLOBAL GROUP is a diversified Sri Lankan business group operating across talent, human resources, trade, consumer products, and business solutions.',
+  mission: 'To build and grow focused business divisions that create long-term value through integrity, collaboration, and practical execution.',
+  vision: 'To become a trusted business group recognized for reliable operations, strong partnerships, and sustainable growth across industries.',
+  values: 'We act with integrity, work with clarity, and pursue growth through trust, excellence, and shared success.',
+  testimonial: 'HEXORA Global Group presents a clear, structured business ecosystem that is easy to trust and easy to work with across divisions.',
   contact: {
     phonePrimary: '0773191832',
     phoneSecondary: '0705343427',
     whatsapp: '94773191832',
-    email: 'hello@reallygreatsite.com',
+    email: 'hrm4921@gmail.com',
     address: '15 1/6 Umbichi Place, Wolfandal Street, Colombo 13',
     prompt: "Don't hesitate to contact us"
   },
   homeStats: [
-    { label: 'Active roles', value: '250+' },
-    { label: 'Hiring partners', value: '120+' },
-    { label: 'Candidate matches', value: '15k+' },
-    { label: 'Cities covered', value: '30+' }
+    { label: 'Business divisions', value: '5' },
+    { label: 'Core markets', value: '4+' },
+    { label: 'Group focus', value: 'Multi-sector' },
+    { label: 'Growth mindset', value: 'Long-term' }
   ],
   services: [
     {
-      title: 'Staff Augmentation',
-      description: 'Flexible hiring support to scale teams quickly with role-ready professionals.'
+      title: 'Talent Solutions',
+      description: 'Recruitment and staffing support designed to connect the right people with the right roles.'
     },
     {
-      title: 'Permanent Recruitment',
-      description: 'Long-term placements focused on role fit, culture alignment, and retention.'
+      title: 'HR Consulting',
+      description: 'Human resources support, payroll, outsourcing, and compliance guidance for modern teams.'
     },
     {
-      title: 'Contract & Project Staffing',
-      description: 'On-demand contract hiring for project timelines and specialized skill requirements.'
+      title: 'Global Trade',
+      description: 'Import, export, sourcing, and international market support for business expansion.'
     },
     {
-      title: 'IT & Non-IT Talent Acquisition',
-      description: 'Targeted sourcing across technical and functional roles for diverse business teams.'
+      title: 'Consumer Products',
+      description: 'Food and consumer product development with a focus on quality and brand value.'
     },
     {
-      title: 'Recruitment Consulting',
-      description: 'Advisory support to improve hiring strategy, pipeline quality, and recruitment outcomes.'
+      title: 'Business Solutions',
+      description: 'Business consulting and digital support services that help organizations scale with clarity.'
     }
   ],
   whyChooseUs: [
-    'Fast delivery with measurable hiring outcomes',
-    'Role, culture, and skill alignment',
-    'Practical workflows for candidates and employers',
-    'Structured review and moderation for quality control'
+    'One group with multiple focused business divisions',
+    'Shared standards across every operating unit',
+    'Practical partnerships built for long-term value',
+    'Clear brand structure across talent, trade, and business services'
   ],
   dashboardLinks: {
     candidate: [
