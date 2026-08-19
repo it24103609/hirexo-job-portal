@@ -168,8 +168,7 @@ export default function HomePage() {
             <p className="home-eyebrow">Why HEXORA</p>
             <h2>Building success across a diversified business ecosystem</h2>
             <p className="section-copy">
-              HEXORA GLOBAL GROUP creates value through specialized divisions that work with one shared standard:
-              practical execution, trusted partnerships, and long-term growth.
+              HEXORA GLOBAL GROUP brings together specialized businesses across talent, HR, trade, food, and business solutions — creating opportunities, building trusted partnerships, and delivering value that lasts..
             </p>
             <div className="feature-grid">
               {groupStrengths.map(({ title, text, icon: Icon }) => (
