@@ -504,34 +504,7 @@ export default function EmployerDashboard() {
           </div>
         </article>
 
-        <article className="employer-premium-panel">
-          <div className="employer-premium-panel-head">
-            <div>
-              <p className="section-eyebrow">Monthly insights</p>
-              <h3>Hiring performance</h3>
-            </div>
-            <Badge tone="neutral">7 months</Badge>
-          </div>
-          <div className="employer-insight-summary">
-            <div>
-              <small>Total applications</small>
-              <strong>{totalApplications}</strong>
-            </div>
-            <div>
-              <small>Success rate</small>
-              <strong>{successRate}%</strong>
-            </div>
-          </div>
-          <div className="employer-premium-bars">
-            {monthlyTrend.map((item) => (
-              <div key={item.key} className="employer-premium-bar-column">
-                <small>{item.count}</small>
-                <span style={{ height: `${Math.max(item.count ? 22 : 10, (item.count / monthlyTrendMax) * 100)}%` }} />
-                <em>{item.label}</em>
-              </div>
-            ))}
-          </div>
-        </article>
+        
 
         <article className="employer-premium-panel employer-pipeline-panel">
           <div className="employer-premium-panel-head">
