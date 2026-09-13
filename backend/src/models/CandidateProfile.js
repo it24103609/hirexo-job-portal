@@ -69,6 +69,10 @@ const candidateProfileSchema = new mongoose.Schema(
     },
     profilePicture: profilePictureSchema,
     resume: resumeSchema,
+    resumeContent: {
+      type: Buffer,
+      select: false
+    },
     savedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }]
   },
   { timestamps: true }

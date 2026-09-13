@@ -212,7 +212,12 @@ const applicationSchema = new mongoose.Schema(
     resumeSnapshot: {
       fileName: String,
       filePath: String,
-      size: Number
+      size: Number,
+      mimeType: String,
+      content: {
+        type: Buffer,
+        select: false
+      }
     },
     interviewScheduledAt: Date,
     interviewMode: {

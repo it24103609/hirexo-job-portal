@@ -159,7 +159,7 @@ const applyForJob = asyncHandler(async (req, res) => {
     throw new AppError('You have already applied for this job', 400);
   }
 
-  const profile = await CandidateProfile.findOne({ user: req.user._id });
+  const profile = await CandidateProfile.findOne({ user: req.user._id }).select('+resumeContent');
   if (!profile?.resume?.filePath) {
     throw new AppError('Upload your resume before applying', 400);
   }
@@ -174,7 +174,9 @@ const applyForJob = asyncHandler(async (req, res) => {
     resumeSnapshot: {
       fileName: profile.resume.fileName,
       filePath: profile.resume.filePath,
-      size: profile.resume.size
+      size: profile.resume.size,
+      mimeType: profile.resume.mimeType,
+      content: profile.resumeContent
     },
     status: APPLICATION_STATUS.PENDING
   });
@@ -315,7 +317,7 @@ const getApplicationById = asyncHandler(async (req, res) => {
 });
 
 const downloadApplicationResume = asyncHandler(async (req, res) => {
-  const application = await Application.findById(req.params.id);
+  const application = await Application.findById(req.params.id).select('+resumeSnapshot.content');
   if (!application) {
     throw new AppError('Application not found', 404);
   }
@@ -332,12 +334,23 @@ const downloadApplicationResume = asyncHandler(async (req, res) => {
   let resumeFileName = application.resumeSnapshot?.fileName || 'resume.pdf';
 
   if (!resumePath) {
-    const candidateProfile = await CandidateProfile.findOne({ user: application.candidateUser }).select('resume');
+    const candidateProfile = await CandidateProfile.findOne({ user: application.candidateUser }).select('resume +resumeContent');
     resumePath = resolveStoredFilePath(candidateProfile?.resume?.filePath);
     resumeFileName = candidateProfile?.resume?.fileName || resumeFileName;
+
+    if (!resumePath && candidateProfile?.resumeContent?.length) {
+      res.type(candidateProfile.resume?.mimeType || 'application/pdf');
+      res.set('Content-Disposition', `attachment; filename="${resumeFileName.replace(/"/g, '')}"`);
+      return res.send(candidateProfile.resumeContent);
+    }
   }
 
   if (!resumePath) {
+    if (application.resumeSnapshot?.content?.length) {
+      res.type(application.resumeSnapshot.mimeType || 'application/pdf');
+      res.set('Content-Disposition', `attachment; filename="${resumeFileName.replace(/"/g, '')}"`);
+      return res.send(application.resumeSnapshot.content);
+    }
     throw new AppError('Resume file not found', 404);
   }
 

@@ -84,6 +84,7 @@ const uploadResume = asyncHandler(async (req, res) => {
     size: req.file.size,
     uploadedAt: new Date()
   };
+  profile.resumeContent = fs.readFileSync(req.file.path);
 
   await profile.save();
 
