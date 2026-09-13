@@ -132,10 +132,13 @@ async function seedDemoContent() {
   const [employer, admin, candidates] = await Promise.all([
     User.findOne({ email: 'david.thompson@hirexo.test', role: ROLES.EMPLOYER }),
     User.findOne({ role: ROLES.ADMIN }),
-    User.find({ role: ROLES.CANDIDATE }).sort({ email: 1 }).limit(3)
+    User.find({
+      email: { $in: ['alice.chen@hirexo.test', 'bob.kumar@hirexo.test'] },
+      role: ROLES.CANDIDATE
+    }).sort({ email: 1 })
   ]);
 
-  if (!employer || !admin || candidates.length < 3) {
+  if (!employer || !admin || candidates.length < 2) {
     throw new Error('Run npm run seed:test-users before seed:demo-content');
   }
 
@@ -218,6 +221,72 @@ async function seedDemoContent() {
     ]
   }));
 
+  jobs.push(await ensureJob(employer, companyName, {
+    title: 'Backend API Engineer',
+    category: 'Engineering',
+    industry: 'Software',
+    location: 'Bangalore',
+    jobType: 'Full Time',
+    description: 'Build reliable APIs and services that power hiring workflows at scale.',
+    responsibilities: ['Design REST APIs', 'Improve service reliability', 'Review backend code'],
+    requirements: ['Node.js experience', 'REST API design knowledge', 'Testing experience'],
+    skills: ['Node.js', 'Express', 'MongoDB', 'API Design'],
+    experienceLevel: 'mid',
+    salaryMin: 170000,
+    salaryMax: 260000,
+    vacancies: 2,
+    remoteFriendly: true,
+    publishedAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 2),
+    expiresAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 30),
+    tags: ['backend', 'api', 'nodejs'],
+    hiringPriority: 'high',
+    screeningQuestions: []
+  }));
+
+  jobs.push(await ensureJob(employer, companyName, {
+    title: 'Product Marketing Specialist',
+    category: 'Marketing',
+    industry: 'Technology',
+    location: 'New York',
+    jobType: 'Full Time',
+    description: 'Create campaigns and stories that connect job seekers with better opportunities.',
+    responsibilities: ['Plan product campaigns', 'Write customer stories', 'Track campaign performance'],
+    requirements: ['Marketing experience', 'Strong writing skills', 'Analytics mindset'],
+    skills: ['Content Marketing', 'SEO', 'Analytics', 'Copywriting'],
+    experienceLevel: 'mid',
+    salaryMin: 120000,
+    salaryMax: 190000,
+    vacancies: 1,
+    remoteFriendly: true,
+    publishedAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 4),
+    expiresAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 28),
+    tags: ['marketing', 'content', 'growth'],
+    hiringPriority: 'medium',
+    screeningQuestions: []
+  }));
+
+  jobs.push(await ensureJob(employer, companyName, {
+    title: 'Customer Success Associate',
+    category: 'Customer Success',
+    industry: 'SaaS',
+    location: 'Austin',
+    jobType: 'Full Time',
+    description: 'Help employers and candidates get the most from the Hirexo platform.',
+    responsibilities: ['Onboard new customers', 'Resolve product questions', 'Share customer feedback'],
+    requirements: ['Customer-facing experience', 'Clear communication', 'Problem-solving skills'],
+    skills: ['Customer Success', 'Communication', 'SaaS', 'CRM'],
+    experienceLevel: 'junior',
+    salaryMin: 85000,
+    salaryMax: 130000,
+    vacancies: 2,
+    remoteFriendly: true,
+    publishedAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1),
+    expiresAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 24),
+    tags: ['customer-success', 'support', 'saas'],
+    hiringPriority: 'medium',
+    screeningQuestions: []
+  }));
+
   await Promise.all([
     ensureInterviewApplication({
       job: jobs[0],
@@ -241,17 +310,6 @@ async function seedDemoContent() {
       mode: 'phone',
       location: 'Phone Call'
     }),
-    ensureInterviewApplication({
-      job: jobs[2],
-      candidate: candidates[2],
-      employer,
-      teamMember: recruiter,
-      roundName: 'Portfolio Review',
-      status: APPLICATION_STATUS.SHORTLISTED,
-      daysFromNow: 5,
-      mode: 'video',
-      location: 'Google Meet'
-    })
   ]);
 
   await Promise.all([
