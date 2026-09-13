@@ -13,6 +13,23 @@ function normalizeTerms(values = []) {
     .filter(Boolean);
 }
 
+function calculateAtsScore(application = {}, profile = {}) {
+  const candidate = application.candidateUser || {};
+  const skills = normalizeTerms(profile.skills || []);
+  const education = Array.isArray(profile.education) ? profile.education : [];
+  const hasResume = Boolean(application.resumeSnapshot?.filePath || profile.resume?.filePath);
+  const checks = [
+    [hasResume, 25],
+    [Boolean(candidate.name || profile.headline), 15],
+    [Boolean(profile.summary && String(profile.summary).trim()), 15],
+    [skills.length > 0, 20],
+    [Number(profile.experienceYears || 0) > 0, 15],
+    [education.length > 0, 10]
+  ];
+
+  return checks.reduce((score, [isPresent, weight]) => score + (isPresent ? weight : 0), 0);
+}
+
 function resolveExperienceTarget(experienceLevel = '') {
   const text = String(experienceLevel || '').toLowerCase();
   const firstNumber = Number(text.match(/\d+/)?.[0]);
@@ -154,6 +171,7 @@ function buildAiExplanation(job, profile = {}, scoringConfig = DEFAULT_AI_SCORIN
 
 module.exports = {
   DEFAULT_AI_SCORING,
+  calculateAtsScore,
   calculateAiFit,
   buildAiExplanation
 };

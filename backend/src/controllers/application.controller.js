@@ -12,11 +12,22 @@ const PlatformSetting = require('../models/PlatformSetting');
 const { buildInterviewCalendarInvite } = require('../utils/interviewCalendar');
 const { ensureInterviewRounds, getInterviewRoundById, syncLegacyInterviewFields, pushInterviewTimeline } = require('../utils/interviewWorkflow');
 const { assertValidStatusTransition, parseFutureDate } = require('../utils/applicationWorkflow');
-const { DEFAULT_AI_SCORING, buildAiExplanation } = require('../utils/aiScoring');
+const { DEFAULT_AI_SCORING, calculateAtsScore, buildAiExplanation } = require('../utils/aiScoring');
 const { JOB_REVIEW_STATUS, JOB_STATUS, APPLICATION_STATUS, NOTIFICATION_TYPES, ROLES } = require('../utils/constants');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
 const { applicationConfirmationEmail, employerNewApplicationEmail, statusUpdateEmail } = require('../utils/emailTemplates');
+
+function resolveStoredFilePath(filePath) {
+  if (!filePath) return null;
+
+  const candidates = [
+    path.isAbsolute(filePath) ? filePath : path.resolve(process.cwd(), filePath),
+    path.resolve(__dirname, '../../..', filePath)
+  ];
+
+  return candidates.find((candidate) => fs.existsSync(candidate)) || null;
+}
 
 function normalizeCandidateSource(value) {
   const allowed = ['HEXORA Portal', 'LinkedIn', 'Referral', 'Website', 'Agency'];
@@ -287,12 +298,14 @@ const getApplicationById = asyncHandler(async (req, res) => {
 
   const aiScoringSettings = await getAiScoringSettings();
   const aiMatchExplanation = buildAiExplanation(application.job || {}, candidateProfile || {}, aiScoringSettings);
+  const atsScore = calculateAtsScore(application, candidateProfile || {});
 
   res.json(apiResponse({
     message: 'Application fetched successfully',
     data: {
       ...application,
       candidateProfile,
+      atsScore,
       aiMatchScore: aiMatchExplanation.score,
       aiMatchLabel: aiMatchExplanation.label,
       aiMatchBreakdown: aiMatchExplanation.breakdown,
@@ -315,12 +328,12 @@ const downloadApplicationResume = asyncHandler(async (req, res) => {
     throw new AppError('You cannot access this resume', 403);
   }
 
-  const resumePath = application.resumeSnapshot?.filePath;
-  if (!resumePath || !fs.existsSync(resumePath)) {
+  const resumePath = resolveStoredFilePath(application.resumeSnapshot?.filePath);
+  if (!resumePath) {
     throw new AppError('Resume file not found', 404);
   }
 
-  res.download(path.resolve(resumePath), application.resumeSnapshot.fileName || 'resume.pdf');
+  res.download(resumePath, application.resumeSnapshot.fileName || 'resume.pdf');
 });
 
 const updateApplicationStatus = asyncHandler(async (req, res) => {

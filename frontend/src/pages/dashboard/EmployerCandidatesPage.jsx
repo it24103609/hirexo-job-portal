@@ -49,17 +49,10 @@ function getCandidate(application) {
 }
 
 function getScore(application) {
-  if (Number.isFinite(Number(application.aiMatchScore))) {
-    return `${Math.round(Number(application.aiMatchScore))}%`;
+  if (Number.isFinite(Number(application.atsScore))) {
+    return `${Math.round(Number(application.atsScore))}%`;
   }
-
-  const feedback = application.interviewFeedback || {};
-  const values = ['communication', 'technicalSkills', 'confidence', 'cultureFit']
-    .map((key) => Number(feedback[key]))
-    .filter((value) => Number.isFinite(value));
-
-  if (!values.length) return '-';
-  return `${Math.round((values.reduce((sum, value) => sum + value, 0) / values.length) * 20)}%`;
+  return '-';
 }
 
 function hasResume(application) {

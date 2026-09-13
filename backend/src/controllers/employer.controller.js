@@ -27,7 +27,7 @@ const {
   pushInterviewTimeline
 } = require('../utils/interviewWorkflow');
 const { assertValidStatusTransition, parseFutureDate } = require('../utils/applicationWorkflow');
-const { DEFAULT_AI_SCORING, buildAiExplanation } = require('../utils/aiScoring');
+const { DEFAULT_AI_SCORING, calculateAtsScore, buildAiExplanation } = require('../utils/aiScoring');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
 const { NOTIFICATION_TYPES, APPLICATION_STATUS } = require('../utils/constants');
@@ -414,6 +414,7 @@ const listJobApplicants = asyncHandler(async (req, res) => {
       return {
         ...asObject,
         candidateProfile,
+        atsScore: calculateAtsScore(asObject, candidateProfile || {}),
         aiMatchScore: aiFit.score,
         aiMatchLabel: aiFit.label,
         aiMatchBreakdown: aiFit.breakdown,
