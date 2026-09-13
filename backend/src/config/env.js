@@ -7,7 +7,7 @@ const env = {
   clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
   passwordResetExpiresMinutes: Number(process.env.PASSWORD_RESET_EXPIRES_MINUTES || 60),
   uploadDir: process.env.UPLOAD_DIR || 'uploads/resumes',
-  maxFileSize: Number(process.env.MAX_FILE_SIZE || 2 * 1024 * 1024),
+  maxFileSize: Number(process.env.MAX_FILE_SIZE || 10 * 1024 * 1024),
   rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS || 15 * 60 * 1000),
   rateLimitMax: Number(process.env.RATE_LIMIT_MAX || 100),
   authRateLimitMax: Number(process.env.AUTH_RATE_LIMIT_MAX || 10),

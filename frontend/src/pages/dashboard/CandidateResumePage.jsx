@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import Loader from '../../components/ui/Loader';
 
 export default function CandidateResumePage() {
+  const maxResumeSize = 10 * 1024 * 1024;
   const [resume, setResume] = useState(null);
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -45,6 +46,10 @@ export default function CandidateResumePage() {
     if (!picked) return;
     if (picked.type !== 'application/pdf') {
       toast.error('Please select a PDF file only');
+      return;
+    }
+    if (picked.size > maxResumeSize) {
+      toast.error('Resume must be 10 MB or smaller');
       return;
     }
     setFile(picked);
@@ -95,7 +100,7 @@ export default function CandidateResumePage() {
           >
             <UploadCloud size={26} />
             <h3>Drag and drop your resume</h3>
-            <p>Upload a PDF (max 2MB recommended) for faster applications.</p>
+            <p>Upload a PDF up to 10 MB.</p>
             <input
               ref={fileInputRef}
               type="file"
