@@ -328,12 +328,20 @@ const downloadApplicationResume = asyncHandler(async (req, res) => {
     throw new AppError('You cannot access this resume', 403);
   }
 
-  const resumePath = resolveStoredFilePath(application.resumeSnapshot?.filePath);
+  let resumePath = resolveStoredFilePath(application.resumeSnapshot?.filePath);
+  let resumeFileName = application.resumeSnapshot?.fileName || 'resume.pdf';
+
+  if (!resumePath) {
+    const candidateProfile = await CandidateProfile.findOne({ user: application.candidateUser }).select('resume');
+    resumePath = resolveStoredFilePath(candidateProfile?.resume?.filePath);
+    resumeFileName = candidateProfile?.resume?.fileName || resumeFileName;
+  }
+
   if (!resumePath) {
     throw new AppError('Resume file not found', 404);
   }
 
-  res.download(resumePath, application.resumeSnapshot.fileName || 'resume.pdf');
+  res.download(resumePath, resumeFileName);
 });
 
 const updateApplicationStatus = asyncHandler(async (req, res) => {
