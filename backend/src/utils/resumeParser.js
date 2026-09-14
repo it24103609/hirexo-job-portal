@@ -1,6 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const pdf = require('pdf-parse');
+let pdf = null;
+try {
+  pdf = require('pdf-parse');
+} catch (e) {
+  console.warn('pdf-parse module optional load warning:', e.message);
+}
 
 const COMMON_SKILLS_DICTIONARY = [
   'javascript', 'typescript', 'react', 'react native', 'next.js', 'vue', 'angular',
@@ -41,12 +46,19 @@ async function extractTextFromResume(filePathOrBuffer, mimeType = '') {
     const isPdfFile = typeof filePathOrBuffer === 'string' && filePathOrBuffer.toLowerCase().endsWith('.pdf');
     const isPdfMime = String(mimeType).toLowerCase().includes('pdf');
 
-    if (isPdfMagic || isPdfFile || isPdfMime) {
+    if ((isPdfMagic || isPdfFile || isPdfMime) && pdf) {
       try {
-        const parser = new pdf.PDFParse(new Uint8Array(buffer));
-        const parsed = await parser.getText();
-        if (parsed?.text && parsed.text.trim().length > 0) {
-          return parsed.text.trim();
+        if (pdf.PDFParse && typeof pdf.PDFParse === 'function') {
+          const parser = new pdf.PDFParse(new Uint8Array(buffer));
+          const parsed = await parser.getText();
+          if (parsed?.text && parsed.text.trim().length > 0) {
+            return parsed.text.trim();
+          }
+        } else if (typeof pdf === 'function') {
+          const parsed = await pdf(buffer);
+          if (parsed?.text && parsed.text.trim().length > 0) {
+            return parsed.text.trim();
+          }
         }
       } catch (pdfErr) {
         console.warn('PDFParse primary attempt failed, falling back:', pdfErr.message);
