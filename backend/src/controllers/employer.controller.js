@@ -29,7 +29,7 @@ const {
 const { assertValidStatusTransition, parseFutureDate } = require('../utils/applicationWorkflow');
 const { DEFAULT_AI_SCORING, calculateAtsScore, calculateAtsScoreAsync, buildAiExplanation } = require('../utils/aiScoring');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
-const { sendEmail } = require('../services/email.service');
+const { sendEmail, sendEmailAsync } = require('../services/email.service');
 const { statusUpdateEmail } = require('../utils/emailTemplates');
 const { NOTIFICATION_TYPES, APPLICATION_STATUS } = require('../utils/constants');
 
@@ -406,25 +406,23 @@ const listJobApplicants = asyncHandler(async (req, res) => {
     return true;
   };
 
-  const enriched = await Promise.all(
-    applications.map(async (application) => {
-      const asObject = application.toObject();
-      const candidateProfile = profileMap.get(String(asObject.candidateUser?._id)) || null;
-      const aiFit = buildAiExplanation(job, candidateProfile || {}, aiScoringSettings);
-      const atsAnalysis = await calculateAtsScoreAsync(asObject, candidateProfile || {}, job);
+  const enriched = applications.map((application) => {
+    const asObject = application.toObject();
+    const candidateProfile = profileMap.get(String(asObject.candidateUser?._id)) || null;
+    const aiFit = buildAiExplanation(job, candidateProfile || {}, aiScoringSettings);
+    const atsScore = calculateAtsScore(asObject, candidateProfile || {});
 
-      return {
-        ...asObject,
-        candidateProfile,
-        atsScore: atsAnalysis.atsScore,
-        atsDetails: atsAnalysis,
-        aiMatchScore: aiFit.score,
-        aiMatchLabel: aiFit.label,
-        aiMatchBreakdown: aiFit.breakdown,
-        aiMatchExplanation: aiFit
-      };
-    })
-  );
+    return {
+      ...asObject,
+      candidateProfile,
+      atsScore,
+      atsDetails: { atsScore, isPdfParsed: false, wordCount: 0, breakdown: { fileQuality: 20, sectionStructure: 20, contactInfo: 20, keywordMatch: 20 } },
+      aiMatchScore: aiFit.score,
+      aiMatchLabel: aiFit.label,
+      aiMatchBreakdown: aiFit.breakdown,
+      aiMatchExplanation: aiFit
+    };
+  });
 
   const filteredEnriched = enriched.filter(matchesFilters);
 
@@ -610,32 +608,34 @@ const bookApplicationSlot = asyncHandler(async (req, res) => {
     }
   });
 
-  await sendEmail({
-    to: application.candidateUser.email,
-    subject: statusEmail.subject,
-    text: statusEmail.text,
-    html: statusUpdateEmail({
-      candidateName: application.candidateUser?.name,
-      jobTitle: job?.title,
-      companyName: job?.companyName,
-      status: APPLICATION_STATUS.INTERVIEW_SCHEDULED,
-      interviewAt: application.interviewScheduledAt
-    }),
-    attachments: [{
-      filename: 'HEXORA-interview-invite.ics',
-      content: buildInterviewCalendarInvite({
+  if (application.candidateUser?.email) {
+    sendEmailAsync({
+      to: application.candidateUser.email,
+      subject: statusEmail.subject,
+      text: statusEmail.text,
+      html: statusUpdateEmail({
         candidateName: application.candidateUser?.name,
-        companyName: job?.companyName,
         jobTitle: job?.title,
-        scheduledAt: application.interviewScheduledAt,
-        interviewMode: round.mode,
-        interviewLocation: round.location,
-        interviewMeetingLink: round.meetingLink,
-        interviewNotes: round.notes
+        companyName: job?.companyName,
+        status: APPLICATION_STATUS.INTERVIEW_SCHEDULED,
+        interviewAt: application.interviewScheduledAt
       }),
-      contentType: 'text/calendar; method=REQUEST; charset=UTF-8'
-    }]
-  });
+      attachments: [{
+        filename: 'HEXORA-interview-invite.ics',
+        content: buildInterviewCalendarInvite({
+          candidateName: application.candidateUser?.name,
+          companyName: job?.companyName,
+          jobTitle: job?.title,
+          scheduledAt: application.interviewScheduledAt,
+          interviewMode: round.mode,
+          interviewLocation: round.location,
+          interviewMeetingLink: round.meetingLink,
+          interviewNotes: round.notes
+        }),
+        contentType: 'text/calendar; method=REQUEST; charset=UTF-8'
+      }]
+    });
+  }
 
   res.json(apiResponse({
     message: 'Interview slot booked successfully',
@@ -815,19 +815,21 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
     });
   }
 
-  await sendEmail({
-    to: application.candidateUser.email,
-    subject: statusEmail.subject,
-    text: statusEmail.text,
-    html: statusUpdateEmail({
-      candidateName: application.candidateUser?.name,
-      jobTitle: job?.title,
-      companyName: job?.companyName,
-      status,
-      interviewAt: application.interviewScheduledAt
-    }),
-    attachments
-  });
+  if (application.candidateUser?.email) {
+    sendEmailAsync({
+      to: application.candidateUser.email,
+      subject: statusEmail.subject,
+      text: statusEmail.text,
+      html: statusUpdateEmail({
+        candidateName: application.candidateUser?.name,
+        jobTitle: job?.title,
+        companyName: job?.companyName,
+        status,
+        interviewAt: application.interviewScheduledAt
+      }),
+      attachments
+    });
+  }
 
   res.json(apiResponse({
     message: 'Application status updated successfully',
@@ -1037,7 +1039,7 @@ const sendInterviewReminders = asyncHandler(async (req, res) => {
       });
 
       if (application.candidateUser?.email) {
-        await sendEmail({
+        sendEmailAsync({
           to: application.candidateUser.email,
           subject: `Reminder: ${round.roundName}`,
           text: `${round.roundName} for ${application.job?.title || 'your role'} is scheduled on ${scheduledAt.toISOString()}.`

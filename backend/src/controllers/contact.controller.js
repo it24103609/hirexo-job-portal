@@ -2,7 +2,7 @@ const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 const apiResponse = require('../utils/apiResponse');
 const Contact = require('../models/Contact');
-const { sendEmail } = require('../services/email.service');
+const { sendEmail, sendEmailAsync } = require('../services/email.service');
 const { contactAckEmail, contactReplyEmail } = require('../utils/emailTemplates');
 
 const createContact = asyncHandler(async (req, res) => {
@@ -11,7 +11,7 @@ const createContact = asyncHandler(async (req, res) => {
     ipAddress: req.ip
   });
 
-  await sendEmail({
+  sendEmailAsync({
     to: req.body.email,
     subject: 'We received your message',
     text: `Hi ${req.body.name}, thank you for contacting HEXORA. We will respond to your inquiry shortly.`,
@@ -74,7 +74,7 @@ const replyContact = asyncHandler(async (req, res) => {
   contact.status = 'replied';
   await contact.save();
 
-  await sendEmail({
+  sendEmailAsync({
     to: contact.email,
     subject: `Re: ${contact.subject}`,
     text: req.body.message,

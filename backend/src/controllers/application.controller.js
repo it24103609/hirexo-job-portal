@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const mongoose = require('mongoose');
 const AppError = require('../utils/AppError');
 const asyncHandler = require('../utils/asyncHandler');
 const apiResponse = require('../utils/apiResponse');
@@ -15,7 +16,7 @@ const { assertValidStatusTransition, parseFutureDate } = require('../utils/appli
 const { DEFAULT_AI_SCORING, calculateAtsScore, calculateAtsScoreAsync, buildAiExplanation } = require('../utils/aiScoring');
 const { JOB_REVIEW_STATUS, JOB_STATUS, APPLICATION_STATUS, NOTIFICATION_TYPES, ROLES } = require('../utils/constants');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
-const { sendEmail } = require('../services/email.service');
+const { sendEmail, sendEmailAsync } = require('../services/email.service');
 const { applicationConfirmationEmail, employerNewApplicationEmail, statusUpdateEmail } = require('../utils/emailTemplates');
 
 function resolveStoredFilePath(filePath) {
@@ -149,17 +150,24 @@ function normalizeScreeningAnswers(job, value) {
 }
 
 const applyForJob = asyncHandler(async (req, res) => {
-  const job = await Job.findOne({ _id: req.body.jobId, reviewStatus: JOB_REVIEW_STATUS.APPROVED, status: JOB_STATUS.ACTIVE });
+  const targetJobId = req.body.jobId;
+  const isObjectId = mongoose.Types.ObjectId.isValid(targetJobId);
+  const jobFilter = isObjectId ? { _id: targetJobId } : { slug: targetJobId };
+
+  const [job, profile] = await Promise.all([
+    Job.findOne({ ...jobFilter, reviewStatus: JOB_REVIEW_STATUS.APPROVED, status: JOB_STATUS.ACTIVE }),
+    CandidateProfile.findOne({ user: req.user._id }).select('resume').lean()
+  ]);
+
   if (!job) {
     throw new AppError('Job not available for application', 404);
   }
 
-  const existingApplication = await Application.findOne({ job: job._id, candidateUser: req.user._id });
+  const existingApplication = await Application.findOne({ job: job._id, candidateUser: req.user._id }).lean();
   if (existingApplication) {
     throw new AppError('You have already applied for this job', 400);
   }
 
-  const profile = await CandidateProfile.findOne({ user: req.user._id }).select('+resumeContent');
   if (!profile?.resume?.filePath) {
     throw new AppError('Upload your resume before applying', 400);
   }
@@ -175,48 +183,47 @@ const applyForJob = asyncHandler(async (req, res) => {
       fileName: profile.resume.fileName,
       filePath: profile.resume.filePath,
       size: profile.resume.size,
-      mimeType: profile.resume.mimeType,
-      content: profile.resumeContent
+      mimeType: profile.resume.mimeType
     },
     status: APPLICATION_STATUS.PENDING
   });
 
-  await createNotification({
-    userId: req.user._id,
-    type: NOTIFICATION_TYPES.APPLICATION,
-    title: 'Application submitted',
-    message: `You applied for ${job.title}.`,
-    metadata: { jobId: job._id, applicationId: application._id }
-  });
+  Promise.all([
+    createNotification({
+      userId: req.user._id,
+      type: NOTIFICATION_TYPES.APPLICATION,
+      title: 'Application submitted',
+      message: `You applied for ${job.title}.`,
+      metadata: { jobId: job._id, applicationId: application._id }
+    }),
+    createNotification({
+      userId: job.employerUser,
+      type: NOTIFICATION_TYPES.APPLICATION,
+      title: 'New job application received',
+      message: `${req.user.name} applied for ${job.title}.`,
+      metadata: { jobId: job._id, applicationId: application._id, candidateId: req.user._id }
+    }),
+    notifyAdmins({
+      type: NOTIFICATION_TYPES.APPLICATION,
+      title: 'New application submitted',
+      message: `${req.user.name} applied for ${job.title} at ${job.companyName || 'an employer'}.`,
+      metadata: {
+        jobId: job._id,
+        jobTitle: job.title,
+        companyName: job.companyName,
+        applicationId: application._id,
+        candidateId: req.user._id,
+        candidateName: req.user.name,
+        employerId: job.employerUser,
+        event: 'application_submitted',
+        actorUserId: req.user._id,
+        actorRole: req.user.role,
+        adminPath: `/admin/jobs?applicationId=${application._id}`
+      }
+    })
+  ]).catch((err) => console.error('[NotificationError]', err.message));
 
-  await createNotification({
-    userId: job.employerUser,
-    type: NOTIFICATION_TYPES.APPLICATION,
-    title: 'New job application received',
-    message: `${req.user.name} applied for ${job.title}.`,
-    metadata: { jobId: job._id, applicationId: application._id, candidateId: req.user._id }
-  });
-
-  await notifyAdmins({
-    type: NOTIFICATION_TYPES.APPLICATION,
-    title: 'New application submitted',
-    message: `${req.user.name} applied for ${job.title} at ${job.companyName || 'an employer'}.`,
-    metadata: {
-      jobId: job._id,
-      jobTitle: job.title,
-      companyName: job.companyName,
-      applicationId: application._id,
-      candidateId: req.user._id,
-      candidateName: req.user.name,
-      employerId: job.employerUser,
-      event: 'application_submitted',
-      actorUserId: req.user._id,
-      actorRole: req.user.role,
-      adminPath: `/admin/jobs?applicationId=${application._id}`
-    }
-  });
-
-  await sendEmail({
+  sendEmailAsync({
     to: req.user.email,
     subject: 'Application confirmation',
     text: `Your application for ${job.title} was submitted successfully.`,
@@ -228,20 +235,21 @@ const applyForJob = asyncHandler(async (req, res) => {
     })
   });
 
-  const employerRecipient = await User.findById(job.employerUser).select('name email').lean();
-  if (employerRecipient?.email) {
-    await sendEmail({
-      to: employerRecipient.email,
-      subject: `New application for ${job.title}`,
-      text: `${req.user.name} applied for ${job.title}. Review the candidate in your HEXORA dashboard.`,
-      html: employerNewApplicationEmail({
-        employerName: employerRecipient.name,
-        candidateName: req.user.name,
-        jobTitle: job.title,
-        applicationId: application._id
-      })
-    });
-  }
+  User.findById(job.employerUser).select('name email').lean().then((employerRecipient) => {
+    if (employerRecipient?.email) {
+      sendEmailAsync({
+        to: employerRecipient.email,
+        subject: `New application for ${job.title}`,
+        text: `${req.user.name} applied for ${job.title}. Review the candidate in your HEXORA dashboard.`,
+        html: employerNewApplicationEmail({
+          employerName: employerRecipient.name,
+          candidateName: req.user.name,
+          jobTitle: job.title,
+          applicationId: application._id
+        })
+      });
+    }
+  }).catch((err) => console.error('[AsyncEmailError]', err.message));
 
   res.status(201).json(apiResponse({
     message: 'Application submitted successfully',
@@ -496,19 +504,21 @@ const updateApplicationStatus = asyncHandler(async (req, res) => {
     });
   }
 
-  await sendEmail({
-    to: application.candidateUser.email,
-    subject: statusEmail.subject,
-    text: statusEmail.text,
-    html: statusUpdateEmail({
-      candidateName: application.candidateUser?.name,
-      jobTitle: job?.title,
-      companyName: job?.companyName,
-      status: req.body.status,
-      interviewAt: application.interviewScheduledAt
-    }),
-    attachments
-  });
+  if (application.candidateUser?.email) {
+    sendEmailAsync({
+      to: application.candidateUser.email,
+      subject: statusEmail.subject,
+      text: statusEmail.text,
+      html: statusUpdateEmail({
+        candidateName: application.candidateUser?.name,
+        jobTitle: job?.title,
+        companyName: job?.companyName,
+        status: req.body.status,
+        interviewAt: application.interviewScheduledAt
+      }),
+      attachments
+    });
+  }
 
   res.json(apiResponse({
     message: 'Application status updated successfully',
@@ -651,25 +661,27 @@ const bookInterviewSlot = asyncHandler(async (req, res) => {
     }
   });
 
-  await sendEmail({
-    to: application.candidateUser.email,
-    subject: 'Interview slot confirmed',
-    text: `Your interview for ${application.job?.title || 'the role'} is confirmed on ${application.interviewScheduledAt?.toISOString()}.`,
-    attachments: [{
-      filename: 'HEXORA-interview-invite.ics',
-      content: buildInterviewCalendarInvite({
-        candidateName: application.candidateUser?.name,
-        companyName: application.job?.companyName,
-        jobTitle: application.job?.title,
-        scheduledAt: application.interviewScheduledAt,
-        interviewMode: application.interviewMode,
-        interviewLocation: application.interviewLocation,
-        interviewMeetingLink: application.interviewMeetingLink,
-        interviewNotes: application.interviewNotes
-      }),
-      contentType: 'text/calendar; method=REQUEST; charset=UTF-8'
-    }]
-  });
+  if (application.candidateUser?.email) {
+    sendEmailAsync({
+      to: application.candidateUser.email,
+      subject: 'Interview slot confirmed',
+      text: `Your interview for ${application.job?.title || 'the role'} is confirmed on ${application.interviewScheduledAt?.toISOString()}.`,
+      attachments: [{
+        filename: 'HEXORA-interview-invite.ics',
+        content: buildInterviewCalendarInvite({
+          candidateName: application.candidateUser?.name,
+          companyName: application.job?.companyName,
+          jobTitle: application.job?.title,
+          scheduledAt: application.interviewScheduledAt,
+          interviewMode: application.interviewMode,
+          interviewLocation: application.interviewLocation,
+          interviewMeetingLink: application.interviewMeetingLink,
+          interviewNotes: application.interviewNotes
+        }),
+        contentType: 'text/calendar; method=REQUEST; charset=UTF-8'
+      }]
+    });
+  }
 
   res.json(apiResponse({
     message: 'Interview slot booked successfully',
@@ -824,12 +836,12 @@ const sendApplicationMessage = asyncHandler(async (req, res) => {
     }
   });
 
-  if (recipient.email) {
+  if (recipient?.email) {
     const emailText = hasFile
       ? `${senderName} sent you a file: ${req.file.originalname}\n\nMessage: ${text || '(no text)'}`
       : `${senderName} sent you a message:\n\n${text}`;
 
-    await sendEmail({
+    sendEmailAsync({
       to: recipient.email,
       subject: `New message about ${application.job?.title || 'your application'}`,
       text: emailText

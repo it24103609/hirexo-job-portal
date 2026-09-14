@@ -11,7 +11,7 @@ const PlatformSetting = require('../models/PlatformSetting');
 const Offer = require('../models/Offer');
 const { JOB_REVIEW_STATUS, JOB_STATUS, ROLES, USER_STATUS, APPLICATION_STATUS } = require('../utils/constants');
 const { createNotification } = require('../services/notification.service');
-const { sendEmail } = require('../services/email.service');
+const { sendEmail, sendEmailAsync } = require('../services/email.service');
 const { jobApprovedEmail } = require('../utils/emailTemplates');
 
 const DEFAULT_AI_SCORING = {
@@ -183,7 +183,7 @@ const approveJob = asyncHandler(async (req, res) => {
     const employer = await EmployerProfile.findOne({ user: job.employerUser }).populate('user');
     const employerEmail = employer?.user?.email || (await User.findById(job.employerUser).select('email'))?.email;
     if (employerEmail) {
-      await sendEmail({
+      sendEmailAsync({
         to: employerEmail,
         subject: 'Job approved',
         text: `Your job ${job.title} has been approved.`,

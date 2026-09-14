@@ -11,7 +11,7 @@ const { ROLES, USER_STATUS, NOTIFICATION_TYPES } = require('../utils/constants')
 const { signAccessToken, signRefreshToken, verifyRefreshToken } = require('../utils/jwt');
 const { createUniqueSlug } = require('../utils/slug');
 const { createNotification } = require('../services/notification.service');
-const { sendEmail } = require('../services/email.service');
+const { sendEmail, sendEmailAsync } = require('../services/email.service');
 const { env } = require('../config/env');
 const { welcomeEmail, passwordResetEmail } = require('../utils/emailTemplates');
 
@@ -48,33 +48,54 @@ function getCookieOptions(maxAge) {
   };
 }
 
-function signOAuthState(nonce) {
+function signOAuthState(data) {
+  const secret = env.oauthStateSecret || 'hexora_oauth_state_fallback_secret';
   return crypto
-    .createHmac('sha256', env.oauthStateSecret)
-    .update(nonce)
+    .createHmac('sha256', secret)
+    .update(data)
     .digest('hex');
 }
 
-function buildOAuthState(nonce) {
-  return `${nonce}.${signOAuthState(nonce)}`;
+function buildOAuthState() {
+  const timestamp = Date.now();
+  const nonce = crypto.randomBytes(16).toString('hex');
+  const payload = `${timestamp}_${nonce}`;
+  const signature = signOAuthState(payload);
+  return `${payload}.${signature}`;
 }
 
-function verifyOAuthStateValue(state, nonce) {
-  if (!state || !nonce || !state.includes('.')) {
+function verifyOAuthStateValue(state) {
+  if (!state || typeof state !== 'string' || !state.includes('.')) {
     return false;
   }
 
-  const [stateNonce, signature] = state.split('.');
-  if (stateNonce !== nonce) {
+  const [payload, signature] = state.split('.');
+  if (!payload || !signature) {
     return false;
   }
 
-  const expectedSignature = signOAuthState(nonce);
+  const expectedSignature = signOAuthState(payload);
   if (signature.length !== expectedSignature.length) {
     return false;
   }
 
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+  const isMatch = crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature));
+  if (!isMatch) {
+    return false;
+  }
+
+  const [timestampStr] = payload.split('_');
+  const timestamp = Number(timestampStr);
+  if (!timestamp || Number.isNaN(timestamp)) {
+    return false;
+  }
+
+  const maxAgeMs = 10 * 60 * 1000;
+  if (Date.now() - timestamp > maxAgeMs || timestamp > Date.now() + 60000) {
+    return false;
+  }
+
+  return true;
 }
 
 function createPasswordResetToken() {
@@ -90,23 +111,19 @@ function createPasswordResetToken() {
 }
 
 const createOAuthState = asyncHandler(async (req, res, next) => {
-  if (!env.oauthStateSecret) {
-    throw new AppError('OAuth state signing is not configured.', 500);
-  }
-
-  const nonce = crypto.randomBytes(24).toString('hex');
-  req.oauthState = buildOAuthState(nonce);
+  req.oauthState = buildOAuthState();
+  const [payload] = req.oauthState.split('.');
+  const [, nonce] = payload.split('_');
   res.cookie(OAUTH_STATE_COOKIE, nonce, getCookieOptions(10 * 60 * 1000));
   next();
 });
 
 const verifyOAuthState = asyncHandler(async (req, res, next) => {
-  const nonce = req.cookies?.[OAUTH_STATE_COOKIE];
-  const isValid = verifyOAuthStateValue(String(req.query.state || ''), nonce);
+  const isValid = verifyOAuthStateValue(String(req.query.state || ''));
   res.clearCookie(OAUTH_STATE_COOKIE, getCookieOptions(0));
 
   if (!isValid) {
-    throw new AppError('Invalid OAuth state. Please try signing in again.', 401);
+    throw new AppError('Invalid or expired OAuth session state. Please try signing in again.', 401);
   }
 
   next();
@@ -167,7 +184,8 @@ async function verifyRecaptchaToken(recaptchaToken) {
     const { data } = await axios.post('https://www.google.com/recaptcha/api/siteverify', params, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
-      }
+      },
+      timeout: 3000
     });
 
     if (!data?.success) {
@@ -219,7 +237,7 @@ const registerCandidate = asyncHandler(async (req, res) => {
     message: 'Your candidate account has been created successfully.'
   });
 
-  await sendEmail({
+  sendEmailAsync({
     to: user.email,
     subject: 'Welcome to HEXORA',
     text: 'Your candidate account is ready. Complete your profile and start applying for jobs.',
@@ -279,7 +297,7 @@ const registerEmployer = asyncHandler(async (req, res) => {
     message: 'Your employer profile has been created. Complete your company profile to start posting jobs.'
   });
 
-  await sendEmail({
+  sendEmailAsync({
     to: user.email,
     subject: 'Employer account created',
     text: 'Your employer account is ready. Complete your company profile to start posting jobs.',

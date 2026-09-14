@@ -61,6 +61,15 @@ async function sendEmail({ to, subject, html, text, attachments = [] }) {
   }
 }
 
+function sendEmailAsync(options) {
+  setImmediate(() => {
+    sendEmail(options).catch((err) => {
+      console.error('[AsyncEmailError]', err?.message || err);
+    });
+  });
+}
+
 module.exports = {
-  sendEmail
+  sendEmail,
+  sendEmailAsync
 };
