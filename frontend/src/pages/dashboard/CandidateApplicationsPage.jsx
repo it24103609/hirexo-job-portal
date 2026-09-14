@@ -20,8 +20,10 @@ function getStatusMeta(status = '') {
   const key = String(status).toLowerCase();
   if (key === 'hired') return { label: 'Hired', tone: 'success' };
   if (key === 'shortlisted') return { label: 'Shortlisted', tone: 'success' };
-  if (key === 'interview' || key === 'interview_scheduled') return { label: 'Interview scheduled', tone: 'success' };
+  if (key === 'interview' || key === 'interview_scheduled') return { label: 'Interview Scheduled', tone: 'success' };
+  if (key === 'reviewed') return { label: 'Reviewed', tone: 'neutral' };
   if (key === 'rejected') return { label: 'Rejected', tone: 'danger' };
+  if (key === 'pending') return { label: 'Pending', tone: 'neutral' };
   return { label: 'Applied', tone: 'neutral' };
 }
 

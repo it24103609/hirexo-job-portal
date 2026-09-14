@@ -1,3 +1,5 @@
+const { analyzeResumeAts } = require('./resumeParser');
+
 const DEFAULT_AI_SCORING = {
   skillsWeight: 60,
   experienceWeight: 20,
@@ -28,6 +30,12 @@ function calculateAtsScore(application = {}, profile = {}) {
   ];
 
   return checks.reduce((score, [isPresent, weight]) => score + (isPresent ? weight : 0), 0);
+}
+
+async function calculateAtsScoreAsync(application = {}, profile = {}, job = {}) {
+  const resumeFilePath = application.resumeSnapshot?.filePath || profile.resume?.filePath;
+  const analysis = await analyzeResumeAts(resumeFilePath, profile, job);
+  return analysis;
 }
 
 function resolveExperienceTarget(experienceLevel = '') {
@@ -172,6 +180,8 @@ function buildAiExplanation(job, profile = {}, scoringConfig = DEFAULT_AI_SCORIN
 module.exports = {
   DEFAULT_AI_SCORING,
   calculateAtsScore,
+  calculateAtsScoreAsync,
   calculateAiFit,
   buildAiExplanation
 };
+

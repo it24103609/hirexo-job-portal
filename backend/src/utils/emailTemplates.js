@@ -170,18 +170,55 @@ function jobApprovedEmail({ employerName, jobTitle, companyName, jobId }) {
 }
 
 function statusUpdateEmail({ candidateName, jobTitle, companyName, status, interviewAt }) {
+  const normalizedStatus = String(status || 'updated').toLowerCase();
   const statusText = String(status || 'updated').replace(/_/g, ' ');
+
+  if (normalizedStatus === 'hired') {
+    return renderPremiumEmail({
+      eyebrow: 'Hiring Offer Confirmed',
+      title: `Congratulations! You are Hired for ${jobTitle || 'the position'}! 🎉`,
+      badge: 'Hired 🎉',
+      intro: `Hi ${candidateName || 'there'}, congratulations! We are thrilled to inform you that ${companyName || 'the employer'} has selected you for the position of ${jobTitle || 'the role'}. You are officially hired!`,
+      details: [
+        { label: 'Role', value: jobTitle },
+        { label: 'Company', value: companyName || 'Employer' },
+        { label: 'Status', value: 'Hired' },
+        { label: 'Next Step', value: 'Employer will contact you with onboarding details' }
+      ],
+      ctaLabel: 'View Application Details',
+      ctaUrl: absoluteUrl('/candidate/applications'),
+      note: 'Congratulations on taking the next big step in your career with HEXORA!'
+    });
+  }
+
+  if (normalizedStatus === 'shortlisted') {
+    return renderPremiumEmail({
+      eyebrow: 'Application Shortlisted',
+      title: `Great news! You are Shortlisted for ${jobTitle || 'the role'}`,
+      badge: 'Shortlisted ⭐',
+      intro: `Hi ${candidateName || 'there'}, your application for ${jobTitle || 'the role'} at ${companyName || 'the company'} has been shortlisted by the hiring team.`,
+      details: [
+        { label: 'Role', value: jobTitle },
+        { label: 'Company', value: companyName || 'Employer' },
+        { label: 'Status', value: 'Shortlisted' }
+      ],
+      ctaLabel: 'Track Application',
+      ctaUrl: absoluteUrl('/candidate/applications'),
+      note: 'The hiring team will reach out soon regarding interview slot scheduling.'
+    });
+  }
+
   return renderPremiumEmail({
     eyebrow: 'Application update',
-    title: `Your application is ${statusText}`,
+    title: `Your application status: ${statusText}`,
     badge: statusText,
-    intro: `Hi ${candidateName || 'there'}, there is a new update for your ${jobTitle || 'job'} application.`,
+    intro: `Hi ${candidateName || 'there'}, there is a new update for your ${jobTitle || 'job'} application at ${companyName || 'the company'}.`,
     details: [
       { label: 'Role', value: jobTitle },
       { label: 'Company', value: companyName || 'Employer' },
       { label: 'Status', value: statusText },
       { label: 'Interview time', value: interviewAt ? new Date(interviewAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : '' }
-    ],
+    ].filter((item) => item.value),
     ctaLabel: 'Open application',
     ctaUrl: absoluteUrl('/candidate/applications'),
     note: status === 'interview_scheduled'

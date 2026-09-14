@@ -27,9 +27,10 @@ const {
   pushInterviewTimeline
 } = require('../utils/interviewWorkflow');
 const { assertValidStatusTransition, parseFutureDate } = require('../utils/applicationWorkflow');
-const { DEFAULT_AI_SCORING, calculateAtsScore, buildAiExplanation } = require('../utils/aiScoring');
+const { DEFAULT_AI_SCORING, calculateAtsScore, calculateAtsScoreAsync, buildAiExplanation } = require('../utils/aiScoring');
 const { createNotification, notifyAdmins } = require('../services/notification.service');
 const { sendEmail } = require('../services/email.service');
+const { statusUpdateEmail } = require('../utils/emailTemplates');
 const { NOTIFICATION_TYPES, APPLICATION_STATUS } = require('../utils/constants');
 
 async function getAiScoringSettings() {
@@ -171,39 +172,39 @@ function serializeCalendarEvent(application) {
   });
 }
 
-function buildStatusEmail(status, interviewAt) {
+function buildStatusEmail(status, interviewAt, jobTitle, companyName) {
   if (status === APPLICATION_STATUS.SHORTLISTED) {
     return {
-      subject: 'Application shortlisted',
-      text: 'Great news! Your job application has been shortlisted.'
+      subject: `Application shortlisted - ${jobTitle || 'HEXORA'}`,
+      text: `Great news! Your job application for ${jobTitle || 'the role'} at ${companyName || 'the company'} has been shortlisted.`
     };
   }
 
   if (status === APPLICATION_STATUS.REJECTED) {
     return {
-      subject: 'Application update',
-      text: 'Your job application status has been updated to rejected.'
+      subject: `Application update - ${jobTitle || 'HEXORA'}`,
+      text: `Your job application status for ${jobTitle || 'the role'} has been updated to rejected.`
     };
   }
 
   if (status === APPLICATION_STATUS.HIRED) {
     return {
-      subject: 'Offer progression update',
-      text: 'Congratulations! Your application has been moved to hired.'
+      subject: `Congratulations! You are Hired for ${jobTitle || 'the position'} at ${companyName || 'HEXORA'} 🎉`,
+      text: `Congratulations! Your application for ${jobTitle || 'the role'} at ${companyName || 'the company'} has been accepted and you have been hired!`
     };
   }
 
   if (status === APPLICATION_STATUS.INTERVIEW_SCHEDULED) {
-    const whenText = interviewAt ? ` on ${new Date(interviewAt).toISOString()}` : '';
+    const whenText = interviewAt ? ` on ${new Date(interviewAt).toLocaleString()}` : '';
     return {
-      subject: 'Interview scheduled',
-      text: `Your interview has been scheduled${whenText}.`
+      subject: `Interview scheduled - ${jobTitle || 'HEXORA'}`,
+      text: `Your interview for ${jobTitle || 'the role'} at ${companyName || 'the company'} has been scheduled${whenText}.`
     };
   }
 
   return {
-    subject: 'Application status updated',
-    text: `Your application status changed to ${status}.`
+    subject: `Application status updated - ${jobTitle || 'HEXORA'}`,
+    text: `Your application status for ${jobTitle || 'the role'} changed to ${status}.`
   };
 }
 
@@ -405,25 +406,29 @@ const listJobApplicants = asyncHandler(async (req, res) => {
     return true;
   };
 
-  const enriched = applications
-    .map((application) => {
+  const enriched = await Promise.all(
+    applications.map(async (application) => {
       const asObject = application.toObject();
       const candidateProfile = profileMap.get(String(asObject.candidateUser?._id)) || null;
       const aiFit = buildAiExplanation(job, candidateProfile || {}, aiScoringSettings);
+      const atsAnalysis = await calculateAtsScoreAsync(asObject, candidateProfile || {}, job);
 
       return {
         ...asObject,
         candidateProfile,
-        atsScore: calculateAtsScore(asObject, candidateProfile || {}),
+        atsScore: atsAnalysis.atsScore,
+        atsDetails: atsAnalysis,
         aiMatchScore: aiFit.score,
         aiMatchLabel: aiFit.label,
         aiMatchBreakdown: aiFit.breakdown,
         aiMatchExplanation: aiFit
       };
     })
-    .filter(matchesFilters);
+  );
 
-  const sorted = [...enriched].sort((left, right) => {
+  const filteredEnriched = enriched.filter(matchesFilters);
+
+  const sorted = [...filteredEnriched].sort((left, right) => {
     if (String(sortBy).toLowerCase() === 'recent') {
       return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
     }
@@ -566,7 +571,7 @@ const bookApplicationSlot = asyncHandler(async (req, res) => {
   await application.save();
 
   const job = await Job.findById(application.job).select('title companyName').lean();
-  const statusEmail = buildStatusEmail(APPLICATION_STATUS.INTERVIEW_SCHEDULED, application.interviewScheduledAt);
+  const statusEmail = buildStatusEmail(APPLICATION_STATUS.INTERVIEW_SCHEDULED, application.interviewScheduledAt, job?.title, job?.companyName);
 
   await createNotification({
     userId: application.candidateUser._id,
@@ -607,6 +612,13 @@ const bookApplicationSlot = asyncHandler(async (req, res) => {
     to: application.candidateUser.email,
     subject: statusEmail.subject,
     text: statusEmail.text,
+    html: statusUpdateEmail({
+      candidateName: application.candidateUser?.name,
+      jobTitle: job?.title,
+      companyName: job?.companyName,
+      status: APPLICATION_STATUS.INTERVIEW_SCHEDULED,
+      interviewAt: application.interviewScheduledAt
+    }),
     attachments: [{
       filename: 'HEXORA-interview-invite.ics',
       content: buildInterviewCalendarInvite({
@@ -753,8 +765,8 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
     });
   }
 
-  const statusEmail = buildStatusEmail(status, application.interviewScheduledAt);
   const job = await Job.findById(application.job).select('title companyName').lean();
+  const statusEmail = buildStatusEmail(status, application.interviewScheduledAt, job?.title, job?.companyName);
 
   await notifyAdmins({
     type: status === APPLICATION_STATUS.INTERVIEW_SCHEDULED ? NOTIFICATION_TYPES.INTERVIEW : NOTIFICATION_TYPES.STATUS_UPDATE,
@@ -805,6 +817,13 @@ const updateApplicantStatus = asyncHandler(async (req, res) => {
     to: application.candidateUser.email,
     subject: statusEmail.subject,
     text: statusEmail.text,
+    html: statusUpdateEmail({
+      candidateName: application.candidateUser?.name,
+      jobTitle: job?.title,
+      companyName: job?.companyName,
+      status,
+      interviewAt: application.interviewScheduledAt
+    }),
     attachments
   });
 

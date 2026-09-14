@@ -1,47 +1,13 @@
 const AppError = require('./AppError');
 const { APPLICATION_STATUS } = require('./constants');
 
-const FINAL_STATUSES = new Set([
-  APPLICATION_STATUS.HIRED,
-  APPLICATION_STATUS.REJECTED
-]);
-
-const ALLOWED_STATUS_TRANSITIONS = Object.freeze({
-  [APPLICATION_STATUS.PENDING]: [
-    APPLICATION_STATUS.REVIEWED,
-    APPLICATION_STATUS.SHORTLISTED,
-    APPLICATION_STATUS.INTERVIEW_SCHEDULED,
-    APPLICATION_STATUS.REJECTED
-  ],
-  [APPLICATION_STATUS.REVIEWED]: [
-    APPLICATION_STATUS.SHORTLISTED,
-    APPLICATION_STATUS.INTERVIEW_SCHEDULED,
-    APPLICATION_STATUS.REJECTED
-  ],
-  [APPLICATION_STATUS.SHORTLISTED]: [
-    APPLICATION_STATUS.INTERVIEW_SCHEDULED,
-    APPLICATION_STATUS.HIRED,
-    APPLICATION_STATUS.REJECTED
-  ],
-  [APPLICATION_STATUS.INTERVIEW_SCHEDULED]: [
-    APPLICATION_STATUS.SHORTLISTED,
-    APPLICATION_STATUS.HIRED,
-    APPLICATION_STATUS.REJECTED
-  ],
-  [APPLICATION_STATUS.HIRED]: [],
-  [APPLICATION_STATUS.REJECTED]: []
-});
+const VALID_STATUSES = new Set(Object.values(APPLICATION_STATUS));
 
 function assertValidStatusTransition(currentStatus, nextStatus) {
   if (currentStatus === nextStatus) return;
 
-  if (FINAL_STATUSES.has(currentStatus)) {
-    throw new AppError(`Cannot move application from final status ${currentStatus}`, 400);
-  }
-
-  const allowed = ALLOWED_STATUS_TRANSITIONS[currentStatus] || [];
-  if (!allowed.includes(nextStatus)) {
-    throw new AppError(`Invalid application status transition from ${currentStatus} to ${nextStatus}`, 400);
+  if (!VALID_STATUSES.has(nextStatus)) {
+    throw new AppError(`Invalid application status: ${nextStatus}`, 400);
   }
 }
 
