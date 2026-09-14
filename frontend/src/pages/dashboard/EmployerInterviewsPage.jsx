@@ -147,7 +147,14 @@ export default function EmployerInterviewsPage() {
     const query = String(search || '').trim().toLowerCase();
     return applications.filter((application) => {
       const matchesStatus = statusFilter === 'all'
-        || (application.interviewRounds || []).some((round) => String(round.status || '').toLowerCase() === statusFilter);
+        || (application.interviewRounds || []).some((round) => {
+          const roundStatus = String(round.status || '').toLowerCase();
+          if (statusFilter === 'draft') return roundStatus === 'draft' || roundStatus === 'pending' || !roundStatus;
+          if (statusFilter === 'slots_shared') return roundStatus === 'slots_shared' || Boolean(round.interviewSlots?.length);
+          if (statusFilter === 'reschedule_requested') return roundStatus === 'reschedule_requested' || Boolean(round.rescheduleRequestedAt) || Boolean(round.rescheduleRequestReason);
+          return roundStatus === statusFilter;
+        });
+
       const roundText = (application.interviewRounds || []).flatMap((round) => [
         round.roundName,
         round.status,
@@ -157,7 +164,7 @@ export default function EmployerInterviewsPage() {
         ...(round.panelInterviewers || []).flatMap((item) => [item.name, item.email, item.title])
       ]);
 
-      return [
+      const matchesQuery = !query || [
         application.candidateUser?.name,
         application.candidateUser?.email,
         application.job?.title,
@@ -166,11 +173,33 @@ export default function EmployerInterviewsPage() {
         ...roundText
       ].some((value) => String(value || '').toLowerCase().includes(query));
 
-      return matchesStatus && (!query || matchesQuery);
+      return matchesStatus && matchesQuery;
     });
   }, [applications, search, statusFilter]);
 
-  const groupedCalendar = useMemo(() => groupCalendarEvents(calendarEvents), [calendarEvents]);
+  const filteredCalendarEvents = useMemo(() => {
+    const query = String(search || '').trim().toLowerCase();
+    return calendarEvents.filter((event) => {
+      const eventStatus = String(event.status || '').toLowerCase();
+      const matchesStatus = statusFilter === 'all'
+        || eventStatus === statusFilter
+        || (statusFilter === 'reschedule_requested' && eventStatus === 'reschedule_requested')
+        || (statusFilter === 'slots_shared' && event.type === 'slot');
+
+      const matchesQuery = !query || [
+        event.candidateName,
+        event.roundName,
+        event.jobTitle,
+        event.location,
+        event.status,
+        event.mode
+      ].some((value) => String(value || '').toLowerCase().includes(query));
+
+      return matchesStatus && matchesQuery;
+    });
+  }, [calendarEvents, search, statusFilter]);
+
+  const groupedCalendar = useMemo(() => groupCalendarEvents(filteredCalendarEvents), [filteredCalendarEvents]);
 
   const setNewRoundField = (applicationId, key, value) => {
     setNewRoundForms((current) => ({
