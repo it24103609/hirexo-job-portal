@@ -547,7 +547,7 @@ export default function EmployerApplicantsPage() {
                           </Select>
                         </div>
                         <div className="employer-action-buttons-group">
-                          {application.status === 'interview_scheduled' ? (
+                          {['shortlisted', 'interview_scheduled'].includes(application.status) ? (
                             <Button size="sm" variant="secondary" className="employer-btn-compact" onClick={() => openSlotPlanner(application)} title="Manage Interview Slots">
                               <CalendarPlus size={13} /> Slots
                             </Button>

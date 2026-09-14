@@ -35,27 +35,23 @@ function createRoundPayload({
 }
 
 function ensureInterviewRounds(application) {
-  if (Array.isArray(application.interviewRounds) && application.interviewRounds.length) {
-    return application.interviewRounds;
-  }
-
-  const hasLegacyInterviewData = application.interviewScheduledAt || application.interviewSlots?.length;
-  if (!hasLegacyInterviewData) {
+  if (!Array.isArray(application.interviewRounds)) {
     application.interviewRounds = [];
-    return application.interviewRounds;
   }
 
-  application.interviewRounds = [createRoundPayload({
-    roundName: 'Interview Round 1',
-    order: 1,
-    status: application.interviewScheduledAt ? 'scheduled' : application.interviewSlots?.length ? 'slots_shared' : 'draft',
-    scheduledAt: application.interviewScheduledAt,
-    mode: application.interviewMode || 'video',
-    location: application.interviewLocation || '',
-    meetingLink: application.interviewMeetingLink || '',
-    notes: application.interviewNotes || '',
-    interviewSlots: application.interviewSlots || []
-  })];
+  if (!application.interviewRounds.length) {
+    application.interviewRounds.push(createRoundPayload({
+      roundName: 'Interview Round 1',
+      order: 1,
+      status: application.interviewScheduledAt ? 'scheduled' : application.interviewSlots?.length ? 'slots_shared' : 'draft',
+      scheduledAt: application.interviewScheduledAt,
+      mode: application.interviewMode || 'video',
+      location: application.interviewLocation || '',
+      meetingLink: application.interviewMeetingLink || '',
+      notes: application.interviewNotes || '',
+      interviewSlots: application.interviewSlots || []
+    }));
+  }
 
   return application.interviewRounds;
 }

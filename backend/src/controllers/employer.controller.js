@@ -485,8 +485,10 @@ const saveApplicationSlots = asyncHandler(async (req, res) => {
   round.mode = req.body.mode || round.mode || 'video';
   round.location = req.body.location || round.location || '';
   round.meetingLink = req.body.meetingLink || round.meetingLink || '';
-  round.notes = req.body.notes || round.notes || '';
-  round.panelInterviewers = normalizePanelInterviewers(req.body.panelInterviewers || round.panelInterviewers || []);
+  if (['pending', 'reviewed', 'shortlisted'].includes(application.status)) {
+    application.status = APPLICATION_STATUS.INTERVIEW_SCHEDULED;
+  }
+
   syncLegacyInterviewFields(application);
   pushInterviewTimeline(application, {
     action: 'slots_shared',
