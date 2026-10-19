@@ -31,7 +31,7 @@ function renderPremiumEmail({
   ctaLabel,
   ctaUrl,
   note,
-  footer = 'HEXORA GLOBAL GROUP'
+  footer = 'HEXORA GLOBAL CORPORATION'
 }) {
   const rows = details
     .map((item) => detailRow(item.label, item.value))
@@ -111,7 +111,7 @@ function defaultTextToHtml({ subject, text }) {
     title: subject || 'HEXORA notification',
     intro: 'You have a new update from HEXORA.',
     note: '',
-    footer: 'HEXORA GLOBAL GROUP'
+    footer: 'HEXORA GLOBAL CORPORATION'
   }).replace(
     /<p style="margin:0;color:#475467;font-size:15px;line-height:1.75;">[^<]*<\/p>/,
     paragraphs || `<p style="margin:0;color:#475467;font-size:15px;line-height:1.75;">${escapeHtml(text || 'You have a new notification from HEXORA.')}</p>`

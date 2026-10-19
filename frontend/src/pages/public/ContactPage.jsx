@@ -25,7 +25,7 @@ export default function ContactPage() {
 
   return (
     <div>
-      <Seo title="Contact HEXORA GLOBAL GROUP" description="Contact HEXORA GLOBAL GROUP (PVT) LTD for questions about talent, HR consulting, global trade, foods, and business solutions." />
+      <Seo title="Contact HEXORA GLOBAL CORPORATION" description="Contact HEXORA GLOBAL CORPORATION (PVT) LTD for questions about talent, HR consulting, global trade, foods, and business solutions." />
       
       {/* Hero Section */}
       <section className="contact-hero-shell">
@@ -34,10 +34,10 @@ export default function ContactPage() {
         
         <div className="shell">
           <div className="contact-hero-content">
-            <span className="contact-badge">HEXORA GLOBAL GROUP (PVT) LTD</span>
+            <span className="contact-badge">HEXORA GLOBAL CORPORATION (PVT) LTD</span>
             <h1>Let's start the right conversation</h1>
             <p className="contact-hero-subtitle">
-              HEXORA GLOBAL GROUP is a diversified Sri Lankan business group building and operating businesses
+              HEXORA GLOBAL CORPORATION is a diversified Sri Lankan business group building and operating businesses
               across talent, human resources, trade, consumer products, and business solutions.
               <br />
               Reach out for partnership inquiries, division-specific questions, or general group information.

@@ -28,7 +28,7 @@ export default function Footer() {
               <BrandIdentity subtitle="GLOBAL GROUP (PVT) LTD" compact />
             </div>
             <p className="footer-summary">
-              HEXORA GLOBAL GROUP (PVT) LTD is a diversified Sri Lankan business group operating across talent,
+              HEXORA GLOBAL CORPORATION (PVT) LTD is a diversified Sri Lankan business group operating across talent,
               human resources, trade, consumer products, and business solutions.
             </p>
             <div className="footer-contact-list">
@@ -91,8 +91,8 @@ export default function Footer() {
         <div className="footer-divider" />
 
         <div className="footer-bottom">
-          <span className="footer-copyright">&copy; 2026 HEXORA GLOBAL GROUP (PVT) LTD. All Rights Reserved.</span>
-          <span className="footer-bottom-slogan">HEXORA GLOBAL GROUP is a diversified Sri Lankan business group building and operating businesses across talent, human resources, trade, consumer products, and business solutions.</span>
+          <span className="footer-copyright">&copy; 2026 HEXORA GLOBAL CORPORATION (PVT) LTD. All Rights Reserved.</span>
+          <span className="footer-bottom-slogan">HEXORA GLOBAL CORPORATION is a diversified Sri Lankan business group building and operating businesses across talent, human resources, trade, consumer products, and business solutions.</span>
         </div>
       </div>
     </footer>

@@ -111,7 +111,7 @@ export default function TalentPage() {
     <>
       <Seo
         title="HEXORA TALENT | Talent & Staffing Division"
-        description="HEXORA TALENT is the talent and staffing division of HEXORA GLOBAL GROUP, supporting employers and candidates with structured hiring solutions."
+        description="HEXORA TALENT is the talent and staffing division of HEXORA GLOBAL CORPORATION, supporting employers and candidates with structured hiring solutions."
       />
 
       <section className="services-hero-shell">
@@ -130,10 +130,10 @@ export default function TalentPage() {
             <span className="services-badge">
               <Sparkles size={15} /> HEXORA TALENT
             </span>
-            <h1>Connecting talent with opportunity, under HEXORA GLOBAL GROUP.</h1>
+            <h1>Connecting talent with opportunity, under HEXORA GLOBAL CORPORATION.</h1>
             <p className="division-tagline">Talent & Staffing Division</p>
             <p className="division-desc">
-              HEXORA TALENT is the talent and staffing division of HEXORA GLOBAL GROUP. We support employers
+              HEXORA TALENT is the talent and staffing division of HEXORA GLOBAL CORPORATION. We support employers
               with structured hiring and help candidates move toward the right next step in their careers.
             </p>
             <div className="services-hero-ctas">
@@ -153,7 +153,7 @@ export default function TalentPage() {
           <div className="services-section-header">
             <span className="services-section-badge">Overview</span>
             <h2>Watch Our <span>Company Overview</span></h2>
-            <p>Learn more about HEXORA TALENT and the wider HEXORA GLOBAL GROUP.</p>
+            <p>Learn more about HEXORA TALENT and the wider HEXORA GLOBAL CORPORATION.</p>
           </div>
           <div className="services-overview-block">
             <div className="services-video-card services-overview-video" aria-label="HEXORA company overview video">
@@ -168,7 +168,7 @@ export default function TalentPage() {
               <span>About Us</span>
               <h3>One group, with one focused talent division</h3>
               <p>
-                HEXORA GLOBAL GROUP operates through focused business divisions, and HEXORA TALENT carries the
+                HEXORA GLOBAL CORPORATION operates through focused business divisions, and HEXORA TALENT carries the
                 recruitment and staffing responsibility for the group.
               </p>
               <ul>

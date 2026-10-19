@@ -74,7 +74,7 @@ const config = {
     'Food Ingredients',
     'Logistics & Supply Chain'
   ],
-  clients: ['Exporters', 'Importers', 'Manufacturers', 'Distributors', 'SMEs', 'Corporations'],
+  clients: ['Exporters', 'Importers', 'Manufacturers', 'Distributors', 'SMEs', 'CORPORATIONs'],
   testimonials: [
     'HEXORA helped us source quality products from reliable global suppliers.',
     'Their trade facilitation made our international expansion seamless.',

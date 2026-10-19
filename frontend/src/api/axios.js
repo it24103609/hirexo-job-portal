@@ -10,18 +10,8 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('HEXORA_access_token');
 
-  console.log('====================');
-  console.log('REQUEST URL:', config.url);
-  console.log('TOKEN:', token);
-  console.log('====================');
-
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-
-    console.log(
-      'AUTH HEADER:',
-      config.headers.Authorization
-    );
   }
 
   return config;
@@ -30,8 +20,6 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log('API ERROR:', error?.response);
-    
     let message =
       error?.response?.data?.message ||
       error.message ||

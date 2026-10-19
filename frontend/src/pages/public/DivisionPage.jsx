@@ -251,7 +251,7 @@ export default function DivisionPage({ config }) {
               <span>About Us</span>
               <h3>A diversified business group delivering excellence</h3>
               <p>
-                HEXORA GLOBAL GROUP (PVT) LTD operates through focused business divisions, providing
+                HEXORA GLOBAL CORPORATION (PVT) LTD operates through focused business divisions, providing
                 comprehensive solutions across multiple industries.
               </p>
               <motion.ul variants={stagger}>
@@ -428,7 +428,7 @@ export default function DivisionPage({ config }) {
           variants={stagger}
         >
           <motion.h2 variants={fadeUp}>Get In Touch</motion.h2>
-          <motion.p variants={fadeUp}>Ready to grow your business with HEXORA GLOBAL GROUP?</motion.p>
+          <motion.p variants={fadeUp}>Ready to grow your business with HEXORA GLOBAL CORPORATION?</motion.p>
           <motion.div className="dp-contact-info" variants={fadeUp}>
             <span className="dp-contact-chip"><Phone size={16} /> +94 77 319 1832</span>
             <span className="dp-contact-chip"><Mail size={16} /> hrm4921@gmail.com</span>

@@ -66,6 +66,19 @@ const resumeUpload = multer({
   limits: { fileSize: env.maxFileSize }
 });
 
+// Employer CVs are persisted in MongoDB, so no temporary disk file is needed.
+const employerCvUpload = multer({
+  storage: multer.memoryStorage(),
+  fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+    files: 1,
+    fields: 4,
+    fieldSize: 1024,
+    fieldNameSize: 50
+  }
+});
+
 const profilePictureUpload = multer({
   storage,
   fileFilter: imageFileFilter,
@@ -80,6 +93,7 @@ const messageAttachmentUpload = multer({
 
 module.exports = {
   resumeUpload,
+  employerCvUpload,
   profilePictureUpload,
   messageAttachmentUpload,
   uploadRoot

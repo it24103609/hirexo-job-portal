@@ -18,17 +18,17 @@ export default function AboutPage() {
   return (
     <>
       <Seo
-        title="About Us | HEXORA GLOBAL GROUP"
-        description="Learn about HEXORA GLOBAL GROUP (PVT) LTD - a diversified Sri Lankan business group operating across talent, HR consulting, global trade, foods, and business solutions."
+        title="About Us | HEXORA GLOBAL CORPORATION"
+        description="Learn about HEXORA GLOBAL CORPORATION (PVT) LTD - a diversified Sri Lankan business group operating across talent, HR consulting, global trade, foods, and business solutions."
       />
 
       <section className="about-hero-section">
         <div className="about-hero-ambient" aria-hidden="true" />
         <div className="shell about-hero-content">
-          <h1>HEXORA GLOBAL GROUP (PVT) LTD</h1>
+          <h1>HEXORA GLOBAL CORPORATION (PVT) LTD</h1>
           <p className="about-hero-subtitle">One Group. Multiple Businesses. Global Opportunities.</p>
           <p className="about-hero-desc">
-            HEXORA GLOBAL GROUP is a diversified Sri Lankan business group building and operating businesses
+            HEXORA GLOBAL CORPORATION is a diversified Sri Lankan business group building and operating businesses
             across talent, human resources, trade, consumer products, and business solutions.
           </p>
           <p className="about-hero-desc">
@@ -53,7 +53,7 @@ export default function AboutPage() {
             <div className="about-section-badge">About Us</div>
             <h2>Who We Are</h2>
             <p>
-              HEXORA GLOBAL GROUP is a Sri Lankan-based business group committed to building resilient businesses
+              HEXORA GLOBAL CORPORATION is a Sri Lankan-based business group committed to building resilient businesses
               and practical solutions across multiple industries.
             </p>
             <p>
@@ -188,7 +188,7 @@ export default function AboutPage() {
             <h2>Let’s build what’s next.</h2>
             <p>
               Whether you need talent, strategic support, trade capability, or a long-term business partner,
-              HEXORA GLOBAL GROUP is ready to connect.
+              HEXORA GLOBAL CORPORATION is ready to connect.
             </p>
             <div className="about-contact-info">
               <span>

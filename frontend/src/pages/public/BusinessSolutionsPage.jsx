@@ -74,7 +74,7 @@ const config = {
     'Professional Services',
     'Construction'
   ],
-  clients: ['Startups', 'SMEs', 'Corporations', 'Financial Institutions', 'Tech Companies', 'Service Providers'],
+  clients: ['Startups', 'SMEs', 'CORPORATIONs', 'Financial Institutions', 'Tech Companies', 'Service Providers'],
   testimonials: [
     'HEXORA provided practical strategies that accelerated our business growth.',
     'Their startup advisory helped us secure the right market positioning.',

@@ -138,8 +138,8 @@ export default function ServicesPage() {
   return (
     <>
       <Seo
-        title="Our Businesses | HEXORA GLOBAL GROUP"
-        description="Explore the five business divisions of HEXORA GLOBAL GROUP, presented in a green premium layout with clear division visuals."
+        title="Our Businesses | HEXORA GLOBAL CORPORATION"
+        description="Explore the five business divisions of HEXORA GLOBAL CORPORATION, presented in a green premium layout with clear division visuals."
       />
 
       <section className="services-hero-shell">
@@ -156,11 +156,11 @@ export default function ServicesPage() {
         <div className="shell services-hero-grid">
           <div className="services-hero-copy">
             <span className="services-badge">
-              <Sparkles size={15} /> HEXORA GLOBAL GROUP
+              <Sparkles size={15} /> HEXORA GLOBAL CORPORATION
             </span>
             <h1>Our Businesses, designed as one connected green ecosystem.</h1>
             <p>
-              HEXORA GLOBAL GROUP brings together talent, HR support, global trade, foods, and business
+              HEXORA GLOBAL CORPORATION brings together talent, HR support, global trade, foods, and business
               solutions under one premium brand structure.
             </p>
             <p className="services-hero-note">
@@ -209,7 +209,7 @@ export default function ServicesPage() {
               <span>About Us</span>
               <h3>Built for growth across industries</h3>
               <p>
-                HEXORA GLOBAL GROUP is structured to operate across multiple markets with shared standards,
+                HEXORA GLOBAL CORPORATION is structured to operate across multiple markets with shared standards,
                 premium presentation, and long-term partnership thinking.
               </p>
               <ul>

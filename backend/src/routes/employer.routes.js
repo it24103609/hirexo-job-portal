@@ -1,7 +1,9 @@
 const router = require('express').Router();
 const employerController = require('../controllers/employer.controller');
+const employerCvController = require('../controllers/employerCv.controller');
 const { protect } = require('../middlewares/auth.middleware');
 const { authorizeRoles } = require('../middlewares/role.middleware');
+const { employerCvUpload, handleUploadErrors } = require('../middlewares/upload.middleware');
 const { ROLES } = require('../utils/constants');
 
 router.use(protect);
@@ -10,6 +12,10 @@ router.use(authorizeRoles(ROLES.EMPLOYER, ROLES.ADMIN));
 router.get('/profile', employerController.getProfile);
 router.patch('/profile', employerController.upsertProfile);
 router.get('/dashboard', employerController.dashboard);
+router.get('/cvs', employerCvController.listCvs);
+router.post('/cvs', employerCvUpload.single('cv'), handleUploadErrors, employerCvController.uploadCv);
+router.get('/cvs/:id/download', employerCvController.downloadCv);
+router.delete('/cvs/:id', employerCvController.deleteCv);
 router.get('/jobs', employerController.listMyJobs);
 router.get('/team', employerController.getHiringTeam);
 router.post('/team', employerController.upsertHiringTeamMember);

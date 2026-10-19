@@ -156,7 +156,7 @@ const applyForJob = asyncHandler(async (req, res) => {
 
   const [job, profile] = await Promise.all([
     Job.findOne({ ...jobFilter, reviewStatus: JOB_REVIEW_STATUS.APPROVED, status: JOB_STATUS.ACTIVE }),
-    CandidateProfile.findOne({ user: req.user._id }).select('resume').lean()
+    CandidateProfile.findOne({ user: req.user._id }).select('resume +resumeContent').lean()
   ]);
 
   if (!job) {
@@ -168,8 +168,18 @@ const applyForJob = asyncHandler(async (req, res) => {
     throw new AppError('You have already applied for this job', 400);
   }
 
-  if (!profile?.resume?.filePath) {
+  if (!profile?.resume?.fileName) {
     throw new AppError('Upload your resume before applying', 400);
+  }
+
+  // Keep the submitted PDF with the application even when the candidate later
+  // replaces their current resume or temporary upload storage is cleared.
+  const currentResumePath = resolveStoredFilePath(profile.resume.filePath);
+  const resumeContent = profile.resumeContent?.length
+    ? profile.resumeContent
+    : currentResumePath ? fs.readFileSync(currentResumePath) : null;
+  if (!resumeContent?.length) {
+    throw new AppError('Resume file is unavailable. Please upload it again before applying', 400);
   }
 
   const application = await Application.create({
@@ -183,7 +193,8 @@ const applyForJob = asyncHandler(async (req, res) => {
       fileName: profile.resume.fileName,
       filePath: profile.resume.filePath,
       size: profile.resume.size,
-      mimeType: profile.resume.mimeType
+      mimeType: profile.resume.mimeType,
+      content: resumeContent
     },
     status: APPLICATION_STATUS.PENDING
   });
@@ -339,31 +350,32 @@ const downloadApplicationResume = asyncHandler(async (req, res) => {
     throw new AppError('You cannot access this resume', 403);
   }
 
-  let resumePath = resolveStoredFilePath(application.resumeSnapshot?.filePath);
   let resumeFileName = application.resumeSnapshot?.fileName || 'resume.pdf';
-
-  if (!resumePath) {
-    const candidateProfile = await CandidateProfile.findOne({ user: application.candidateUser }).select('resume +resumeContent');
-    resumePath = resolveStoredFilePath(candidateProfile?.resume?.filePath);
-    resumeFileName = candidateProfile?.resume?.fileName || resumeFileName;
-
-    if (!resumePath && candidateProfile?.resumeContent?.length) {
-      res.type(candidateProfile.resume?.mimeType || 'application/pdf');
-      res.set('Content-Disposition', `attachment; filename="${resumeFileName.replace(/"/g, '')}"`);
-      return res.send(candidateProfile.resumeContent);
-    }
+  if (application.resumeSnapshot?.content?.length) {
+    res.attachment(resumeFileName).type(application.resumeSnapshot.mimeType || 'application/pdf');
+    return res.send(application.resumeSnapshot.content);
   }
 
-  if (!resumePath) {
-    if (application.resumeSnapshot?.content?.length) {
-      res.type(application.resumeSnapshot.mimeType || 'application/pdf');
-      res.set('Content-Disposition', `attachment; filename="${resumeFileName.replace(/"/g, '')}"`);
-      return res.send(application.resumeSnapshot.content);
-    }
-    throw new AppError('Resume file not found', 404);
+  const resumePath = resolveStoredFilePath(application.resumeSnapshot?.filePath);
+  if (resumePath) {
+    return res.download(resumePath, resumeFileName);
   }
 
-  res.download(resumePath, resumeFileName);
+  // Legacy applications may have saved only a path, so use the current resume
+  // when their original upload no longer exists.
+  const candidateProfile = await CandidateProfile.findOne({ user: application.candidateUser }).select('resume +resumeContent');
+  resumeFileName = candidateProfile?.resume?.fileName || resumeFileName;
+  if (candidateProfile?.resumeContent?.length) {
+    res.attachment(resumeFileName).type(candidateProfile.resume?.mimeType || 'application/pdf');
+    return res.send(candidateProfile.resumeContent);
+  }
+
+  const currentResumePath = resolveStoredFilePath(candidateProfile?.resume?.filePath);
+  if (currentResumePath) {
+    return res.download(currentResumePath, resumeFileName);
+  }
+
+  throw new AppError('Resume file not found', 404);
 });
 
 const updateApplicationStatus = asyncHandler(async (req, res) => {

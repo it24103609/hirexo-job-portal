@@ -75,7 +75,7 @@ const config = {
     'Hospitality',
     'Telecommunications'
   ],
-  clients: ['SMEs', 'Corporations', 'Financial Institutions', 'Manufacturing Firms', 'Service Providers', 'Tech Companies'],
+  clients: ['SMEs', 'CORPORATIONs', 'Financial Institutions', 'Manufacturing Firms', 'Service Providers', 'Tech Companies'],
   testimonials: [
     'Their HR consulting services streamlined our operations and improved productivity.',
     'Professional, responsive, and reliable HR partnership for our growing team.',

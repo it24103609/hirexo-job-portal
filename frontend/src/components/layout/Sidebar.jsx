@@ -44,6 +44,7 @@ const iconByPath = {
   '/employer/company-profile': Building2,
   '/employer/jobs': FolderKanban,
   '/employer/candidates': Users,
+  '/employer/cvs': FileText,
   '/employer/interviews': CalendarDays,
   '/employer/activity-calendar': CalendarDays,
   '/employer/approvals': ShieldCheck,
@@ -138,6 +139,7 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
       { label: 'Post Job', to: '/employer/jobs/new', icon: PlusSquare },
       { label: 'Manage Jobs', to: '/employer/jobs', icon: BriefcaseBusiness },
       { label: 'Applicants', to: '/employer/candidates', icon: Users },
+      { label: 'CV Library', to: '/employer/cvs', icon: FileText },
       { label: 'Interviews', to: '/employer/interviews', icon: CalendarDays },
       { label: 'Talent Pool', to: '/employer/talent-pool', icon: UserPlus },
       { label: 'Messages', to: '/employer/messages', icon: Mail },
@@ -153,6 +155,7 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
       if (entry.label === 'Dashboard') return links.some((link) => link.to === '/employer/dashboard');
       if (entry.label === 'Manage Jobs') return links.some((link) => link.to === '/employer/jobs');
       if (entry.label === 'Applicants') return true;
+      if (entry.label === 'CV Library') return links.some((link) => link.to === '/employer/cvs');
       if (entry.label === 'Analytics') return links.some((link) => link.to === '/employer/reports-center');
       if (entry.label === 'Interviews') return links.some((link) => link.to === '/employer/interviews');
       if (entry.label === 'Tracking') return links.some((link) => link.to === '/employer/activity-calendar');
@@ -176,7 +179,7 @@ export default function Sidebar({ role, isOpen = false, onNavigate = () => {} })
     const pick = (labels) => employerLinks.filter((link) => labels.includes(link.label));
     return [
       { key: 'overview', label: 'Overview', icon: LayoutDashboard, links: pick(['Dashboard']) },
-      { key: 'hire', label: 'Hire', icon: ListChecks, links: pick(['Post Job', 'Manage Jobs', 'Applicants', 'Interviews', 'Offers', 'Talent Pool']) },
+      { key: 'hire', label: 'Hire', icon: ListChecks, links: pick(['Post Job', 'Manage Jobs', 'Applicants', 'CV Library', 'Interviews', 'Offers', 'Talent Pool']) },
       { key: 'manage', label: 'Manage', icon: Users, links: pick(['Messages', 'Analytics', 'Hiring Team', 'Tracking', 'Approvals', 'Allocations']) },
       { key: 'company', label: 'Company', icon: Building2, links: pick(['Company Profile', 'Settings', 'Notifications']) }
     ].filter((group) => group.links.length);

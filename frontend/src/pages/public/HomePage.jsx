@@ -125,8 +125,8 @@ export default function HomePage() {
   return (
     <>
       <Seo
-        title="HEXORA GLOBAL GROUP | Diversified Business Ecosystem"
-        description="HEXORA GLOBAL GROUP is a diversified business group with 5 divisions spanning talent, HR consulting, global trade, foods, and business solutions."
+        title="HEXORA GLOBAL CORPORATION | Diversified Business Ecosystem"
+        description="HEXORA GLOBAL CORPORATION is a diversified business group with 5 divisions spanning talent, HR consulting, global trade, foods, and business solutions."
       />
 
       <section className="home-hero">
@@ -138,7 +138,7 @@ export default function HomePage() {
 
         <div className="shell home-hero-grid">
           <div className="home-hero-copy">
-            <h1 className="hero-main-heading">HEXORA GLOBAL GROUP (PVT) LTD</h1>
+            <h1 className="hero-main-heading">HEXORA GLOBAL CORPORATION (PVT) LTD</h1>
             <h3 className="hero-subheading">One Group. Multiple Businesses. Global Opportunities.</h3>
             <p className="hero-description">
               A diversified Sri Lankan business group building and operating businesses across talent, human
@@ -168,7 +168,7 @@ export default function HomePage() {
             <p className="home-eyebrow">Why HEXORA</p>
             <h2>Building success across a diversified business ecosystem</h2>
             <p className="section-copy">
-              HEXORA GLOBAL GROUP brings together specialized businesses across talent, HR, trade, food, and business solutions — creating opportunities, building trusted partnerships, and delivering value that lasts..
+              HEXORA GLOBAL CORPORATION brings together specialized businesses across talent, HR, trade, food, and business solutions — creating opportunities, building trusted partnerships, and delivering value that lasts..
             </p>
             <div className="feature-grid">
               {groupStrengths.map(({ title, text, icon: Icon }) => (
@@ -220,10 +220,10 @@ export default function HomePage() {
       <section className="corporate-section" id="divisions-section">
         <div className="shell corporate-grid">
           <div>
-            <p className="home-eyebrow">About HEXORA GLOBAL GROUP</p>
+            <p className="home-eyebrow">About HEXORA GLOBAL CORPORATION</p>
             <h2 className="corporate-light-heading">A diversified corporate group driving excellence across industries</h2>
             <p>
-              HEXORA GLOBAL GROUP operates through five strategic business divisions, each focused on delivering
+              HEXORA GLOBAL CORPORATION operates through five strategic business divisions, each focused on delivering
               excellence in its own market while contributing to the group's overall strength.
             </p>
             <div className="corporate-icons-row">
@@ -327,7 +327,7 @@ export default function HomePage() {
           <strong>One</strong> Group
         </div>
         <div className="shell final-cta-inner">
-          <h2>Ready to explore opportunities with HEXORA GLOBAL GROUP?</h2>
+          <h2>Ready to explore opportunities with HEXORA GLOBAL CORPORATION?</h2>
           <p>
             Discover how our five strategic divisions can support your business growth or partnership goals.
             From talent to trade, we deliver value across industries.

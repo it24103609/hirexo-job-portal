@@ -1,10 +1,10 @@
 export const siteContent = {
-  brandName: 'HEXORA GLOBAL GROUP',
-  aboutIntro: 'HEXORA GLOBAL GROUP is a diversified Sri Lankan business group operating across talent, human resources, trade, consumer products, and business solutions.',
+  brandName: 'HEXORA GLOBAL CORPORATION',
+  aboutIntro: 'HEXORA GLOBAL CORPORATION is a diversified Sri Lankan business group operating across talent, human resources, trade, consumer products, and business solutions.',
   mission: 'To build and grow focused business divisions that create long-term value through integrity, collaboration, and practical execution.',
   vision: 'To become a trusted business group recognized for reliable operations, strong partnerships, and sustainable growth across industries.',
   values: 'We act with integrity, work with clarity, and pursue growth through trust, excellence, and shared success.',
-  testimonial: 'HEXORA Global Group presents a clear, structured business ecosystem that is easy to trust and easy to work with across divisions.',
+  testimonial: 'HEXORA GLOBAL CORPORATION presents a clear, structured business ecosystem that is easy to trust and easy to work with across divisions.',
   contact: {
     phonePrimary: '0773191832',
     phoneSecondary: '0705343427',
@@ -64,6 +64,7 @@ export const siteContent = {
       { label: 'Company Profile', to: '/employer/company-profile' },
       { label: 'Manage Jobs', to: '/employer/jobs' },
       { label: 'Candidates', to: '/employer/candidates' },
+      { label: 'CV Library', to: '/employer/cvs' },
       { label: 'Interviews', to: '/employer/interviews' },
       { label: 'Hiring Calendar', to: '/employer/activity-calendar' },
       { label: 'Approvals', to: '/employer/approvals' },
