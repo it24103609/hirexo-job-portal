@@ -1,0 +1,305 @@
+.divisions-section {
+  padding: 3.25rem 0 3.5rem;
+  background: linear-gradient(180deg, rgba(228, 253, 247, 0.6), rgba(245, 255, 250, 0.6));
+}
+
+.divisions-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.divisions-eyebrow {
+  display: inline-block;
+  color: #10b981;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.divisions-title {
+  margin: 0.35rem 0 0.45rem;
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  color: #072e24;
+  font-weight: 800;
+  line-height: 1.05;
+}
+
+.divisions-copy {
+  margin: 0;
+  color: #4b6b5f;
+  font-size: 0.98rem;
+  font-weight: 500;
+  opacity: 0.92;
+}
+
+.divisions-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  align-items: stretch;
+}
+
+.division-card {
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.division-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 26px 50px rgba(6, 76, 46, 0.12);
+}
+
+.division-image {
+  height: 220px;
+  width: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.division-body {
+  padding: 1.15rem 1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  flex: 1 1 auto;
+}
+
+.division-eyebrow {
+  color: #0b8a50;
+  font-weight: 800;
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.division-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #073826;
+}
+
+.division-desc {
+  margin: 0;
+  color: #395b4b;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  flex: 1 1 auto;
+}
+
+.division-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.division-badge {
+  display: inline-block;
+  padding: 0.45rem 0.6rem;
+  background: rgba(15, 85, 56, 0.06);
+  color: #0b6f45;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.division-cta {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: linear-gradient(90deg, #0f6f45, #0fb06d);
+  color: #fff;
+  padding: 0.55rem 0.8rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+/* fade-up animation */
+.division-card { opacity: 0; transform: translateY(12px); }
+.division-card.in-view { opacity: 1; transform: translateY(0); transition: opacity 520ms ease, transform 520ms cubic-bezier(.2,.9,.2,1); }
+
+/* Responsive */
+/* ===========================
+   Responsive
+=========================== */
+
+/* Large Tablet / Small Laptop */
+@media (max-width: 1100px) {
+  .divisions-row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .division-card {
+    min-height: 410px;
+  }
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .divisions-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .division-card {
+    min-height: 400px;
+  }
+
+  .division-image {
+    height: 210px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+  .divisions-section {
+    padding: 2.5rem 0;
+  }
+
+  .divisions-header {
+    padding: 0 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .divisions-title {
+    font-size: 1.8rem;
+    line-height: 1.2;
+  }
+
+  .divisions-copy {
+    font-size: 0.95rem;
+  }
+
+
+
+  .divisions-row{
+    display:flex;
+    overflow-x:auto;
+    overflow-y:hidden;
+
+    gap:16px;
+    padding:0 16px 12px;
+
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+
+    scrollbar-width:none;
+  }
+
+  .divisions-row::-webkit-scrollbar{
+    display:none;
+  }
+
+  .division-card{
+    flex:0 0 320px;      /* card width */
+    scroll-snap-align:start;
+    min-height:auto;
+  }
+
+
+  .division-image {
+    height: 200px;
+  }
+
+  .division-body {
+    padding: 1rem;
+  }
+
+  .division-title {
+    font-size: 1.05rem;
+  }
+
+  .division-desc {
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .division-actions {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .division-cta {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Small Phones (Samsung A52s, A54, iPhone 12/13/14 etc.) */
+@media (max-width: 480px) {
+
+  .divisions-section {
+    padding: 2rem 0;
+  }
+
+  .divisions-row {
+    grid-auto-columns: 94%;
+    gap: 14px;
+    padding: 0 12px 12px;
+  }
+
+  .division-card {
+    border-radius: 16px;
+  }
+
+  .division-image {
+    height: 185px;
+  }
+
+  .division-body {
+    padding: 0.95rem;
+    gap: 0.65rem;
+  }
+
+  .division-eyebrow {
+    font-size: 0.72rem;
+  }
+
+  .division-title {
+    font-size: 1rem;
+  }
+
+  .division-desc {
+    font-size: 0.88rem;
+  }
+
+  .division-badge {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .division-cta {
+    font-size: 0.88rem;
+    padding: 0.65rem;
+  }
+}
+
+/* Very Small Phones */
+@media (max-width: 360px) {
+
+  .divisions-row {
+    grid-auto-columns: 96%;
+  }
+
+  .division-image {
+    height: 170px;
+  }
+
+  .division-title {
+    font-size: 0.95rem;
+  }
+
+  .division-desc {
+    font-size: 0.85rem;
+  }
+}
+ 

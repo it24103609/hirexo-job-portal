@@ -1,0 +1,37 @@
+{
+  "name": "HEXORA-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "pannuka": "vite",
+    "sitemap": "node scripts/generate-sitemap.mjs",
+    "prebuild": "npm run sitemap",
+    "build": "vite build --configLoader runner",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^3.10.0",
+    "@react-oauth/google": "^0.13.5",
+    "axios": "^1.8.4",
+    "clsx": "^2.1.1",
+    "emoji-picker-react": "^4.19.1",
+    "framer-motion": "^12.40.0",
+    "lucide-react": "^0.487.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-google-recaptcha": "^3.1.0",
+    "react-hook-form": "^7.54.2",
+    "react-router-dom": "^7.5.0",
+    "react-toastify": "^11.0.5",
+    "recharts": "^3.8.1",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.3.0",
+    "vite": "^6.2.4"
+  }
+}

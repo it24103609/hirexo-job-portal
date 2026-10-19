@@ -1,0 +1,287 @@
+.candidate-register-shell {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(1rem, 2vw, 1.75rem) 0 clamp(2.25rem, 4vw, 3.5rem);
+}
+
+.candidate-register-shell::before,
+.candidate-register-shell::after {
+  content: '';
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(12px);
+}
+
+.candidate-register-shell::before {
+  top: 2rem;
+  left: -5rem;
+  width: 18rem;
+  height: 18rem;
+  background: rgba(108, 203, 157, 0.22);
+}
+
+.candidate-register-shell::after {
+  right: -4rem;
+  bottom: -3rem;
+  width: 20rem;
+  height: 20rem;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.candidate-register-card {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 34px;
+  border: 1px solid rgba(22, 114, 74, 0.12);
+  box-shadow: 0 30px 70px rgba(12, 52, 35, 0.14);
+}
+
+.candidate-register-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  min-height: 740px;
+}
+
+.candidate-register-hero {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 1.1rem;
+  padding: clamp(2rem, 3vw, 3.5rem);
+  color: #17392c;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.7), transparent 32%),
+    radial-gradient(circle at 16% 18%, rgba(170, 233, 198, 0.55), transparent 34%),
+    linear-gradient(145deg, #f4fff7 0%, #eefaf2 50%, #e1f5ea 100%);
+}
+
+.candidate-register-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  background:
+    linear-gradient(rgba(26, 138, 86, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 138, 86, 0.06) 1px, transparent 1px);
+  background-size: 88px 88px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent);
+  pointer-events: none;
+}
+
+.candidate-register-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.candidate-register-badge,
+.candidate-register-eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.42rem 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.candidate-register-badge {
+  color: #0f5a39;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(22, 114, 74, 0.1);
+}
+
+.candidate-register-hero h1 {
+  margin: 0;
+  max-width: 12ch;
+  color: #07382c;
+  font-size: clamp(2.5rem, 4.8vw, 4.35rem);
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+}
+
+.candidate-register-copy {
+  margin: 0;
+  max-width: 50ch;
+  color: #4f6c61;
+  font-size: 1.02rem;
+  line-height: 1.72;
+}
+
+.candidate-register-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.candidate-register-step {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(22, 114, 74, 0.08);
+  box-shadow: 0 18px 32px rgba(12, 52, 35, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.candidate-register-step strong {
+  font-size: 1.35rem;
+  color: var(--primary-dark);
+}
+
+.candidate-register-step span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.candidate-register-benefits {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.8rem;
+}
+
+.candidate-register-benefits li {
+  position: relative;
+  padding-left: 1.2rem;
+  color: #4f6c61;
+  line-height: 1.65;
+}
+
+.candidate-register-benefits li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.58rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #1a8a56, #6ccb9d);
+}
+
+.candidate-register-form-panel {
+  display: grid;
+  align-content: start;
+  gap: 1rem;
+  padding: clamp(1.5rem, 3vw, 3rem);
+  background:
+    radial-gradient(circle at top right, rgba(108, 203, 157, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(249, 252, 250, 0.95));
+}
+
+.candidate-register-form-header {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.candidate-register-form-header h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(1.9rem, 2.8vw, 2.55rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.candidate-register-meta {
+  max-width: 48ch;
+  margin: 0;
+}
+
+.candidate-register-eyebrow {
+  color: var(--primary-dark);
+  background: rgba(26, 138, 86, 0.08);
+  border: 1px solid rgba(26, 138, 86, 0.12);
+}
+
+.candidate-register-form-panel .field-label {
+  color: #234839;
+}
+
+.candidate-register-form-panel .input {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(26, 138, 86, 0.16);
+}
+
+.candidate-register-submit {
+  width: 100%;
+  min-height: 3.4rem;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #146f46, #29a261 55%, #57c98c);
+  box-shadow: 0 18px 30px rgba(26, 138, 86, 0.24);
+}
+
+.candidate-register-social {
+  margin-top: 0.25rem;
+}
+
+.candidate-register-footer {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(22, 114, 74, 0.12);
+  text-align: center;
+}
+
+.candidate-register-footer p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.candidate-register-link {
+  color: var(--primary-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.candidate-register-link:hover {
+  color: var(--primary);
+}
+
+.candidate-register-link-strong {
+  font-weight: 800;
+}
+
+.candidate-register-secondary {
+  color: #789081;
+}
+
+.candidate-register-back-link {
+  color: #5a7366;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 1080px) {
+  .candidate-register-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .candidate-register-card {
+    border-radius: 28px;
+  }
+
+  .candidate-register-hero,
+  .candidate-register-form-panel {
+    padding: 1.35rem;
+  }
+
+  .candidate-register-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .candidate-register-hero h1 {
+    max-width: 100%;
+    font-size: clamp(2.2rem, 10vw, 3.2rem);
+  }
+}

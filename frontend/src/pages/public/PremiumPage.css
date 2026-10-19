@@ -1,0 +1,320 @@
+.premium-page-shell {
+  position: relative;
+  overflow: hidden;
+  padding: 4.5rem 0 3rem;
+  background:
+    radial-gradient(circle at top left, rgba(15, 128, 80, 0.18), transparent 36%),
+    radial-gradient(circle at top right, rgba(216, 155, 17, 0.16), transparent 30%),
+    linear-gradient(180deg, #f7fbf8 0%, #eef6f2 100%);
+}
+
+.premium-page-glow {
+  position: absolute;
+  inset: auto;
+  border-radius: 999px;
+  filter: blur(20px);
+  pointer-events: none;
+}
+
+.premium-page-glow-a {
+  width: 180px;
+  height: 180px;
+  left: -40px;
+  top: 120px;
+  background: rgba(15, 128, 80, 0.12);
+}
+
+.premium-page-glow-b {
+  width: 220px;
+  height: 220px;
+  right: -40px;
+  top: 60px;
+  background: rgba(216, 155, 17, 0.12);
+}
+
+.premium-page-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.premium-page-copy,
+.premium-page-highlight-card,
+.premium-benefit-card,
+.premium-plan-card {
+  border: 1px solid rgba(15, 53, 39, 0.08);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 24px 70px rgba(15, 53, 39, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.premium-page-copy {
+  padding: 2.2rem;
+}
+
+.premium-page-eyebrow,
+.premium-section-heading p,
+.premium-plan-audience,
+.premium-page-highlight-card p {
+  margin: 0 0 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #0f8050;
+}
+
+.premium-page-copy h1 {
+  margin: 0;
+  color: #102f22;
+  font-size: clamp(2.4rem, 5vw, 4.6rem);
+  line-height: 0.98;
+}
+
+.premium-page-subtitle {
+  margin: 1rem 0 0;
+  max-width: 60ch;
+  color: #436154;
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.premium-page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.6rem;
+}
+
+.premium-page-primary,
+.premium-page-secondary,
+.premium-plan-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 50px;
+  padding: 0.8rem 1.25rem;
+  border-radius: 999px;
+  border: 0;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.premium-page-primary,
+.premium-plan-cta {
+  color: #ffffff;
+  background: linear-gradient(135deg, #0f8050, #145a3a);
+  box-shadow: 0 16px 30px rgba(15, 128, 80, 0.22);
+}
+
+.premium-page-secondary {
+  color: #114233;
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(15, 53, 39, 0.1);
+  box-shadow: 0 12px 24px rgba(15, 53, 39, 0.08);
+}
+
+.premium-page-primary:hover,
+.premium-page-secondary:hover,
+.premium-plan-cta:hover {
+  transform: translateY(-2px);
+}
+
+.premium-page-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.4rem;
+}
+
+.premium-page-points span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(15, 128, 80, 0.08);
+  color: #114233;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.premium-page-highlight {
+  display: grid;
+  gap: 1rem;
+}
+
+.premium-page-highlight-card {
+  padding: 1.5rem;
+}
+
+.premium-page-highlight-card strong {
+  display: block;
+  color: #102f22;
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.premium-page-highlight-card ul,
+.premium-plan-card ul {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.premium-page-highlight-card li,
+.premium-plan-card li {
+  position: relative;
+  margin: 0 0 0.7rem;
+  padding-left: 1.15rem;
+  color: #436154;
+  line-height: 1.6;
+}
+
+.premium-page-highlight-card li::before,
+.premium-plan-card li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6rem;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: #0f8050;
+}
+
+.premium-page-section {
+  padding: 1rem 0 3rem;
+}
+
+.premium-section-heading {
+  margin-bottom: 1.2rem;
+}
+
+.premium-section-heading h2 {
+  margin: 0;
+  color: #102f22;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+}
+
+.premium-benefits-grid,
+.premium-plans-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.premium-benefit-card {
+  padding: 1.35rem;
+}
+
+.premium-benefit-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  color: #0f8050;
+  background: rgba(15, 128, 80, 0.1);
+}
+
+.premium-benefit-card h3,
+.premium-plan-card h3 {
+  margin: 0.85rem 0 0.5rem;
+  color: #102f22;
+  font-size: 1.15rem;
+}
+
+.premium-benefit-card p {
+  margin: 0;
+  color: #536f62;
+  line-height: 1.65;
+}
+
+.premium-plan-card {
+  position: relative;
+  padding: 1.4rem;
+}
+
+.premium-plan-card.is-featured {
+  border-color: rgba(15, 128, 80, 0.25);
+  box-shadow: 0 28px 72px rgba(15, 128, 80, 0.12);
+}
+
+.premium-plan-badge {
+  display: inline-flex;
+  margin-bottom: 0.9rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  color: #0f8050;
+  background: rgba(15, 128, 80, 0.1);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.premium-plan-price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.premium-plan-price-row strong {
+  color: #0f8050;
+  font-size: 1.8rem;
+}
+
+.premium-plan-card ul {
+  min-height: 170px;
+}
+
+.premium-plan-cta {
+  width: 100%;
+  margin-top: 0.3rem;
+}
+
+.premium-page-section-anchored {
+  scroll-margin-top: 24px;
+}
+
+@media (max-width: 1080px) {
+  .premium-page-hero,
+  .premium-benefits-grid,
+  .premium-plans-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .premium-page-shell {
+    padding-top: 3rem;
+  }
+
+  .premium-page-hero,
+  .premium-benefits-grid,
+  .premium-plans-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .premium-page-copy,
+  .premium-page-highlight-card,
+  .premium-benefit-card,
+  .premium-plan-card {
+    border-radius: 22px;
+  }
+
+  .premium-page-actions {
+    flex-direction: column;
+  }
+
+  .premium-page-primary,
+  .premium-page-secondary,
+  .premium-plan-cta {
+    width: 100%;
+  }
+}

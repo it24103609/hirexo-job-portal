@@ -1,0 +1,332 @@
+/* =========================================================
+   CANDIDATE LOGIN PAGE - EVEN LARGER 3D HERO & WHITE CARD FORM
+   ========================================================= */
+
+.candidate-login-shell {
+  position: relative;
+  height: calc(100vh - 72px);
+  max-height: calc(100vh - 72px);
+  background-color: #f0fdf4;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(187, 247, 208, 0.55) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(167, 243, 208, 0.45) 0%, transparent 45%),
+    linear-gradient(135deg, #f0fdf4 0%, #e6f7ec 50%, #eefdf4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  overflow: hidden;
+}
+
+/* Background faint mint circles */
+.candidate-login-shell::before,
+.candidate-login-shell::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid rgba(22, 163, 74, 0.12);
+  pointer-events: none;
+}
+
+.candidate-login-shell::before {
+  width: 520px;
+  height: 520px;
+  top: -160px;
+  left: -120px;
+  background: rgba(220, 252, 231, 0.25);
+}
+
+.candidate-login-shell::after {
+  width: 420px;
+  height: 420px;
+  bottom: -100px;
+  right: -80px;
+  background: rgba(209, 250, 229, 0.2);
+}
+
+.candidate-login-container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.candidate-login-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  align-items: center;
+  gap: clamp(1.5rem, 3.5vw, 3.5rem);
+}
+
+/* Left Illustration & Title Column */
+.candidate-left-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0;
+}
+
+.candidate-illustration-wrap {
+  width: 100%;
+  max-width: 620px;
+  margin-bottom: 0.4rem;
+  display: flex;
+  justify-content: center;
+}
+
+.candidate-hero-img {
+  width: 100%;
+  max-width: 580px;
+  max-height: 420px;
+  object-fit: contain;
+  border-radius: 24px;
+  filter: drop-shadow(0 15px 35px rgba(16, 185, 129, 0.24));
+  transition: transform 0.3s ease;
+}
+
+.candidate-hero-img:hover {
+  transform: scale(1.02);
+}
+
+.candidate-left-title {
+  margin: 0 0 0.15rem 0;
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #064e3b;
+  letter-spacing: -0.03em;
+}
+
+.candidate-left-subtitle {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #047857;
+  font-weight: 500;
+}
+
+/* Right Form Panel with Crisp White Card Box */
+.candidate-right-panel {
+  display: flex;
+  justify-content: center;
+}
+
+.candidate-clean-card {
+  width: 100%;
+  max-width: 400px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 1.4rem 1.65rem;
+  box-shadow: 0 16px 40px rgba(16, 185, 129, 0.12), 0 2px 6px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(22, 163, 74, 0.16);
+}
+
+.candidate-card-header {
+  margin-bottom: 0.65rem;
+}
+
+.candidate-card-title {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #064e3b;
+  letter-spacing: -0.03em;
+}
+
+/* Compact Inputs & Form */
+.candidate-minimal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.candidate-input-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.candidate-field-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.candidate-clean-input {
+  width: 100%;
+  height: 45px;
+  padding: 0 3rem 0 1rem;
+  border-radius: 12px;
+  border: 1.5px solid rgba(22, 163, 74, 0.24);
+  background: #ffffff;
+  font-size: 0.92rem;
+  color: #064e3b;
+  font-weight: 600;
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.candidate-clean-input::placeholder {
+  color: #a7f3d0;
+}
+
+.candidate-clean-input:focus {
+  border-color: #10b981;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+.candidate-input-icons-right {
+  position: absolute;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #10b981;
+}
+
+.candidate-eye-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.candidate-eye-toggle:hover {
+  color: #047857;
+}
+
+.candidate-field-error {
+  font-size: 0.78rem;
+  color: #ef4444;
+  margin-top: 0.1rem;
+}
+
+/* Remember me & Forgot Password */
+.candidate-row-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.84rem;
+}
+
+.candidate-remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #047857;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 600;
+}
+
+.candidate-remember-me input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #10b981;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.candidate-forgot-btn {
+  color: #059669;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.candidate-forgot-btn:hover {
+  color: #047857;
+  text-decoration: underline;
+}
+
+/* Compact Submit Button */
+.candidate-clean-submit-btn {
+  width: 100%;
+  height: 45px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.1rem;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.28);
+  transition: all 0.2s ease;
+}
+
+.candidate-clean-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.35);
+}
+
+.candidate-clean-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Footer Links */
+.candidate-clean-footer {
+  margin-top: 0.65rem;
+  text-align: center;
+  font-size: 0.84rem;
+  color: #047857;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.candidate-clean-footer a {
+  color: #10b981;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.candidate-clean-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Breakpoints */
+@media (max-height: 760px) {
+  .candidate-hero-img {
+    max-height: 330px;
+  }
+}
+
+@media (max-height: 680px) {
+  .candidate-hero-img {
+    max-height: 270px;
+  }
+}
+
+@media (max-width: 860px) {
+  .candidate-login-shell {
+    height: auto;
+    max-height: none;
+    overflow: auto;
+    padding: 1.5rem 1rem;
+  }
+
+  .candidate-login-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .candidate-left-panel {
+    display: none;
+  }
+}

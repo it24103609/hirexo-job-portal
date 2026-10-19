@@ -1,0 +1,852 @@
+:root {
+  --dashboard-bg: #eef8f1;
+  --dashboard-surface: rgba(255, 255, 255, 0.95);
+  --dashboard-surface-soft: rgba(234, 247, 240, 0.88);
+  --dashboard-border: rgba(22, 114, 74, 0.16);
+  --dashboard-shadow: 0 20px 40px rgba(20, 73, 45, 0.08);
+  --dashboard-shadow-soft: 0 12px 28px rgba(20, 73, 45, 0.06);
+}
+
+.dashboard-shell {
+  background: linear-gradient(180deg, #f4faf4 0%, #eaf7f0 48%, #f8fbf8 100%);
+  border: none;
+  box-shadow: none;
+}
+
+/* ============================================
+   ALL DASHBOARD SHELLS - FULL SCREEN, NO GAPS
+   ============================================ */
+.dashboard-shell.admin-portal-shell,
+.dashboard-shell.candidate-portal-shell,
+.dashboard-shell.employer-portal-shell {
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 0;
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  min-width: 100vw;
+  max-width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
+  position: relative;
+  border-radius: 0;
+  background: linear-gradient(180deg, #f4faf4 0%, #eaf7f0 48%, #f8fbf8 100%);
+}
+
+/* ============================================
+   SIDEBAR - FIXED ON DESKTOP, FULL HEIGHT
+   ============================================ */
+.dashboard-shell.admin-portal-shell .dashboard-sidebar,
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow-y: auto;
+  z-index: 40;
+}
+
+/* Sidebar inner styles */
+.dashboard-sidebar-admin {
+  padding: 1.3rem;
+  border-radius: 28px;
+  border: 1px solid rgba(22, 114, 74, 0.18);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(236, 250, 241, 0.92));
+  box-shadow: 0 28px 60px rgba(13, 79, 42, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+.dashboard-sidebar-admin::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  pointer-events: none;
+}
+
+.dashboard-sidebar-admin .sidebar-brand {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(22, 114, 74, 0.1);
+}
+
+.dashboard-sidebar-admin .sidebar-link {
+  border-radius: 18px;
+  padding: 0.96rem 1rem;
+  background: rgba(255, 255, 255, 0.8);
+  color: #2c5b47;
+  border: 1px solid transparent;
+}
+
+.dashboard-sidebar-admin .sidebar-link:hover {
+  background: rgba(19, 146, 82, 0.1);
+  border-color: rgba(22, 114, 74, 0.14);
+  box-shadow: 0 14px 26px rgba(13, 79, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.dashboard-sidebar-admin .sidebar-link.active {
+  color: #0f523a;
+  background: linear-gradient(135deg, rgba(22, 114, 74, 0.18), rgba(108, 203, 157, 0.14));
+  border-color: rgba(22, 114, 74, 0.22);
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar {
+  padding: 1.3rem;
+  border-radius: 0px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(236, 250, 241, 0.92));
+  border: 1px solid rgba(22, 114, 74, 0.18);
+  box-shadow: 0 28px 60px rgba(13, 79, 42, 0.08);
+  backdrop-filter: blur(20px);
+}
+.dashboard-main.candidate-portal-main {
+    border: none !important;
+    border-radius: 0 !important;
+}
+.dashboard-main.employer-portal-main {
+    border: none !important;
+    border-radius: 0 !important;
+}
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar::before,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  pointer-events: none;
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar .sidebar-link,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar .sidebar-link,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar .employer-sidebar-link {
+  padding: 0.96rem 1rem;
+  border-radius: 10px;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+
+  color: #2c5b47;
+  transition: color .2s ease, background .2s ease;
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar .sidebar-link:hover,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar .employer-sidebar-link:hover {
+  background: rgba(19, 146, 82, 0.1);
+  border-color: rgba(22, 114, 74, 0.14);
+  box-shadow: 0 14px 26px rgba(13, 79, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar .sidebar-link.active,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar .employer-sidebar-link.active {
+  color: #0f523a;
+  background: linear-gradient(135deg, rgba(22, 114, 74, 0.18), rgba(108, 203, 157, 0.14));
+  border-color: rgba(22, 114, 74, 0.22);
+}
+
+.dashboard-shell.candidate-portal-shell .dashboard-sidebar .sidebar-link-icon,
+.dashboard-shell.employer-portal-shell .dashboard-sidebar .sidebar-link-icon {
+  color: #157649;
+}
+
+.dashboard-sidebar-candidate .sidebar-brand,
+.dashboard-sidebar-employer .sidebar-brand,
+.dashboard-sidebar-admin .sidebar-brand {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(22, 114, 74, 0.1);
+}
+
+/* ============================================
+   TOPBAR / HEADER - STICKY, NO GAPS
+   ============================================ */
+ .dashboard-topbar {
+   
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 7px;
+
+  
+}
+
+.dashboard-topbar-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex: 1 1 320px;
+  min-width: 140px;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(22, 114, 74, 0.16);
+  background: rgba(235, 250, 240, 0.92);
+  color: var(--primary-dark);
+}
+
+.dashboard-topbar-search input {
+  width: 100%;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #254d3a;
+  font-weight: 600;
+}
+
+.dashboard-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-icon-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 1px solid rgba(22, 114, 74, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f7a4f;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.dashboard-icon-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(13, 79, 42, 0.08);
+}
+
+.dashboard-icon-btn span {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #f85757, #d81f1f);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  padding: 0 0.3rem;
+}
+
+/* ============================================
+   MAIN CONTENT - SCROLLS, NO GAPS
+   ============================================ */
+.dashboard-main {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.candidate-portal-main,
+.employer-portal-main,
+.dashboard-main.admin-portal-main {
+  margin-left: 300px;
+  min-height: 100vh;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0;
+  width: calc(100vw - 300px);
+  max-width: calc(100vw - 300px);
+  padding-top: 88px;
+}
+
+.dashboard-main.admin-portal-main {
+  padding-top: 12px;
+}
+
+/* ============================================
+   PROFILE PILL DROPDOWN
+   ============================================ */
+.dashboard-profile-pill-wrapper {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.dashboard-profile-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(22, 114, 74, 0.14);
+  background: rgba(249, 253, 250, 0.96);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  line-height: inherit;
+  width: auto;
+}
+
+.dashboard-profile-pill:hover {
+  background: rgba(234, 247, 240, 0.95);
+  border-color: rgba(22, 114, 74, 0.25);
+  box-shadow: 0 4px 12px rgba(20, 73, 45, 0.08);
+  transform: translateY(-1px);
+}
+
+.dashboard-profile-pill:focus-visible {
+  outline: 2px solid rgba(22, 114, 74, 0.4);
+  outline-offset: 2px;
+}
+
+.dashboard-profile-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, #dff4e8, #b7efd0);
+  color: #0f5a39;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex: 0 0 auto;
+}
+
+.dashboard-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dashboard-profile-info {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.dashboard-profile-info strong {
+  display: block;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.dashboard-profile-info small {
+  color: #5f7d6a;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.dashboard-profile-chevron {
+  color: #5f7d6a;
+  transition: transform 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.dashboard-profile-chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.dashboard-profile-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 220px;
+  background: #ffffff;
+  border: 1px solid rgba(22, 114, 74, 0.14);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(20, 73, 45, 0.12);
+  padding: 0.5rem;
+  z-index: 100;
+  animation: dashboardDropdownFadeIn 0.15s ease;
+}
+
+@keyframes dashboardDropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-profile-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #1f2937;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left;
+}
+
+.dashboard-profile-dropdown-item:hover {
+  background: rgba(234, 247, 240, 0.8);
+}
+
+.dashboard-profile-dropdown-item:focus-visible {
+  outline: 2px solid rgba(22, 114, 74, 0.4);
+  outline-offset: -2px;
+}
+
+.dashboard-profile-dropdown-item svg {
+  color: #0f7a4f;
+  flex: 0 0 auto;
+}
+
+.dashboard-profile-dropdown-item--danger {
+  color: #dc2626;
+}
+
+.dashboard-profile-dropdown-item--danger svg {
+  color: #dc2626;
+}
+
+.dashboard-profile-dropdown-item--danger:hover {
+  background: rgba(254, 226, 226, 0.6);
+}
+
+.dashboard-profile-dropdown-divider {
+  height: 1px;
+  margin: 0.25rem 0.5rem;
+  background: rgba(22, 114, 74, 0.1);
+}
+
+.dashboard-sidebar-admin .sidebar-group-label {
+  color: #4d6f5f;
+}
+
+.dashboard-sidebar-admin .sidebar-link-icon {
+  color: #157649;
+}
+
+.dashboard-icons-pill {
+  min-width: 108px;
+  text-align: right;
+}
+
+.dashboard-sidebar-mobile-head {
+  background: rgba(250, 255, 252, 0.9);
+  border: 1px solid rgba(22, 114, 74, 0.12);
+  border-radius: 20px;
+}
+
+.sidebar-brand {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(22, 114, 74, 0.1);
+}
+
+.sidebar-group-stack,
+.employer-sidebar-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.sidebar-link,
+.employer-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.9rem 0.95rem;
+  border-radius: 18px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.72);
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sidebar-link:hover,
+.employer-sidebar-link:hover,
+.sidebar-link.active,
+.employer-sidebar-link.active {
+  background: rgba(21, 146, 78, 0.12);
+  color: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.sidebar-link-icon,
+.employer-sidebar-link .sidebar-link-icon {
+  color: var(--primary);
+}
+
+.premium-admin-dashboard,
+.employer-premium-dashboard,
+.candidate-dashboard-grid,
+.candidate-stat-grid {
+  width: 100%;
+}
+
+.premium-panel,
+.premium-stat-card,
+.premium-action-card,
+.employer-premium-panel,
+.employer-premium-stat-card,
+.employer-dashboard-group-card,
+.candidate-list-card,
+.candidate-completion-card {
+  border-radius: 24px;
+  border: 1px solid rgba(22, 114, 74, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--dashboard-shadow-soft);
+}
+
+.premium-btn,
+.btn,
+.btn-sm {
+  border-radius: 999px;
+}
+
+/* ============================================
+   RESPONSIVE - TABLET & BELOW
+   ============================================ */
+@media (max-width: 1024px) {
+  .dashboard-shell.admin-portal-shell,
+  .dashboard-shell.candidate-portal-shell,
+  .dashboard-shell.employer-portal-shell {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100vh;
+    width: 100vw;
+    min-width: 100vw;
+    max-width: 100vw;
+  }
+
+  .dashboard-shell.admin-portal-shell .dashboard-sidebar,
+  .dashboard-shell.candidate-portal-shell .dashboard-sidebar,
+  .dashboard-shell.employer-portal-shell .dashboard-sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
+    height: 100vh;
+    z-index: 100;
+    transition: left 0.3s ease;
+    border-radius: 0;
+  }
+
+  .dashboard-sidebar.is-open,
+  .dashboard-shell.mobile-nav-open .dashboard-sidebar {
+    left: 0;
+  }
+
+  .candidate-portal-main,
+  .employer-portal-main,
+  .dashboard-main.admin-portal-main {
+    margin-left: 0;
+    width: 100vw;
+    max-width: 100vw;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: visible;
+    overflow-x: hidden;
+  }
+
+  .dashboard-topbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0.6rem 1rem;
+  }
+
+  .dashboard-topbar-search {
+    width: 100%;
+    flex-basis: 100%;
+    order: 1;
+  }
+
+  .dashboard-topbar-actions {
+    flex: 1;
+    order: 2;
+    justify-content: flex-end;
+  }
+  .dashboard-topbar{
+    left:0;
+    width:100%;
+}
+}
+
+@media (max-width: 768px) {
+  .dashboard-topbar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .dashboard-topbar-search {
+    flex-basis: 100%;
+    order: 1;
+    padding: 0.6rem 0.85rem;
+  }
+
+  .dashboard-topbar-actions {
+    flex: 1;
+    order: 2;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+
+  .dashboard-icon-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dashboard-profile-pill {
+    padding: 0.35rem 0.5rem 0.35rem 0.35rem;
+  }
+
+  .dashboard-profile-avatar {
+    width: 34px;
+    height: 34px;
+    font-size: 0.8rem;
+  }
+
+  .dashboard-profile-info strong {
+    font-size: 0.78rem;
+    max-width: 80px;
+  }
+
+  .dashboard-profile-info small {
+    font-size: 0.65rem;
+    max-width: 80px;
+  }
+
+  .dashboard-profile-dropdown {
+    right: 0;
+    min-width: 200px;
+  }
+}
+
+/* Candidate / Employer Admin-style dashboard visuals */
+.candidate-premium-dashboard,
+.employer-premium-dashboard {
+  width: 100%;
+  display: grid;
+  gap: 1.5rem;
+  background: transparent;
+  color: #123c2b;
+}
+
+.candidate-premium-dashboard .dashboard-header,
+.employer-premium-dashboard .dashboard-header {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1.4rem;
+  align-items: center;
+  padding: clamp(1.1rem, 1.8vw, 1.55rem);
+  border-radius: 28px;
+  border: 1px solid rgba(31, 133, 87, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 20px 40px rgba(20, 73, 45, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+.candidate-premium-dashboard .dashboard-header h1,
+.employer-premium-dashboard .dashboard-header h1 {
+  margin: 0;
+  font-size: clamp(1.9rem, 2.8vw, 2.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+
+.candidate-premium-dashboard .dashboard-header .section-description,
+.employer-premium-dashboard .dashboard-header .section-description {
+  margin-top: 0.75rem;
+  color: #4c7162;
+  line-height: 1.7;
+  max-width: 66ch;
+}
+
+.candidate-premium-dashboard .candidate-hero-side,
+.employer-premium-dashboard .employer-hero-side {
+  display: grid;
+  gap: 1rem;
+}
+
+.candidate-premium-dashboard .candidate-hero-summary-card,
+.employer-premium-dashboard .employer-premium-panel,
+.employer-premium-dashboard .employer-premium-job-card,
+.employer-premium-dashboard .employer-premium-bar-column,
+.employer-premium-dashboard .employer-action-tile,
+.candidate-premium-dashboard .candidate-glass-card {
+  border-radius: 24px;
+  border: 1px solid rgba(31, 133, 87, 0.14);
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 24px 48px rgba(20, 73, 45, 0.07);
+  backdrop-filter: blur(16px);
+}
+
+.candidate-premium-dashboard .candidate-stat-grid,
+.employer-premium-dashboard .employer-stat-grid,
+.employer-premium-dashboard .employer-hero-live-grid,
+.employer-premium-dashboard .employer-action-matrix,
+.employer-premium-dashboard .employer-job-list {
+  gap: 1rem;
+}
+
+.candidate-premium-dashboard .candidate-stat-card,
+.employer-premium-dashboard .employer-stat-card,
+.employer-premium-dashboard .employer-quick-action-card,
+.employer-premium-dashboard .employer-pipeline-card {
+  border-radius: 22px;
+  border: 1px solid rgba(31, 133, 87, 0.12);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 16px 30px rgba(20, 73, 45, 0.06);
+}
+
+.candidate-premium-dashboard .candidate-hero-actions,
+.employer-premium-dashboard .employer-hero-cta-row,
+.employer-premium-dashboard .employer-premium-bars,
+.employer-premium-dashboard .employer-quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+}
+
+.candidate-premium-dashboard .candidate-progress-track {
+  background: linear-gradient(90deg, rgba(26, 138, 86, 0.18), rgba(95, 198, 145, 0.2));
+  box-shadow: inset 0 1px 3px rgba(12, 52, 35, 0.08);
+}
+
+.candidate-premium-dashboard .candidate-quick-actions .btn,
+.employer-premium-dashboard .employer-action-tile,
+.employer-premium-dashboard .employer-panel-head a,
+.employer-premium-dashboard .employer-job-card-actions a {
+  border-radius: 14px;
+}
+
+@media (max-width: 980px) {
+  .candidate-premium-dashboard .dashboard-header,
+  .employer-premium-dashboard .dashboard-header {
+    grid-template-columns: 1fr;
+  }
+
+  .candidate-premium-dashboard .candidate-hero-actions,
+  .employer-premium-dashboard .employer-hero-cta-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.employer-admin-style-dashboard .employer-command-header {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: 1.4rem;
+  align-items: center;
+  padding: clamp(1.1rem, 1.8vw, 1.55rem);
+  border-radius: 28px;
+  border: 1px solid rgba(31, 133, 87, 0.18);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 20px 40px rgba(20, 73, 45, 0.08);
+  backdrop-filter: blur(20px);
+}
+
+.employer-admin-style-dashboard .employer-command-side {
+  display: grid;
+  gap: 1rem;
+}
+
+.employer-admin-style-dashboard .employer-command-tools {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.employer-admin-style-dashboard .employer-command-search {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(31, 133, 87, 0.14);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.employer-admin-style-dashboard .employer-command-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-weight: 600;
+  color: #254d3a;
+}
+
+.employer-admin-style-dashboard .employer-command-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  border: 1px solid rgba(31, 133, 87, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+  color: #0f7a4f;
+  display: grid;
+  place-items: center;
+}
+
+.employer-admin-style-dashboard .employer-command-profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(31, 133, 87, 0.14);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.employer-admin-style-dashboard .employer-command-profile span {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #dff4e8, #b7efd0);
+  color: #0f5a39;
+}
+
+.employer-admin-style-dashboard .employer-command-profile strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.employer-admin-style-dashboard .employer-command-profile small {
+  color: #5f7d6a;
+  font-size: 0.8rem;
+}
+
+.employer-admin-style-dashboard .employer-command-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+}
+
+.employer-admin-style-dashboard .employer-command-actions .btn {
+  border-radius: 14px;
+}

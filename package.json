@@ -1,0 +1,15 @@
+{
+  "name": "HEXORA-job-portal-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Workspace utilities for the HEXORA job portal project.",
+  "scripts": {
+    "frontend:dev": "npm --prefix frontend run dev",
+    "frontend:build": "npm --prefix frontend run build",
+    "backend:dev": "npm --prefix backend run dev",
+    "backend:start": "npm --prefix backend run start"
+  },
+  "dependencies": {
+    "pdf-parse": "^2.4.5"
+  }
+}
