@@ -1,6 +1,6 @@
 # HEXORA Job Portal
 
-Full-stack GLOBAL GROUP with separate workflows for candidate, employer, and admin users.
+Full-stack HEXORA GLOBAL CORPORATION job portal with separate workflows for candidate, employer, and admin users.
 
 ## Monorepo Structure
 

@@ -1,6 +1,6 @@
 # HEXORA Backend
 
-Express + MongoDB backend scaffold for the GLOBAL GROUP.
+Express + MongoDB backend scaffold for HEXORA GLOBAL CORPORATION.
 
 ## Setup
 

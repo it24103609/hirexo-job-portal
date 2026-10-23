@@ -19,23 +19,23 @@ export default function AboutPage() {
     <>
       <Seo
         title="About Us | HEXORA GLOBAL CORPORATION"
-        description="Learn about HEXORA GLOBAL CORPORATION (PVT) LTD - a diversified Sri Lankan business group operating across talent, HR consulting, global trade, foods, and business solutions."
+        description="Learn about HEXORA GLOBAL CORPORATION (PVT) LTD - a diversified Sri Lankan corporation operating across talent, HR consulting, global trade, foods, and business solutions."
       />
 
       <section className="about-hero-section">
         <div className="about-hero-ambient" aria-hidden="true" />
         <div className="shell about-hero-content">
           <h1>HEXORA GLOBAL CORPORATION (PVT) LTD</h1>
-          <p className="about-hero-subtitle">One Group. Multiple Businesses. Global Opportunities.</p>
+          <p className="about-hero-subtitle">One Corporation. Multiple Businesses. Global Opportunities.</p>
           <p className="about-hero-desc">
-            HEXORA GLOBAL CORPORATION is a diversified Sri Lankan business group building and operating businesses
+            HEXORA GLOBAL CORPORATION is a diversified Sri Lankan corporation building and operating businesses
             across talent, human resources, trade, consumer products, and business solutions.
           </p>
           <p className="about-hero-desc">
             We bring together focused expertise, shared resources, and long-term partnerships to create value
             across industries.
           </p>
-          <p className="about-hero-tagline">A diversified group built for sustainable growth.</p>
+          <p className="about-hero-tagline">A diversified corporation built for sustainable growth.</p>
           <div className="about-hero-actions">
             <Button as={Link} to="/companies/talent" size="lg">
               Explore Businesses <ArrowRight size={18} />
@@ -53,7 +53,7 @@ export default function AboutPage() {
             <div className="about-section-badge">About Us</div>
             <h2>Who We Are</h2>
             <p>
-              HEXORA GLOBAL CORPORATION is a Sri Lankan-based business group committed to building resilient businesses
+              HEXORA GLOBAL CORPORATION is a Sri Lankan-based corporation committed to building resilient businesses
               and practical solutions across multiple industries.
             </p>
             <p>
@@ -62,7 +62,7 @@ export default function AboutPage() {
             </p>
             <p>
               We believe growth is strongest when each business unit can move independently while benefiting from
-              one connected group ecosystem.
+              one connected corporate ecosystem.
             </p>
           </div>
           <div className="about-who-cards">
@@ -72,7 +72,7 @@ export default function AboutPage() {
               </span>
               <h3>Our Vision</h3>
               <p>
-                To become a globally recognized business group known for reliable operations, trusted partnerships,
+                To become a globally recognized corporation known for reliable operations, trusted partnerships,
                 and long-term value creation.
               </p>
             </div>
@@ -94,7 +94,7 @@ export default function AboutPage() {
         <div className="shell">
           <div className="about-section-header">
             <h2>Our Businesses</h2>
-            <p>Five divisions. One group. Each business focuses on a clear market need.</p>
+            <p>Five divisions. One corporation. Each business focuses on a clear market need.</p>
           </div>
           <div className="about-why-grid">
             <div className="about-why-card">
@@ -155,7 +155,7 @@ export default function AboutPage() {
                 <BadgeCheck size={28} />
               </div>
               <h3>Diversified Expertise</h3>
-              <p>Each division brings focused knowledge while still benefiting from the strength of one group.</p>
+              <p>Each division brings focused knowledge while still benefiting from the strength of one corporation.</p>
             </div>
             <div className="about-why-card">
               <div className="about-why-icon">
@@ -200,7 +200,7 @@ export default function AboutPage() {
             </div>
             <p className="about-hours">Monday - Friday | 9:00 AM - 6:00 PM</p>
             <Button as={Link} to="/contact" size="lg">
-              Contact Group <ArrowRight size={18} />
+              Contact HEXORA <ArrowRight size={18} />
             </Button>
           </div>
         </div>

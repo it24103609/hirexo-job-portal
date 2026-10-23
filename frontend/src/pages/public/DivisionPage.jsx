@@ -249,7 +249,7 @@ export default function DivisionPage({ config }) {
             </div>
             <div className="dp-overview-copy">
               <span>About Us</span>
-              <h3>A diversified business group delivering excellence</h3>
+              <h3>A diversified corporation delivering excellence</h3>
               <p>
                 HEXORA GLOBAL CORPORATION (PVT) LTD operates through focused business divisions, providing
                 comprehensive solutions across multiple industries.

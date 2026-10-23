@@ -25,10 +25,10 @@ export default function Footer() {
         <div className="footer-premium-container">
           <div className="footer-column footer-company-info">
             <div className="footer-brand">
-              <BrandIdentity subtitle="GLOBAL GROUP (PVT) LTD" compact />
+              <BrandIdentity subtitle="GLOBAL CORPORATION (PVT) LTD" compact />
             </div>
             <p className="footer-summary">
-              HEXORA GLOBAL CORPORATION (PVT) LTD is a diversified Sri Lankan business group operating across talent,
+              HEXORA GLOBAL CORPORATION (PVT) LTD is a diversified Sri Lankan corporation operating across talent,
               human resources, trade, consumer products, and business solutions.
             </p>
             <div className="footer-contact-list">
@@ -40,7 +40,7 @@ export default function Footer() {
               <Clock size={13} /> Monday - Friday | 9:00 AM - 6:00 PM
             </div>
             <p className="footer-slogan">
-              One Group. Multiple Businesses. Global Opportunities.
+              One Corporation. Multiple Businesses. Global Opportunities.
             </p>
           </div>
 
@@ -49,7 +49,7 @@ export default function Footer() {
               <h3>Quick Links</h3>
               <div className="footer-links">
                 <Link to="/"><BriefcaseBusiness size={16} /> Home</Link>
-                <Link to="/about"><BriefcaseBusiness size={16} /> About Hexora Group</Link>
+                <Link to="/about"><BriefcaseBusiness size={16} /> About Hexora Corporation</Link>
                 <Link to="/#divisions-section"><BriefcaseBusiness size={16} /> Our Businesses</Link>
                 <Link to="/jobs"><BriefcaseBusiness size={16} /> Careers</Link>
                 <Link to="/contact"><MessageCircle size={16} /> Contact Us</Link>
@@ -92,7 +92,7 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <span className="footer-copyright">&copy; 2026 HEXORA GLOBAL CORPORATION (PVT) LTD. All Rights Reserved.</span>
-          <span className="footer-bottom-slogan">HEXORA GLOBAL CORPORATION is a diversified Sri Lankan business group building and operating businesses across talent, human resources, trade, consumer products, and business solutions.</span>
+          <span className="footer-bottom-slogan">HEXORA GLOBAL CORPORATION is a diversified Sri Lankan corporation building and operating businesses across talent, human resources, trade, consumer products, and business solutions.</span>
         </div>
       </div>
     </footer>

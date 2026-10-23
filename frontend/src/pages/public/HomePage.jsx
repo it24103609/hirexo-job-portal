@@ -31,7 +31,7 @@ const media = {
 const groupStrengths = [
   {
     title: 'Diversified Expertise',
-    text: 'Each division is built around a clear market need, while the group shares a common standard of quality.',
+    text: 'Each division is built around a clear market need, while the corporation shares a common standard of quality.',
     icon: BadgeCheck
   },
   {
@@ -103,20 +103,20 @@ const groupOutcomes = [
   },
   {
     title: 'New product and service value',
-    description: 'HEXORA FOODS and HEXORA BUSINESS SOLUTIONS extend the group into new markets.',
+    description: 'HEXORA FOODS and HEXORA BUSINESS SOLUTIONS extend the corporation into new markets.',
     icon: Building2,
-    metric: 'Group',
+    metric: 'Corporate',
     label: 'expansion'
   }
 ];
 
 const testimonials = [
   {
-    quote: 'HEXORA feels like a structured group partner, not just a service vendor.',
+    quote: 'HEXORA feels like a structured corporate partner, not just a service vendor.',
     name: 'Business Partner'
   },
   {
-    quote: 'The group positioning is clear, premium, and easy to understand across all divisions.',
+    quote: "HEXORA's corporate positioning is clear, premium, and easy to understand across all divisions.",
     name: 'Client Stakeholder'
   }
 ];
@@ -126,7 +126,7 @@ export default function HomePage() {
     <>
       <Seo
         title="HEXORA GLOBAL CORPORATION | Diversified Business Ecosystem"
-        description="HEXORA GLOBAL CORPORATION is a diversified business group with 5 divisions spanning talent, HR consulting, global trade, foods, and business solutions."
+        description="HEXORA GLOBAL CORPORATION is a diversified corporation with 5 divisions spanning talent, HR consulting, global trade, foods, and business solutions."
       />
 
       <section className="home-hero">
@@ -139,9 +139,9 @@ export default function HomePage() {
         <div className="shell home-hero-grid">
           <div className="home-hero-copy">
             <h1 className="hero-main-heading">HEXORA GLOBAL CORPORATION (PVT) LTD</h1>
-            <h3 className="hero-subheading">One Group. Multiple Businesses. Global Opportunities.</h3>
+            <h3 className="hero-subheading">One Corporation. Multiple Businesses. Global Opportunities.</h3>
             <p className="hero-description">
-              A diversified Sri Lankan business group building and operating businesses across talent, human
+              A diversified Sri Lankan corporation building and operating businesses across talent, human
               resources, trade, consumer products, and business solutions.
             </p>
             <div className="hero-separator" />
@@ -184,7 +184,7 @@ export default function HomePage() {
           </div>
 
           <aside className="ai-card">
-            <span className="ai-pill">Group-Wide Excellence</span>
+            <span className="ai-pill">Corporation-Wide Excellence</span>
             <div className="ai-orbit">
               <span className="ai-orb" />
               <span className="orbit-dot dot-a" />
@@ -221,10 +221,10 @@ export default function HomePage() {
         <div className="shell corporate-grid">
           <div>
             <p className="home-eyebrow">About HEXORA GLOBAL CORPORATION</p>
-            <h2 className="corporate-light-heading">A diversified corporate group driving excellence across industries</h2>
+            <h2 className="corporate-light-heading">A diversified corporation driving excellence across industries</h2>
             <p>
               HEXORA GLOBAL CORPORATION operates through five strategic business divisions, each focused on delivering
-              excellence in its own market while contributing to the group's overall strength.
+              excellence in its own market while contributing to the corporation's overall strength.
             </p>
             <div className="corporate-icons-row">
               <span className="corporate-icon-item"><Users size={20} /></span>
@@ -237,7 +237,7 @@ export default function HomePage() {
               <div className="vision-card">
                 <h3>Our Vision</h3>
                 <p>
-                  To be a leading diversified business group recognized for excellence, innovation, and sustainable
+                  To be a leading diversified corporation recognized for excellence, innovation, and sustainable
                   growth across multiple industries.
                 </p>
               </div>
@@ -269,7 +269,7 @@ export default function HomePage() {
         <div className="shell success-stories-shell">
           <div className="success-stories-header">
             <p className="home-eyebrow">Proven Outcomes</p>
-            <h2 id="success-stories-title">Our Group Impact</h2>
+            <h2 id="success-stories-title">Our Corporate Impact</h2>
             <p>Each division supports growth through focused delivery and clear outcomes.</p>
           </div>
 
@@ -324,7 +324,7 @@ export default function HomePage() {
           <Building2 size={17} /> 5 Divisions
         </div>
         <div className="floating-stat cta-stat-right">
-          <strong>One</strong> Group
+          <strong>One</strong> Corporation
         </div>
         <div className="shell final-cta-inner">
           <h2>Ready to explore opportunities with HEXORA GLOBAL CORPORATION?</h2>

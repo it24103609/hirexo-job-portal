@@ -166,10 +166,10 @@ export default function TalentPage() {
             </div>
             <div className="services-overview-copy">
               <span>About Us</span>
-              <h3>One group, with one focused talent division</h3>
+              <h3>One corporation with a dedicated talent division</h3>
               <p>
                 HEXORA GLOBAL CORPORATION operates through focused business divisions, and HEXORA TALENT carries the
-                recruitment and staffing responsibility for the group.
+                recruitment and staffing responsibility for the corporation.
               </p>
               <ul>
                 <li><CheckCircle2 size={17} /> Talent Acquisition and Recruitment</li>
@@ -248,10 +248,10 @@ export default function TalentPage() {
             </div>
             <div className="services-hero-ctas">
               <Button as={Link} to="/contact" size="lg">
-                Talk to the Group <MessageCircle size={17} />
+                Talk to HEXORA <MessageCircle size={17} />
               </Button>
               <Button as={Link} to="/about" variant="secondary" size="lg">
-                About HEXORA Group <ArrowRight size={17} />
+                About HEXORA Corporation <ArrowRight size={17} />
               </Button>
             </div>
           </div>

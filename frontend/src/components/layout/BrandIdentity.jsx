@@ -4,7 +4,7 @@ import clsx from 'clsx';
 export default function BrandIdentity({
   to = '/',
   className,
-  subtitle = 'GLOBAL GROUP',
+  subtitle = 'GLOBAL CORPORATION',
   compact = false,
   showSubtitle = true,
   as = Link

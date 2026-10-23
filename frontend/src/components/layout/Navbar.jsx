@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts/AuthContext';
 
 const publicLinks = [
   { to: '/', label: 'Home' },
-  { to: '/about', label: 'About Hexora Group' },
+  { to: '/about', label: 'About Hexora Corporation' },
   { to: '/jobs', label: 'Careers ' },
   { to: '/contact', label: 'Contact' }
 ];

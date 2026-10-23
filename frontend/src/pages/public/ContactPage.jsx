@@ -17,7 +17,7 @@ export default function ContactPage() {
   const whatsappUrl = `https://wa.me/${siteContent.contact.whatsapp}`;
 
   const supportItems = [
-    { icon: Zap, label: 'Group Response', desc: 'We aim to respond within 24 hours' },
+    { icon: Zap, label: 'Corporate Response', desc: 'We aim to respond within 24 hours' },
     { icon: Headphones, label: 'Business Support', desc: 'Dedicated team for partnership and inquiry needs' },
     { icon: Users, label: 'Division Guidance', desc: 'Help finding the right HEXORA business division' },
     { icon: MessageCircle, label: 'WhatsApp Available', desc: 'Chat with us anytime' }
@@ -37,10 +37,10 @@ export default function ContactPage() {
             <span className="contact-badge">HEXORA GLOBAL CORPORATION (PVT) LTD</span>
             <h1>Let's start the right conversation</h1>
             <p className="contact-hero-subtitle">
-              HEXORA GLOBAL CORPORATION is a diversified Sri Lankan business group building and operating businesses
+              HEXORA GLOBAL CORPORATION is a diversified Sri Lankan corporation building and operating businesses
               across talent, human resources, trade, consumer products, and business solutions.
               <br />
-              Reach out for partnership inquiries, division-specific questions, or general group information.
+              Reach out for partnership inquiries, division-specific questions, or general corporate information.
             </p>
           </div>
         </div>
@@ -55,7 +55,7 @@ export default function ContactPage() {
               <div className="contact-info-intro">
                 <h2>Reach out to HEXORA</h2>
                 <p>
-                  Have a question about one of our divisions, a partnership opportunity, or a general group inquiry?
+                  Have a question about one of our divisions, a partnership opportunity, or a general corporate inquiry?
                   Send us a message and our team will respond as quickly as possible.
                 </p>
               </div>
@@ -120,7 +120,7 @@ export default function ContactPage() {
             {/* Right Column - Contact Form */}
             <div className="contact-form-panel">
               <div className="contact-form-header">
-                <h2>Send a group inquiry</h2>
+                <h2>Send a corporate inquiry</h2>
                 <p>Fill out the form below and we will get back to you shortly.</p>
               </div>
 

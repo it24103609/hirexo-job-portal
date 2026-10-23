@@ -119,8 +119,8 @@ const divisions = [
 const benefits = [
   {
     icon: BadgeCheck,
-    title: 'One Group Structure',
-    text: 'Each division has a clear role, while the whole group shares standards and direction.'
+    title: 'One Corporate Structure',
+    text: 'Each division has a clear role, while the whole corporation shares standards and direction.'
   },
   {
     icon: Sparkles,
@@ -130,7 +130,7 @@ const benefits = [
   {
     icon: Briefcase,
     title: 'Business-Focused',
-    text: 'Visitors can quickly see what each division does and where the group is expanding.'
+    text: 'Visitors can quickly see what each division does and where the corporation is expanding.'
   }
 ];
 
@@ -171,14 +171,14 @@ export default function ServicesPage() {
                 Partner With Us <MessageCircle size={17} />
               </Button>
               <Button as={Link} to="/about" variant="secondary" size="lg">
-                About HEXORA Group <ArrowRight size={17} />
+                About HEXORA Corporation <ArrowRight size={17} />
               </Button>
             </div>
           </div>
 
           <div className="services-hero-visual">
             <div className="services-hero-visual-card">
-              <img src={groupHeroImage} alt="HEXORA group visual" />
+              <img src={groupHeroImage} alt="HEXORA business divisions" />
               
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function ServicesPage() {
         <div className="shell">
           <div className="services-section-header">
             <span className="services-section-badge">Overview</span>
-            <h2>A single group, with five focused business divisions</h2>
+            <h2>A single corporation, with five focused business divisions</h2>
             <p>
               Each division has its own identity and capability, while staying connected to the wider HEXORA
               brand.
@@ -226,7 +226,7 @@ export default function ServicesPage() {
         <div className="shell">
           <div className="services-section-header">
             <h2>Why the structure works</h2>
-            <p>Green, clear, and organized around what the group is actually building.</p>
+            <p>Green, clear, and organized around what the corporation is actually building.</p>
           </div>
           <div className="services-benefits-grid">
             {benefits.map(({ icon: Icon, title, text }) => (
@@ -268,7 +268,7 @@ export default function ServicesPage() {
                       {title === 'HEXORA TALENT' ? cta : 'View Division'}
                     </Button>
                     <Button as={Link} to="/contact" size="sm">
-                      Contact Group <ArrowRight size={15} />
+                      Contact HEXORA <ArrowRight size={15} />
                     </Button>
                   </div>
                 </div>
