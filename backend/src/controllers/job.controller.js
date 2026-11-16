@@ -4,8 +4,11 @@ const apiResponse = require('../utils/apiResponse');
 const Job = require('../models/Job');
 const FeaturedJob = require('../models/FeaturedJob');
 const EmployerProfile = require('../models/EmployerProfile');
+const User = require('../models/User');
 const { createUniqueSlug } = require('../utils/slug');
 const { JOB_REVIEW_STATUS, JOB_STATUS, ROLES } = require('../utils/constants');
+const { sendEmailAsync } = require('../services/email.service');
+const { jobPostingFeeEmail } = require('../utils/emailTemplates');
 
 function normalizeJobImage(payload, fallbackAlt = 'Job image') {
   const image = payload.image && typeof payload.image === 'object' ? payload.image : {};
@@ -188,6 +191,26 @@ const createJob = asyncHandler(async (req, res) => {
     reviewStatus: saveAsDraft ? JOB_REVIEW_STATUS.DRAFT : JOB_REVIEW_STATUS.PENDING,
     status: saveAsDraft ? JOB_STATUS.DRAFT : JOB_STATUS.ACTIVE
   });
+
+  // Send job posting fee email to employer (only for non-draft submissions)
+  if (!saveAsDraft) {
+    const employerUser = await User.findById(req.user._id).select('email name');
+    const employerEmail = employerUser?.email;
+    if (employerEmail) {
+      sendEmailAsync({
+        to: employerEmail,
+        subject: 'Action Required: Rs.4,000 Job Posting Fee - ' + job.title,
+        html: jobPostingFeeEmail({
+          employerName: employerUser?.name,
+          jobTitle: job.title,
+          companyName: job.companyName,
+          jobId: job._id,
+          receiptNo: 'JOB-' + String(job._id).slice(-8).toUpperCase(),
+          postedAt: job.createdAt
+        })
+      });
+    }
+  }
 
   res.status(201).json(apiResponse({
     message: saveAsDraft ? 'Job saved as draft' : 'Job submitted for admin review',

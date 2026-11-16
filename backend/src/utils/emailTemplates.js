@@ -406,12 +406,46 @@ function subscriptionCancelledEmail({ name, tier, refundAmount }) {
   });
 }
 
+
+function jobPostingFeeEmail({ employerName, jobTitle, companyName, jobId, receiptNo, postedAt }) {
+  const formattedDate = postedAt
+    ? new Date(postedAt).toLocaleString('en-IN', { dateStyle: 'long', timeStyle: 'short' })
+    : new Date().toLocaleString('en-IN', { dateStyle: 'long', timeStyle: 'short' });
+
+  const ref = receiptNo || String(jobId).slice(-8).toUpperCase();
+
+  return renderPremiumEmail({
+    eyebrow: 'Job Posting Fee - Payment Required',
+    title: 'Complete Payment to Activate Your Job Post',
+    badge: 'Rs.4,000 Fee Due',
+    intro: `Hi ${employerName || 'there'}, your job posting for "${jobTitle}" at ${companyName || 'your company'} has been received and is pending admin approval. To activate and publish your job on HEXORA, please complete the one-time job posting fee of Rs.4,000 via bank transfer to the account details below.`,
+    details: [
+      { label: 'Job Title', value: jobTitle },
+      { label: 'Company', value: companyName || 'Your company' },
+      { label: 'Receipt / Reference No.', value: ref },
+      { label: 'Submitted On', value: formattedDate },
+      { label: 'Job Posting Fee', value: 'Rs.4,000 (One-time)' },
+      { label: 'Bank Name', value: 'HDFC Bank' },
+      { label: 'Account Name', value: 'HEXORA GLOBAL CORPORATION' },
+      { label: 'Account Number', value: '50200012345678' },
+      { label: 'IFSC Code', value: 'HDFC0001234' },
+      { label: 'Branch', value: 'Chennai Main Branch' },
+      { label: 'UPI ID', value: 'hexora@hdfcbank' },
+      { label: 'Payment Amount', value: 'Rs.4,000' },
+      { label: 'Payment Reference', value: ref }
+    ],
+    ctaLabel: 'View My Jobs',
+    ctaUrl: absoluteUrl('/employer/jobs'),
+    note: `IMPORTANT: After completing the payment, please send the payment screenshot or transaction ID to support@hexora.com with your Receipt No. ${ref}. Your job will be reviewed and published within 24-48 hours of payment confirmation. This is a one-time, non-refundable fee per job posting.`
+  });
+}
 module.exports = {
   renderPremiumEmail,
   defaultTextToHtml,
   applicationConfirmationEmail,
   employerNewApplicationEmail,
   jobApprovedEmail,
+  jobPostingFeeEmail,
   statusUpdateEmail,
   welcomeEmail,
   passwordResetEmail,
