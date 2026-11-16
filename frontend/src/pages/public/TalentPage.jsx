@@ -1,6 +1,5 @@
-import { useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, CheckCircle2, MessageCircle, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Globe2, Handshake, MessageCircle, Sparkles } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../contexts/AuthContext';
 import Seo from '../../components/ui/Seo';
@@ -9,6 +8,7 @@ import PremiumDualCardSection from '../../components/home/PremiumDualCardSection
 import servicesHeroVideo from '../../assets/videos/services-hero-bg.mp4';
 import './ServicesPage.css';
 import './DivisionPage.css';
+import './TalentPage.css';
 
 const talentJourney = [
   'Understand the requirement',
@@ -19,25 +19,17 @@ const talentJourney = [
   'Guide onboarding and next steps'
 ];
 
-const industries = [
-  'Information Technology',
-  'Banking & Finance',
-  'Healthcare',
-  'Engineering',
-  'Construction',
-  'Manufacturing',
-  'Retail & FMCG',
-  'Logistics & Supply Chain',
-  'Hospitality',
-  'Telecommunications'
+const trustedClients = [
+  { name: 'LOLC', image: '/LOLC LOGO.png' },
+  { name: 'EXEL BPO', image: '/EXCEL BPO.jpeg' },
+  { name: 'SHIPEX', image: '/SHIPEX LOGO.png' },
+  { name: 'T&T Holdings', image: '/T&t HOLDINGS .jpeg' },
+  { name: 'NIBT Campus Kandy', image: '/NIBT CAMPUS LOGO.png' }
 ];
 
 export default function TalentPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const industryCarouselRef = useRef(null);
-  const industryDrag = useRef({ active: false, startX: 0, scrollLeft: 0 });
-
   const handleCvClick = () => {
     if (user && user.role === 'candidate') {
       navigate('/candidate/resume');
@@ -54,57 +46,6 @@ export default function TalentPage() {
       toast.info('Register as an employer');
       navigate('/employer/register');
     }
-  };
-
-  const handleIndustryPointerDown = (event) => {
-    if (event.pointerType === 'touch') return;
-    if (event.pointerType === 'mouse' && event.button !== 0) return;
-
-    const carousel = industryCarouselRef.current;
-    if (!carousel) return;
-
-    industryDrag.current = {
-      active: true,
-      startX: event.clientX,
-      scrollLeft: carousel.scrollLeft
-    };
-    carousel.classList.add('is-dragging');
-    carousel.setPointerCapture?.(event.pointerId);
-  };
-
-  const handleIndustryPointerMove = (event) => {
-    const carousel = industryCarouselRef.current;
-    if (!carousel || !industryDrag.current.active) return;
-
-    event.preventDefault();
-    const walk = event.clientX - industryDrag.current.startX;
-    carousel.scrollLeft = industryDrag.current.scrollLeft - walk;
-  };
-
-  const stopIndustryDrag = (event) => {
-    const carousel = industryCarouselRef.current;
-    if (!carousel) return;
-
-    industryDrag.current.active = false;
-    carousel.classList.remove('is-dragging');
-    if (carousel.hasPointerCapture?.(event.pointerId)) {
-      carousel.releasePointerCapture(event.pointerId);
-    }
-  };
-
-  const handleIndustryKeyDown = (event) => {
-    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-
-    const carousel = industryCarouselRef.current;
-    if (!carousel) return;
-
-    event.preventDefault();
-    const firstCard = carousel.querySelector('.industry-card');
-    const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : 260;
-    carousel.scrollBy({
-      left: event.key === 'ArrowRight' ? cardWidth : -cardWidth,
-      behavior: 'smooth'
-    });
   };
 
   return (
@@ -126,15 +67,16 @@ export default function TalentPage() {
         <div className="services-hero-overlay" />
 
         <div className="shell services-hero-grid">
-          <div className="services-hero-copy">
+          <div className="services-hero-copy talent-hero-copy">
             <span className="services-badge">
               <Sparkles size={15} /> HEXORA TALENT
             </span>
-            <h1>Connecting talent with opportunity, under HEXORA GLOBAL CORPORATION.</h1>
-            <p className="division-tagline">Talent & Staffing Division</p>
+            <h1>
+              Connecting Talent With <span>Better Opportunities.</span>
+            </h1>
             <p className="division-desc">
-              HEXORA TALENT is the talent and staffing division of HEXORA GLOBAL CORPORATION. We support employers
-              with structured hiring and help candidates move toward the right next step in their careers.
+              We connect exceptional talent with the right opportunities and help businesses build stronger teams
+              through smarter recruitment.
             </p>
             <div className="services-hero-ctas">
               <Button onClick={handleCvClick} size="lg">
@@ -205,35 +147,42 @@ export default function TalentPage() {
         </div>
       </section>
 
-      <section className="industry-section talent-industry">
-        <div className="shell">
-          <div className="section-topline">
-            <div>
-              <p className="home-eyebrow">Industries We Support</p>
-              <h2>Recruitment coverage across key business sectors</h2>
-              <p>HEXORA TALENT supports specialist and volume hiring across high-demand industries.</p>
+      <section className="talent-clients-section" aria-labelledby="trusted-clients-heading">
+          <div className="talent-clients-map" aria-hidden="true">
+            <Globe2 />
+          </div>
+          <div className="talent-clients-accent talent-clients-accent-top" aria-hidden="true" />
+          <div className="talent-clients-accent talent-clients-accent-bottom" aria-hidden="true" />
+          <div className="shell">
+            <div className="talent-clients-intro">
+              <div className="talent-clients-copy">
+                <p className="home-eyebrow">Our Clients</p>
+                <h2 id="trusted-clients-heading">
+                  Our Trusted Clients &amp; <span>Partners</span>
+                </h2>
+                <p>
+                  Building strong relationships with leading companies and institutions through trust, collaboration,
+                  and shared success.
+                </p>
+              </div>
+              <div className="talent-clients-visual" aria-hidden="true">
+                <div className="talent-clients-handshake">
+                  <Handshake size={58} strokeWidth={1.4} />
+                </div>
+                <span>Partnerships that move business forward</span>
+              </div>
             </div>
+            <div className="talent-client-grid">
+              {trustedClients.map((client) => (
+                <article className="talent-client-card" key={client.name}>
+                  <img src={client.image} alt={`${client.name} logo`} />
+                </article>
+              ))}
+            </div>
+            <p className="talent-partnership-message">
+              Together, we grow stronger through <strong>trusted partnerships.</strong>
+            </p>
           </div>
-          <div
-            className="industry-grid"
-            ref={industryCarouselRef}
-            role="region"
-            aria-label="Industry expertise carousel"
-            tabIndex={0}
-            onKeyDown={handleIndustryKeyDown}
-            onPointerDown={handleIndustryPointerDown}
-            onPointerMove={handleIndustryPointerMove}
-            onPointerUp={stopIndustryDrag}
-            onPointerCancel={stopIndustryDrag}
-            onPointerLeave={stopIndustryDrag}
-          >
-            {industries.map((industry) => (
-              <span className="industry-card" key={industry} tabIndex={0}>
-                <CheckCircle2 size={17} /> {industry}
-              </span>
-            ))}
-          </div>
-        </div>
       </section>
 
       <section className="process-section talent-process">
