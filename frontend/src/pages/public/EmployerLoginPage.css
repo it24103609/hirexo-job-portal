@@ -18,7 +18,7 @@
   left: -5rem;
   width: 16rem;
   height: 16rem;
-  background: rgba(255, 204, 112, 0.2);
+  background: rgba(242, 241, 238, 0.2);
 }
 
 .employer-login-shell::after {
@@ -26,7 +26,7 @@
   bottom: -2rem;
   width: 19rem;
   height: 19rem;
-  background: rgba(26, 138, 86, 0.14);
+  background: rgba(246, 248, 247, 0.14);
 }
 
 .employer-login-card {
